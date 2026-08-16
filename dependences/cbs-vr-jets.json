@@ -167,11 +167,268 @@
       }
     ]
   },
+  "parallel": {
+    "entry": {
+      "line": 220,
+      "text": "if (is_vr_algorithm(jetcollection.algorithm))"
+    },
+    "exit": {
+      "line": 301,
+      "text": "continue;"
+    },
+    "regression": {
+      "base_tokens": 336,
+      "commit": "bb641a5d1e ColliderBit: fix warning-flagged bugs, migrate YODA histos, tidy build - ATLAS_EXOT_2016_014: fix abs() paren so the |eta|<2.0 cut works - ATLAS_SUSY_2019_22: init samesign and fix >3 -> >=3 (was UB) - Py8EventConversions: use non-deprecated FastJet JetDefinition arg order - Migrate YODA Histo1D to in-house Histogram class (2016_013, 2021_35);   drop unused/dead YODA code (2018_07, 2019_07, 2016_017) - cmake: split LDFLAGS into list elements to kill duplicate-library warnings - standalone_facilitator.py: fix invalid escape; mark plot script executable",
+      "drift": [
+        {
+          "kind": "insert",
+          "now": "jet_recomscheme ,",
+          "was": ""
+        },
+        {
+          "kind": "delete",
+          "now": "",
+          "was": ", jet_recomscheme"
+        }
+      ],
+      "head_tokens": 336,
+      "moved": {
+        "line": 308,
+        "now": "const FJNS::JetDefinition jet_def(jet_algorithm, jetcollection.R, jet_recomscheme, jet_strategy);",
+        "was": "const FJNS::JetDefinition jet_def(jet_algorithm, jetcollection.R, jet_strategy, jet_recomscheme);"
+      },
+      "ratio": 0.994,
+      "shared": 334
+    },
+    "shared": {
+      "constituents": {
+        "line": 213,
+        "text": "jetparticles.push_back(get_unified_pseudojet(p));"
+      },
+      "loop": {
+        "line": 218,
+        "text": "for (jet_collection_settings jetcollection : all_jet_collection_settings)"
+      },
+      "met": {
+        "line": 420,
+        "text": "result.set_missingmom(pout);"
+      }
+    },
+    "spans": {
+      "fixed": [
+        304,
+        396
+      ],
+      "loop": [
+        218,
+        398
+      ],
+      "vr": [
+        220,
+        301
+      ]
+    },
+    "stages": [
+      {
+        "delta": "",
+        "fixed": {
+          "line": 304,
+          "text": "FJNS::JetAlgorithm jet_algorithm = FJalgorithm_map(jetcollection.algorithm);"
+        },
+        "note": "Different fields of the same struct. No second settings type was introduced.",
+        "stage": "settings read",
+        "verdict": "differs",
+        "vr": {
+          "line": 222,
+          "text": "const double rho = jetcollection.rho;"
+        }
+      },
+      {
+        "delta": "",
+        "fixed": {
+          "line": 308,
+          "text": "const FJNS::JetDefinition jet_def(jet_algorithm, jetcollection.R, jet_recomscheme, jet_strategy);"
+        },
+        "note": "The one genuinely new construction: a plugin-backed definition instead of an (algorithm, R, scheme, strategy) one. VR has no single R to pass.",
+        "stage": "jet definition",
+        "verdict": "differs",
+        "vr": {
+          "line": 228,
+          "text": "fastjet::JetDefinition vr_jet_def(vr_plugin);"
+        }
+      },
+      {
+        "delta": "jet_def &rarr; vr_jet_def",
+        "fixed": {
+          "line": 312,
+          "text": "std::shared_ptr<const FJNS::ClusterSequence> CSeqBasePtr = result.emplace_clusterseq(jetparticles, jet_def, jetcollection.key);"
+        },
+        "note": "Same storage call, same key, same ownership transfer to the event.",
+        "stage": "cluster sequence",
+        "verdict": "same call",
+        "vr": {
+          "line": 230,
+          "text": "std::shared_ptr<const FJNS::ClusterSequence> CSeqBasePtr = result.emplace_clusterseq(jetparticles, vr_jet_def, jetcollection.key);"
+        }
+      },
+      {
+        "delta": "FJNS::PseudoJet &rarr; fastjet::PseudoJet; sorted_by_pt &rarr; fastjet::sorted_by_pt; jet_pt_min &rarr; pt_min_vr",
+        "fixed": {
+          "line": 314,
+          "text": "std::vector<FJNS::PseudoJet> pjets = sorted_by_pt(CSeqBasePtr->inclusive_jets(jet_pt_min));"
+        },
+        "note": "VR reads a per-collection <code>pt_min</code> where the fixed path takes the global one; it also names <code>fastjet</code> directly, since a VR collection cannot exist in an fjcore build.",
+        "stage": "jet list / p<sub>T</sub> floor",
+        "verdict": "differs",
+        "vr": {
+          "line": 231,
+          "text": "std::vector<fastjet::PseudoJet> pjets = fastjet::sorted_by_pt(CSeqBasePtr->inclusive_jets(pt_min_vr));"
+        }
+      },
+      {
+        "delta": "",
+        "fixed": {
+          "line": 321,
+          "text": "HEPUtils::P4 jetMom = HEPUtils::mk_p4(pj);"
+        },
+        "note": "Byte-identical.",
+        "stage": "per-jet momentum",
+        "verdict": "identical",
+        "vr": {
+          "line": 235,
+          "text": "HEPUtils::P4 jetMom = HEPUtils::mk_p4(pj);"
+        }
+      },
+      {
+        "delta": "0.4 &rarr; effectiveR",
+        "fixed": {
+          "line": 326,
+          "text": "if (jetMom.deltaR_eta(pb.mom()) < 0.4) ///< @todo Hard-coded radius!!!"
+        },
+        "note": "Physics, not architecture: the fixed path matches inside a hard-coded 0.4 regardless of the collection&#8217;s own R; VR matches inside the radius that produced the jet.",
+        "stage": "b-tag match",
+        "verdict": "differs",
+        "vr": {
+          "line": 241,
+          "text": "if (jetMom.deltaR_eta(pb.mom()) < effectiveR)"
+        }
+      },
+      {
+        "delta": "0.4 &rarr; effectiveR",
+        "fixed": {
+          "line": 336,
+          "text": "if (jetMom.deltaR_eta(pc.mom()) < 0.4) ///< @todo Hard-coded radius!!!"
+        },
+        "note": "Same reason as the b-tag row.",
+        "stage": "c-tag match",
+        "verdict": "differs",
+        "vr": {
+          "line": 251,
+          "text": "if (jetMom.deltaR_eta(pc.mom()) < effectiveR)"
+        }
+      },
+      {
+        "delta": "0.5 &rarr; effectiveR",
+        "fixed": {
+          "line": 347,
+          "text": "if (jetMom.deltaR_eta(ptau.mom()) < 0.5) ///< @todo Hard-coded radius!!!"
+        },
+        "note": "Same reason again; the fixed path&#8217;s constant here is 0.5.",
+        "stage": "&tau;-tag match",
+        "verdict": "differs",
+        "vr": {
+          "line": 261,
+          "text": "if (jetMom.deltaR_eta(ptau.mom()) < effectiveR)"
+        }
+      },
+      {
+        "delta": "",
+        "fixed": {
+          "line": 358,
+          "text": "if (jetMom.deltaR_eta(pW.mom()) < 1.0) ///< @todo Hard-coded radius from ATLAS-CONF-2021-022, make selectable?"
+        },
+        "note": "Both keep the hard-coded 1.0 boson cone. The VR branch copied the existing behaviour rather than inventing one.",
+        "stage": "W/Z/h match",
+        "verdict": "identical",
+        "vr": {
+          "line": 271,
+          "text": "if (jetMom.deltaR_eta(pW.mom()) < 1.0) ///< @todo Make selectable?"
+        }
+      },
+      {
+        "delta": "",
+        "fixed": {
+          "line": 387,
+          "text": "if (isTau && (jetcollection.key == jetcollection_taus))"
+        },
+        "note": "Absent on the VR side by construction &mdash; a VR collection is refused as <code>jet_collection_taus</code> at parse time, so this branch could never fire.",
+        "stage": "&tau; promoted to particle",
+        "verdict": "one-sided",
+        "vr": null
+      },
+      {
+        "delta": "adds , {15, int(isTau)}",
+        "fixed": {
+          "line": 395,
+          "text": "HEPUtils::Jet::TagCounts tags{{5, int(isB)}, {4, int(isC)}, {23, int(isZ)}, {24, int(isW)}, {25, int(ish)}};"
+        },
+        "note": "VR keeps the &tau; as jet tag 15, because it has no tau-particle promotion step to hand it to.",
+        "stage": "tag map",
+        "verdict": "differs",
+        "vr": {
+          "line": 298,
+          "text": "HEPUtils::Jet::TagCounts tags{{5, int(isB)}, {4, int(isC)}, {15, int(isTau)}, {23, int(isZ)}, {24, int(isW)}, {25, int(ish)}};"
+        }
+      },
+      {
+        "delta": "",
+        "fixed": {
+          "line": 396,
+          "text": "result.add_jet(new HEPUtils::Jet(pj, tags), jetcollection.key);"
+        },
+        "note": "Byte-identical. This is the load-bearing row: downstream code receives the same type under the same key and cannot tell the two apart.",
+        "stage": "emit into event",
+        "verdict": "identical",
+        "vr": {
+          "line": 299,
+          "text": "result.add_jet(new HEPUtils::Jet(pj, tags), jetcollection.key);"
+        }
+      }
+    ],
+    "tally": {
+      "differs": 7,
+      "identical": 3,
+      "one-sided": 1,
+      "same call": 1
+    }
+  },
   "refs": {
     "baseline": "9c955e3a7",
     "head": "65aca0890d"
   },
   "schema": {
+    "base_fields": [
+      {
+        "default": null,
+        "name": "key"
+      },
+      {
+        "default": null,
+        "name": "algorithm"
+      },
+      {
+        "default": null,
+        "name": "R"
+      },
+      {
+        "default": null,
+        "name": "recombination_scheme"
+      },
+      {
+        "default": null,
+        "name": "strategy"
+      }
+    ],
     "fields": [
       {
         "default": null,

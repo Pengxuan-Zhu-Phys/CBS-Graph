@@ -176,6 +176,7 @@ python3 scripts/build-vrjet-page.py \
 
 页面里几个值得注意的点：
 
+- **两条 jet 路径并排对比**（§02）：同一个 collection 循环，12 个阶段逐行对照，判定是算出来的不是写死的——`identical` / `same call` / `differs`。结论：分叉只有一个入口（`L220` 的 `is_vr_algorithm`）和一个出口（`L301` 的 `continue`），原有固定 R 那一支在 token 层面 **336 → 336，99.4% 相同**，唯一的差异是 `L308` 两个实参换序，来自一个**无关的 commit**（修 FastJet 弃用签名）。用 token 而不是行来比，是因为这个文件被 clang-format 扫过，行 diff 会报几百处毫无意义的改动。两支最后落在**逐字节相同**的 `result.add_jet(...)` 上：没有新类型、没有新容器，下游分不出一个 jet 来自哪一支。
 - **依赖只有一个类**：`fastjet::contrib::VariableRPlugin`。它是 FastJet *plugin*，所以链接面必须先长出 `-lfastjetplugins` 和两个 siscone——这就是[构建那一页](#fastjet--fjcontrib-构建集成)必须先发生的原因。
 - **味标定用的是 jet 自己的有效半径** `effectiveR = min(Rmax, max(Rmin, rho/pT))`，不是固定锥。
 - **四处故意跳过 VR**：parton 级转换、LHEF reader（都没有 track 可聚）、BuckFast 的动量涂抹、以及 BuckFast 清除 |η|>2.5 b-tag 的那一遍。最后一条有后果：VR jet 在任意 η 都保留 b-tag，两个流水线分析自己切了 `abseta() < 2.5` 所以没事，但忘了切的分析会继承本该被探测器模型抹掉的 tag。

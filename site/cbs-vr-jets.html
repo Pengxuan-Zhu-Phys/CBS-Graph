@@ -25,7 +25,7 @@
     .backlink span:last-child { flex:1 1 420px; }
     .backlink a { border-bottom:1px solid rgba(235,108,54,.42); color:var(--accent); font-weight:600; text-decoration:none; }
     .backlink a:hover { background:var(--accent-tint); }
-    .summary-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin:22px 0 32px; }
+    .summary-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin:22px 0 32px; }
     .card { background:#fff; border:1px solid var(--rule); border-radius:6px; padding:14px 16px; }
     .card.accent { border-color:rgba(235,108,54,.45); background:var(--accent-tint); }
     .card .n { color:var(--ink); display:block; font-size:26px; font-weight:600; letter-spacing:-.04em; line-height:1; margin-bottom:8px; }
@@ -74,6 +74,12 @@
     .unit-hunks { margin:0; padding:12px 14px; overflow-x:auto; font:11px/1.7 var(--font-mono);
       background:#fff; border:0; color:var(--ink); white-space:pre; }
     .diagram-note { color:var(--muted); font-size:12px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
+    .claim-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:18px; }
+    .claim { background:#fff; border:1px solid var(--rule); border-left:3px solid var(--accent); border-radius:0 6px 6px 0; padding:13px 16px; }
+    .claim-h { color:var(--ink); font-size:13px; font-weight:600; letter-spacing:-.01em; margin:0 0 6px; }
+    .claim p:last-child { font-size:12px; line-height:1.62; margin:0; }
+    .ln { color:var(--soft); font-family:var(--font-mono); font-size:9px; display:block; margin-top:3px; }
+    .delta { color:var(--accent); font-family:var(--font-mono); font-size:10px; }
     .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
     .mapping-table table { min-width:900px; }
     table { border-collapse:collapse; font-size:11px; width:100%; }
@@ -85,7 +91,7 @@
     .status { font-size:9px; font-weight:600; letter-spacing:.04em; }
     .status.added-in-right { color:var(--green); } .status.unchanged { color:#b55c2d; }
     footer { border-top:1px solid var(--rule); color:var(--soft); font-size:10px; margin-top:32px; padding-top:14px; }
-    @media (max-width:900px) { .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } .claim-grid { grid-template-columns:1fr; } }
     @media (max-width:560px) { h1 { font-size:44px; } }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -103,6 +109,7 @@
     <div class="card accent"><span class="n">7</span><span class="label">numbered additions</span></div>
     <div class="card"><span class="n">1337</span><span class="label">lines &#183; new analyses</span></div>
     <div class="card"><span class="n">4</span><span class="label">deliberate opt-outs</span></div>
+    <div class="card accent"><span class="n">99.40%</span><span class="label">fixed-R path unchanged</span></div>
   </div>
   <div class="note">Everything below is read from the worktree when this page is generated: line counts from <code>git diff --numstat</code>, YAML keys from the parser, validation text from the throw sites, opt-outs from the <code>continue</code> statements. No CBS binary was built and no events were processed, so nothing here is a statement about physics results.</div>
 
@@ -177,8 +184,100 @@
     <p class="diagram-note">Every one of these is a modification, not a new file. VR jets were not bolted on beside the existing jet path &mdash; they were threaded through it, which is why the fixed-R behaviour had to keep working at each step.</p>
   </section>
 
+  <section id="parallel">
+    <p class="kicker">02 &#183; the same path, one fork</p>
+    <h2>What a VR jet does that a normal jet doesn&#8217;t</h2>
+    <p class="source">Both kinds of jet are produced by the same loop over the same collection list. Below, each stage of that loop with the fixed-R line beside the VR line, matched by role and quoted from <code>Py8EventConversions.hpp</code>.</p>
+    <div class="diagram-shell">
+      <svg viewBox="0 0 1240 300" role="img" aria-labelledby="fork-title fork-desc">
+<title id="fork-title">Where the variable-R branch opens and closes</title>
+<desc id="fork-desc">A single jet-collection loop at lines 218 to 398. One test at line 220 opens the variable-R branch; a continue at line 301 closes it. Both branches end at the same add_jet call, so everything downstream sees one kind of object.</desc>
+<defs><marker id="fk-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4f5d75"/></marker></defs>
+<g class="node detail-data"><rect x="20" y="104" width="190" height="84" rx="8"/>
+<text class="kind" x="33" y="125">SHARED</text>
+<text class="title" x="33" y="145" style="font-size:11px">jetparticles</text>
+<text class="body" x="33" y="162">one constituent list, L213</text>
+</g>
+<g class="node detail-primary"><rect x="232" y="104" width="190" height="84" rx="8"/>
+<text class="kind" x="245" y="125">SHARED</text>
+<text class="title" x="245" y="145" style="font-size:11px">for (jetcollection</text>
+<text class="body" x="245" y="162">L218–398, one loop</text>
+</g>
+<g class="node detail-focal"><rect x="444" y="104" width="150" height="84" rx="8"/>
+<text class="kind" x="457" y="125">FORK</text>
+<text class="title" x="457" y="145" style="font-size:11px">is_vr_algorithm</text>
+<text class="body" x="457" y="162">L220, the only test</text>
+</g>
+<g class="node detail-focal"><rect x="620" y="28" width="300" height="84" rx="8"/>
+<text class="kind" x="633" y="49">VR LANE</text>
+<text class="title" x="633" y="69" style="font-size:11px">VariableRPlugin</text>
+<text class="body" x="633" y="86">L220–301, 82 lines, ends in</text>
+<text class="body" x="633" y="99">continue</text>
+</g>
+<g class="node detail-primary"><rect x="620" y="180" width="300" height="84" rx="8"/>
+<text class="kind" x="633" y="201">FIXED-R LANE</text>
+<text class="title" x="633" y="221" style="font-size:11px">JetDefinition(alg, R, ...)</text>
+<text class="body" x="633" y="238">L304–396, unchanged from</text>
+<text class="body" x="633" y="251">baseline</text>
+</g>
+<g class="node detail-data"><rect x="946" y="104" width="274" height="84" rx="8"/>
+<text class="kind" x="959" y="125">REJOIN</text>
+<text class="title" x="959" y="145" style="font-size:11px">result.add_jet(...)</text>
+<text class="body" x="959" y="162">same type, same key, both</text>
+<text class="body" x="959" y="175">lanes</text>
+</g>
+<path class="detail-edge" d="M210 146 H227" marker-end="url(#fk-arrow)"/>
+<path class="detail-edge" d="M422 146 H439" marker-end="url(#fk-arrow)"/>
+<path class="detail-edge" d="M594 146 H606 V70 H615" marker-end="url(#fk-arrow)"/>
+<path class="detail-edge" d="M594 146 H606 V222 H615" marker-end="url(#fk-arrow)"/>
+<path class="detail-edge" d="M920 70 H933 V146 H941" marker-end="url(#fk-arrow)"/>
+<path class="detail-edge" d="M920 222 H933 V146 H941" marker-end="url(#fk-arrow)"/>
+<rect class="zone" x="20" y="196" width="580" height="62" rx="7"/>
+<text class="zone-label" x="38" y="218">FIXED-R LANE vs BASELINE</text>
+<text class="body" x="38" y="238" fill="#4f5d75">336 tokens then, 336 now, 99.40% in common &#8212; the VR work did not edit it</text>
+<text class="legend-label" x="20" y="286">the fork opens once and closes once; nothing before it and nothing after it knows which lane a jet came from</text>
+</svg>
+    </div>
+    <div class="mapping-table" style="margin-top:16px"><table>
+      <thead><tr><th style="width:11%">Stage</th><th style="width:29%">Fixed-R lane</th><th style="width:29%">Variable-R lane</th><th style="width:8%">Verdict</th><th>What the difference is</th></tr></thead>
+      <tbody><tr><td><strong>settings read</strong></td><td><code>FJNS::JetAlgorithm jet_algorithm = FJalgorithm_map(jetcollection.algorithm);</code><span class="ln">L304</span></td><td><code>const double rho = jetcollection.rho;</code><span class="ln">L222</span></td><td><span class="status unchanged">differs</span></td><td>Different fields of the same struct. No second settings type was introduced.</td></tr>
+<tr><td><strong>jet definition</strong></td><td><code>const FJNS::JetDefinition jet_def(jet_algorithm, jetcollection.R, jet_recomscheme, jet_strategy);</code><span class="ln">L308</span></td><td><code>fastjet::JetDefinition vr_jet_def(vr_plugin);</code><span class="ln">L228</span></td><td><span class="status unchanged">differs</span></td><td>The one genuinely new construction: a plugin-backed definition instead of an (algorithm, R, scheme, strategy) one. VR has no single R to pass.</td></tr>
+<tr><td><strong>cluster sequence</strong></td><td><code>std::shared_ptr&lt;const FJNS::ClusterSequence&gt; CSeqBasePtr = result.emplace_clusterseq(jetparticles, jet_def, jetcollection.key);</code><span class="ln">L312</span></td><td><code>std::shared_ptr&lt;const FJNS::ClusterSequence&gt; CSeqBasePtr = result.emplace_clusterseq(jetparticles, vr_jet_def, jetcollection.key);</code><span class="ln">L230</span></td><td><span class="status added-in-right">same call</span></td><td><span class="delta">jet_def &rarr; vr_jet_def</span> &#183; Same storage call, same key, same ownership transfer to the event.</td></tr>
+<tr><td><strong>jet list / p<sub>T</sub> floor</strong></td><td><code>std::vector&lt;FJNS::PseudoJet&gt; pjets = sorted_by_pt(CSeqBasePtr-&gt;inclusive_jets(jet_pt_min));</code><span class="ln">L314</span></td><td><code>std::vector&lt;fastjet::PseudoJet&gt; pjets = fastjet::sorted_by_pt(CSeqBasePtr-&gt;inclusive_jets(pt_min_vr));</code><span class="ln">L231</span></td><td><span class="status unchanged">differs</span></td><td><span class="delta">FJNS::PseudoJet &rarr; fastjet::PseudoJet; sorted_by_pt &rarr; fastjet::sorted_by_pt; jet_pt_min &rarr; pt_min_vr</span> &#183; VR reads a per-collection <code>pt_min</code> where the fixed path takes the global one; it also names <code>fastjet</code> directly, since a VR collection cannot exist in an fjcore build.</td></tr>
+<tr><td><strong>per-jet momentum</strong></td><td><code>HEPUtils::P4 jetMom = HEPUtils::mk_p4(pj);</code><span class="ln">L321</span></td><td><code>HEPUtils::P4 jetMom = HEPUtils::mk_p4(pj);</code><span class="ln">L235</span></td><td><span class="status added-in-right">identical</span></td><td>Byte-identical.</td></tr>
+<tr><td><strong>b-tag match</strong></td><td><code>if (jetMom.deltaR_eta(pb.mom()) &lt; 0.4)</code><span class="ln">L326</span></td><td><code>if (jetMom.deltaR_eta(pb.mom()) &lt; effectiveR)</code><span class="ln">L241</span></td><td><span class="status unchanged">differs</span></td><td><span class="delta">0.4 &rarr; effectiveR</span> &#183; Physics, not architecture: the fixed path matches inside a hard-coded 0.4 regardless of the collection&#8217;s own R; VR matches inside the radius that produced the jet.</td></tr>
+<tr><td><strong>c-tag match</strong></td><td><code>if (jetMom.deltaR_eta(pc.mom()) &lt; 0.4)</code><span class="ln">L336</span></td><td><code>if (jetMom.deltaR_eta(pc.mom()) &lt; effectiveR)</code><span class="ln">L251</span></td><td><span class="status unchanged">differs</span></td><td><span class="delta">0.4 &rarr; effectiveR</span> &#183; Same reason as the b-tag row.</td></tr>
+<tr><td><strong>&tau;-tag match</strong></td><td><code>if (jetMom.deltaR_eta(ptau.mom()) &lt; 0.5)</code><span class="ln">L347</span></td><td><code>if (jetMom.deltaR_eta(ptau.mom()) &lt; effectiveR)</code><span class="ln">L261</span></td><td><span class="status unchanged">differs</span></td><td><span class="delta">0.5 &rarr; effectiveR</span> &#183; Same reason again; the fixed path&#8217;s constant here is 0.5.</td></tr>
+<tr><td><strong>W/Z/h match</strong></td><td><code>if (jetMom.deltaR_eta(pW.mom()) &lt; 1.0)</code><span class="ln">L358</span></td><td><code>if (jetMom.deltaR_eta(pW.mom()) &lt; 1.0)</code><span class="ln">L271</span></td><td><span class="status added-in-right">identical</span></td><td>Both keep the hard-coded 1.0 boson cone. The VR branch copied the existing behaviour rather than inventing one.</td></tr>
+<tr><td><strong>&tau; promoted to particle</strong></td><td><code>if (isTau &amp;&amp; (jetcollection.key == jetcollection_taus))</code><span class="ln">L387</span></td><td><span class="status">&#8212; absent</span></td><td><span class="status unchanged">one-sided</span></td><td>Absent on the VR side by construction &mdash; a VR collection is refused as <code>jet_collection_taus</code> at parse time, so this branch could never fire.</td></tr>
+<tr><td><strong>tag map</strong></td><td><code>HEPUtils::Jet::TagCounts tags{{5, int(isB)}, {4, int(isC)}, {23, int(isZ)}, {24, int(isW)}, {25, int(ish)}};</code><span class="ln">L395</span></td><td><code>HEPUtils::Jet::TagCounts tags{{5, int(isB)}, {4, int(isC)}, {15, int(isTau)}, {23, int(isZ)}, {24, int(isW)}, {25, int(ish)}};</code><span class="ln">L298</span></td><td><span class="status unchanged">differs</span></td><td><span class="delta">adds , {15, int(isTau)}</span> &#183; VR keeps the &tau; as jet tag 15, because it has no tau-particle promotion step to hand it to.</td></tr>
+<tr><td><strong>emit into event</strong></td><td><code>result.add_jet(new HEPUtils::Jet(pj, tags), jetcollection.key);</code><span class="ln">L396</span></td><td><code>result.add_jet(new HEPUtils::Jet(pj, tags), jetcollection.key);</code><span class="ln">L299</span></td><td><span class="status added-in-right">identical</span></td><td>Byte-identical. This is the load-bearing row: downstream code receives the same type under the same key and cannot tell the two apart.</td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">Verdicts are computed, not asserted: <em>identical</em> means the two lines agree once trailing comments are dropped; <em>same call</em> means they agree after the VR-local name <code>vr_jet_def</code> is read as <code>jet_def</code>; <em>differs</em> shows the word-level delta. Of 12 stages, 4 come out the same and 7 differ; 1 exists on the fixed-R side only.</p>
+
+    <div class="claim-grid">
+      <div class="claim">
+        <p class="claim-h">The existing lane was not edited</p>
+        <p>The fixed-R body is <strong>336 tokens</strong> at the baseline and <strong>336 now</strong>, agreeing to <strong>99.40%</strong>. The whole of the difference sits on one line, <code>L308</code>: <code>const FJNS::JetDefinition jet_def(jet_algorithm, jetcollection.R, jet_strategy, jet_recomscheme);</code> became <code>const FJNS::JetDefinition jet_def(jet_algorithm, jetcollection.R, jet_recomscheme, jet_strategy);</code> &mdash; a two-argument reorder that arrived in <code>bb641a5d1e</code>, an unrelated commit that fixed a deprecated FastJet call signature. Comparing tokens rather than lines is deliberate: a clang-format pass swept this file, so a line diff would report hundreds of changes that say nothing.</p>
+      </div>
+      <div class="claim">
+        <p class="claim-h">One entry, one exit</p>
+        <p>The branch opens at <code>L220</code> and closes at <code>L301</code> with a <code>continue</code>. There is no VR test anywhere else in the function, no VR flag threaded through a helper, and no second loop. Delete those 82 lines and the function is the baseline function again.</p>
+      </div>
+      <div class="claim">
+        <p class="claim-h">No new type</p>
+        <p>VR added 4 fields to the existing <code>jet_collection_settings</code> rather than a new struct, a variant or a subclass. The pre-existing fields gained defaults at the same time &mdash; that is what lets one struct serve both lanes, since a VR collection never sets <code>R</code>, <code>recombination_scheme</code> or <code>strategy</code>.</p>
+      </div>
+      <div class="claim">
+        <p class="claim-h">The output is the same object</p>
+        <p>Both lanes end on a byte-identical <code>result.add_jet(new HEPUtils::Jet(pj, tags), jetcollection.key)</code>. There is no <code>VRJet</code> type and no separate container. An analysis calling <code>event-&gt;jets(key)</code> gets <code>HEPUtils::Jet</code> either way and cannot tell which lane produced it.</p>
+      </div>
+    </div>
+    <p class="diagram-note">The differing rows are worth reading for <em>why</em> they differ. Four of them are the flavour-tagging radii, and they differ for a physics reason rather than a structural one: the fixed-R lane matches b and c inside a hard-coded 0.4 and &tau; inside 0.5 &mdash; constants that ignore the collection&#8217;s own R, and that carry <code>@todo Hard-coded radius!!!</code> in the source &mdash; while the VR lane matches inside <code>effectiveR</code>, the radius that actually produced the jet. A single cone cannot serve a 20 GeV and a 500 GeV VR jet; using one would mistag them in opposite directions.</p>
+  </section>
+
   <section>
-    <p class="kicker">02 &#183; the dependency</p>
+    <p class="kicker">03 &#183; the dependency</p>
     <h2>What it rests on</h2>
     <p class="source">One class, and everything that class drags in.</p>
     <div class="mapping-table"><table>
@@ -198,7 +297,7 @@
   </section>
 
   <section>
-    <p class="kicker">03 &#183; what was filled in</p>
+    <p class="kicker">04 &#183; what was filled in</p>
     <h2>Seven additions, stage by stage</h2>
     <p class="source">One card per stage, with the reason it was needed and the source it produced.</p>
     <div class="unit-list">
@@ -340,7 +439,7 @@ lhef2heputils.cpp:111
   </section>
 
   <section>
-    <p class="kicker">04 &#183; the contract</p>
+    <p class="kicker">05 &#183; the contract</p>
     <h2>What a YAML collection may say</h2>
     <p class="source">The settings struct, extracted field by field. Which keys are read depends on the <code>algorithm</code> string.</p>
     <div class="mapping-table"><table>
@@ -356,7 +455,7 @@ lhef2heputils.cpp:111
   </section>
 
   <section>
-    <p class="kicker">05 &#183; the boundaries</p>
+    <p class="kicker">06 &#183; the boundaries</p>
     <h2>Where VR jets deliberately do nothing</h2>
     <p class="source">Four sites skip VR collections on purpose. Each is a physics decision written as a <code>continue</code>.</p>
     <div class="mapping-table"><table>
@@ -367,7 +466,7 @@ lhef2heputils.cpp:111
   </section>
 
   <section>
-    <p class="kicker">06 &#183; the consumers</p>
+    <p class="kicker">07 &#183; the consumers</p>
     <h2>Three analyses, two ways of asking</h2>
     <p class="source">All three are new on this branch. Two take the collection the pipeline built; one builds its own.</p>
     <div class="mapping-table"><table>
@@ -379,7 +478,7 @@ lhef2heputils.cpp:111
   </section>
 
   <section>
-    <p class="kicker">07 &#183; boundary</p>
+    <p class="kicker">08 &#183; boundary</p>
     <h2>What this page does not claim</h2>
     <p class="source">The usual limits, stated rather than implied.</p>
     <div class="note">This page describes code paths, not results. No CBS binary was built for it and no events were clustered. It does not show that the VR jets produced here match ATLAS's, that the effective-radius flavour matching reproduces the published tagging efficiencies, or that the b-tag working points used in the analyses are right. Those are validation questions and need a run with real events on both sides, which is a separate exercise.</div>

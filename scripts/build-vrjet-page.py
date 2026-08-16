@@ -73,6 +73,258 @@ def quote(lines: list[str], lo: int, hi: int) -> str:
     return "\n".join(f"{n:>5}  {lines[n - 1]}" for n in range(lo, hi + 1))
 
 
+def maybe(lines: list[str], pattern: str, lo: int, hi: int) -> int | None:
+    rx = re.compile(pattern)
+    for i in range(lo, min(hi, len(lines))):
+        if rx.search(lines[i]):
+            return i
+    return None
+
+
+# --------------------------------------------------------------------------
+# fixed-R vs variable-R: the same loop body, compared stage by stage
+# --------------------------------------------------------------------------
+
+# One row per stage of the jet loop.  Each side is located by its own pattern
+# inside its own branch, so the two are matched by *role*, not by line offset.
+PATH_STAGES = [
+    ("settings read", None,
+     r"const double rho = jetcollection\.rho",
+     r"FJNS::JetAlgorithm jet_algorithm = FJalgorithm_map",
+     "Different fields of the same struct. No second settings type was introduced."),
+    ("jet definition", None,
+     r"JetDefinition vr_jet_def\(vr_plugin\)",
+     r"JetDefinition jet_def\(jet_algorithm",
+     "The one genuinely new construction: a plugin-backed definition instead of "
+     "an (algorithm, R, scheme, strategy) one. VR has no single R to pass."),
+    ("cluster sequence", None,
+     r"emplace_clusterseq\(jetparticles, vr_jet_def",
+     r"emplace_clusterseq\(jetparticles, jet_def",
+     "Same storage call, same key, same ownership transfer to the event."),
+    ("jet list / p<sub>T</sub> floor", None,
+     r"sorted_by_pt\(CSeqBasePtr->inclusive_jets",
+     r"sorted_by_pt\(CSeqBasePtr->inclusive_jets",
+     "VR reads a per-collection <code>pt_min</code> where the fixed path takes the "
+     "global one; it also names <code>fastjet</code> directly, since a VR collection "
+     "cannot exist in an fjcore build."),
+    ("per-jet momentum", None,
+     r"HEPUtils::P4 jetMom = HEPUtils::mk_p4\(pj\)",
+     r"HEPUtils::P4 jetMom = HEPUtils::mk_p4\(pj\)",
+     "Byte-identical."),
+    ("b-tag match", None,
+     r"deltaR_eta\(pb\.mom\(\)\)",
+     r"deltaR_eta\(pb\.mom\(\)\)",
+     "Physics, not architecture: the fixed path matches inside a hard-coded 0.4 "
+     "regardless of the collection&#8217;s own R; VR matches inside the radius that "
+     "produced the jet."),
+    ("c-tag match", None,
+     r"deltaR_eta\(pc\.mom\(\)\)",
+     r"deltaR_eta\(pc\.mom\(\)\)",
+     "Same reason as the b-tag row."),
+    ("&tau;-tag match", None,
+     r"deltaR_eta\(ptau\.mom\(\)\)",
+     r"deltaR_eta\(ptau\.mom\(\)\)",
+     "Same reason again; the fixed path&#8217;s constant here is 0.5."),
+    ("W/Z/h match", None,
+     r"deltaR_eta\(pW\.mom\(\)\)",
+     r"deltaR_eta\(pW\.mom\(\)\)",
+     "Both keep the hard-coded 1.0 boson cone. The VR branch copied the existing "
+     "behaviour rather than inventing one."),
+    ("&tau; promoted to particle", None,
+     None,
+     r"if \(isTau && \(jetcollection\.key == jetcollection_taus\)\)",
+     "Absent on the VR side by construction &mdash; a VR collection is refused as "
+     "<code>jet_collection_taus</code> at parse time, so this branch could never fire."),
+    ("tag map", None,
+     r"HEPUtils::Jet::TagCounts tags",
+     r"HEPUtils::Jet::TagCounts tags",
+     "VR keeps the &tau; as jet tag 15, because it has no tau-particle promotion "
+     "step to hand it to."),
+    ("emit into event", None,
+     r"result\.add_jet",
+     r"result\.add_jet",
+     "Byte-identical. This is the load-bearing row: downstream code receives the "
+     "same type under the same key and cannot tell the two apart."),
+]
+
+# Local names that carry the same role on each side.  Applied only for the
+# second-tier verdict, and listed on the page so the aliasing is visible.
+PATH_ALIASES = {"vr_jet_def": "jet_def"}
+
+
+def strip_comment(text: str) -> str:
+    """Drop // comments and collapse whitespace, over one line or many."""
+    return re.sub(r"\s+", " ", re.sub(r"//[^\n]*", "", text)).strip()
+
+
+def alias(text: str) -> str:
+    out = strip_comment(text)
+    for name, role in PATH_ALIASES.items():
+        out = re.sub(rf"\b{name}\b", role, out)
+    return out
+
+
+TOKEN_RE = re.compile(r"\{[^{}]*\}|[A-Za-z_]\w*(?:::\w+)*|\d+\.?\d*|\S")
+
+
+def raw_tokens(text: str) -> list[str]:
+    """Source tokens, with braced initialiser groups and qualified names kept whole.
+
+    Grouping matters for readability of the deltas: an added tag entry should
+    read as `{15, int(isTau)}`, not as eight punctuation tokens that difflib
+    aligns against the wrong braces.
+    """
+    return TOKEN_RE.findall(strip_comment(text))
+
+
+def tokens(text: str) -> list[str]:
+    """Tokens with all internal spacing removed, for comparison.
+
+    A grouped token carries its own whitespace, so `{5, int(isB)}` and
+    `{5,int(isB)}` would otherwise register as a difference -- which is exactly
+    the reformatting noise this comparison exists to ignore.
+    """
+    return [re.sub(r"\s+", "", token) for token in raw_tokens(text)]
+
+
+# Below this token similarity the two lines are not variants of each other but
+# different statements doing the same job, and a word-level delta reads as noise.
+DELTA_FLOOR = 0.6
+
+
+def token_delta(left: str, right: str) -> str:
+    """Word-level difference between two source lines, VR side first.
+
+    Returns "" when the lines are too dissimilar for a delta to mean anything;
+    the prose note carries those rows instead.
+    """
+    import difflib
+    a, b = tokens(right), tokens(left)      # a = fixed-R, b = VR
+    a_raw, b_raw = raw_tokens(right), raw_tokens(left)
+    matcher = difflib.SequenceMatcher(None, a, b, autojunk=False)
+    if matcher.ratio() < DELTA_FLOOR:
+        return ""
+    parts = []
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag == "equal":
+            continue
+        gone, came = " ".join(a_raw[i1:i2]), " ".join(b_raw[j1:j2])
+        if tag == "replace":
+            parts.append(f"{gone} &rarr; {came}")
+        elif tag == "delete":
+            parts.append(f"drops {gone}")
+        else:
+            parts.append(f"adds {came}")
+    return "; ".join(parts)
+
+
+def compare_paths(gambit: Path, baseline: str, conv: list[str]) -> dict:
+    """Locate both branches of the jet loop and compare them stage by stage."""
+    loop = find(conv, r"for \(jet_collection_settings jetcollection")
+    vr_lo = find(conv, r"if \(is_vr_algorithm\(jetcollection\.algorithm\)\)", loop)
+    vr_hi = find(conv, r"^\s*continue;\s*$", vr_lo)
+    fixed_lo = find(conv, r"FJNS::JetAlgorithm jet_algorithm", vr_hi)
+    fixed_hi = find(conv, r"result\.add_jet", fixed_lo)
+
+    depth, i = 0, loop
+    while True:
+        depth += conv[i].count("{") - conv[i].count("}")
+        if i > loop and depth == 0:
+            break
+        i += 1
+    loop_hi = i
+
+    rows, tally = [], {"identical": 0, "same call": 0, "differs": 0, "one-sided": 0}
+    for label, _kind, vr_pat, fixed_pat, note in PATH_STAGES:
+        v = maybe(conv, vr_pat, vr_lo, vr_hi + 1) if vr_pat else None
+        x = maybe(conv, fixed_pat, fixed_lo, fixed_hi + 1) if fixed_pat else None
+        vr_text = conv[v].strip() if v is not None else None
+        fixed_text = conv[x].strip() if x is not None else None
+        if (vr_pat and v is None) or (fixed_pat and x is None):
+            raise SystemExit(f"stage {label!r}: pattern did not match inside its branch")
+
+        if vr_text is None or fixed_text is None:
+            verdict, delta = "one-sided", ""
+        elif strip_comment(vr_text) == strip_comment(fixed_text):
+            verdict, delta = "identical", ""
+        elif alias(vr_text) == alias(fixed_text):
+            verdict, delta = "same call", token_delta(vr_text, fixed_text)
+        else:
+            verdict, delta = "differs", token_delta(vr_text, fixed_text)
+        tally[verdict] += 1
+        rows.append({
+            "stage": label,
+            "vr": {"line": v + 1, "text": vr_text} if v is not None else None,
+            "fixed": {"line": x + 1, "text": fixed_text} if x is not None else None,
+            "verdict": verdict,
+            "delta": delta,
+            "note": note,
+        })
+
+    # Does the pre-existing fixed-R body still say what it said at the baseline?
+    # Compared as a token stream, so the clang-format reflow that swept this file
+    # does not register as change.
+    base = git(gambit, "show", f"{baseline}:{CONVERSIONS}").splitlines()
+    b_lo = find(base, r"FJalgorithm_map")
+    b_hi = find(base, r"result\.add_jet", b_lo)
+    head_toks = tokens("\n".join(conv[fixed_lo:fixed_hi + 1]))
+    base_toks = tokens("\n".join(base[b_lo:b_hi + 1]))
+
+    import difflib
+    matcher = difflib.SequenceMatcher(None, base_toks, head_toks, autojunk=False)
+    drift = []
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag != "equal":
+            drift.append({
+                "kind": tag,
+                "was": " ".join(base_toks[i1:i2]),
+                "now": " ".join(head_toks[j1:j2]),
+            })
+    # Name the drift by quoting the one line it lands on, on both sides.
+    jd_head = fixed_lo + find(conv[fixed_lo:fixed_hi + 1], r"JetDefinition jet_def")
+    jd_base = b_lo + find(base[b_lo:b_hi + 1], r"JetDefinition jet_def")
+    moved = {
+        "was": strip_comment(base[jd_base]),
+        "now": strip_comment(conv[jd_head]),
+        "line": jd_head + 1,
+    }
+    blame = git(gambit, "log", "--format=%h %s", "-1",
+                f"-L{jd_head + 1},{jd_head + 1}:{CONVERSIONS}")
+    culprit = blame.splitlines()[0] if blame.strip() else ""
+
+    return {
+        "spans": {
+            "loop": [loop + 1, loop_hi + 1],
+            "vr": [vr_lo + 1, vr_hi + 1],
+            "fixed": [fixed_lo + 1, fixed_hi + 1],
+        },
+        "entry": {"line": vr_lo + 1, "text": conv[vr_lo].strip()},
+        "exit": {"line": vr_hi + 1, "text": conv[vr_hi].strip()},
+        "stages": rows,
+        "tally": tally,
+        "regression": {
+            "base_tokens": len(base_toks),
+            "head_tokens": len(head_toks),
+            "shared": int(round(matcher.ratio() * (len(base_toks) + len(head_toks)) / 2)),
+            "ratio": round(matcher.ratio(), 4),
+            "drift": drift,
+            "moved": moved,
+            "commit": culprit,
+        },
+        "shared": {
+            "constituents": {
+                "line": find(conv, r"jetparticles\.push_back\(get_unified_pseudojet\(p\)\)") + 1,
+                "text": conv[find(conv, r"jetparticles\.push_back\(get_unified_pseudojet\(p\)\)")].strip(),
+            },
+            "loop": {"line": loop + 1, "text": conv[loop].strip()},
+            "met": {
+                "line": find(conv, r"result\.set_missingmom\(pout\)") + 1,
+                "text": conv[find(conv, r"result\.set_missingmom\(pout\)")].strip(),
+            },
+        },
+    }
+
+
 # --------------------------------------------------------------------------
 # extraction
 # --------------------------------------------------------------------------
@@ -112,6 +364,16 @@ def collect(gambit: Path, baseline: str) -> dict:
                 "line": i + 1,
             })
 
+    # The same struct at the baseline: did VR add a type, or extend one?
+    base_utils = git(gambit, "show", f"{baseline}:{UTILS}").splitlines()
+    b_struct_lo = find(base_utils, r"struct jet_collection_settings")
+    b_struct_hi = find(base_utils, r"^\s*\};", b_struct_lo)
+    base_fields = []
+    for i in range(b_struct_lo + 2, b_struct_hi):
+        match = re.match(r"\s*([\w:<>]+)\s+(\w+)\s*(?:=\s*(.+?))?\s*;", base_utils[i])
+        if match:
+            base_fields.append({"name": match.group(2), "default": match.group(3)})
+
     parse_lo = find(utils, r"read_jet_collection_settings_from_options")
     parse_hi = find(utils, r"^\s*\}\s*$", find(utils, r"return parsed;", parse_lo))
     vr_branch_lo = find(utils, r"if \(is_vr_algorithm\(algorithm\)\)", parse_lo)
@@ -144,6 +406,9 @@ def collect(gambit: Path, baseline: str) -> dict:
     tag_line = find(conv, r"HEPUtils::Jet::TagCounts tags")
     add_jet = find(conv, r"result\.add_jet", tag_line)
     emplace = find(conv, r"emplace_clusterseq\(jetparticles, vr_jet_def")
+
+    # ---- fixed-R vs VR, stage by stage -------------------------------------
+    parallel = compare_paths(gambit, baseline, conv)
 
     # ---- the opt-outs ------------------------------------------------------
     skips = []
@@ -207,11 +472,13 @@ def collect(gambit: Path, baseline: str) -> dict:
         "status": status,
         "schema": {
             "fields": fields,
+            "base_fields": base_fields,
             "struct_lines": [struct_lo + 1, struct_hi + 1],
             "vr_keys": vr_keys,
             "fixed_keys": fixed_keys,
             "validations": validations,
         },
+        "parallel": parallel,
         "clustering": {
             "plugin": {"line": plugin_line + 1, "text": conv[plugin_line].strip()},
             "branch": {"line": cluster_lo + 1, "text": conv[cluster_lo].strip()},
@@ -418,6 +685,118 @@ def pipeline_svg(data: dict) -> str:
     return "\n".join(out)
 
 
+def fork_svg(data: dict) -> str:
+    """One loop, one fork, one rejoin -- drawn from the extracted line spans."""
+    par = data["parallel"]
+    loop_lo, loop_hi = par["spans"]["loop"]
+    vr_lo, vr_hi = par["spans"]["vr"]
+    fx_lo, fx_hi = par["spans"]["fixed"]
+    width, height = 1240, 300
+
+    out = [
+        f'<svg viewBox="0 0 {width} {height}" role="img" aria-labelledby="fork-title fork-desc">',
+        '<title id="fork-title">Where the variable-R branch opens and closes</title>',
+        f'<desc id="fork-desc">A single jet-collection loop at lines {loop_lo} to {loop_hi}. '
+        f'One test at line {vr_lo} opens the variable-R branch; a continue at line {vr_hi} '
+        'closes it. Both branches end at the same add_jet call, so everything downstream '
+        'sees one kind of object.</desc>',
+        '<defs><marker id="fk-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
+        'markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4f5d75"/></marker></defs>',
+    ]
+
+    def box(x, y, w, h, cls, kind, title, sub):
+        out.append(f'<g class="node {cls}"><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8"/>')
+        out.append(f'<text class="kind" x="{x + 13}" y="{y + 21}">{esc(kind)}</text>')
+        out.append(f'<text class="title" x="{x + 13}" y="{y + 41}" style="font-size:11px">{esc(title)}</text>')
+        for i, chunk in enumerate(wrap(sub, 30)):
+            out.append(f'<text class="body" x="{x + 13}" y="{y + 58 + i * 13}">{esc(chunk)}</text>')
+        out.append("</g>")
+
+    # shared prologue
+    box(20, 104, 190, 84, "detail-data", "SHARED",
+        "jetparticles", f'one constituent list, L{par["shared"]["constituents"]["line"]}')
+    box(232, 104, 190, 84, "detail-primary", "SHARED",
+        "for (jetcollection", f'L{loop_lo}–{loop_hi}, one loop')
+
+    # the fork test
+    box(444, 104, 150, 84, "detail-focal", "FORK",
+        "is_vr_algorithm", f'L{vr_lo}, the only test')
+
+    # two lanes
+    box(620, 28, 300, 84, "detail-focal", "VR LANE",
+        "VariableRPlugin", f'L{vr_lo}–{vr_hi}, {vr_hi - vr_lo + 1} lines, ends in continue')
+    box(620, 180, 300, 84, "detail-primary", "FIXED-R LANE",
+        "JetDefinition(alg, R, ...)", f'L{fx_lo}–{fx_hi}, unchanged from baseline')
+
+    # rejoin
+    box(946, 104, 274, 84, "detail-data", "REJOIN",
+        "result.add_jet(...)", "same type, same key, both lanes")
+
+    edges = [
+        "M210 146 H227",
+        "M422 146 H439",
+        "M594 146 H606 V70 H615",
+        "M594 146 H606 V222 H615",
+        "M920 70 H933 V146 H941",
+        "M920 222 H933 V146 H941",
+    ]
+    for d in edges:
+        out.append(f'<path class="detail-edge" d="{d}" marker-end="url(#fk-arrow)"/>')
+
+    reg = par["regression"]
+    out.append(f'<rect class="zone" x="20" y="196" width="580" height="62" rx="7"/>')
+    out.append('<text class="zone-label" x="38" y="218">FIXED-R LANE vs BASELINE</text>')
+    out.append(f'<text class="body" x="38" y="238" fill="#4f5d75">'
+               f'{reg["base_tokens"]} tokens then, {reg["head_tokens"]} now, '
+               f'{reg["ratio"] * 100:.2f}% in common &#8212; the VR work did not edit it</text>')
+    out.append('<text class="legend-label" x="20" y="286">'
+               'the fork opens once and closes once; nothing before it and nothing after it '
+               'knows which lane a jet came from</text>')
+    out.append("</svg>")
+    return "\n".join(out)
+
+
+VERDICT_CLASS = {
+    "identical": "added-in-right",
+    "same call": "added-in-right",
+    "differs": "unchanged",
+    "one-sided": "unchanged",
+}
+
+
+def stage_rows(data: dict) -> str:
+    rows = []
+    for stage in data["parallel"]["stages"]:
+        fixed = stage["fixed"]
+        vr = stage["vr"]
+
+        def cell(side):
+            if side is None:
+                return '<td><span class="status">&#8212; absent</span></td>'
+            return (f'<td><code>{esc(strip_comment(side["text"]))}</code>'
+                    f'<span class="ln">L{side["line"]}</span></td>')
+
+        detail = stage["note"]
+        if stage["delta"]:
+            detail = f'<span class="delta">{stage["delta"]}</span> &#183; {detail}'
+        rows.append(
+            f'<tr><td><strong>{stage["stage"]}</strong></td>'
+            f'{cell(fixed)}{cell(vr)}'
+            f'<td><span class="status {VERDICT_CLASS[stage["verdict"]]}">'
+            f'{esc(stage["verdict"])}</span></td>'
+            f'<td>{detail}</td></tr>'
+        )
+    return "\n".join(rows)
+
+
+def tally_sentence(data: dict) -> str:
+    t = data["parallel"]["tally"]
+    total = sum(t.values())
+    same = t["identical"] + t["same call"]
+    return (f'Of {total} stages, {same} come out the same and {t["differs"]} differ; '
+            f'{t["one-sided"]} exists on the fixed-R side only.')
+
+
 def wrap(text: str, width: int) -> list[str]:
     words, rows, current = text.split(), [], ""
     for word in words:
@@ -576,6 +955,8 @@ def render_markdown(data: dict, units: list[dict]) -> str:
     total_add = sum(data["numstat"].get(p, {}).get("added", 0) for p in PIPELINE)
     total_del = sum(data["numstat"].get(p, {}).get("removed", 0) for p in PIPELINE)
     analysis_add = sum(a["added"] for a in data["analyses"])
+    par = data["parallel"]
+    reg = par["regression"]
     lines = [
         "# Variable-R jets in ColliderBit",
         "",
@@ -586,6 +967,38 @@ def render_markdown(data: dict, units: list[dict]) -> str:
         "`fastjet::contrib::VariableRPlugin`, a FastJet *plugin* from fjcontrib. That is why",
         "the build had to link `fastjetplugins`, `siscone` and `siscone_spherical` before any",
         "of this could compile.",
+        "",
+        "## Fixed-R vs variable-R, stage by stage",
+        "",
+        f'One loop over the collection list (`Py8EventConversions.hpp` L{par["spans"]["loop"][0]}'
+        f'-{par["spans"]["loop"][1]}). One test at L{par["entry"]["line"]} opens the VR branch;'
+        f' a `continue` at L{par["exit"]["line"]} closes it.',
+        "",
+        "| Stage | Fixed-R | Variable-R | Verdict |",
+        "|---|---|---|---|",
+    ]
+    for stage in par["stages"]:
+        label = re.sub(r"<[^>]+>", "", stage["stage"]).replace("&tau;", "tau")
+        fx = f'L{stage["fixed"]["line"]}' if stage["fixed"] else "absent"
+        vr = f'L{stage["vr"]["line"]}' if stage["vr"] else "absent"
+        lines.append(f'| {label} | {fx} | {vr} | {stage["verdict"]} |')
+    lines += [
+        "",
+        f'Of {sum(par["tally"].values())} stages, '
+        f'{par["tally"]["identical"] + par["tally"]["same call"]} agree and '
+        f'{par["tally"]["differs"]} differ. Four of the differing rows are the flavour-tagging',
+        "radii, which differ because a VR jet has no single radius to match against.",
+        "",
+        "The pre-existing fixed-R body is unchanged by this work: "
+        f'{reg["base_tokens"]} tokens at the baseline, {reg["head_tokens"]} now, '
+        f'{reg["ratio"] * 100:.2f}% in common.',
+        f'The only drift is on L{reg["moved"]["line"]}, a two-argument reorder from '
+        f'`{reg["commit"].split()[0]}` (a separate commit that fixed a deprecated FastJet',
+        "call signature). Tokens rather than lines, because a clang-format pass swept the file.",
+        "",
+        "Both lanes end on a byte-identical `result.add_jet(new HEPUtils::Jet(pj, tags),",
+        "jetcollection.key)`: no new jet type, no separate container, nothing downstream can",
+        "tell which lane produced a jet.",
         "",
         "## Pipeline files",
         "",
@@ -657,7 +1070,7 @@ TEMPLATE = r'''<!doctype html>
     .backlink span:last-child { flex:1 1 420px; }
     .backlink a { border-bottom:1px solid rgba(235,108,54,.42); color:var(--accent); font-weight:600; text-decoration:none; }
     .backlink a:hover { background:var(--accent-tint); }
-    .summary-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin:22px 0 32px; }
+    .summary-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin:22px 0 32px; }
     .card { background:#fff; border:1px solid var(--rule); border-radius:6px; padding:14px 16px; }
     .card.accent { border-color:rgba(235,108,54,.45); background:var(--accent-tint); }
     .card .n { color:var(--ink); display:block; font-size:26px; font-weight:600; letter-spacing:-.04em; line-height:1; margin-bottom:8px; }
@@ -706,6 +1119,12 @@ TEMPLATE = r'''<!doctype html>
     .unit-hunks { margin:0; padding:12px 14px; overflow-x:auto; font:11px/1.7 var(--font-mono);
       background:#fff; border:0; color:var(--ink); white-space:pre; }
     .diagram-note { color:var(--muted); font-size:12px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
+    .claim-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:18px; }
+    .claim { background:#fff; border:1px solid var(--rule); border-left:3px solid var(--accent); border-radius:0 6px 6px 0; padding:13px 16px; }
+    .claim-h { color:var(--ink); font-size:13px; font-weight:600; letter-spacing:-.01em; margin:0 0 6px; }
+    .claim p:last-child { font-size:12px; line-height:1.62; margin:0; }
+    .ln { color:var(--soft); font-family:var(--font-mono); font-size:9px; display:block; margin-top:3px; }
+    .delta { color:var(--accent); font-family:var(--font-mono); font-size:10px; }
     .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
     .mapping-table table { min-width:900px; }
     table { border-collapse:collapse; font-size:11px; width:100%; }
@@ -717,7 +1136,7 @@ TEMPLATE = r'''<!doctype html>
     .status { font-size:9px; font-weight:600; letter-spacing:.04em; }
     .status.added-in-right { color:var(--green); } .status.unchanged { color:#b55c2d; }
     footer { border-top:1px solid var(--rule); color:var(--soft); font-size:10px; margin-top:32px; padding-top:14px; }
-    @media (max-width:900px) { .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } .claim-grid { grid-template-columns:1fr; } }
     @media (max-width:560px) { h1 { font-size:44px; } }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -735,6 +1154,7 @@ TEMPLATE = r'''<!doctype html>
     <div class="card accent"><span class="n">__UNIT_COUNT__</span><span class="label">numbered additions</span></div>
     <div class="card"><span class="n">__ANALYSIS_LINES__</span><span class="label">lines &#183; new analyses</span></div>
     <div class="card"><span class="n">__OPTOUT_COUNT__</span><span class="label">deliberate opt-outs</span></div>
+    <div class="card accent"><span class="n">__REG_RATIO__</span><span class="label">fixed-R path unchanged</span></div>
   </div>
   <div class="note">Everything below is read from the worktree when this page is generated: line counts from <code>git diff --numstat</code>, YAML keys from the parser, validation text from the throw sites, opt-outs from the <code>continue</code> statements. No CBS binary was built and no events were processed, so nothing here is a statement about physics results.</div>
 
@@ -752,8 +1172,42 @@ TEMPLATE = r'''<!doctype html>
     <p class="diagram-note">Every one of these is a modification, not a new file. VR jets were not bolted on beside the existing jet path &mdash; they were threaded through it, which is why the fixed-R behaviour had to keep working at each step.</p>
   </section>
 
+  <section id="parallel">
+    <p class="kicker">02 &#183; the same path, one fork</p>
+    <h2>What a VR jet does that a normal jet doesn&#8217;t</h2>
+    <p class="source">Both kinds of jet are produced by the same loop over the same collection list. Below, each stage of that loop with the fixed-R line beside the VR line, matched by role and quoted from <code>Py8EventConversions.hpp</code>.</p>
+    <div class="diagram-shell">
+      __FORK__
+    </div>
+    <div class="mapping-table" style="margin-top:16px"><table>
+      <thead><tr><th style="width:11%">Stage</th><th style="width:29%">Fixed-R lane</th><th style="width:29%">Variable-R lane</th><th style="width:8%">Verdict</th><th>What the difference is</th></tr></thead>
+      <tbody>__STAGE_ROWS__</tbody>
+    </table></div>
+    <p class="diagram-note">Verdicts are computed, not asserted: <em>identical</em> means the two lines agree once trailing comments are dropped; <em>same call</em> means they agree after the VR-local name <code>vr_jet_def</code> is read as <code>jet_def</code>; <em>differs</em> shows the word-level delta. __TALLY_SENTENCE__</p>
+
+    <div class="claim-grid">
+      <div class="claim">
+        <p class="claim-h">The existing lane was not edited</p>
+        <p>The fixed-R body is <strong>__REG_BASE__ tokens</strong> at the baseline and <strong>__REG_HEAD__ now</strong>, agreeing to <strong>__REG_RATIO__</strong>. The whole of the difference sits on one line, <code>L__REG_LINE__</code>: <code>__REG_WAS__</code> became <code>__REG_NOW__</code> &mdash; a two-argument reorder that arrived in <code>__REG_COMMIT__</code>, an unrelated commit that fixed a deprecated FastJet call signature. Comparing tokens rather than lines is deliberate: a clang-format pass swept this file, so a line diff would report hundreds of changes that say nothing.</p>
+      </div>
+      <div class="claim">
+        <p class="claim-h">One entry, one exit</p>
+        <p>The branch opens at <code>L__ENTRY_LINE__</code> and closes at <code>L__EXIT_LINE__</code> with a <code>continue</code>. There is no VR test anywhere else in the function, no VR flag threaded through a helper, and no second loop. Delete those __VR_LINES__ lines and the function is the baseline function again.</p>
+      </div>
+      <div class="claim">
+        <p class="claim-h">No new type</p>
+        <p>VR added __NEW_FIELDS__ fields to the existing <code>jet_collection_settings</code> rather than a new struct, a variant or a subclass. The pre-existing fields gained defaults at the same time &mdash; that is what lets one struct serve both lanes, since a VR collection never sets <code>R</code>, <code>recombination_scheme</code> or <code>strategy</code>.</p>
+      </div>
+      <div class="claim">
+        <p class="claim-h">The output is the same object</p>
+        <p>Both lanes end on a byte-identical <code>result.add_jet(new HEPUtils::Jet(pj, tags), jetcollection.key)</code>. There is no <code>VRJet</code> type and no separate container. An analysis calling <code>event-&gt;jets(key)</code> gets <code>HEPUtils::Jet</code> either way and cannot tell which lane produced it.</p>
+      </div>
+    </div>
+    <p class="diagram-note">The differing rows are worth reading for <em>why</em> they differ. Four of them are the flavour-tagging radii, and they differ for a physics reason rather than a structural one: the fixed-R lane matches b and c inside a hard-coded 0.4 and &tau; inside 0.5 &mdash; constants that ignore the collection&#8217;s own R, and that carry <code>@todo Hard-coded radius!!!</code> in the source &mdash; while the VR lane matches inside <code>effectiveR</code>, the radius that actually produced the jet. A single cone cannot serve a 20 GeV and a 500 GeV VR jet; using one would mistag them in opposite directions.</p>
+  </section>
+
   <section>
-    <p class="kicker">02 &#183; the dependency</p>
+    <p class="kicker">03 &#183; the dependency</p>
     <h2>What it rests on</h2>
     <p class="source">One class, and everything that class drags in.</p>
     <div class="mapping-table"><table>
@@ -773,7 +1227,7 @@ TEMPLATE = r'''<!doctype html>
   </section>
 
   <section>
-    <p class="kicker">03 &#183; what was filled in</p>
+    <p class="kicker">04 &#183; what was filled in</p>
     <h2>Seven additions, stage by stage</h2>
     <p class="source">One card per stage, with the reason it was needed and the source it produced.</p>
     <div class="unit-list">
@@ -782,7 +1236,7 @@ TEMPLATE = r'''<!doctype html>
   </section>
 
   <section>
-    <p class="kicker">04 &#183; the contract</p>
+    <p class="kicker">05 &#183; the contract</p>
     <h2>What a YAML collection may say</h2>
     <p class="source">The settings struct, extracted field by field. Which keys are read depends on the <code>algorithm</code> string.</p>
     <div class="mapping-table"><table>
@@ -798,7 +1252,7 @@ TEMPLATE = r'''<!doctype html>
   </section>
 
   <section>
-    <p class="kicker">05 &#183; the boundaries</p>
+    <p class="kicker">06 &#183; the boundaries</p>
     <h2>Where VR jets deliberately do nothing</h2>
     <p class="source">Four sites skip VR collections on purpose. Each is a physics decision written as a <code>continue</code>.</p>
     <div class="mapping-table"><table>
@@ -809,7 +1263,7 @@ TEMPLATE = r'''<!doctype html>
   </section>
 
   <section>
-    <p class="kicker">06 &#183; the consumers</p>
+    <p class="kicker">07 &#183; the consumers</p>
     <h2>Three analyses, two ways of asking</h2>
     <p class="source">All three are new on this branch. Two take the collection the pipeline built; one builds its own.</p>
     <div class="mapping-table"><table>
@@ -821,7 +1275,7 @@ TEMPLATE = r'''<!doctype html>
   </section>
 
   <section>
-    <p class="kicker">07 &#183; boundary</p>
+    <p class="kicker">08 &#183; boundary</p>
     <h2>What this page does not claim</h2>
     <p class="source">The usual limits, stated rather than implied.</p>
     <div class="note">This page describes code paths, not results. No CBS binary was built for it and no events were clustered. It does not show that the VR jets produced here match ATLAS's, that the effective-radius flavour matching reproduces the published tagging efficiencies, or that the b-tag working points used in the analyses are right. Those are validation questions and need a run with real events on both sides, which is a separate exercise.</div>
@@ -841,6 +1295,8 @@ def render_html(data: dict, units: list[dict]) -> str:
     pipeline_add = sum(data["numstat"].get(p, {}).get("added", 0) for p in PIPELINE)
     pipeline_del = sum(data["numstat"].get(p, {}).get("removed", 0) for p in PIPELINE)
     optouts = len(data["optouts"]["skips"]) + len(data["optouts"]["no_smear_sites"])
+    par = data["parallel"]
+    reg = par["regression"]
     replacements = {
         "__BASELINE__": esc(data["refs"]["baseline"]),
         "__HEAD__": esc(data["refs"]["head"]),
@@ -858,6 +1314,20 @@ def render_html(data: dict, units: list[dict]) -> str:
         "__OPTOUT_ROWS__": optout_rows(data),
         "__ANALYSIS_ROWS__": analysis_rows(data),
         "__PLUGIN_LINE__": str(data["clustering"]["plugin"]["line"]),
+        "__FORK__": fork_svg(data),
+        "__STAGE_ROWS__": stage_rows(data),
+        "__TALLY_SENTENCE__": tally_sentence(data),
+        "__REG_BASE__": str(reg["base_tokens"]),
+        "__REG_HEAD__": str(reg["head_tokens"]),
+        "__REG_RATIO__": f'{reg["ratio"] * 100:.2f}%',
+        "__REG_WAS__": esc(reg["moved"]["was"]),
+        "__REG_NOW__": esc(reg["moved"]["now"]),
+        "__REG_LINE__": str(reg["moved"]["line"]),
+        "__REG_COMMIT__": esc(reg["commit"].split()[0] if reg["commit"] else "an earlier commit"),
+        "__ENTRY_LINE__": str(par["entry"]["line"]),
+        "__EXIT_LINE__": str(par["exit"]["line"]),
+        "__VR_LINES__": str(par["spans"]["vr"][1] - par["spans"]["vr"][0] + 1),
+        "__NEW_FIELDS__": str(len(data["schema"]["fields"]) - len(data["schema"]["base_fields"])),
     }
     for token, value in replacements.items():
         page = page.replace(token, value)

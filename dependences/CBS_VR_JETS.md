@@ -8,6 +8,36 @@ Baseline `9c955e3a7` &rarr; head `65aca0890d`.
 the build had to link `fastjetplugins`, `siscone` and `siscone_spherical` before any
 of this could compile.
 
+## Fixed-R vs variable-R, stage by stage
+
+One loop over the collection list (`Py8EventConversions.hpp` L218-398). One test at L220 opens the VR branch; a `continue` at L301 closes it.
+
+| Stage | Fixed-R | Variable-R | Verdict |
+|---|---|---|---|
+| settings read | L304 | L222 | differs |
+| jet definition | L308 | L228 | differs |
+| cluster sequence | L312 | L230 | same call |
+| jet list / pT floor | L314 | L231 | differs |
+| per-jet momentum | L321 | L235 | identical |
+| b-tag match | L326 | L241 | differs |
+| c-tag match | L336 | L251 | differs |
+| tau-tag match | L347 | L261 | differs |
+| W/Z/h match | L358 | L271 | identical |
+| tau promoted to particle | L387 | absent | one-sided |
+| tag map | L395 | L298 | differs |
+| emit into event | L396 | L299 | identical |
+
+Of 12 stages, 4 agree and 7 differ. Four of the differing rows are the flavour-tagging
+radii, which differ because a VR jet has no single radius to match against.
+
+The pre-existing fixed-R body is unchanged by this work: 336 tokens at the baseline, 336 now, 99.40% in common.
+The only drift is on L308, a two-argument reorder from `bb641a5d1e` (a separate commit that fixed a deprecated FastJet
+call signature). Tokens rather than lines, because a clang-format pass swept the file.
+
+Both lanes end on a byte-identical `result.add_jet(new HEPUtils::Jet(pj, tags),
+jetcollection.key)`: no new jet type, no separate container, nothing downstream can
+tell which lane produced a jet.
+
 ## Pipeline files
 
 | File | Role | Lines |
