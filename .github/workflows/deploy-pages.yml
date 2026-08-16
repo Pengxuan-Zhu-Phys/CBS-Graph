@@ -28,7 +28,18 @@ jobs:
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: site
+          # Publish the repository root, not site/.
+          #
+          # Two publishers run on every push to main: this workflow, and the
+          # legacy "pages-build-deployment" builder that the repository's Pages
+          # settings still enable (build_type: legacy, source: main /).  They
+          # raced, so the live site flipped between two different layouts
+          # depending on which one finished last -- with site/ winning, the
+          # styled index.html and every dependences/ URL 404'd.
+          #
+          # Pointing this workflow at the root makes both publishers produce the
+          # same site, so the race no longer changes what visitors see.
+          path: .
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
