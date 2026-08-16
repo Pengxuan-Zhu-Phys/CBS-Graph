@@ -1,0 +1,6132 @@
+{
+  "generated_by": "scripts/build-change-ledger.py",
+  "refs": {
+    "head": {
+      "name": "ColliderBit_solo_development",
+      "sha": "65aca0890d"
+    },
+    "source_branch": {
+      "name": "private-SUSYRun2",
+      "sha": "5989e2d27a"
+    },
+    "master": {
+      "name": "gambit/master",
+      "sha": "b4c3e6d027"
+    },
+    "merge_base": "9c955e3a7"
+  },
+  "totals": {
+    "files_changed": 416,
+    "renames": 81,
+    "own_files": 147,
+    "mixed_files": 87,
+    "upstream_files": 174,
+    "commits_vs_master": 606,
+    "commits_vs_source": 566
+  },
+  "authors_vs_master": {
+    "Pengxuan Zhu": 229,
+    "Tomek Procter": 80,
+    "Anders Kvellestad": 78,
+    "Tomas Gonzalo": 69,
+    "ChrisJChang": 68,
+    "mjw63": 14,
+    "Pengxuan@Studio": 13,
+    "Pengxuan-Zhu-Ubuntu": 10,
+    "hpacey": 9,
+    "Buding": 7,
+    "Are Raklev": 6,
+    "Roberto Austri": 6,
+    "Yang Zhang": 6,
+    "Vinay Hegde": 3,
+    "Ida-Marie Johansson": 3,
+    "hollypacey": 2,
+    "Adil Jueid": 1,
+    "Holly Pacey": 1,
+    "Martin White": 1
+  },
+  "authors_vs_source": {
+    "Pengxuan Zhu": 226,
+    "Anders Kvellestad": 124,
+    "ChrisJChang": 108,
+    "Andrew Fowlie": 29,
+    "Claude": 20,
+    "Andy Buckley": 15,
+    "Pengxuan@Studio": 13,
+    "Are Raklev": 11,
+    "Patrick Stöcker": 6,
+    "Pat Scott": 6,
+    "Tomas Gonzalo": 3,
+    "Carl Martin Fevang": 1,
+    "Will Handley": 1,
+    "Torsten Bringmann": 1,
+    "Tore Klungland": 1,
+    "idamarie1303": 1
+  },
+  "by_theme": {
+    "results": {
+      "own": 6,
+      "mixed": 3,
+      "upstream": 1,
+      "assisted": 0,
+      "added": 26653,
+      "deleted": 60,
+      "label": "Result framework"
+    },
+    "cbs-runner": {
+      "own": 8,
+      "mixed": 2,
+      "upstream": 0,
+      "assisted": 0,
+      "added": 2978,
+      "deleted": 153,
+      "label": "CBS standalone runner"
+    },
+    "analyses": {
+      "own": 109,
+      "mixed": 53,
+      "upstream": 17,
+      "assisted": 0,
+      "added": 11073,
+      "deleted": 7437,
+      "label": "Analyses"
+    },
+    "other": {
+      "own": 1,
+      "mixed": 8,
+      "upstream": 105,
+      "assisted": 2,
+      "added": 252,
+      "deleted": 63,
+      "label": "Other"
+    },
+    "event-pipeline": {
+      "own": 10,
+      "mixed": 4,
+      "upstream": 0,
+      "assisted": 0,
+      "added": 1098,
+      "deleted": 240,
+      "label": "Event / jet pipeline"
+    },
+    "yaml": {
+      "own": 10,
+      "mixed": 1,
+      "upstream": 14,
+      "assisted": 5,
+      "added": 302,
+      "deleted": 301,
+      "label": "YAML & scripts"
+    },
+    "build": {
+      "own": 3,
+      "mixed": 16,
+      "upstream": 37,
+      "assisted": 1,
+      "added": 830,
+      "deleted": 444,
+      "label": "Build / backends / config"
+    }
+  },
+  "renames": [
+    {
+      "from": ".github/workflows/ci_Mac_arm64.yml",
+      "to": ".github/workflows/OLD/ci_Mac_arm64.yml",
+      "similarity": 100
+    },
+    {
+      "from": ".github/workflows/ci_Mac_x64.yml",
+      "to": ".github/workflows/OLD/ci_Mac_x64.yml",
+      "similarity": 100
+    },
+    {
+      "from": ".github/workflows/ci_linux.yml",
+      "to": ".github/workflows/OLD/ci_linux.yml",
+      "similarity": 100
+    },
+    {
+      "from": "Backends/include/gambit/Backends/frontends/simplexs_1_0.hpp",
+      "to": "Backends/include/gambit/Backends/frontends/simple_xs_1_0.hpp",
+      "similarity": 100
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_1LEPStop_20invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2013_037.cpp",
+      "similarity": 87
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_0LEP_13invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2016_078.cpp",
+      "similarity": 75
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_MultiLEP_confnote_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2017_039.cpp",
+      "similarity": 93
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_ZGammaGrav_CONFNOTE_80invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2018_019.cpp",
+      "similarity": 78
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_2OSLEP_chargino_80invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2018_042.cpp",
+      "similarity": 91
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_2OSLEP_chargino_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2019_008.cpp",
+      "similarity": 91
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_EXOT_TT_WbWb_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_014.cpp",
+      "similarity": 71
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_MONOJET_139infb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2018_06.cpp",
+      "similarity": 94
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_7TeV_2LEPStop_4_7invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2012_04.cpp",
+      "similarity": 94
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_7TeV_1OR2LEPStop_4_7invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2012_10.cpp",
+      "similarity": 88
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_0LEP_20invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_02.cpp",
+      "similarity": 87
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_2bStop_20invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_05.cpp",
+      "similarity": 87
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_2LEPEW_20invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_11.cpp",
+      "similarity": 86
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_3LEPEW_20invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_12.cpp",
+      "similarity": 91
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_0LEPStop_20invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_16.cpp",
+      "similarity": 93
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_2LEPStop_20invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_19.cpp",
+      "similarity": 88
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_1LEPStop_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_06.cpp",
+      "similarity": 90
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_0LEP_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_07.cpp",
+      "similarity": 69
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_0LEPStop_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_15.cpp",
+      "similarity": 81
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_4LEP_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_21.cpp",
+      "similarity": 86
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_MultiLEP_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_24.cpp",
+      "similarity": 91
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_PhotonGGM_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_27.cpp",
+      "similarity": 71
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_2bMET_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_28.cpp",
+      "similarity": 89
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_2LEPStop_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_01.cpp",
+      "similarity": 86
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_3b_24invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_02.cpp",
+      "similarity": 83
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_3b_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_02_36invfb.cpp",
+      "similarity": 81
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_RJ3L_lowmass_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_03_RJR.cpp",
+      "similarity": 90
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_4LEP_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_02.cpp",
+      "similarity": 73
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_2LEPJETS_EW_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp",
+      "similarity": 98
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_2LEPJETS_RJR_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05_RJR.cpp",
+      "similarity": 95
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_3LEP_eRJR_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_06.cpp",
+      "similarity": 94
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_2LEPStop_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_08.cpp",
+      "similarity": 90
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_MultiLEP_strong_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_09.cpp",
+      "similarity": 94
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_PhotonGGM_1Photon_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_11.cpp",
+      "similarity": 89
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_0LEPStop_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_12.cpp",
+      "similarity": 95
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_2LEPsoft_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_16.cpp",
+      "similarity": 98
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_2OSLEP_Z_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_21.cpp",
+      "similarity": 79
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_1OR3LEP_StopHZ_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_21_StopZH.cpp",
+      "similarity": 65
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_0LEP_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_22.cpp",
+      "similarity": 63
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_3b_NN_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_30.cpp",
+      "similarity": 97
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_2LEP0JET_EW_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_02.cpp",
+      "similarity": 98
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_1Lep2b_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_08.cpp",
+      "similarity": 96
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_bTaus_StopStau_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_18.cpp",
+      "similarity": 97
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_2OR3LEP_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_22.cpp",
+      "similarity": 98
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_4b_139invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2020_16.cpp",
+      "similarity": 93
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_8TeV_2LEPDMTOP_20invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_B2G_13_004.cpp",
+      "similarity": 78
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_8TeV_1LEPDMTOP_20invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_B2G_14_004.cpp",
+      "similarity": 78
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_8TeV_MONOJET_20invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_EXO_12_048.cpp",
+      "similarity": 52
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_MONOJET_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_EXO_16_048.cpp",
+      "similarity": 85
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_8TeV_MultiLEP_20invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_13_006.cpp",
+      "similarity": 98
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_0LEP_13invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_014.cpp",
+      "similarity": 86
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_0LEP_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_033.cpp",
+      "similarity": 78
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_2OSLEP_confnote_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_034.cpp",
+      "similarity": 64
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_2OSLEP_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_034_EW.cpp",
+      "similarity": 75
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_2SSLEP_Stop_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_035.cpp",
+      "similarity": 96
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_MultiLEP_Full_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_039_Full.cpp",
+      "similarity": 85
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_1LEPbb_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_043.cpp",
+      "similarity": 60
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_Photon_GMSB_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_046.cpp",
+      "similarity": 86
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_2LEPsoft_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_048.cpp",
+      "similarity": 60
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_1LEPStop_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_051.cpp",
+      "similarity": 90
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_2LEPStop_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_001.cpp",
+      "similarity": 84
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_2OSLEP_chargino_stop_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_010.cpp",
+      "similarity": 99
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_2Photon_GMSB_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_011.cpp",
+      "similarity": 86
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_1Photon1Lepton_36invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_012.cpp",
+      "similarity": 94
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_2LEPsoft_137invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_18_004.cpp",
+      "similarity": 98
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_0LEP_137invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_006.cpp",
+      "similarity": 82
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_2SSLEP_Stop_137invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_008.cpp",
+      "similarity": 98
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_0LEPStop_137invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_010.cpp",
+      "similarity": 76
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_MultiLEP_137invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_012.cpp",
+      "similarity": 94
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_2OSLEP_137invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_20_001.cpp",
+      "similarity": 97
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_1LEPbb_137invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_20_003.cpp",
+      "similarity": 78
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_2Higgs_4b_neutralino_137invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_20_004.cpp",
+      "similarity": 78
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_0LEP_chargino_VV_VH_137invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_21_002.cpp",
+      "similarity": 95
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_0LEP_chargino_VV_VH_137invfb_OLD.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_21_002_OLD.cpp",
+      "similarity": 94
+    },
+    {
+      "from": "ColliderBit/src/analyses/Analysis_CMS_13TeV_Photon_GMSB_137invfb.cpp",
+      "to": "ColliderBit/src/analyses/Analysis_CMS_SUS_21_009.cpp",
+      "similarity": 90
+    },
+    {
+      "from": "yaml_files/WC_lite.pip",
+      "to": "plotting_files/WC_lite.pip",
+      "similarity": 100
+    },
+    {
+      "from": "yaml_files/spartan.pip",
+      "to": "plotting_files/spartan.pip",
+      "similarity": 100
+    }
+  ],
+  "files": [
+    {
+      "path": "Utils/include/gambit/Utils/json.hpp",
+      "kind": "added",
+      "added": 25510,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "results",
+      "theme_label": "Result framework"
+    },
+    {
+      "path": "ColliderBit/examples/solo_batch.cpp",
+      "kind": "added",
+      "added": 1171,
+      "deleted": 0,
+      "commits": 7,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "cbs-runner",
+      "theme_label": "CBS standalone runner"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_09.cpp",
+      "kind": "added",
+      "added": 994,
+      "deleted": 0,
+      "commits": 5,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "NeutrinoBit/examples/NeutrinoBit_standalone_RHN.cpp",
+      "kind": "added",
+      "added": 961,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Tomas Gonzalo"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp",
+      "kind": "added",
+      "added": 729,
+      "deleted": 0,
+      "commits": 6,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/examples/solo_output.cpp",
+      "kind": "added",
+      "added": 689,
+      "deleted": 0,
+      "commits": 6,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "cbs-runner",
+      "theme_label": "CBS standalone runner"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/analyses/Histogram.hpp",
+      "kind": "added",
+      "added": 678,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "results",
+      "theme_label": "Result framework"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_07.cpp",
+      "kind": "added",
+      "added": 620,
+      "deleted": 0,
+      "commits": 54,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu",
+        "Pengxuan@Studio"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/warppertopness.h",
+      "kind": "added",
+      "added": 595,
+      "deleted": 0,
+      "commits": 6,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_12_RJR.cpp",
+      "kind": "added",
+      "added": 578,
+      "deleted": 0,
+      "commits": 19,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu",
+        "Pengxuan@Studio"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_039.cpp",
+      "kind": "added",
+      "added": 488,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_41.cpp",
+      "kind": "added",
+      "added": 478,
+      "deleted": 0,
+      "commits": 5,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/examples/solo_input.cpp",
+      "kind": "added",
+      "added": 458,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "cbs-runner",
+      "theme_label": "CBS standalone runner"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_013.cpp",
+      "kind": "added",
+      "added": 375,
+      "deleted": 0,
+      "commits": 34,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_07.cpp",
+      "kind": "added",
+      "added": 364,
+      "deleted": 0,
+      "commits": 10,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": ".github/workflows/ci_linux_GH.yml",
+      "kind": "added",
+      "added": 357,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+      "kind": "added",
+      "added": 353,
+      "deleted": 0,
+      "commits": 8,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2021_35.cpp",
+      "kind": "added",
+      "added": 337,
+      "deleted": 0,
+      "commits": 46,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_039_Full.cpp",
+      "kind": "renamed",
+      "added": 324,
+      "deleted": 358,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "NeutrinoBit/examples/NeutrinoBit_standalone.cpp",
+      "kind": "added",
+      "added": 321,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Tomas Gonzalo"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/src/scanners/python/plugins/gambit_paraprof.py",
+      "kind": "added",
+      "added": 300,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "cmake/utilities.cmake",
+      "kind": "modified",
+      "added": 295,
+      "deleted": 44,
+      "commits": 14,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang",
+        "Claude",
+        "Pengxuan Zhu",
+        "Will Handley"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/examples/solo.cpp",
+      "kind": "modified",
+      "added": 291,
+      "deleted": 139,
+      "commits": 28,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "cbs-runner",
+      "theme_label": "CBS standalone runner"
+    },
+    {
+      "path": "ColliderBit/scripts/plot_cbs_histograms.py",
+      "kind": "added",
+      "added": 288,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "results",
+      "theme_label": "Result framework"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_010.cpp",
+      "kind": "renamed",
+      "added": 284,
+      "deleted": 270,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/generateEventPy8Collider.hpp",
+      "kind": "modified",
+      "added": 266,
+      "deleted": 0,
+      "commits": 6,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/scripts/list_scanners.py",
+      "kind": "added",
+      "added": 255,
+      "deleted": 0,
+      "commits": 8,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "ScannerBit/src/scanners/diver_1.3.0/diver.cpp",
+      "kind": "added",
+      "added": 252,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Pat Scott"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/LHC_likelihoods.cpp",
+      "kind": "modified",
+      "added": 213,
+      "deleted": 77,
+      "commits": 15,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang",
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "results",
+      "theme_label": "Result framework"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_15.cpp",
+      "kind": "renamed",
+      "added": 212,
+      "deleted": 205,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/getxsec.cpp",
+      "kind": "modified",
+      "added": 208,
+      "deleted": 16,
+      "commits": 8,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "contrib/METSignificance/LICENSE",
+      "kind": "added",
+      "added": 202,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/colliders/Pythia8/Py8EventConversions.hpp",
+      "kind": "modified",
+      "added": 192,
+      "deleted": 82,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_017.cpp",
+      "kind": "added",
+      "added": 189,
+      "deleted": 0,
+      "commits": 40,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "Utils/scripts/harvesting_tools.py",
+      "kind": "modified",
+      "added": 184,
+      "deleted": 3,
+      "commits": 5,
+      "authors": [
+        "Anders Kvellestad",
+        "Claude"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "cmake/scripts/copy_tarballs.sh",
+      "kind": "added",
+      "added": 173,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_03_RJR.cpp",
+      "kind": "renamed",
+      "added": 158,
+      "deleted": 170,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "README.md",
+      "kind": "modified",
+      "added": 158,
+      "deleted": 102,
+      "commits": 12,
+      "authors": [
+        "Anders Kvellestad",
+        "Andrew Fowlie",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_27.cpp",
+      "kind": "renamed",
+      "added": 156,
+      "deleted": 157,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_21_StopZH.cpp",
+      "kind": "renamed",
+      "added": 155,
+      "deleted": 122,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/AnalysisContainer.cpp",
+      "kind": "modified",
+      "added": 151,
+      "deleted": 138,
+      "commits": 22,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/ColliderBit_eventloop.cpp",
+      "kind": "modified",
+      "added": 149,
+      "deleted": 28,
+      "commits": 16,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "Backends/scripts/list_backends.py",
+      "kind": "added",
+      "added": 147,
+      "deleted": 0,
+      "commits": 6,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_22.cpp",
+      "kind": "renamed",
+      "added": 144,
+      "deleted": 58,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_06.cpp",
+      "kind": "renamed",
+      "added": 140,
+      "deleted": 142,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "config/gambit_backend_interfaces.yaml",
+      "kind": "added",
+      "added": 137,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_014.cpp",
+      "kind": "renamed",
+      "added": 136,
+      "deleted": 98,
+      "commits": 18,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "cmake/scripts/restore_tarballs.sh",
+      "kind": "added",
+      "added": 134,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/src/PoissonCalculators.cpp",
+      "kind": "added",
+      "added": 132,
+      "deleted": 0,
+      "commits": 10,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "yaml_files/spartan_5d.yaml",
+      "kind": "added",
+      "added": 127,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "Utils/src/interp_collection.cpp",
+      "kind": "modified",
+      "added": 121,
+      "deleted": 97,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_21.cpp",
+      "kind": "renamed",
+      "added": 118,
+      "deleted": 114,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_02.cpp",
+      "kind": "renamed",
+      "added": 111,
+      "deleted": 126,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_11.cpp",
+      "kind": "renamed",
+      "added": 104,
+      "deleted": 112,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_20_004.cpp",
+      "kind": "renamed",
+      "added": 103,
+      "deleted": 55,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "Printers/src/printers/asciiprinter/asciiprinter.cpp",
+      "kind": "modified",
+      "added": 98,
+      "deleted": 8,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/README.md",
+      "kind": "added",
+      "added": 96,
+      "deleted": 0,
+      "commits": 5,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/Utils.hpp",
+      "kind": "modified",
+      "added": 95,
+      "deleted": 5,
+      "commits": 5,
+      "authors": [
+        "Anders Kvellestad",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2020_16.cpp",
+      "kind": "renamed",
+      "added": 94,
+      "deleted": 99,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "cmake/optional.cmake",
+      "kind": "modified",
+      "added": 92,
+      "deleted": 33,
+      "commits": 9,
+      "authors": [
+        "Anders Kvellestad",
+        "Pengxuan Zhu",
+        "Will Handley"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_28.cpp",
+      "kind": "renamed",
+      "added": 88,
+      "deleted": 76,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "contrib/preload/gambit_preload.cpp",
+      "kind": "modified",
+      "added": 86,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Anders Kvellestad",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/examples/solo_batch.hpp",
+      "kind": "added",
+      "added": 85,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "cbs-runner",
+      "theme_label": "CBS standalone runner"
+    },
+    {
+      "path": "ScannerBit/src/priors/composite.cpp",
+      "kind": "modified",
+      "added": 84,
+      "deleted": 84,
+      "commits": 1,
+      "authors": [
+        "Pat Scott"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/examples/solo_cli.cpp",
+      "kind": "added",
+      "added": 83,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "cbs-runner",
+      "theme_label": "CBS standalone runner"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_01.cpp",
+      "kind": "renamed",
+      "added": 83,
+      "deleted": 72,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/examples/solo_output.hpp",
+      "kind": "added",
+      "added": 78,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "cbs-runner",
+      "theme_label": "CBS standalone runner"
+    },
+    {
+      "path": "Printers/src/printers/hdf5printer/hdf5printer.cpp",
+      "kind": "modified",
+      "added": 75,
+      "deleted": 51,
+      "commits": 9,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang",
+        "Claude"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_12.cpp",
+      "kind": "renamed",
+      "added": 74,
+      "deleted": 65,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "kind": "modified",
+      "added": 73,
+      "deleted": 94,
+      "commits": 17,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang",
+        "Patrick Stöcker",
+        "Pengxuan Zhu",
+        "Tore Klungland"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_02_36invfb.cpp",
+      "kind": "renamed",
+      "added": 72,
+      "deleted": 83,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_048.cpp",
+      "kind": "renamed",
+      "added": 72,
+      "deleted": 220,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "yaml_files/spartan.yaml",
+      "kind": "modified",
+      "added": 70,
+      "deleted": 30,
+      "commits": 14,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang",
+        "Pat Scott"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_012.cpp",
+      "kind": "renamed",
+      "added": 69,
+      "deleted": 67,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/ColliderBit_MC_rollcall.hpp",
+      "kind": "modified",
+      "added": 67,
+      "deleted": 27,
+      "commits": 11,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "yaml_files/ColliderBit_CMSSM.yaml",
+      "kind": "modified",
+      "added": 67,
+      "deleted": 24,
+      "commits": 4,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": ".github/workflows/cmake.yml",
+      "kind": "added",
+      "added": 66,
+      "deleted": 0,
+      "commits": 8,
+      "authors": [
+        "Andrew Fowlie",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2013_037.cpp",
+      "kind": "renamed",
+      "added": 66,
+      "deleted": 80,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "Elements/include/gambit/Elements/elements_extras.hpp",
+      "kind": "added",
+      "added": 66,
+      "deleted": 0,
+      "commits": 0,
+      "authors": [],
+      "attribution": "assisted",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Core/include/gambit/Core/cli_help_text.hpp",
+      "kind": "added",
+      "added": 65,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_02.cpp",
+      "kind": "renamed",
+      "added": 64,
+      "deleted": 139,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_07.cpp",
+      "kind": "renamed",
+      "added": 63,
+      "deleted": 64,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_034.cpp",
+      "kind": "renamed",
+      "added": 62,
+      "deleted": 98,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_21_009.cpp",
+      "kind": "renamed",
+      "added": 61,
+      "deleted": 54,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_EXO_12_048.cpp",
+      "kind": "renamed",
+      "added": 60,
+      "deleted": 77,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "cmake/scripts/safe_dl.sh",
+      "kind": "modified",
+      "added": 60,
+      "deleted": 57,
+      "commits": 2,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "yaml_files/SUSYRun2_MSSMEW_gravitino.yaml",
+      "kind": "modified",
+      "added": 60,
+      "deleted": 60,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "yaml_files/SUSYRun2_MSSMEW.yaml",
+      "kind": "modified",
+      "added": 59,
+      "deleted": 59,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_051.cpp",
+      "kind": "renamed",
+      "added": 58,
+      "deleted": 33,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/PoissonCalculators.hpp",
+      "kind": "added",
+      "added": 57,
+      "deleted": 0,
+      "commits": 6,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_034_EW.cpp",
+      "kind": "renamed",
+      "added": 57,
+      "deleted": 85,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_006.cpp",
+      "kind": "renamed",
+      "added": 57,
+      "deleted": 36,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/examples/solo_input.hpp",
+      "kind": "added",
+      "added": 56,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "cbs-runner",
+      "theme_label": "CBS standalone runner"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_02.cpp",
+      "kind": "renamed",
+      "added": 56,
+      "deleted": 48,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_033.cpp",
+      "kind": "renamed",
+      "added": 56,
+      "deleted": 29,
+      "commits": 5,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/analyses/AnalysisMacros.hpp",
+      "kind": "modified",
+      "added": 55,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "results",
+      "theme_label": "Result framework"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2019_008.cpp",
+      "kind": "renamed",
+      "added": 55,
+      "deleted": 38,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2018_042.cpp",
+      "kind": "renamed",
+      "added": 54,
+      "deleted": 38,
+      "commits": 5,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_21_002_OLD.cpp",
+      "kind": "renamed",
+      "added": 54,
+      "deleted": 32,
+      "commits": 5,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/mk_webpage_json.py",
+      "kind": "added",
+      "added": 54,
+      "deleted": 0,
+      "commits": 9,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/mk_hepdata_json.py",
+      "kind": "added",
+      "added": 52,
+      "deleted": 0,
+      "commits": 5,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "Backends/scripts/backend_harvester.py",
+      "kind": "modified",
+      "added": 51,
+      "deleted": 15,
+      "commits": 3,
+      "authors": [
+        "Anders Kvellestad",
+        "Claude"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_21_002.cpp",
+      "kind": "renamed",
+      "added": 51,
+      "deleted": 34,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "cmake/contrib.cmake",
+      "kind": "modified",
+      "added": 49,
+      "deleted": 133,
+      "commits": 22,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang",
+        "Pengxuan Zhu",
+        "Tore Klungland"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/analyses/Cutflow.hpp",
+      "kind": "modified",
+      "added": 48,
+      "deleted": 3,
+      "commits": 5,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "results",
+      "theme_label": "Result framework"
+    },
+    {
+      "path": "NeutrinoBit/examples/benchmarks/NeutrinoBit_standalone_NO_RHN.slha",
+      "kind": "added",
+      "added": 48,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Tomas Gonzalo"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Printers/src/printers/hdf5printer_v2/hdf5printer_v2.cpp",
+      "kind": "modified",
+      "added": 48,
+      "deleted": 133,
+      "commits": 4,
+      "authors": [
+        "Anders Kvellestad",
+        "Claude"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis.cpp",
+      "kind": "modified",
+      "added": 47,
+      "deleted": 52,
+      "commits": 11,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu",
+        "Pengxuan@Studio"
+      ],
+      "attribution": "mixed",
+      "theme": "results",
+      "theme_label": "Result framework"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2018_019.cpp",
+      "kind": "renamed",
+      "added": 47,
+      "deleted": 23,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_19.cpp",
+      "kind": "renamed",
+      "added": 47,
+      "deleted": 39,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ScannerBit/include/gambit/ScannerBit/scanners/diver_1.3.0/diver.hpp",
+      "kind": "added",
+      "added": 47,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pat Scott"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_16.cpp",
+      "kind": "renamed",
+      "added": 46,
+      "deleted": 36,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_21.cpp",
+      "kind": "renamed",
+      "added": 46,
+      "deleted": 55,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_014.cpp",
+      "kind": "renamed",
+      "added": 46,
+      "deleted": 19,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "Core/src/depresolver.cpp",
+      "kind": "modified",
+      "added": 46,
+      "deleted": 19,
+      "commits": 5,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_010.cpp",
+      "kind": "renamed",
+      "added": 45,
+      "deleted": 24,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_05.cpp",
+      "kind": "renamed",
+      "added": 44,
+      "deleted": 50,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_012.cpp",
+      "kind": "renamed",
+      "added": 44,
+      "deleted": 11,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/examples/solo_cli.hpp",
+      "kind": "added",
+      "added": 43,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "cbs-runner",
+      "theme_label": "CBS standalone runner"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2016_078.cpp",
+      "kind": "renamed",
+      "added": 43,
+      "deleted": 40,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_001.cpp",
+      "kind": "renamed",
+      "added": 43,
+      "deleted": 88,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_011.cpp",
+      "kind": "renamed",
+      "added": 43,
+      "deleted": 16,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_043.cpp",
+      "kind": "renamed",
+      "added": 42,
+      "deleted": 128,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_EXO_16_048.cpp",
+      "kind": "renamed",
+      "added": 41,
+      "deleted": 37,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_035.cpp",
+      "kind": "renamed",
+      "added": 41,
+      "deleted": 28,
+      "commits": 5,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "Utils/scripts/list_table.py",
+      "kind": "added",
+      "added": 40,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2018_60.cpp",
+      "kind": "added",
+      "added": 38,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_20_003.cpp",
+      "kind": "renamed",
+      "added": 35,
+      "deleted": 72,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "NeutrinoBit/examples/benchmarks/NeutrinoBit_standalone_NO.slha",
+      "kind": "added",
+      "added": 35,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Tomas Gonzalo"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/ATLASEfficiencies.hpp",
+      "kind": "modified",
+      "added": 34,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_1LEPbb_20invfb.cpp",
+      "kind": "modified",
+      "added": 33,
+      "deleted": 66,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "cmake/backends.cmake",
+      "kind": "modified",
+      "added": 33,
+      "deleted": 98,
+      "commits": 14,
+      "authors": [
+        "Anders Kvellestad",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": ".github/workflows/fmt.yaml",
+      "kind": "added",
+      "added": 32,
+      "deleted": 0,
+      "commits": 8,
+      "authors": [
+        "Andrew Fowlie",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2012_10.cpp",
+      "kind": "renamed",
+      "added": 31,
+      "deleted": 49,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/getBuckFast.cpp",
+      "kind": "modified",
+      "added": 31,
+      "deleted": 5,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_B2G_13_004.cpp",
+      "kind": "renamed",
+      "added": 30,
+      "deleted": 41,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_B2G_14_004.cpp",
+      "kind": "renamed",
+      "added": 30,
+      "deleted": 42,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_008.cpp",
+      "kind": "renamed",
+      "added": 29,
+      "deleted": 15,
+      "commits": 5,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_08.cpp",
+      "kind": "renamed",
+      "added": 28,
+      "deleted": 46,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_046.cpp",
+      "kind": "renamed",
+      "added": 28,
+      "deleted": 23,
+      "commits": 4,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "BUILD_OPTIONS.md",
+      "kind": "modified",
+      "added": 27,
+      "deleted": 7,
+      "commits": 3,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Backends/patches/plc/3.0/plc_3.0.diff",
+      "kind": "modified",
+      "added": 26,
+      "deleted": 3,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Printers/include/gambit/Printers/printers/hdf5printer/hdf5tools.hpp",
+      "kind": "modified",
+      "added": 26,
+      "deleted": 1,
+      "commits": 2,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "cmake/scanners.cmake",
+      "kind": "modified",
+      "added": 26,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pat Scott"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/examples/solo_example.yaml",
+      "kind": "modified",
+      "added": 24,
+      "deleted": 14,
+      "commits": 7,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "cbs-runner",
+      "theme_label": "CBS standalone runner"
+    },
+    {
+      "path": "ColliderBit/src/ColliderBit_InterpolatedYields.cpp",
+      "kind": "modified",
+      "added": 24,
+      "deleted": 15,
+      "commits": 4,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_24.cpp",
+      "kind": "renamed",
+      "added": 24,
+      "deleted": 107,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05_RJR.cpp",
+      "kind": "renamed",
+      "added": 24,
+      "deleted": 25,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_20_001.cpp",
+      "kind": "renamed",
+      "added": 24,
+      "deleted": 19,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "cmake/scripts/update_cmakelists.py",
+      "kind": "modified",
+      "added": 24,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_13_006.cpp",
+      "kind": "renamed",
+      "added": 23,
+      "deleted": 17,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "Printers/src/printers/hdf5printer/hdf5tools.cpp",
+      "kind": "modified",
+      "added": 23,
+      "deleted": 15,
+      "commits": 5,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang",
+        "Claude"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_30.cpp",
+      "kind": "renamed",
+      "added": 22,
+      "deleted": 20,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "cmake/externals.cmake",
+      "kind": "modified",
+      "added": 22,
+      "deleted": 9,
+      "commits": 8,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang",
+        "Pengxuan Zhu",
+        "Will Handley"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_16.cpp",
+      "kind": "renamed",
+      "added": 21,
+      "deleted": 16,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ScannerBit/include/gambit/ScannerBit/priors/composite.hpp",
+      "kind": "modified",
+      "added": 21,
+      "deleted": 18,
+      "commits": 1,
+      "authors": [
+        "Pat Scott"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Utils/src/util_functions.cpp",
+      "kind": "modified",
+      "added": 21,
+      "deleted": 11,
+      "commits": 2,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "gum/CMakeLists.txt",
+      "kind": "modified",
+      "added": 21,
+      "deleted": 45,
+      "commits": 2,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "optional.txt",
+      "kind": "added",
+      "added": 20,
+      "deleted": 0,
+      "commits": 6,
+      "authors": [
+        "Anders Kvellestad",
+        "Andrew Fowlie"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_11.cpp",
+      "kind": "renamed",
+      "added": 19,
+      "deleted": 25,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_18_004.cpp",
+      "kind": "renamed",
+      "added": 19,
+      "deleted": 12,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "Printers/include/gambit/Printers/printers/hdf5printer.hpp",
+      "kind": "modified",
+      "added": 19,
+      "deleted": 13,
+      "commits": 8,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang",
+        "Claude"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Printers/src/printers/hdf5printer/hdf5_combine_tools.cpp",
+      "kind": "modified",
+      "added": 19,
+      "deleted": 22,
+      "commits": 3,
+      "authors": [
+        "Anders Kvellestad",
+        "Claude"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_09.cpp",
+      "kind": "renamed",
+      "added": 18,
+      "deleted": 25,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_06.cpp",
+      "kind": "renamed",
+      "added": 17,
+      "deleted": 23,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/scripts/collider_harvester.py",
+      "kind": "modified",
+      "added": 16,
+      "deleted": 7,
+      "commits": 2,
+      "authors": [
+        "Claude"
+      ],
+      "attribution": "assisted",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "LICENSE",
+      "kind": "added",
+      "added": 16,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Printers/include/gambit/Printers/printers/hdf5printer/VertexBufferNumeric1D_HDF5.hpp",
+      "kind": "modified",
+      "added": 16,
+      "deleted": 8,
+      "commits": 1,
+      "authors": [
+        "Claude"
+      ],
+      "attribution": "assisted",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": ".gitignore",
+      "kind": "modified",
+      "added": 15,
+      "deleted": 0,
+      "commits": 6,
+      "authors": [
+        "Claude",
+        "Patrick Stöcker",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Backends/src/frontends/ATLAS_FullLikes_1_0.cpp",
+      "kind": "modified",
+      "added": 15,
+      "deleted": 3,
+      "commits": 3,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/examples/ColliderBit_SLHA_Validation_CMS_13TeV_1LEPbb_137invfb.yaml",
+      "kind": "modified",
+      "added": 15,
+      "deleted": 4,
+      "commits": 3,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_12.cpp",
+      "kind": "renamed",
+      "added": 15,
+      "deleted": 29,
+      "commits": 5,
+      "authors": [
+        "Pengxuan Zhu",
+        "Pengxuan@Studio"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "Printers/include/gambit/Printers/printers/asciiprinter.hpp",
+      "kind": "modified",
+      "added": 15,
+      "deleted": 4,
+      "commits": 3,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "yaml_files/CMSSM.yaml",
+      "kind": "modified",
+      "added": 15,
+      "deleted": 15,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "yaml_files/MSSM7.yaml",
+      "kind": "modified",
+      "added": 15,
+      "deleted": 15,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "yaml_files/MSSM9.yaml",
+      "kind": "modified",
+      "added": 15,
+      "deleted": 15,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "yaml_files/NUHM1.yaml",
+      "kind": "modified",
+      "added": 15,
+      "deleted": 15,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "yaml_files/NUHM2.yaml",
+      "kind": "modified",
+      "added": 15,
+      "deleted": 15,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/analyses/Analysis.hpp",
+      "kind": "modified",
+      "added": 14,
+      "deleted": 0,
+      "commits": 5,
+      "authors": [
+        "Pengxuan Zhu",
+        "Pengxuan@Studio"
+      ],
+      "attribution": "own",
+      "theme": "results",
+      "theme_label": "Result framework"
+    },
+    {
+      "path": "Core/src/core.cpp",
+      "kind": "modified",
+      "added": 14,
+      "deleted": 44,
+      "commits": 2,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/MCLoopInfo.hpp",
+      "kind": "modified",
+      "added": 13,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_035.info",
+      "kind": "added",
+      "added": 13,
+      "deleted": 0,
+      "commits": 5,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "Core/include/gambit/Core/depresolver.hpp",
+      "kind": "modified",
+      "added": 13,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Models/scripts/model_harvester.py",
+      "kind": "modified",
+      "added": 13,
+      "deleted": 6,
+      "commits": 1,
+      "authors": [
+        "Claude"
+      ],
+      "attribution": "assisted",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": ".clang-format",
+      "kind": "added",
+      "added": 12,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Andrew Fowlie"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_06.info",
+      "kind": "added",
+      "added": 12,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_07.info",
+      "kind": "added",
+      "added": 12,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_01.info",
+      "kind": "added",
+      "added": 12,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_02.info",
+      "kind": "added",
+      "added": 12,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_08.info",
+      "kind": "added",
+      "added": 12,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_41.info",
+      "kind": "added",
+      "added": 12,
+      "deleted": 0,
+      "commits": 5,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_22.cpp",
+      "kind": "renamed",
+      "added": 12,
+      "deleted": 6,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_034.info",
+      "kind": "added",
+      "added": 12,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_008.info",
+      "kind": "added",
+      "added": 12,
+      "deleted": 0,
+      "commits": 5,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_15.info",
+      "kind": "added",
+      "added": 11,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_02.info",
+      "kind": "added",
+      "added": 11,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_02.cpp",
+      "kind": "renamed",
+      "added": 11,
+      "deleted": 24,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_08.cpp",
+      "kind": "renamed",
+      "added": 11,
+      "deleted": 16,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "HISTORY",
+      "kind": "modified",
+      "added": 11,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Printers/include/gambit/Printers/printers/hdf5printer/DataSetInterfaceBase.hpp",
+      "kind": "modified",
+      "added": 11,
+      "deleted": 14,
+      "commits": 2,
+      "authors": [
+        "Anders Kvellestad",
+        "Claude"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "cmake/standalones.cmake",
+      "kind": "modified",
+      "added": 11,
+      "deleted": 3,
+      "commits": 7,
+      "authors": [
+        "Pengxuan Zhu",
+        "Tomas Gonzalo"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/analyses/AnalysisData.hpp",
+      "kind": "modified",
+      "added": 10,
+      "deleted": 2,
+      "commits": 4,
+      "authors": [
+        "ChrisJChang",
+        "Patrick Stöcker",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "results",
+      "theme_label": "Result framework"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2019_008.info",
+      "kind": "added",
+      "added": 10,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_28.info",
+      "kind": "added",
+      "added": 10,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_02_36invfb.info",
+      "kind": "added",
+      "added": 10,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp",
+      "kind": "renamed",
+      "added": 10,
+      "deleted": 5,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_21.info",
+      "kind": "added",
+      "added": 10,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_09.info",
+      "kind": "added",
+      "added": 10,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_8TeV_MultiLEP_20invfb.info",
+      "kind": "added",
+      "added": 10,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_039.info",
+      "kind": "added",
+      "added": 10,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "gum/Templates/ColliderBit_model.hpp",
+      "kind": "modified",
+      "added": 10,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Backends/patches/classy/3.1.0/classy_3.1.0.diff",
+      "kind": "modified",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/models/SUSY.hpp",
+      "kind": "modified",
+      "added": 9,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2017_039.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2018_042.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_21.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_24.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_27.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_03_RJR.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05_RJR.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_06.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_09.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_11.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_12.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_16.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_21_StopZH.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_22.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_30.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_02.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_08.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_18.cpp",
+      "kind": "renamed",
+      "added": 9,
+      "deleted": 4,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_18.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_22.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2020_16.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_014.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_033.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_039_Full.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_046.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_048.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_001.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_010.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_011.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_18_004.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_010.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_012.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_20_001.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 5,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_20_004.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_21_002.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_21_009.info",
+      "kind": "added",
+      "added": 9,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "Elements/src/functors.cpp",
+      "kind": "modified",
+      "added": 9,
+      "deleted": 1,
+      "commits": 2,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/python/cmake/boost_python_install.cmake",
+      "kind": "modified",
+      "added": 9,
+      "deleted": 10,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "cmake/python_scanners.cmake",
+      "kind": "modified",
+      "added": 9,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": ".clang-tidy",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Andrew Fowlie"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2016_078.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2018_019.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Andy Buckley",
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_013.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_014.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_017.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2018_06.cpp",
+      "kind": "renamed",
+      "added": 8,
+      "deleted": 15,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2018_06.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2018_60.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_07.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2021_35.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_8TeV_2LEPDMTOP_20invfb.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_EXO_16_048.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 3,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_043.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_051.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_012.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_006.info",
+      "kind": "added",
+      "added": 8,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andy Buckley",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ScannerBit/include/gambit/ScannerBit/base_prior.hpp",
+      "kind": "modified",
+      "added": 8,
+      "deleted": 6,
+      "commits": 1,
+      "authors": [
+        "Pat Scott"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Backends/src/frontends/SPheno_3_3_8.cpp",
+      "kind": "modified",
+      "added": 7,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/src/frontends/SPheno_4_0_3.cpp",
+      "kind": "modified",
+      "added": 7,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_1LEPStop_20invfb.info",
+      "kind": "added",
+      "added": 7,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_2LEPStop_20invfb.info",
+      "kind": "added",
+      "added": 7,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_3LEPEW_20invfb.info",
+      "kind": "added",
+      "added": 7,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_8TeV_1LEPDMTOP_20invfb.info",
+      "kind": "added",
+      "added": 7,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_8TeV_MONOJET_20invfb.info",
+      "kind": "added",
+      "added": 7,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/collider_event_weights.cpp",
+      "kind": "modified",
+      "added": 7,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Core/src/likelihood_container.cpp",
+      "kind": "modified",
+      "added": 7,
+      "deleted": 2,
+      "commits": 2,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Elements/include/gambit/Elements/functors.hpp",
+      "kind": "modified",
+      "added": 7,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/python/CMakeLists.txt",
+      "kind": "modified",
+      "added": 7,
+      "deleted": 7,
+      "commits": 2,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "cmake/FindCython.cmake",
+      "kind": "modified",
+      "added": 7,
+      "deleted": 7,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "cmake/MacOSX.cmake",
+      "kind": "modified",
+      "added": 7,
+      "deleted": 7,
+      "commits": 4,
+      "authors": [
+        "Are Raklev",
+        "Pengxuan Zhu",
+        "Tore Klungland"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "plotting_files/README",
+      "kind": "added",
+      "added": 7,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Backends/src/frontends/MicrOmegas_ScalarSingletDM_Z3_3_6_9_2.cpp",
+      "kind": "modified",
+      "added": 6,
+      "deleted": 2,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/src/frontends/MontePythonLike_3_5_0.cpp",
+      "kind": "modified",
+      "added": 6,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "idamarie1303"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/detectors/BuckFast.hpp",
+      "kind": "modified",
+      "added": 6,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/getPy8Collider.hpp",
+      "kind": "modified",
+      "added": 6,
+      "deleted": 34,
+      "commits": 3,
+      "authors": [
+        "Anders Kvellestad",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_7TeV_1OR2LEPStop_4_7invfb.info",
+      "kind": "added",
+      "added": 6,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_7TeV_2LEPStop_4_7invfb.info",
+      "kind": "added",
+      "added": 6,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_0LEPStop_20invfb.info",
+      "kind": "added",
+      "added": 6,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_0LEP_20invfb.info",
+      "kind": "added",
+      "added": 6,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_1LEPbb_20invfb.info",
+      "kind": "added",
+      "added": 6,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_2LEPEW_20invfb.info",
+      "kind": "added",
+      "added": 6,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_2bStop_20invfb.info",
+      "kind": "added",
+      "added": 6,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Andy Buckley"
+      ],
+      "attribution": "upstream",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2017_039.cpp",
+      "kind": "renamed",
+      "added": 6,
+      "deleted": 90,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2012_04.cpp",
+      "kind": "renamed",
+      "added": 6,
+      "deleted": 4,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/getHepMCEvent.cpp",
+      "kind": "modified",
+      "added": 6,
+      "deleted": 44,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "Models/scripts/particle_harvester.py",
+      "kind": "modified",
+      "added": 6,
+      "deleted": 2,
+      "commits": 1,
+      "authors": [
+        "Claude"
+      ],
+      "attribution": "assisted",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "ScannerBit/include/gambit/ScannerBit/py_module_scan.hpp",
+      "kind": "modified",
+      "added": 6,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Backends/src/frontends/MicrOmegas_ScalarSingletDM_Z2_3_6_9_2.cpp",
+      "kind": "modified",
+      "added": 5,
+      "deleted": 2,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/examples/ColliderBit_SLHA_scan_model.yaml",
+      "kind": "modified",
+      "added": 5,
+      "deleted": 3,
+      "commits": 3,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/Utils.cpp",
+      "kind": "modified",
+      "added": 5,
+      "deleted": 2,
+      "commits": 5,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "ColliderBit/src/getAnalysisContainer.cpp",
+      "kind": "modified",
+      "added": 5,
+      "deleted": 2,
+      "commits": 2,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/python/cmake/modules/FindNumPy.cmake",
+      "kind": "modified",
+      "added": 5,
+      "deleted": 5,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "cmake/FindEigen3.cmake",
+      "kind": "modified",
+      "added": 5,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "contrib/heputils/include/HEPUtils/Event.h",
+      "kind": "modified",
+      "added": 5,
+      "deleted": 5,
+      "commits": 3,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "Backends/include/gambit/Backends/backend_types/Pythia_8_312/abstract_Logger.h",
+      "kind": "modified",
+      "added": 4,
+      "deleted": 4,
+      "commits": 4,
+      "authors": [
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/include/gambit/Backends/backend_types/Pythia_8_312/wrapper_Logger_decl.h",
+      "kind": "modified",
+      "added": 4,
+      "deleted": 4,
+      "commits": 4,
+      "authors": [
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/include/gambit/Backends/backend_types/Pythia_8_312/wrapper_Logger_def.h",
+      "kind": "modified",
+      "added": 4,
+      "deleted": 4,
+      "commits": 4,
+      "authors": [
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/examples/ColliderBit_SLHA_file_model.yaml",
+      "kind": "modified",
+      "added": 4,
+      "deleted": 3,
+      "commits": 3,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/detectors/BuckFast.cpp",
+      "kind": "modified",
+      "added": 4,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "Core/include/gambit/Core/observable.hpp",
+      "kind": "modified",
+      "added": 4,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Core/src/diagnostics.cpp",
+      "kind": "modified",
+      "added": 4,
+      "deleted": 3,
+      "commits": 2,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "DarkBit/src/SubGeVDM_SelfInteractions.cpp",
+      "kind": "modified",
+      "added": 4,
+      "deleted": 4,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Printers/include/gambit/Printers/printers/hdf5printer_v2.hpp",
+      "kind": "modified",
+      "added": 4,
+      "deleted": 157,
+      "commits": 6,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang",
+        "Claude"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "cmake/cleaning.cmake",
+      "kind": "modified",
+      "added": 4,
+      "deleted": 1,
+      "commits": 2,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/include/gambit/Backends/backend_macros.hpp",
+      "kind": "modified",
+      "added": 3,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/include/gambit/Backends/mathematica_macros.hpp",
+      "kind": "modified",
+      "added": 3,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/ColliderBit_types.hpp",
+      "kind": "modified",
+      "added": 3,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/analyses/SignalRegionData.hpp",
+      "kind": "modified",
+      "added": 3,
+      "deleted": 3,
+      "commits": 2,
+      "authors": [
+        "Patrick Stöcker",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "results",
+      "theme_label": "Result framework"
+    },
+    {
+      "path": "ColliderBit/src/MCLoopInfo.cpp",
+      "kind": "modified",
+      "added": 3,
+      "deleted": 3,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_Baselines.cpp",
+      "kind": "modified",
+      "added": 3,
+      "deleted": 3,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/getLHEvent.cpp",
+      "kind": "modified",
+      "added": 3,
+      "deleted": 34,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "ColliderBit/src/models/SUSY.cpp",
+      "kind": "modified",
+      "added": 3,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Elements/include/gambit/Elements/shared_types.hpp",
+      "kind": "modified",
+      "added": 3,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Elements/scripts/module_harvester.py",
+      "kind": "modified",
+      "added": 3,
+      "deleted": 3,
+      "commits": 1,
+      "authors": [
+        "Claude"
+      ],
+      "attribution": "assisted",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "Logs/src/logmaster.cpp",
+      "kind": "modified",
+      "added": 3,
+      "deleted": 2,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "cmake/tarball_info.cmake",
+      "kind": "modified",
+      "added": 3,
+      "deleted": 3,
+      "commits": 2,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "gum/Templates/ColliderBit_model.cpp",
+      "kind": "modified",
+      "added": 3,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "DarkBit/src/Axions.cpp",
+      "kind": "modified",
+      "added": 2,
+      "deleted": 4,
+      "commits": 2,
+      "authors": [
+        "ChrisJChang",
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Elements/src/wimp_types.cpp",
+      "kind": "modified",
+      "added": 2,
+      "deleted": 2,
+      "commits": 1,
+      "authors": [
+        "Torsten Bringmann"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "README_OSX.md",
+      "kind": "modified",
+      "added": 2,
+      "deleted": 2,
+      "commits": 2,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/scripts/scanner+_harvester.py",
+      "kind": "modified",
+      "added": 2,
+      "deleted": 15,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "ScannerBit/src/scanners/postprocessor_1.0.0/postprocessor.cpp",
+      "kind": "modified",
+      "added": 2,
+      "deleted": 2,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/src/scanners/python/plugins/gambit_scipy.py",
+      "kind": "modified",
+      "added": 2,
+      "deleted": 2,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "SpecBit/include/gambit/SpecBit/SpecBit_externaltests.hpp",
+      "kind": "modified",
+      "added": 2,
+      "deleted": 2,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "cmake/warnings.cmake",
+      "kind": "modified",
+      "added": 2,
+      "deleted": 2,
+      "commits": 3,
+      "authors": [
+        "Anders Kvellestad",
+        "ChrisJChang",
+        "Will Handley"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "config/scanner_locations.yaml.default",
+      "kind": "modified",
+      "added": 2,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Pat Scott"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "contrib/METSignificance/src/METSignificance.cpp",
+      "kind": "modified",
+      "added": 2,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "contrib/yaml-cpp-0.6.2/CMakeLists.txt",
+      "kind": "modified",
+      "added": 2,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Claude"
+      ],
+      "attribution": "assisted",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "yaml_files/CosmoBit_quickStart.yaml",
+      "kind": "modified",
+      "added": 2,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "idamarie1303"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "Backends/include/gambit/Backends/backend_types/Pythia_8_312/abstract_Info.h",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 3,
+      "authors": [
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/include/gambit/Backends/backend_types/Pythia_8_312/wrapper_Info_decl.h",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 3,
+      "authors": [
+        "Are Raklev",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/include/gambit/Backends/backend_types/classy.hpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/include/gambit/Backends/interoperability_macros.hpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/scripts/BOSS/configs/rivet_4_1_0.py",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 2,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/src/frontends/DarkAges_1_2_0.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/src/frontends/simple_xs_1_0.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/colliders/Pythia8/Py8Collider.hpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/topness.h",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/lhef2heputils.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 0,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "Core/src/yaml_parser.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "CosmoBit/src/BBN.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 3,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "CosmoBit/src/Planck.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Elements/include/gambit/Elements/safety_bucket.hpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Elements/scripts/standalone_facilitator.py",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 2,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "Elements/src/mssm_slhahelp.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "FlavBit/src/Flav_reader.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Logs/src/logging.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Printers/include/gambit/Printers/basebaseprinter.hpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Printers/scripts/printer_harvester.py",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Claude"
+      ],
+      "attribution": "assisted",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "ScannerBit/include/gambit/ScannerBit/plugin_interface.hpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 2,
+      "authors": [
+        "Patrick Stöcker",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/include/gambit/ScannerBit/priors/cauchy.hpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/include/gambit/ScannerBit/priors/gaussian.hpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/include/gambit/ScannerBit/priors/lognormal.hpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/python/cmake/boost_python.cmake",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/python/cmake/scannerbit_python_interface_utils.cmake",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/src/objectives/python/python.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/src/scanners/jswarm/jswarm.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/src/scanners/postprocessor_1.0.0/postprocessor_object.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/src/scanners/postprocessor_2.0.0/postprocessor_object.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/src/scanners/python/plugins/grid.py",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "ScannerBit/src/scanners/python/plugins/utils/mpi.py",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "ScannerBit/src/scanners/python/python.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/src/scanners/twalk/twalk.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "SpecBit/include/gambit/SpecBit/MSSMSpec.hpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Utils/include/gambit/Utils/exceptions.hpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Utils/include/gambit/Utils/model_parameters.hpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Utils/src/exceptions.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "cmake/preprocessor.cmake",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Will Handley"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "contrib/METSignificance/include/METSignificance/METSignificance.hpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "contrib/METSignificance/src/ObjectResolutions_notused.cpp",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "gum/gum",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "gum/src/cmake_variables.py.in",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "gum/src/pythia.py",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "yaml_files/DMsimp.yaml",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "yaml_files/test_cutflows.yaml",
+      "kind": "modified",
+      "added": 1,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": ".github/workflows/OLD/ci_Mac_arm64.yml",
+      "kind": "renamed",
+      "added": 0,
+      "deleted": 0,
+      "commits": 4,
+      "authors": [
+        "Andrew Fowlie",
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": ".github/workflows/OLD/ci_Mac_x64.yml",
+      "kind": "renamed",
+      "added": 0,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": ".github/workflows/OLD/ci_linux.yml",
+      "kind": "renamed",
+      "added": 0,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Backends/include/gambit/Backends/backend_types/gm2calc_1_2_0/loaded_types.hpp",
+      "kind": "modified",
+      "added": 0,
+      "deleted": 2,
+      "commits": 1,
+      "authors": [
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/include/gambit/Backends/backend_types/gm2calc_1_3_0/loaded_types.hpp",
+      "kind": "modified",
+      "added": 0,
+      "deleted": 2,
+      "commits": 1,
+      "authors": [
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/include/gambit/Backends/frontends/simple_xs_1_0.hpp",
+      "kind": "renamed",
+      "added": 0,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/scripts/BOSS/configs/gm2calc_1_2_0.py",
+      "kind": "modified",
+      "added": 0,
+      "deleted": 3,
+      "commits": 1,
+      "authors": [
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "Backends/scripts/BOSS/configs/gm2calc_1_3_0.py",
+      "kind": "modified",
+      "added": 0,
+      "deleted": 3,
+      "commits": 1,
+      "authors": [
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/lhef2heputils.hpp",
+      "kind": "modified",
+      "added": 0,
+      "deleted": 1,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "event-pipeline",
+      "theme_label": "Event / jet pipeline"
+    },
+    {
+      "path": "ColliderBit/include/gambit/ColliderBit/xsec.hpp",
+      "kind": "modified",
+      "added": 0,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_2BoostedBosons_139invfb.cpp",
+      "kind": "deleted",
+      "added": 0,
+      "deleted": 538,
+      "commits": 3,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_13TeV_3LEP_139invfb.cpp",
+      "kind": "deleted",
+      "added": 0,
+      "deleted": 858,
+      "commits": 3,
+      "authors": [
+        "ChrisJChang",
+        "Pengxuan Zhu"
+      ],
+      "attribution": "mixed",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_CMS_13TeV_MultiLEP_36invfb.cpp",
+      "kind": "deleted",
+      "added": 0,
+      "deleted": 916,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "analyses",
+      "theme_label": "Analyses"
+    },
+    {
+      "path": "NeutrinoBit/include/gambit/NeutrinoBit/NeutrinoBit_rollcall.hpp",
+      "kind": "modified",
+      "added": 0,
+      "deleted": 2,
+      "commits": 1,
+      "authors": [
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "NeutrinoBit/src/NeutrinoBit.cpp",
+      "kind": "modified",
+      "added": 0,
+      "deleted": 2,
+      "commits": 1,
+      "authors": [
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Printers/standalone/manual_hdf5_combine.cpp",
+      "kind": "deleted",
+      "added": 0,
+      "deleted": 250,
+      "commits": 2,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/include/gambit/ScannerBit/py_module.hpp",
+      "kind": "modified",
+      "added": 0,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "ScannerBit/include/gambit/ScannerBit/python_utils.hpp",
+      "kind": "modified",
+      "added": 0,
+      "deleted": 1,
+      "commits": 1,
+      "authors": [
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "Utils/include/gambit/Utils/begin_ignore_warnings_eigen.hpp",
+      "kind": "deleted",
+      "added": 0,
+      "deleted": 51,
+      "commits": 1,
+      "authors": [
+        "Patrick Stöcker"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "cmake/executables.cmake",
+      "kind": "modified",
+      "added": 0,
+      "deleted": 16,
+      "commits": 1,
+      "authors": [
+        "Anders Kvellestad"
+      ],
+      "attribution": "upstream",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "config/backend_locations.yaml.default",
+      "kind": "modified",
+      "added": 0,
+      "deleted": 4,
+      "commits": 1,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "build",
+      "theme_label": "Build / backends / config"
+    },
+    {
+      "path": "plotting_files/WC_lite.pip",
+      "kind": "renamed",
+      "added": 0,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "plotting_files/spartan.pip",
+      "kind": "renamed",
+      "added": 0,
+      "deleted": 0,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "other",
+      "theme_label": "Other"
+    },
+    {
+      "path": "yaml_files/ATLAS_13TeV_EXOT_TT_WbWb_36invfb.yaml",
+      "kind": "deleted",
+      "added": 0,
+      "deleted": 61,
+      "commits": 2,
+      "authors": [
+        "Pengxuan Zhu"
+      ],
+      "attribution": "own",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    },
+    {
+      "path": "yaml_files/README",
+      "kind": "modified",
+      "added": 0,
+      "deleted": 5,
+      "commits": 1,
+      "authors": [
+        "ChrisJChang"
+      ],
+      "attribution": "upstream",
+      "theme": "yaml",
+      "theme_label": "YAML & scripts"
+    }
+  ],
+  "analysis_status": {
+    "Analysis_ATLAS_EXOT_2018_60": {
+      "status": "skeleton",
+      "note": "run() carries a TODO; collect_results() is empty. Registered only."
+    },
+    "Analysis_CMS_B2G_18_003": {
+      "status": "partial",
+      "note": "3M histogram SRs digitised; 3T/2M1L obs/bkg pending; high-mass is a cut-and-count approximation, not the CMS shape fit."
+    }
+  }
+}

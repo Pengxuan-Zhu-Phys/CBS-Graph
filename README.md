@@ -16,6 +16,7 @@ Glean 不是运行时图的替代品：Glean 描述源码符号和引用，而 G
 仓库中已迁移的 CBS 静态文档和页面包括：
 
 - `index.html`：站点首页
+- `dependences/cbs-change-ledger.html`：**变更台账 slide**——`ColliderBit_solo_development` 相对 `private-SUSYRun2` 源分支做了什么，逐文件标注作者归属
 - `dependences/cbs-full-execution-flow.html`：CBS 从启动到最终输出的完整流程
 - `dependences/main-change-tree.html`：SUSYRun2 原型与当前 CBS 框架的 `main()` 对照
 - `dependences/three-analysis-dependency-graphs.html`：三个 ColliderBit 分析的局部依赖图
@@ -101,6 +102,26 @@ python3 scripts/compare-cbs-branches.py \
 - `site/cbs-branch-comparison.html`：可直接交给 GitHub Pages 的自包含页面。
 
 图是静态源码证据，不是运行时 trace，也不是完整 C++ AST；CBS 的运行时 functor 图仍应使用 GAMBIT 运行生成的 `.gv` 文件。
+
+## 变更台账（汇报用 slide）
+
+`compare-cbs-branches.py` 把两个 worktree 当成普通文件树来 diff，因此**无法识别重命名**：75 个改名的分析会被报成"左边删除 75 个 + 右边新增 75 个"，凭空放大约 150 个文件的改动量。
+
+`scripts/build-change-ledger.py` 改为直接向 Git 提问，用 `-M` 让 Git 自己做重命名检测，并按文件统计作者归属，避免把从 `master` 合并进来的上游工作算成本地工作：
+
+```bash
+python3 scripts/build-change-ledger.py \
+  --gambit-root ~/Gambit-Workshop/gambit
+```
+
+生成：
+
+- `dependences/cbs-change-ledger.json`：逐文件的改动量、提交数、作者列表和归属分类（`own` / `mixed` / `upstream`）；
+- `dependences/cbs-change-ledger.html`：11 页自包含 slide，内联 SVG 流程图，不依赖任何 CDN；按 `P` 展开全部页面以便打印成 PDF。
+
+基线是 `private-SUSYRun2` 与开发分支的共同祖先，而不是 `gambit/master`——因为要回答的问题是"相对合作者手上的源分支我改了什么"。`gambit/master` 已完全合入，分支落后 0 个提交。
+
+台账只反映**代码变化**，不反映**物理结果变化**：过程中没有重新编译或运行 CBS。
 
 ## 生成 GitHub Pages 页面
 

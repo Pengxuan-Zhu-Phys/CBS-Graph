@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBS Change Ledger · ColliderBit Solo vs SUSYRun2</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --paper:#f5f5f5; --card:#fff; --ink:#2d3142; --muted:#4f5d75; --soft:#7a8399;
+  --rule:rgba(45,49,66,.13); --rule2:rgba(45,49,66,.28);
+  --blue:#4a6fa5; --blue-bg:#eef3fb;
+  --orange:#b55c2d; --orange-bg:#fff0e8;
+  --green:#4f8a69; --green-bg:#eef8f1;
+  --red:#a4443a; --red-bg:#fdeeec;
+  --font-sans:Inter,ui-sans-serif,system-ui,-apple-system,"Helvetica Neue",sans-serif;
+  --font-mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-sans);-webkit-font-smoothing:antialiased}
+code,.mono{font-family:var(--font-mono)}
+
+/* ---------- deck chrome ---------- */
+.deck{position:relative}
+.slide{
+  display:none; min-height:100vh; padding:56px 64px 96px;
+  width:min(1240px,100%); margin:0 auto; flex-direction:column;
+}
+.slide.active{display:flex}
+.eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);margin:0}
+h1{margin:14px 0 0;font-size:clamp(34px,5.4vw,62px);line-height:1.02;letter-spacing:-.045em;max-width:20ch}
+h2{margin:10px 0 6px;font-size:clamp(26px,3.4vw,40px);line-height:1.08;letter-spacing:-.03em}
+h3{margin:0 0 8px;font-size:16px;letter-spacing:-.01em}
+.lede{max-width:78ch;color:var(--muted);font-size:16px;line-height:1.68;margin:16px 0 0}
+.slide > .body{margin-top:26px;flex:1}
+.rule{height:1px;background:var(--rule);margin:22px 0 0}
+
+/* ---------- nav ---------- */
+.nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  display:flex;align-items:center;gap:14px;
+  padding:10px 20px;background:rgba(245,245,245,.93);
+  backdrop-filter:blur(8px);border-top:1px solid var(--rule);
+  font-family:var(--font-mono);font-size:11px;color:var(--soft)
+}
+.nav button{
+  font:inherit;color:var(--blue);background:var(--blue-bg);
+  border:1px solid rgba(74,111,165,.35);border-radius:5px;
+  padding:5px 11px;cursor:pointer
+}
+.nav button:hover{background:#e2ecf9}
+.dots{display:flex;gap:5px;margin-left:auto;flex-wrap:wrap}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--rule2);border:0;padding:0;cursor:pointer}
+.dot.on{background:var(--blue)}
+.counter{min-width:56px}
+
+/* ---------- primitives ---------- */
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:16px 18px}
+.card p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.62}
+.card p + p{margin-top:8px}
+.card.blue{border-top:3px solid var(--blue)}
+.card.orange{border-top:3px solid var(--orange)}
+.card.green{border-top:3px solid var(--green)}
+.card.red{border-top:3px solid var(--red)}
+
+.tag{display:inline-block;padding:3px 7px;border:1px solid currentColor;border-radius:3px;
+  font-family:var(--font-mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase}
+.tag.blue{color:var(--blue);background:var(--blue-bg)}
+.tag.orange{color:var(--orange);background:var(--orange-bg)}
+.tag.green{color:var(--green);background:var(--green-bg)}
+.tag.red{color:var(--red);background:var(--red-bg)}
+.tag.gray{color:var(--soft);background:#eceef2}
+
+.stat{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:16px 18px}
+.stat .n{font-size:clamp(28px,3.6vw,44px);line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.stat .k{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--soft);margin-top:9px}
+.stat .s{font-size:12px;color:var(--muted);margin-top:7px;line-height:1.5}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--soft);font-weight:400;padding:0 10px 8px;border-bottom:1px solid var(--rule2)}
+td{padding:9px 10px;border-bottom:1px solid var(--rule);color:var(--muted);vertical-align:top}
+td.name{color:var(--ink)}
+td.num{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.add{color:var(--green)} .del{color:var(--red)}
+
+.bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:#e6e8ec;min-width:110px}
+.bar i{display:block}
+.bar .own{background:var(--blue)} .bar .mix{background:var(--orange)} .bar .up{background:#c3c8d2}
+
+.note{border-left:3px solid var(--orange);background:#fff8f3;padding:13px 16px;
+  color:var(--muted);font-size:13px;line-height:1.62;border-radius:0 6px 6px 0}
+.note.blue{border-left-color:var(--blue);background:var(--blue-bg)}
+.note.red{border-left-color:var(--red);background:var(--red-bg)}
+
+.kv{display:flex;gap:8px;font-size:12.5px;line-height:1.6;padding:6px 0;border-bottom:1px solid var(--rule)}
+.kv:last-child{border-bottom:0}
+.kv dt{flex:0 0 148px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--soft);margin:2px 0 0}
+.kv dd{margin:0;color:var(--muted)}
+dl{margin:0}
+
+.renames{font-family:var(--font-mono);font-size:11px;line-height:1.85;columns:2;column-gap:30px}
+.renames div{break-inside:avoid;color:var(--soft)}
+.renames b{font-weight:400;color:var(--ink)}
+.renames s{color:var(--soft);text-decoration:none;opacity:.8}
+
+svg{display:block;max-width:100%;height:auto}
+.svg-wrap{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:18px;overflow-x:auto}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--font-mono);font-size:10px;
+  letter-spacing:.06em;color:var(--soft);margin-top:12px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:2px;display:block}
+
+.foot{margin-top:auto;padding-top:20px;font-family:var(--font-mono);font-size:10px;
+  color:var(--soft);line-height:1.7;border-top:1px solid var(--rule)}
+
+/* ---------- print ---------- */
+@media print{
+  .nav{display:none}
+  .slide{display:flex!important;min-height:auto;page-break-after:always;padding:24px 0}
+  body{background:#fff}
+  .slide:last-child{page-break-after:auto}
+}
+@media (max-width:900px){
+  .slide{padding:34px 22px 92px}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .renames{columns:1}
+  .kv{flex-direction:column;gap:2px}
+  .kv dt{flex:none}
+}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- ============ 1 · title ============ -->
+<section class="slide active">
+  <p class="eyebrow">GAMBIT · ColliderBit · change ledger</p>
+  <h1>What CBS changed, and who changed it</h1>
+  <p class="lede">
+    A file-level ledger of <code>ColliderBit_solo_development</code> measured against the
+    <code>private-SUSYRun2</code> source branch it grew out of — separating work done here
+    from upstream <code>master</code> merged in along the way.
+  </p>
+  <div class="body">
+    <div class="grid g4">
+      <div class="stat"><div class="n">416</div><div class="k">files changed</div>
+        <div class="s">Since the common ancestor <code>9c955e3a7</code>.</div></div>
+      <div class="stat"><div class="n">147</div><div class="k">files · local only</div>
+        <div class="s">Touched exclusively by commits authored here.</div></div>
+      <div class="stat"><div class="n">75</div><div class="k">analyses renamed</div>
+        <div class="s">Descriptive names → publication report numbers.</div></div>
+      <div class="stat"><div class="n">12</div><div class="k">analyses added</div>
+        <div class="s">10 implemented, 1 partial, 1 skeleton.</div></div>
+    </div>
+    <div class="rule"></div>
+    <dl style="margin-top:20px">
+      <div class="kv"><dt>Head</dt><dd><code>ColliderBit_solo_development</code> @ <code>65aca0890d</code></dd></div>
+      <div class="kv"><dt>Source branch</dt><dd><code>private-SUSYRun2</code> @ <code>5989e2d27a</code> — the baseline this deck measures against</dd></div>
+      <div class="kv"><dt>Upstream master</dt><dd><code>gambit/master</code> @ <code>b4c3e6d027</code> — fully merged in; the branch is 0 commits behind</dd></div>
+      <div class="kv"><dt>Common ancestor</dt><dd><code>9c955e3a7</code></dd></div>
+    </dl>
+  </div>
+  <p class="foot">Use ← → or space to move. Press <b>P</b> for a printable all-slides view (⌘P → Save as PDF).</p>
+</section>
+
+<!-- ============ 2 · method ============ -->
+<section class="slide">
+  <p class="eyebrow">02 · scope and method</p>
+  <h2>What counts as "my change"</h2>
+  <p class="lede">The branch carries 606 commits that master does not — but only 226 of them were authored
+  here. Every number in this deck is attributed per file, so merged upstream work is never
+  counted as local work.</p>
+  <div class="body">
+    <div class="grid g3">
+      <div class="card blue">
+        <span class="tag blue">Local</span>
+        <h3 style="margin-top:10px">147 files</h3>
+        <p>Every commit touching the file since the common ancestor was authored here. This is the
+        defensible "I did this" set.</p>
+      </div>
+      <div class="card orange">
+        <span class="tag orange">Mixed</span>
+        <h3 style="margin-top:10px">87 files</h3>
+        <p>Touched both here and by collaborators or upstream. Shared ownership — worth discussing
+        line by line rather than claiming.</p>
+      </div>
+      <div class="card">
+        <span class="tag gray">Upstream</span>
+        <h3 style="margin-top:10px">174 files</h3>
+        <p>Arrived purely through <code>master</code> merges. Listed for completeness; not presented
+        as local work.</p>
+      </div>
+    </div>
+    <div class="note blue" style="margin-top:20px">
+      <b>Why this deck exists alongside the branch-comparison graph.</b>
+      The existing tree-diff comparison has no rename detection, so it reports each of the 75
+      renamed analyses twice — once as "deleted on the left", once as "added on the right", inflating
+      the apparent churn by ~150 files. This ledger asks Git directly with <code>-M</code>, so a rename
+      is one moved file.
+    </div>
+    <div class="note" style="margin-top:14px">
+      <b>Evidence boundary.</b> Everything here comes from Git history and current source text.
+      Nothing was recompiled or re-run: this is a record of what changed in the code, not a
+      measurement of what changed in the physics output.
+    </div>
+  </div>
+  <p class="foot">Regenerate with <code>scripts/build-change-ledger.py --gambit-root ~/Gambit-Workshop/gambit</code></p>
+</section>
+
+<!-- ============ 3 · architecture before/after ============ -->
+<section class="slide">
+  <p class="eyebrow">03 · architecture</p>
+  <h2>From a GAMBIT module to a standalone runner</h2>
+  <p class="lede">The physics layer is reused unchanged. What is new is everything around it:
+  an entry point, an input model, a batch executor, and a serialised result contract.</p>
+  <div class="body">
+    <div class="svg-wrap">
+      <svg viewBox="0 0 1120 470" role="img" aria-label="Before and after architecture comparison">
+        <defs>
+          <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#7a8399"/>
+          </marker>
+          <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#4a6fa5"/>
+          </marker>
+        </defs>
+        <style>
+          .lbl{font:11.5px var(--font-sans,sans-serif);fill:#2d3142}
+          .sub{font:9.5px "SF Mono",monospace;fill:#7a8399}
+          .hdr{font:10px "SF Mono",monospace;fill:#7a8399;letter-spacing:.13em;text-transform:uppercase}
+          .bx{fill:#fff;stroke:#c8ccd6;stroke-width:1;rx:6}
+          .bx-new{fill:#eef3fb;stroke:#4a6fa5;stroke-width:1.4;rx:6}
+          .bx-core{fill:#eef8f1;stroke:#4f8a69;stroke-width:1.2;rx:6}
+          .ln{stroke:#7a8399;stroke-width:1.2;fill:none;marker-end:url(#a1)}
+          .ln-new{stroke:#4a6fa5;stroke-width:1.4;fill:none;marker-end:url(#a2)}
+        </style>
+
+        <!-- divider -->
+        <line x1="530" y1="20" x2="530" y2="450" stroke="#d8dbe2" stroke-width="1" stroke-dasharray="3 4"/>
+
+        <!-- BEFORE -->
+        <text class="hdr" x="24" y="26">Before · SUSYRun2</text>
+        <rect class="bx" x="24" y="42" width="440" height="40"/>
+        <text class="lbl" x="44" y="60">Full GAMBIT scan configuration</text>
+        <text class="sub" x="44" y="74">YAML · scanner · priors · printers · dependency resolver</text>
+        <path class="ln" d="M244 82 L244 106"/>
+
+        <rect class="bx" x="24" y="110" width="440" height="36"/>
+        <text class="lbl" x="44" y="133">Core dependency resolution → ColliderBit functors</text>
+        <path class="ln" d="M244 146 L244 170"/>
+
+        <rect class="bx-core" x="24" y="174" width="440" height="106"/>
+        <text class="hdr" x="44" y="194">physics layer</text>
+        <text class="lbl" x="44" y="214">HepMC → HEPUtils::Event → BuckFast → jets</text>
+        <text class="lbl" x="44" y="236">AnalysisContainer::analyze() · OpenMP</text>
+        <text class="lbl" x="44" y="258">signal regions → LHC_likelihoods</text>
+        <path class="ln" d="M244 280 L244 304"/>
+
+        <rect class="bx" x="24" y="308" width="440" height="36"/>
+        <text class="lbl" x="44" y="331">GAMBIT printers → scan output</text>
+
+        <text class="sub" x="24" y="378">Per-analysis cutflow conventions;</text>
+        <text class="sub" x="24" y="394">no shared histogram type;</text>
+        <text class="sub" x="24" y="410">results live as C++ objects in-process.</text>
+
+        <!-- AFTER -->
+        <text class="hdr" x="580" y="26">After · ColliderBit Solo</text>
+        <rect class="bx-new" x="580" y="42" width="516" height="40"/>
+        <text class="lbl" x="600" y="60">solo_cli · solo_input</text>
+        <text class="sub" x="600" y="74">argv validation · YAML · processes · cross sections</text>
+        <path class="ln-new" d="M838 82 L838 106"/>
+
+        <rect class="bx-new" x="580" y="110" width="516" height="36"/>
+        <text class="lbl" x="600" y="127">solo_batch — one subprocess per HepMC file</text>
+        <text class="sub" x="600" y="140">weighted SR-level merge, not summed per-file loglike</text>
+        <path class="ln-new" d="M838 146 L838 170"/>
+
+        <rect class="bx-core" x="580" y="174" width="516" height="106"/>
+        <text class="hdr" x="600" y="194">physics layer · reused unchanged</text>
+        <text class="lbl" x="600" y="214">HepMC → HEPUtils::Event → BuckFast → jets + VR jets</text>
+        <text class="lbl" x="600" y="236">AnalysisContainer::analyze() · OpenMP</text>
+        <text class="lbl" x="600" y="258">signal regions → LHC_likelihoods</text>
+        <path class="ln-new" d="M838 280 L838 304"/>
+
+        <rect class="bx-new" x="580" y="308" width="516" height="52"/>
+        <text class="lbl" x="600" y="327">solo_output — schema cbs-solo-loglike-v1</text>
+        <text class="sub" x="600" y="342">cutflows · histograms · SR yields · MC errors · covariance</text>
+        <path class="ln-new" d="M838 360 L838 384"/>
+
+        <rect class="bx-new" x="580" y="388" width="516" height="36"/>
+        <text class="lbl" x="600" y="411">plot_cbs_histograms.py → figures</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <span><i style="background:#eef3fb;border:1.4px solid #4a6fa5"></i> new in CBS</span>
+      <span><i style="background:#eef8f1;border:1.2px solid #4f8a69"></i> reused ColliderBit physics</span>
+      <span><i style="background:#fff;border:1px solid #c8ccd6"></i> unchanged / replaced</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4 · ledger table ============ -->
+<section class="slide">
+  <p class="eyebrow">04 · the ledger</p>
+  <h2>Where the changes landed</h2>
+  <p class="lede">Two areas — the standalone runner and the event/jet pipeline — have
+  <b>zero upstream contribution</b>. They exist only on this branch.</p>
+  <div class="body">
+    <table>
+      <thead><tr>
+        <th>Area</th><th style="width:130px">Attribution</th>
+        <th class="num">Local</th><th class="num">Mixed</th><th class="num">Upstream</th>
+        <th class="num">Lines added</th><th>Note</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td class="name">CBS standalone runner</td>
+          <td><span class="bar"><i class="own" style="width:80%"></i><i class="mix" style="width:20%"></i></span></td>
+          <td class="num">8</td><td class="num">2</td><td class="num">0</td>
+          <td class="num add">+2,978</td>
+          <td><code>solo_cli / input / batch / output</code> — entirely local</td>
+        </tr>
+        <tr>
+          <td class="name">Event / jet pipeline</td>
+          <td><span class="bar"><i class="own" style="width:71%"></i><i class="mix" style="width:29%"></i></span></td>
+          <td class="num">10</td><td class="num">4</td><td class="num">0</td>
+          <td class="num add">+1,098</td>
+          <td>variable-R jets threaded through conversion → BuckFast</td>
+        </tr>
+        <tr>
+          <td class="name">Result framework</td>
+          <td><span class="bar"><i class="own" style="width:60%"></i><i class="mix" style="width:30%"></i><i class="up" style="width:10%"></i></span></td>
+          <td class="num">6</td><td class="num">3</td><td class="num">1</td>
+          <td class="num add">+1,143</td>
+          <td>Cutflow, Histogram, macros — plus vendored <code>json.hpp</code> (25,510)</td>
+        </tr>
+        <tr>
+          <td class="name">Analyses</td>
+          <td><span class="bar"><i class="own" style="width:61%"></i><i class="mix" style="width:30%"></i><i class="up" style="width:9%"></i></span></td>
+          <td class="num">109</td><td class="num">53</td><td class="num">17</td>
+          <td class="num add">+11,073</td>
+          <td>12 added · 75 renamed · 3 modified · 3 deleted</td>
+        </tr>
+        <tr>
+          <td class="name">YAML &amp; scripts</td>
+          <td><span class="bar"><i class="own" style="width:40%"></i><i class="mix" style="width:4%"></i><i class="up" style="width:56%"></i></span></td>
+          <td class="num">10</td><td class="num">1</td><td class="num">14</td>
+          <td class="num add">+302</td>
+          <td>SUSYRun2 MSSMEW configs, plotting script</td>
+        </tr>
+        <tr>
+          <td class="name">Build / backends / config</td>
+          <td><span class="bar"><i class="own" style="width:5%"></i><i class="mix" style="width:29%"></i><i class="up" style="width:66%"></i></span></td>
+          <td class="num">3</td><td class="num">16</td><td class="num">37</td>
+          <td class="num add">+830</td>
+          <td>Mostly collaborative CMake work</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:20px">
+      <b>Read the "Result framework" line carefully.</b> Its raw diff is +26,653, but 25,510 of those
+      lines are a vendored copy of <code>nlohmann/json.hpp</code> dropped into <code>Utils/include</code>.
+      The hand-written framework code is +1,143. Quoting the raw number would overstate the work
+      by a factor of 23.
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5 · CBS runner ============ -->
+<section class="slide">
+  <p class="eyebrow">05 · new capability</p>
+  <h2>The standalone runner</h2>
+  <p class="lede">+2,978 lines across ten files, none of which exist upstream. This is the
+  single largest structural addition on the branch.</p>
+  <div class="body">
+    <div class="svg-wrap">
+      <svg viewBox="0 0 1120 300" role="img" aria-label="CBS runner module flow">
+        <style>
+          .l{font:11.5px var(--font-sans,sans-serif);fill:#2d3142}
+          .m{font:9.5px "SF Mono",monospace;fill:#7a8399}
+          .t{font:10px "SF Mono",monospace;fill:#4a6fa5}
+          .b{fill:#eef3fb;stroke:#4a6fa5;stroke-width:1.4;rx:7}
+          .bg{fill:#eef8f1;stroke:#4f8a69;stroke-width:1.2;rx:7}
+          .e{stroke:#4a6fa5;stroke-width:1.4;fill:none;marker-end:url(#a3)}
+          .ed{stroke:#b55c2d;stroke-width:1.3;fill:none;stroke-dasharray:4 3;marker-end:url(#a4)}
+        </style>
+        <defs>
+          <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#4a6fa5"/></marker>
+          <marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#b55c2d"/></marker>
+        </defs>
+
+        <rect class="b" x="16" y="60" width="176" height="76"/>
+        <text class="t" x="32" y="82">solo_cli</text>
+        <text class="l" x="32" y="102">argv parsing</text>
+        <text class="m" x="32" y="118">--help · unknown-flag</text>
+        <text class="m" x="32" y="130">reject · getopt reset</text>
+        <path class="e" d="M192 98 L232 98"/>
+
+        <rect class="b" x="234" y="60" width="196" height="76"/>
+        <text class="t" x="250" y="82">solo_input</text>
+        <text class="l" x="250" y="102">YAML → PreparedInput</text>
+        <text class="m" x="250" y="118">processes · xsec fb/pb ·</text>
+        <text class="m" x="250" y="130">file existence · analyses</text>
+        <path class="e" d="M430 98 L470 98"/>
+
+        <rect class="b" x="472" y="34" width="200" height="60"/>
+        <text class="t" x="488" y="54">solo_batch</text>
+        <text class="l" x="488" y="72">one subprocess / file</text>
+        <text class="m" x="488" y="86">multi-process samples</text>
+
+        <rect class="b" x="472" y="106" width="200" height="52"/>
+        <text class="l" x="488" y="128">single-file path</text>
+        <text class="m" x="488" y="144">settings.event_file</text>
+
+        <path class="e" d="M672 64 L712 88"/>
+        <path class="e" d="M672 130 L712 108"/>
+
+        <rect class="bg" x="714" y="62" width="184" height="72"/>
+        <text class="m" x="730" y="82">reused physics</text>
+        <text class="l" x="730" y="102">AnalysisContainer</text>
+        <text class="l" x="730" y="120">→ LHC_likelihoods</text>
+        <path class="e" d="M898 98 L938 98"/>
+
+        <rect class="b" x="940" y="60" width="166" height="76"/>
+        <text class="t" x="956" y="82">solo_output</text>
+        <text class="l" x="956" y="102">screen + JSON</text>
+        <text class="m" x="956" y="118">cbs-solo-loglike-v1</text>
+
+        <!-- merge feedback -->
+        <path class="ed" d="M1023 136 L1023 196 L572 196 L572 160"/>
+        <text class="m" x="640" y="214" fill="#b55c2d">solo_batch merges per-file JSON at signal-region level:</text>
+        <text class="m" x="640" y="228" fill="#b55c2d">same process → event-count weighted · different process → summed in quadrature</text>
+        <text class="m" x="640" y="242" fill="#b55c2d">combined likelihood is recomputed, never summed from per-file loglikes</text>
+
+        <text class="m" x="16" y="272">Files: solo.cpp (mixed, 28 commits) · solo_cli · solo_input · solo_batch · solo_output — each .hpp/.cpp pair local-only</text>
+      </svg>
+    </div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card blue"><h3>Input model</h3>
+        <p><code>settings.processes</code> — each with name, cross section, uncertainty and a list of
+        HepMC files. Event counts are read from the files; <code>generated_events</code> is explicitly
+        rejected as an event-count source.</p></div>
+      <div class="card blue"><h3>Batch semantics</h3>
+        <p>Each physical file becomes a subprocess retaining its full process cross section.
+        Merging validates luminosity, background, SR label order and histogram structure before
+        combining.</p></div>
+      <div class="card blue"><h3>Sampling advice</h3>
+        <p>Batch runs report effective event counts and how many more events each process needs to
+        hit a target fractional uncertainty.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6 · result framework ============ -->
+<section class="slide">
+  <p class="eyebrow">06 · new capability</p>
+  <h2>Results became a data contract</h2>
+  <p class="lede">Cutflows, histograms and signal regions used to be per-analysis conventions living
+  as C++ objects. They are now shared types with a versioned serialisation.</p>
+  <div class="body">
+    <div class="grid g2">
+      <div>
+        <div class="svg-wrap">
+          <svg viewBox="0 0 540 330" role="img" aria-label="Result framework types">
+            <style>
+              .n{font:11.5px var(--font-sans,sans-serif);fill:#2d3142}
+              .c{font:9.5px "SF Mono",monospace;fill:#7a8399}
+              .h{font:10px "SF Mono",monospace;fill:#4a6fa5}
+              .r{fill:#eef3fb;stroke:#4a6fa5;stroke-width:1.3;rx:6}
+              .r2{fill:#fff;stroke:#c8ccd6;stroke-width:1;rx:6}
+              .ar{stroke:#4a6fa5;stroke-width:1.3;fill:none;marker-end:url(#a5)}
+            </style>
+            <defs><marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#4a6fa5"/></marker></defs>
+
+            <rect class="r2" x="14" y="14" width="150" height="46"/>
+            <text class="n" x="30" y="34">event loop</text>
+            <text class="c" x="30" y="50">per analysis</text>
+
+            <path class="ar" d="M97 60 L97 88"/>
+            <rect class="r" x="14" y="90" width="166" height="52"/>
+            <text class="h" x="28" y="110">Cutflow.hpp</text>
+            <text class="c" x="28" y="126">fillinit · fill · commit</text>
+
+            <rect class="r" x="192" y="90" width="162" height="52"/>
+            <text class="h" x="206" y="110">Histogram.hpp</text>
+            <text class="c" x="206" y="126">1D/2D · sumw2 · combine</text>
+
+            <rect class="r" x="366" y="90" width="160" height="52"/>
+            <text class="h" x="380" y="110">SignalRegion</text>
+            <text class="c" x="380" y="126">n_sig · errors</text>
+
+            <path class="ar" d="M97 142 L97 178"/>
+            <path class="ar" d="M273 142 L273 178"/>
+            <path class="ar" d="M446 142 L446 178"/>
+            <text class="c" x="283" y="166">to_signal_regions()</text>
+
+            <rect class="r2" x="14" y="180" width="512" height="46"/>
+            <text class="n" x="30" y="200">AnalysisData</text>
+            <text class="c" x="30" y="216">cutflows + histograms + signal regions, scaled and reset together</text>
+
+            <path class="ar" d="M270 226 L270 254"/>
+            <rect class="r" x="14" y="256" width="512" height="56"/>
+            <text class="h" x="30" y="276">solo_output → schema_version: cbs-solo-loglike-v1</text>
+            <text class="c" x="30" y="294">metadata · luminosity · SR yields · n_sig_MC_stat · covariance · loglike</text>
+          </svg>
+        </div>
+      </div>
+      <div>
+        <div class="card green" style="margin-bottom:14px">
+          <span class="tag green">Histogram.hpp · 678 lines · local</span>
+          <p style="margin-top:10px">Weighted fill with <code>sumw2</code>, under/overflow bins,
+          <code>scale</code>, <code>combine</code>, attached <code>obs</code>/<code>bkg</code>/<code>bkg_err</code>,
+          and <code>to_signal_regions()</code> so a shape distribution converts directly into
+          binned SRs.</p>
+        </div>
+        <div class="card green" style="margin-bottom:14px">
+          <span class="tag green">Cutflow.hpp · +48 · local</span>
+          <p style="margin-top:10px">Consolidated from per-analysis implementations. A runtime
+          <code>settings.check_cutflow</code> switch replaces "depends how you compiled it";
+          the CMake <code>CUTFLOW</code> option now only reports capability.</p>
+        </div>
+        <div class="card green">
+          <span class="tag green">AnalysisMacros.hpp · +55 · local</span>
+          <p style="margin-top:10px"><code>DEFINE_HISTOGRAM_1D</code>, <code>DEFINE_HISTOGRAM_SR_1D</code>,
+          2D variants and <code>FILL_HISTOGRAM</code> — so a new analysis declares distributions
+          rather than hand-rolling them.</p>
+        </div>
+      </div>
+    </div>
+    <div class="note blue" style="margin-top:18px">
+      The practical consequence: one pass over the events now yields cutflow, cut-and-count SRs and
+      shape histograms simultaneously, and post-processing never has to re-read HepMC.
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7 · analyses ============ -->
+<section class="slide">
+  <p class="eyebrow">07 · analysis layer</p>
+  <h2>Twelve new analyses</h2>
+  <p class="lede">Ten are implemented and registered; one is a partial recast; one is an honest
+  skeleton. The distinction matters more than the count.</p>
+  <div class="body">
+    <table>
+      <thead><tr><th>Analysis</th><th class="num">Lines</th><th style="width:110px">Attribution</th><th style="width:96px">Status</th><th>What it exercises</th></tr></thead>
+      <tbody>
+        <tr><td class="name mono">ATLAS_SUSY_2019_09</td><td class="num">994</td><td><span class="tag blue">local</span></td><td><span class="tag green">done</span></td><td>3-lepton electroweak</td></tr>
+        <tr><td class="name mono">CMS_B2G_18_003</td><td class="num">729</td><td><span class="tag blue">local</span></td><td><span class="tag orange">partial</span></td><td>CMS shape SRs · SoftDrop · N-subjettiness</td></tr>
+        <tr><td class="name mono">ATLAS_SUSY_2018_07</td><td class="num">620</td><td><span class="tag orange">mixed</span></td><td><span class="tag green">done</span></td><td>soft-b · Topness · early VR-jet driver</td></tr>
+        <tr><td class="name mono">ATLAS_SUSY_2018_12_RJR</td><td class="num">578</td><td><span class="tag orange">mixed</span></td><td><span class="tag green">done</span></td><td>Recursive Jigsaw · RestFrames · ROOT</td></tr>
+        <tr><td class="name mono">CMS_SUS_16_039</td><td class="num">488</td><td><span class="tag blue">local</span></td><td><span class="tag green">done</span></td><td>multilepton</td></tr>
+        <tr><td class="name mono">ATLAS_SUSY_2018_41</td><td class="num">478</td><td><span class="tag blue">local</span></td><td><span class="tag green">done</span></td><td>boosted bosons</td></tr>
+        <tr><td class="name mono">ATLAS_EXOT_2016_013</td><td class="num">375</td><td><span class="tag orange">mixed</span></td><td><span class="tag green">done</span></td><td>0L/1L multi-b · large-R trimming</td></tr>
+        <tr><td class="name mono">ATLAS_EXOT_2019_07</td><td class="num">364</td><td><span class="tag orange">mixed</span></td><td><span class="tag green">done</span></td><td>large-R jets · top/H tagging</td></tr>
+        <tr><td class="name mono">ATLAS_EXOT_2019_04</td><td class="num">353</td><td><span class="tag blue">local</span></td><td><span class="tag green">done</span></td><td>VLQ · VRTrackJets · m<sub>VLB</sub> histogram SR</td></tr>
+        <tr><td class="name mono">ATLAS_EXOT_2021_35</td><td class="num">337</td><td><span class="tag orange">mixed</span></td><td><span class="tag green">done</span></td><td>shape variables</td></tr>
+        <tr><td class="name mono">ATLAS_EXOT_2016_017</td><td class="num">189</td><td><span class="tag orange">mixed</span></td><td><span class="tag green">done</span></td><td>single-lepton Wb · forward jets</td></tr>
+        <tr><td class="name mono">ATLAS_EXOT_2018_60</td><td class="num">38</td><td><span class="tag blue">local</span></td><td><span class="tag red">skeleton</span></td><td>registration only — see next slide</td></tr>
+      </tbody>
+    </table>
+    <div class="grid g3" style="margin-top:18px">
+      <div class="card"><h3>Also in the analysis layer</h3>
+        <p><code>AnalysisContainer.cpp</code> +151/−138 (mixed) — registration for every new entry,
+        including the ROOT/RestFrames group.</p></div>
+      <div class="card"><h3>Removed</h3>
+        <p>3 analyses deleted, superseded by renamed or reimplemented equivalents:
+        <code>2BoostedBosons</code>, <code>3LEP_139invfb</code>, <code>CMS MultiLEP_36invfb</code>.</p></div>
+      <div class="card"><h3>Baselines</h3>
+        <p><code>Analysis_Baselines.cpp</code> (4,518 lines) arrived from upstream, not from this
+        branch — worth stating explicitly since it dominates a naive line count.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8 · rename migration ============ -->
+<section class="slide">
+  <p class="eyebrow">08 · analysis layer</p>
+  <h2>The naming migration</h2>
+  <p class="lede">75 analyses moved from descriptive names to publication report numbers, each
+  carrying a <code>// Renamed from:</code> provenance comment. Total churn +4,699 / −4,918 —
+  overwhelmingly the move itself, not rewritten physics.</p>
+  <div class="body">
+    <div class="grid g2" style="align-items:start">
+      <div class="card">
+        <h3>Why it matters for this comparison</h3>
+        <p>A plain tree diff cannot see these as moves. The existing branch-comparison page lists
+        each old name as "added in SUSYRun2" and each new name as "added in solo" — 150 phantom
+        file changes. Git's rename detection collapses them to 75 moves at 52–100% similarity.</p>
+        <p style="margin-top:10px">Five commits did this work: <code>ccf24b2959</code>,
+        <code>89d33f9c2d</code>, <code>07e7fb207e</code>, <code>f18f1e5cb8</code>,
+        <code>b76aecc71e</code> (the last aligning <code>.info</code> metadata).</p>
+      </div>
+      <div class="card">
+        <h3>Representative moves</h3>
+        <div class="renames" style="margin-top:12px">
+          <div><s>ATLAS_8TeV_0LEP_20invfb</s> → <b>ATLAS_SUSY_2013_02</b></div>
+          <div><s>ATLAS_13TeV_0LEP_36invfb</s> → <b>ATLAS_SUSY_2016_07</b></div>
+          <div><s>ATLAS_13TeV_4LEP_139invfb</s> → <b>ATLAS_SUSY_2018_02</b></div>
+          <div><s>ATLAS_13TeV_MONOJET_139infb</s> → <b>ATLAS_EXOT_2018_06</b></div>
+          <div><s>ATLAS_13TeV_0LEP_13invfb</s> → <b>ATLAS_CONF_2016_078</b></div>
+          <div><s>CMS_13TeV_0LEP_137invfb</s> → <b>CMS_SUS_19_006</b></div>
+          <div><s>CMS_13TeV_MONOJET_36invfb</s> → <b>CMS_EXO_16_048</b></div>
+          <div><s>CMS_8TeV_2LEPDMTOP_20invfb</s> → <b>CMS_B2G_13_004</b></div>
+          <div><s>CMS_13TeV_1LEPbb_36invfb</s> → <b>CMS_SUS_16_043</b></div>
+          <div><s>ATLAS_13TeV_3b_24invfb</s> → <b>ATLAS_SUSY_2017_02</b></div>
+        </div>
+        <p style="margin-top:14px;font-size:12px">Full list in
+        <code>dependences/cbs-change-ledger.json</code> under <code>renames</code>.</p>
+      </div>
+    </div>
+    <div class="note" style="margin-top:18px">
+      <b>Open question for the collaboration.</b> Report-number naming is unambiguous and matches
+      how the papers are cited, but it breaks every existing YAML that selects analyses by the old
+      names. Whether upstream wants this migration — and whether it needs an alias table for
+      backward compatibility — is a decision for the group, not something this branch should settle
+      unilaterally.
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9 · event pipeline ============ -->
+<section class="slide">
+  <p class="eyebrow">09 · new capability</p>
+  <h2>Variable-R jets, threaded end to end</h2>
+  <p class="lede">Previously a per-analysis construction. Now declared in YAML and carried through
+  the same conversion path as fixed-R jets — +1,098 lines, no upstream contribution.</p>
+  <div class="body">
+    <div class="svg-wrap">
+      <svg viewBox="0 0 1120 210" role="img" aria-label="Variable-R jet pipeline">
+        <style>
+          .p{font:11.5px var(--font-sans,sans-serif);fill:#2d3142}
+          .q{font:9.5px "SF Mono",monospace;fill:#7a8399}
+          .box{fill:#eef3fb;stroke:#4a6fa5;stroke-width:1.3;rx:6}
+          .arw{stroke:#4a6fa5;stroke-width:1.3;fill:none;marker-end:url(#a6)}
+        </style>
+        <defs><marker id="a6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#4a6fa5"/></marker></defs>
+
+        <rect class="box" x="10" y="40" width="150" height="60"/>
+        <text class="p" x="25" y="62">YAML</text>
+        <text class="q" x="25" y="79">VRJet_collections</text>
+        <text class="q" x="25" y="92">VRTrackJets</text>
+        <path class="arw" d="M160 70 L196 70"/>
+
+        <rect class="box" x="198" y="40" width="150" height="60"/>
+        <text class="p" x="213" y="62">Utils.hpp</text>
+        <text class="q" x="213" y="79">collection registry</text>
+        <text class="q" x="213" y="92">+95 / −5</text>
+        <path class="arw" d="M348 70 L384 70"/>
+
+        <rect class="box" x="386" y="40" width="176" height="60"/>
+        <text class="p" x="401" y="62">Py8EventConversions</text>
+        <text class="q" x="401" y="79">VariableRPlugin clustering</text>
+        <text class="q" x="401" y="92">+192 / −82</text>
+        <path class="arw" d="M562 70 L598 70"/>
+
+        <rect class="box" x="600" y="40" width="150" height="60"/>
+        <text class="p" x="615" y="62">BuckFast</text>
+        <text class="q" x="615" y="79">smearing preserves</text>
+        <text class="q" x="615" y="92">VR collections</text>
+        <path class="arw" d="M750 70 L786 70"/>
+
+        <rect class="box" x="788" y="40" width="150" height="60"/>
+        <text class="p" x="803" y="62">HEPUtils::Event</text>
+        <text class="q" x="803" y="79">named jet collections</text>
+        <path class="arw" d="M938 70 L974 70"/>
+
+        <rect class="box" x="976" y="40" width="134" height="60"/>
+        <text class="p" x="991" y="62">Analysis</text>
+        <text class="q" x="991" y="79">EXOT_2019_04</text>
+        <text class="q" x="991" y="92">EXOT_2019_07</text>
+
+        <text class="q" x="10" y="140">Build side: cmake/contrib wires FastJetContrib VariableR + EnergyCorrelator, reusing the existing fastjet/fjcontrib targets rather than rebuilding them.</text>
+        <text class="q" x="10" y="160">Batch side: solo_batch propagates VR settings into each generated per-file YAML, so subprocesses cannot silently drop the collection.</text>
+        <text class="q" x="10" y="186" fill="#b55c2d">Caveat to state aloud: some Pythia-wrapper VR overloads remain limited — analyses should use the YAML-declared collection, not construct their own.</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 · boundaries ============ -->
+<section class="slide">
+  <p class="eyebrow">10 · completion boundary</p>
+  <h2>What is not finished</h2>
+  <p class="lede">Registered in the framework is not the same as reproducing the published analysis.
+  Three things should be said plainly rather than discovered later.</p>
+  <div class="body">
+    <div class="grid g3">
+      <div class="card red">
+        <span class="tag red">skeleton</span>
+        <h3 style="margin-top:10px">ATLAS EXOT-2018-60</h3>
+        <p>38 lines. <code>run()</code> contains only
+        <code>// TODO: Implement the published selection and signal-region yields.</code> and
+        <code>collect_results()</code> is empty.</p>
+        <p><b>Say:</b> the analysis entry and metadata exist; the physics selection does not.</p>
+      </div>
+      <div class="card orange">
+        <span class="tag orange">partial</span>
+        <h3 style="margin-top:10px">CMS B2G-18-003</h3>
+        <p>3M regions use five-jet-mass histogram SRs digitised from Fig. 4(c,d). 3T and 2M1L
+        histograms are scaffolded with <b>empty obs/bkg vectors</b> pending digitisation. High-mass
+        regions are a public cut-and-count approximation, not the CMS shape fit.</p>
+        <p><b>Say:</b> the framework path is proven; the external data is incomplete.</p>
+      </div>
+      <div class="card orange">
+        <span class="tag orange">approximation</span>
+        <h3 style="margin-top:10px">b-tag proxies</h3>
+        <p>B2G-18-003 approximates soft-drop subjet b-tagging with AK4-associated proxy subjets —
+        documented in the source as a public-recast approximation.</p>
+        <p><b>Say:</b> this is a recast choice, and it is written down in the code.</p>
+      </div>
+    </div>
+    <div class="note red" style="margin-top:20px">
+      <b>Phrasings to avoid tomorrow.</b>
+      Do not describe registration in <code>AnalysisContainer</code> as a completed analysis.
+      Do not present B2G-18-003's empty obs/bkg arrays as a finished reproduction.
+      Do not quote the +313k line count against master — it is dominated by two background JSON
+      files (152k + 86k lines) and a vendored <code>json.hpp</code>.
+    </div>
+    <div class="note blue" style="margin-top:14px">
+      <b>What this deck does not measure.</b> Nothing here was recompiled or re-run. It shows that
+      code changed and who changed it — not which physics results moved. A before/after
+      data-flow comparison on identical input events is the natural next step, and would answer
+      the question this ledger can only frame.
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 · next ============ -->
+<section class="slide">
+  <p class="eyebrow">11 · next</p>
+  <h2>Where this goes</h2>
+  <div class="body">
+    <div class="grid g2">
+      <div>
+        <div class="card blue" style="margin-bottom:14px">
+          <h3>For the collaboration to decide</h3>
+          <p>Does upstream want the report-number naming migration, and does it need an alias table
+          so existing YAML keeps working?</p>
+          <p>Should the CBS runner (<code>solo_*</code>) be proposed to <code>master</code>, or stay
+          a branch tool?</p>
+        </div>
+        <div class="card">
+          <h3>Known work remaining</h3>
+          <p>EXOT-2018-60 published selection · B2G-18-003 3T/2M1L digitisation ·
+          regression tests over the JSON schema · explicit implementation-status field in
+          <code>.info</code> metadata so "registered" and "validated" cannot be confused again.</p>
+        </div>
+      </div>
+      <div class="card green">
+        <h3>Runtime data-flow diff</h3>
+        <p>This ledger answers <i>what code changed</i>. It cannot answer <i>which events now take a
+        different path</i> — the question that actually matters for validation.</p>
+        <p style="margin-top:10px">A thin semantic tracer at ~10–20 checkpoints
+        (HepMC event → HEPUtils event → object selection → overlap removal → b-tagging → cuts →
+        signal region), emitting JSON per run, would let the same input events be run on two commits
+        and diffed:</p>
+        <p style="margin-top:10px;font-family:var(--font-mono);font-size:11.5px;color:var(--ink);line-height:1.75">
+          overlap removal ← CHANGED<br>
+          &nbsp;&nbsp;jets 6 → 4<br>
+          &nbsp;&nbsp;Njet ≥ 5: PASS → FAIL<br>
+          &nbsp;&nbsp;SR1 acceptance 0.132 → 0.119
+        </p>
+        <p style="margin-top:10px">That is a far stronger argument to a collaborator than a diff —
+        and it reuses the JSON output contract this branch already built.</p>
+      </div>
+    </div>
+    <div class="rule"></div>
+    <div class="grid g4" style="margin-top:20px">
+      <div class="stat"><div class="n">10</div><div class="k">files · runner</div><div class="s">No upstream equivalent</div></div>
+      <div class="stat"><div class="n">14</div><div class="k">files · jet pipeline</div><div class="s">No upstream equivalent</div></div>
+      <div class="stat"><div class="n">226</div><div class="k">commits authored</div><div class="s">of 606 on the branch</div></div>
+      <div class="stat"><div class="n">2</div><div class="k">open caveats</div><div class="s">Stated on slide 10</div></div>
+    </div>
+  </div>
+  <p class="foot">
+    Sources · <code>ColliderBit_solo_development</code> 65aca0890d · <code>private-SUSYRun2</code> 5989e2d27a ·
+    <code>gambit/master</code> b4c3e6d027 · ledger data <code>dependences/cbs-change-ledger.json</code> ·
+    generated by <code>scripts/build-change-ledger.py</code>
+  </p>
+</section>
+
+</div>
+
+<nav class="nav">
+  <button id="prev" aria-label="Previous slide">←</button>
+  <button id="next" aria-label="Next slide">→</button>
+  <span class="counter mono" id="counter">1 / 11</span>
+  <span class="mono" id="title">CBS change ledger</span>
+  <span class="dots" id="dots"></span>
+</nav>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var counter = document.getElementById('counter');
+  var dotsEl = document.getElementById('dots');
+  var i = 0;
+
+  slides.forEach(function(_, n){
+    var b = document.createElement('button');
+    b.className = 'dot' + (n === 0 ? ' on' : '');
+    b.setAttribute('aria-label', 'Go to slide ' + (n + 1));
+    b.addEventListener('click', function(){ go(n); });
+    dotsEl.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(dotsEl.children);
+
+  function go(n){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function(s, k){ s.classList.toggle('active', k === i); });
+    dots.forEach(function(d, k){ d.classList.toggle('on', k === i); });
+    counter.textContent = (i + 1) + ' / ' + slides.length;
+    if (location.hash !== '#' + (i + 1)) history.replaceState(null, '', '#' + (i + 1));
+    window.scrollTo(0, 0);
+  }
+
+  document.getElementById('prev').addEventListener('click', function(){ go(i - 1); });
+  document.getElementById('next').addEventListener('click', function(){ go(i + 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(i + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(i - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(slides.length - 1); }
+    else if (e.key === 'p' || e.key === 'P') {
+      // Reveal every slide so the browser's print dialog captures the whole deck.
+      slides.forEach(function(s){ s.classList.add('active'); });
+      window.print();
+      setTimeout(function(){ go(i); }, 0);
+    }
+  });
+
+  var start = parseInt((location.hash || '').slice(1), 10);
+  go(isNaN(start) ? 0 : start - 1);
+})();
+</script>
+</body>
+</html>
