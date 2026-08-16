@@ -11,6 +11,26 @@ Three-way, because two-way hides that the development branch restores upstream
 | fjcontrib | absent | built, 1 library | detected, 4 libraries |
 | fjcore | always | commented out | always, namespace switched |
 
+## Why fjcore is still here
+
+Not because another module needs it. Counting every file that names a jet type
+(`PseudoJet`, `ClusterSequence` or `FJNS`):
+
+| Directory | Files |
+|---|---:|
+| `ColliderBit/` | 21 |
+| `contrib/` | 9 |
+| `cmake/` | 1 |
+
+No GAMBIT module outside ColliderBit clusters jets at all. fjcore stays because
+it is upstream `master`'s only jet backend, because it is the floor when FastJet
+is not provisioned, and because it costs almost nothing to keep: `fjcore.hh:173` hard-codes `namespace gambit { namespace fjcore {`,
+disjoint from `fastjet`, so both compile into one binary.
+
+The remaining fjcore references are inside ColliderBit: 6 analyses carry an
+`#ifndef FJCORE` branch, of which 1 is self-consistent. The other
+5 mix `FJNS::` with literal `fastjet::` in one jet-trimming idiom.
+
 ## Numbered changes
 
 | # | Change | Target |

@@ -172,6 +172,55 @@ def collect(gambit: Path, baseline_ref: str, master_ref: str) -> dict:
             "subject": subject.split(" - ")[0].strip(),
         })
 
+    # ---- why fjcore survives ---------------------------------------------
+    # The question "who still needs fjcore?" is answerable: count the files
+    # that name a jet type at all, per top-level directory.
+    jet_users: dict[str, int] = {}
+    for path in git(gambit, "grep", "-l", "PseudoJet\\|ClusterSequence\\|FJNS").splitlines():
+        top = path.split("/", 1)[0]
+        jet_users[top] = jet_users.get(top, 0) + 1
+
+    fjcore_hh = (gambit / "contrib/fjcore-3.2.0/fjcore.hh").read_text().splitlines()
+    ns_idx = find(fjcore_hh, r"#define FJCORE_BEGIN_NAMESPACE")
+    common_idx = find(head, r"TARGET_OBJECTS:fjcore")
+
+    # Every analysis that mentions fjcore, and whether its fallback branch is
+    # self-consistent: a body that hard-codes ``fastjet::`` cannot compile once
+    # FJNS becomes gambit::fjcore.
+    fallbacks = []
+    for path in sorted(git(gambit, "grep", "-l", "fjcore", "--", "ColliderBit/").splitlines()):
+        src = (gambit / path).read_text().splitlines()
+        guard_start = next((i for i, l in enumerate(src) if "#ifndef FJCORE" in l), None)
+        body_start = 0
+        if guard_start is not None:
+            # Walk the preprocessor nesting to the #endif that closes the guard;
+            # a fastjet:: inside the guard's own #ifndef branch is legitimate,
+            # only one after it is unconditional.
+            depth = 0
+            for i in range(guard_start, len(src)):
+                stripped = src[i].strip()
+                if stripped.startswith(("#if", "#ifdef", "#ifndef")):
+                    depth += 1
+                elif stripped.startswith("#endif"):
+                    depth -= 1
+                    if depth == 0:
+                        body_start = i + 1
+                        break
+        body = "\n".join(src[body_start:])
+        hits = [
+            {"line": body_start + offset + 1, "text": line.strip()}
+            for offset, line in enumerate(src[body_start:])
+            if re.search(r"\bfastjet::", line)
+        ]
+        fallbacks.append({
+            "path": path,
+            "guard": guard_start is not None,
+            "guard_ends": body_start,
+            "literal_fastjet": len(re.findall(r"\bfastjet::", body)),
+            "first_hit": hits[0] if hits else None,
+            "consistent": not hits,
+        })
+
     # ---- provisioning reality --------------------------------------------
     ignore = (gambit / ".gitignore").read_text().splitlines()
     ignore_hits = [
@@ -215,6 +264,12 @@ def collect(gambit: Path, baseline_ref: str, master_ref: str) -> dict:
             "fjcore_ns": {"line": fjns_false + 1, "text": head[fjns_false].strip()},
             "fjcore_lib": {"line": fjcore_lib + 1, "text": head[fjcore_lib].strip()},
             "sites": fjns_sites,
+        },
+        "fjcore_rationale": {
+            "jet_users": jet_users,
+            "namespace": {"line": ns_idx + 1, "text": fjcore_hh[ns_idx].strip()},
+            "always_linked": {"line": common_idx + 1, "text": head[common_idx].strip()},
+            "fallbacks": fallbacks,
         },
         "consumers": consumers,
         "symbols": symbols,
@@ -296,7 +351,7 @@ def change_units(data: dict) -> list[dict]:
                    "SISCone libraries. Neither was linked before because nothing used a "
                    "plugin.",
             "impact": f'{len(head_fj) - len(base_fj)} additional libraries. Note the order '
-                      "differs between the two consumption sites — see section 05.",
+                      "differs between the two consumption sites — see section 04.",
             "evidence": f'<code>{html.escape(links["head_fastjet"]["line"])}</code>',
             "tokens": ["fastjet_LDFLAGS", "lfastjetplugins", "lsiscone"],
         },
@@ -370,7 +425,7 @@ def change_units(data: dict) -> list[dict]:
                    "roots makes each spelling resolve.",
             "impact": "A line that looks redundant is load-bearing. Removing the second "
                       "<code>include_directories</code> breaks every bare-name include.",
-            "evidence": "Both spellings appear in the analysis include list in section 04.",
+            "evidence": "Both spellings appear in the analysis include list in section 05.",
             "tokens": ["include_directories", "include/fastjet/contrib"],
         },
         {
@@ -661,6 +716,41 @@ def lib_rows(data: dict) -> str:
     return "".join(rows)
 
 
+def jet_user_rows(data: dict) -> str:
+    readings = {
+        "ColliderBit": "the only GAMBIT module that clusters jets",
+        "contrib": "HEPUtils, fjcore and FastJet themselves",
+        "cmake": "the build definitions on this page",
+    }
+    rows = []
+    for top, count in sorted(data["fjcore_rationale"]["jet_users"].items(), key=lambda kv: -kv[1]):
+        rows.append(
+            f'<tr><td><code>{esc(top)}/</code></td><td>{count}</td>'
+            f'<td>{readings.get(top, "&mdash;")}</td></tr>'
+        )
+    return "".join(rows)
+
+
+def fallback_rows(data: dict) -> str:
+    rows = []
+    for entry in data["fjcore_rationale"]["fallbacks"]:
+        name = Path(entry["path"]).name
+        guard = ('<span class="status added-in-right">present</span>' if entry["guard"]
+                 else '<span class="status unchanged">none</span>')
+        if entry["consistent"]:
+            verdict = '<span class="status added-in-right">yes &mdash; FJNS used throughout</span>'
+        else:
+            verdict = ('<span class="status unchanged">no &mdash; body names <code>fastjet::</code> '
+                       'directly, which fjcore does not provide</span>')
+        site = (f'<code>{entry["literal_fastjet"]}</code> after line {entry["guard_ends"]}'
+                if entry["literal_fastjet"] else "<code>0</code>")
+        rows.append(
+            f'<tr><td><code>{esc(name)}</code></td><td>{guard}</td>'
+            f'<td>{site}</td><td>{verdict}</td></tr>'
+        )
+    return "".join(rows)
+
+
 def consumer_rows(data: dict) -> str:
     return "".join(
         f'<tr><td><code>{esc(c["path"])}:{c["line"]}</code></td>'
@@ -708,6 +798,31 @@ def render_markdown(data: dict, units: list[dict]) -> str:
         "| FastJet | absent | downloaded + built | detected if present |",
         "| fjcontrib | absent | built, 1 library | detected, 4 libraries |",
         "| fjcore | always | commented out | always, namespace switched |",
+        "",
+        "## Why fjcore is still here",
+        "",
+        "Not because another module needs it. Counting every file that names a jet type",
+        "(`PseudoJet`, `ClusterSequence` or `FJNS`):",
+        "",
+        "| Directory | Files |",
+        "|---|---:|",
+    ]
+    for top, count in sorted(data["fjcore_rationale"]["jet_users"].items(), key=lambda kv: -kv[1]):
+        lines.append(f"| `{top}/` | {count} |")
+
+    fallbacks = data["fjcore_rationale"]["fallbacks"]
+    consistent = sum(1 for f in fallbacks if f["consistent"])
+    lines += [
+        "",
+        "No GAMBIT module outside ColliderBit clusters jets at all. fjcore stays because",
+        "it is upstream `master`'s only jet backend, because it is the floor when FastJet",
+        "is not provisioned, and because it costs almost nothing to keep: `fjcore.hh:"
+        f'{data["fjcore_rationale"]["namespace"]["line"]}` hard-codes `namespace gambit {{ namespace fjcore {{`,',
+        "disjoint from `fastjet`, so both compile into one binary.",
+        "",
+        f"The remaining fjcore references are inside ColliderBit: {len(fallbacks)} analyses carry an",
+        f"`#ifndef FJCORE` branch, of which {consistent} is self-consistent. The other",
+        f"{len(fallbacks) - consistent} mix `FJNS::` with literal `fastjet::` in one jet-trimming idiom.",
         "",
         "## Numbered changes",
         "",
@@ -873,7 +988,53 @@ TEMPLATE = r'''<!doctype html>
   </section>
 
   <section>
-    <p class="kicker">02 &#183; numbered changes</p>
+    <p class="kicker">02 &#183; the obvious question</p>
+    <h2>Why fjcore is still here</h2>
+    <p class="source">Keeping a second jet-clustering library costs compile time and one more thing to reason about. Three reasons it stays, and one common explanation that the tree does not support.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:22%">Reason</th><th style="width:34%">Evidence</th><th>What it buys</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>It is upstream's only jet backend</strong></td>
+          <td><code>gambit/master</code> has no FastJet in <code>cmake/contrib.cmake</code> at all &mdash; fjcore, unconditional, <code>-DFJCORE -DFJNS=gambit::fjcore</code>.</td>
+          <td>A configuration that matches upstream still works here. Dropping fjcore would have made this branch unable to build the way master builds.</td>
+        </tr>
+        <tr>
+          <td><strong>It is the no-FastJet floor</strong></td>
+          <td>The <code>else()</code> branch of the probe, which is now reachable in normal use because CMake no longer downloads FastJet.</td>
+          <td>GAMBIT still configures and compiles on a machine that has not provisioned FastJet. This matters <em>more</em> after change 2, not less.</td>
+        </tr>
+        <tr>
+          <td><strong>Coexisting is nearly free</strong></td>
+          <td><code>fjcore.hh:__FJCORE_NS_LINE__</code> &mdash; <code>__FJCORE_NS_TEXT__</code></td>
+          <td>fjcore lives in <code>gambit::fjcore</code>, FastJet in <code>fastjet</code>. The namespaces are disjoint by construction, so both can be compiled into one binary.</td>
+        </tr>
+      </tbody>
+    </table></div>
+    <p class="diagram-note">That last row is what makes the whole arrangement possible, and it also explains the source branch's comment &mdash; <em>"Temporarily comment while fastjet is a contrib, as there are class name clashes"</em>. The clash was never between the definitions; it was between <em>unqualified uses</em> of <code>PseudoJet</code> and <code>ClusterSequence</code>, which exist in both namespaces. Routing every use through <code>FJNS</code> makes each one qualified, and the clash disappears.</p>
+    <p class="diagram-note">fjcore is compiled and linked whether or not FastJet was found: <code>contrib.cmake:__FJCORE_LINK_LINE__</code> puts it in <code>GAMBIT_BASIC_COMMON_OBJECTS</code>, which every GAMBIT executable links. So the cost is paid on every build; only the namespace choice is conditional.</p>
+
+    <p class="diagram-note" style="margin-top:20px"><strong>The explanation that does not hold up: "other modules still need fjcore".</strong> Counting every file that names a jet type at all &mdash; <code>PseudoJet</code>, <code>ClusterSequence</code> or <code>FJNS</code> &mdash; gives this:</p>
+    <div class="mapping-table" style="margin-top:10px"><table>
+      <thead><tr><th style="width:22%">Top-level directory</th><th style="width:14%">Files</th><th>Reading</th></tr></thead>
+      <tbody>__JET_USER_ROWS__</tbody>
+    </table></div>
+    <p class="diagram-note">No GAMBIT module outside ColliderBit touches jets. Nothing in <code>DarkBit</code>, <code>SpecBit</code>, <code>FlavBit</code>, <code>Elements</code>, <code>Backends</code> or <code>Printers</code> depends on fjcore, on FastJet, or on either through HEPUtils. fjcore does not survive because something else needs it.</p>
+
+    <p class="diagram-note" style="margin-top:20px"><strong>And the direction of the migration is the reverse of what one would expect.</strong> The only non-contrib code in the tree that names fjcore is inside ColliderBit &mdash; __FALLBACK_COUNT__ analyses, each carrying an <code>#ifndef FJCORE</code> include branch. ColliderBit is where the fjcore references live, not where they were removed from.</p>
+    <div class="mapping-table" style="margin-top:10px"><table>
+      <thead><tr><th style="width:34%">Analysis</th><th style="width:12%">Guard</th><th style="width:22%">Literal <code>fastjet::</code> outside the guard</th><th>Would the fallback branch actually build?</th></tr></thead>
+      <tbody>__FALLBACK_ROWS__</tbody>
+    </table></div>
+    <p class="diagram-note"><strong>__CONSISTENT_COUNT__ of __FALLBACK_COUNT__ fallback branches are self-consistent.</strong> The count above excludes anything inside the guard's own <code>#ifndef</code> arm, where naming <code>fastjet::</code> is correct; it counts only unconditional uses after the guard closes.</p>
+    <p class="diagram-note"><strong>All __INCONSISTENT_COUNT__ failures are the same copy-pasted line, not __INCONSISTENT_COUNT__ separate problems.</strong> Every one of them is a jet-trimming call that mixes the macro with the literal namespace in a single expression:</p>
+    <pre class="unit-code">__TRIM_IDIOM__</pre>
+    <p class="diagram-note">Under <code>-DFJCORE</code>, <code>FJNS</code> becomes <code>gambit::fjcore</code> while the three <code>fastjet::</code> qualifiers stay literal &mdash; and that namespace no longer exists in the translation unit. <code>Analysis_ATLAS_SUSY_2018_30.cpp</code> is the one written correctly, routing every type through <code>FJNS::</code> including <code>JetDefinition</code>, <code>antikt_algorithm</code> and <code>ClusterSequence</code>. It is the template worth copying: one idiom to fix in __INCONSISTENT_COUNT__ files, not a rewrite.</p>
+    <p class="diagram-note">Read from source; no build was attempted. The claim here is about what the preprocessor would produce, not about a compiler diagnostic anyone has seen.</p>
+  </section>
+
+  <section>
+    <p class="kicker">03 &#183; numbered changes</p>
     <h2>Eight changes, and what each one costs</h2>
     <p class="source">One row per change, then one card each with the before/after, the reason, the consequence and the diff hunks that carry it.</p>
     <div class="mapping-table"><table>
@@ -887,7 +1048,7 @@ TEMPLATE = r'''<!doctype html>
   </section>
 
   <section>
-    <p class="kicker">03 &#183; the decision</p>
+    <p class="kicker">04 &#183; the decision</p>
     <h2>One probe, three consequences</h2>
     <p class="source">The <code>EXISTS</code> test sets three variables, and those fan out to the link flags, the fjcore namespace and whether Rivet is built at all.</p>
     <div class="diagram-shell">
@@ -906,7 +1067,7 @@ TEMPLATE = r'''<!doctype html>
   </section>
 
   <section>
-    <p class="kicker">04 &#183; who needs it</p>
+    <p class="kicker">05 &#183; who needs it</p>
     <h2>What actually uses the new libraries</h2>
     <p class="source">Extracted by searching ColliderBit for each algorithm. The include column shows the spellings that justify carrying two include roots.</p>
     <div class="mapping-table"><table>
@@ -917,7 +1078,7 @@ TEMPLATE = r'''<!doctype html>
   </section>
 
   <section>
-    <p class="kicker">05 &#183; the gap</p>
+    <p class="kicker">06 &#183; the gap</p>
     <h2>Nothing in this repository provides FastJet any more</h2>
     <p class="source">The download step was removed. The ignore rules that made sense while CMake downloaded the tarballs are still in place.</p>
     <div class="mapping-table"><table>
@@ -936,7 +1097,7 @@ TEMPLATE = r'''<!doctype html>
   </section>
 
   <section>
-    <p class="kicker">06 &#183; history</p>
+    <p class="kicker">07 &#183; history</p>
     <h2>How it got here</h2>
     <p class="source">Commits that changed a FastJet-related line in <code>cmake/contrib.cmake</code> since the source branch diverged.</p>
     <div class="mapping-table"><table>
@@ -947,7 +1108,7 @@ TEMPLATE = r'''<!doctype html>
   </section>
 
   <section>
-    <p class="kicker">07 &#183; exact evidence</p>
+    <p class="kicker">08 &#183; exact evidence</p>
     <h2>Region diff</h2>
     <p class="source">The jet-clustering region of <code>cmake/contrib.cmake</code>, source branch to this branch. Numbered cards above quote from this diff.</p>
     <details class="full" open><summary>__DIFF_SUMMARY__</summary><pre class="full">__DIFF__</pre></details>
@@ -983,6 +1144,18 @@ def render_html(data: dict, units: list[dict], diff: str, coverage: str) -> str:
         "__UNIT_CARDS__": unit_cards(units),
         "__HUNK_COVERAGE__": coverage,
         "__CONSUMER_ROWS__": consumer_rows(data),
+        "__JET_USER_ROWS__": jet_user_rows(data),
+        "__FALLBACK_ROWS__": fallback_rows(data),
+        "__FALLBACK_COUNT__": str(len(data["fjcore_rationale"]["fallbacks"])),
+        "__CONSISTENT_COUNT__": str(sum(1 for f in data["fjcore_rationale"]["fallbacks"] if f["consistent"])),
+        "__INCONSISTENT_COUNT__": str(sum(1 for f in data["fjcore_rationale"]["fallbacks"] if not f["consistent"])),
+        "__TRIM_IDIOM__": esc("\n".join(
+            f'{Path(f["path"]).name}:{f["first_hit"]["line"]}\n    {f["first_hit"]["text"]}'
+            for f in data["fjcore_rationale"]["fallbacks"] if f["first_hit"]
+        )),
+        "__FJCORE_NS_LINE__": str(data["fjcore_rationale"]["namespace"]["line"]),
+        "__FJCORE_NS_TEXT__": esc(data["fjcore_rationale"]["namespace"]["text"]),
+        "__FJCORE_LINK_LINE__": str(data["fjcore_rationale"]["always_linked"]["line"]),
         "__COMMIT_ROWS__": commit_rows(data),
         "__SYMBOL_ROWS__": symbol_rows(data),
         "__LIB_ROWS__": lib_rows(data),
@@ -1036,7 +1209,7 @@ def main() -> None:
         f"<strong>{covered} of {len(units)} changes quote source lines directly.</strong> "
         "The expanders show before and after rather than a diff hunk, because this region "
         "was rewritten rather than edited: a unified diff of it is one hunk covering "
-        "everything, which separates nothing. The whole-region diff is still in section 07."
+        "everything, which separates nothing. The whole-region diff is still in section 08."
     )
 
     page = render_html(data, units, diff, coverage)

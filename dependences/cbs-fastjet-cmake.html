@@ -162,12 +162,67 @@
   </section>
 
   <section>
-    <p class="kicker">02 &#183; numbered changes</p>
+    <p class="kicker">02 &#183; the obvious question</p>
+    <h2>Why fjcore is still here</h2>
+    <p class="source">Keeping a second jet-clustering library costs compile time and one more thing to reason about. Three reasons it stays, and one common explanation that the tree does not support.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:22%">Reason</th><th style="width:34%">Evidence</th><th>What it buys</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>It is upstream's only jet backend</strong></td>
+          <td><code>gambit/master</code> has no FastJet in <code>cmake/contrib.cmake</code> at all &mdash; fjcore, unconditional, <code>-DFJCORE -DFJNS=gambit::fjcore</code>.</td>
+          <td>A configuration that matches upstream still works here. Dropping fjcore would have made this branch unable to build the way master builds.</td>
+        </tr>
+        <tr>
+          <td><strong>It is the no-FastJet floor</strong></td>
+          <td>The <code>else()</code> branch of the probe, which is now reachable in normal use because CMake no longer downloads FastJet.</td>
+          <td>GAMBIT still configures and compiles on a machine that has not provisioned FastJet. This matters <em>more</em> after change 2, not less.</td>
+        </tr>
+        <tr>
+          <td><strong>Coexisting is nearly free</strong></td>
+          <td><code>fjcore.hh:173</code> &mdash; <code>#define FJCORE_BEGIN_NAMESPACE namespace gambit { namespace fjcore {</code></td>
+          <td>fjcore lives in <code>gambit::fjcore</code>, FastJet in <code>fastjet</code>. The namespaces are disjoint by construction, so both can be compiled into one binary.</td>
+        </tr>
+      </tbody>
+    </table></div>
+    <p class="diagram-note">That last row is what makes the whole arrangement possible, and it also explains the source branch's comment &mdash; <em>"Temporarily comment while fastjet is a contrib, as there are class name clashes"</em>. The clash was never between the definitions; it was between <em>unqualified uses</em> of <code>PseudoJet</code> and <code>ClusterSequence</code>, which exist in both namespaces. Routing every use through <code>FJNS</code> makes each one qualified, and the clash disappears.</p>
+    <p class="diagram-note">fjcore is compiled and linked whether or not FastJet was found: <code>contrib.cmake:328</code> puts it in <code>GAMBIT_BASIC_COMMON_OBJECTS</code>, which every GAMBIT executable links. So the cost is paid on every build; only the namespace choice is conditional.</p>
+
+    <p class="diagram-note" style="margin-top:20px"><strong>The explanation that does not hold up: "other modules still need fjcore".</strong> Counting every file that names a jet type at all &mdash; <code>PseudoJet</code>, <code>ClusterSequence</code> or <code>FJNS</code> &mdash; gives this:</p>
+    <div class="mapping-table" style="margin-top:10px"><table>
+      <thead><tr><th style="width:22%">Top-level directory</th><th style="width:14%">Files</th><th>Reading</th></tr></thead>
+      <tbody><tr><td><code>ColliderBit/</code></td><td>21</td><td>the only GAMBIT module that clusters jets</td></tr><tr><td><code>contrib/</code></td><td>9</td><td>HEPUtils, fjcore and FastJet themselves</td></tr><tr><td><code>cmake/</code></td><td>1</td><td>the build definitions on this page</td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">No GAMBIT module outside ColliderBit touches jets. Nothing in <code>DarkBit</code>, <code>SpecBit</code>, <code>FlavBit</code>, <code>Elements</code>, <code>Backends</code> or <code>Printers</code> depends on fjcore, on FastJet, or on either through HEPUtils. fjcore does not survive because something else needs it.</p>
+
+    <p class="diagram-note" style="margin-top:20px"><strong>And the direction of the migration is the reverse of what one would expect.</strong> The only non-contrib code in the tree that names fjcore is inside ColliderBit &mdash; 6 analyses, each carrying an <code>#ifndef FJCORE</code> include branch. ColliderBit is where the fjcore references live, not where they were removed from.</p>
+    <div class="mapping-table" style="margin-top:10px"><table>
+      <thead><tr><th style="width:34%">Analysis</th><th style="width:12%">Guard</th><th style="width:22%">Literal <code>fastjet::</code> outside the guard</th><th>Would the fallback branch actually build?</th></tr></thead>
+      <tbody><tr><td><code>Analysis_ATLAS_EXOT_2016_013.cpp</code></td><td><span class="status added-in-right">present</span></td><td><code>8</code> after line 38</td><td><span class="status unchanged">no &mdash; body names <code>fastjet::</code> directly, which fjcore does not provide</span></td></tr><tr><td><code>Analysis_ATLAS_EXOT_2016_014.cpp</code></td><td><span class="status added-in-right">present</span></td><td><code>7</code> after line 42</td><td><span class="status unchanged">no &mdash; body names <code>fastjet::</code> directly, which fjcore does not provide</span></td></tr><tr><td><code>Analysis_ATLAS_EXOT_2019_04.cpp</code></td><td><span class="status added-in-right">present</span></td><td><code>5</code> after line 35</td><td><span class="status unchanged">no &mdash; body names <code>fastjet::</code> directly, which fjcore does not provide</span></td></tr><tr><td><code>Analysis_ATLAS_EXOT_2019_07.cpp</code></td><td><span class="status added-in-right">present</span></td><td><code>5</code> after line 34</td><td><span class="status unchanged">no &mdash; body names <code>fastjet::</code> directly, which fjcore does not provide</span></td></tr><tr><td><code>Analysis_ATLAS_EXOT_2021_35.cpp</code></td><td><span class="status added-in-right">present</span></td><td><code>7</code> after line 38</td><td><span class="status unchanged">no &mdash; body names <code>fastjet::</code> directly, which fjcore does not provide</span></td></tr><tr><td><code>Analysis_ATLAS_SUSY_2018_30.cpp</code></td><td><span class="status added-in-right">present</span></td><td><code>0</code></td><td><span class="status added-in-right">yes &mdash; FJNS used throughout</span></td></tr></tbody>
+    </table></div>
+    <p class="diagram-note"><strong>1 of 6 fallback branches are self-consistent.</strong> The count above excludes anything inside the guard's own <code>#ifndef</code> arm, where naming <code>fastjet::</code> is correct; it counts only unconditional uses after the guard closes.</p>
+    <p class="diagram-note"><strong>All 5 failures are the same copy-pasted line, not 5 separate problems.</strong> Every one of them is a jet-trimming call that mixes the macro with the literal namespace in a single expression:</p>
+    <pre class="unit-code">Analysis_ATLAS_EXOT_2016_013.cpp:160
+    FJNS::Filter trimmer(fastjet::JetDefinition(fastjet::kt_algorithm, Rsub), fastjet::SelectorPtFractionMin(ptfrac));
+Analysis_ATLAS_EXOT_2016_014.cpp:211
+    FJNS::Filter trimmer(fastjet::JetDefinition(fastjet::kt_algorithm, Rsub), fastjet::SelectorPtFractionMin(ptfrac));
+Analysis_ATLAS_EXOT_2019_04.cpp:103
+    FJNS::Filter trimmer(fastjet::JetDefinition(fastjet::kt_algorithm, Rtrim), fastjet::SelectorPtFractionMin(fcut));
+Analysis_ATLAS_EXOT_2019_07.cpp:206
+    FJNS::Filter trimmer(fastjet::JetDefinition(fastjet::antikt_algorithm, Rsub), fastjet::SelectorPtFractionMin(ptfrac));
+Analysis_ATLAS_EXOT_2021_35.cpp:166
+    FJNS::Filter trimmer(fastjet::JetDefinition(fastjet::kt_algorithm, Rsub), fastjet::SelectorPtFractionMin(ptfrac));</pre>
+    <p class="diagram-note">Under <code>-DFJCORE</code>, <code>FJNS</code> becomes <code>gambit::fjcore</code> while the three <code>fastjet::</code> qualifiers stay literal &mdash; and that namespace no longer exists in the translation unit. <code>Analysis_ATLAS_SUSY_2018_30.cpp</code> is the one written correctly, routing every type through <code>FJNS::</code> including <code>JetDefinition</code>, <code>antikt_algorithm</code> and <code>ClusterSequence</code>. It is the template worth copying: one idiom to fix in 5 files, not a rewrite.</p>
+    <p class="diagram-note">Read from source; no build was attempted. The claim here is about what the preprocessor would produce, not about a compiler diagnostic anyone has seen.</p>
+  </section>
+
+  <section>
+    <p class="kicker">03 &#183; numbered changes</p>
     <h2>Eight changes, and what each one costs</h2>
     <p class="source">One row per change, then one card each with the before/after, the reason, the consequence and the diff hunks that carry it.</p>
     <div class="mapping-table"><table>
       <thead><tr><th style="width:3%">#</th><th style="width:12%">Change</th><th style="width:15%">Target</th><th style="width:22%">Before</th><th style="width:22%">After</th><th>Impact</th></tr></thead>
-      <tbody><tr><td><code>1</code></td><td>The gate</td><td><code>cmake/contrib.cmake</code></td><td>if(";${GAMBIT_BITS};" MATCHES ";ColliderBit;") — a declaration: "ColliderBit is in the build, so FastJet is wanted"</td><td>if(EXISTS "${fastjet_DIR}/include/fastjet/ClusterSequence.hh") — a probe: "a built FastJet is actually here"</td><td>Configuration now depends on the state of the working tree, not only on the cache variables. The same <code>cmake</code> command produces a different build on a machine that has not provisioned FastJet.</td></tr><tr><td><code>2</code></td><td>Download and build</td><td><code>ExternalProject_Add(fastjet) / (fjcontrib)</code></td><td>Two <code>ExternalProject_Add</code> blocks fetched the tarballs (<code>fastjet.fr</code>, <code>fastjet.hepforge.org</code>), verified MD5s, ran <code>./configure --enable-shared</code> and <code>fragile-shared-install</code>, and registered clean/nuke targets.</td><td>Both blocks are gone. Nothing in CMake obtains FastJet any more.</td><td>Fastest possible reconfigure, and the FastJet build can be tuned once by hand. The cost is that provisioning moved out of the build system without moving into anything else in this repository — see section 06.</td></tr><tr><td><code>3</code></td><td>FastJet link surface</td><td><code>fastjet_LDFLAGS</code></td><td>-lfastjet -lfastjettools</td><td>-lfastjettools -lfastjet -lfastjetplugins -lsiscone_spherical -lsiscone</td><td>3 additional libraries. Note the order differs between the two consumption sites — see section 05.</td></tr><tr><td><code>4</code></td><td>fjcontrib link surface</td><td><code>fjcontrib_LDFLAGS</code></td><td>-lRecursiveTools</td><td>-lfastjetcontribfragile -lRecursiveTools -lEnergyCorrelator -lVariableR</td><td>Adds the two algorithm libraries plus the combined <code>fastjetcontribfragile</code> shared object. The three named algorithm libraries are static archives on this machine while <code>fastjetcontribfragile</code> is shared, so they are not interchangeable at link time.</td></tr><tr><td><code>5</code></td><td>fjcore as fallback</td><td><code>FJNS / FJCORE</code></td><td>The whole fjcore block was commented out, under a TODO citing class-name clashes with FastJet. The branch had exactly one jet backend.</td><td>fjcore is compiled unconditionally, and the preprocessor picks the namespace: <code>-DFJNS=fastjet</code> when FastJet was found, <code>-DFJCORE -DFJNS=gambit::fjcore</code> when it was not.</td><td>GAMBIT keeps configuring and building without FastJet. This is a build-system fallback, not an analysis-level one — section 06 has the limits.</td></tr><tr><td><code>6</code></td><td>Nsubjettiness compiled in-tree</td><td><code>add_gambit_library(fjcontrib_nsubjettiness)</code></td><td>Not present. Nsubjettiness was neither built nor linked.</td><td>6 fjcontrib source files are compiled into a GAMBIT object library and folded into <code>GAMBIT_BASIC_COMMON_OBJECTS</code>.</td><td>It is the one fjcontrib component whose compiler flags come from GAMBIT rather than from fjcontrib's own configure, and the only one that needs the unpacked fjcontrib source tree — not just the installed libraries — to be present.</td></tr><tr><td><code>7</code></td><td>Contrib headers on the include path</td><td><code>include_directories</code></td><td>Only <code>${fjcontrib_dir}/RecursiveTools</code> was added.</td><td>Both <code>${fastjet_DIR}/include</code> and <code>${fastjet_DIR}/include/fastjet/contrib</code> are added.</td><td>A line that looks redundant is load-bearing. Removing the second <code>include_directories</code> breaks every bare-name include.</td></tr><tr><td><code>8</code></td><td>LDFLAGS as list elements</td><td><code>quoting, across every contrib</code></td><td>One string: <code>set(fastjet_LDFLAGS "-L${dir} -lfastjet -lfastjettools")</code>.</td><td>Separate elements: <code>set(fastjet_LDFLAGS "-L${dir}" "-lfastjet" ...)</code>.</td><td>Applied consistently to <code>gambit_preload</code>, RestFrames, HepMC, YODA and FastJet, so it is a house rule now rather than a FastJet-specific fix. Cosmetic in effect, but it is the reason those unrelated one-line changes appear in the same diff.</td></tr></tbody>
+      <tbody><tr><td><code>1</code></td><td>The gate</td><td><code>cmake/contrib.cmake</code></td><td>if(";${GAMBIT_BITS};" MATCHES ";ColliderBit;") — a declaration: "ColliderBit is in the build, so FastJet is wanted"</td><td>if(EXISTS "${fastjet_DIR}/include/fastjet/ClusterSequence.hh") — a probe: "a built FastJet is actually here"</td><td>Configuration now depends on the state of the working tree, not only on the cache variables. The same <code>cmake</code> command produces a different build on a machine that has not provisioned FastJet.</td></tr><tr><td><code>2</code></td><td>Download and build</td><td><code>ExternalProject_Add(fastjet) / (fjcontrib)</code></td><td>Two <code>ExternalProject_Add</code> blocks fetched the tarballs (<code>fastjet.fr</code>, <code>fastjet.hepforge.org</code>), verified MD5s, ran <code>./configure --enable-shared</code> and <code>fragile-shared-install</code>, and registered clean/nuke targets.</td><td>Both blocks are gone. Nothing in CMake obtains FastJet any more.</td><td>Fastest possible reconfigure, and the FastJet build can be tuned once by hand. The cost is that provisioning moved out of the build system without moving into anything else in this repository — see section 06.</td></tr><tr><td><code>3</code></td><td>FastJet link surface</td><td><code>fastjet_LDFLAGS</code></td><td>-lfastjet -lfastjettools</td><td>-lfastjettools -lfastjet -lfastjetplugins -lsiscone_spherical -lsiscone</td><td>3 additional libraries. Note the order differs between the two consumption sites — see section 04.</td></tr><tr><td><code>4</code></td><td>fjcontrib link surface</td><td><code>fjcontrib_LDFLAGS</code></td><td>-lRecursiveTools</td><td>-lfastjetcontribfragile -lRecursiveTools -lEnergyCorrelator -lVariableR</td><td>Adds the two algorithm libraries plus the combined <code>fastjetcontribfragile</code> shared object. The three named algorithm libraries are static archives on this machine while <code>fastjetcontribfragile</code> is shared, so they are not interchangeable at link time.</td></tr><tr><td><code>5</code></td><td>fjcore as fallback</td><td><code>FJNS / FJCORE</code></td><td>The whole fjcore block was commented out, under a TODO citing class-name clashes with FastJet. The branch had exactly one jet backend.</td><td>fjcore is compiled unconditionally, and the preprocessor picks the namespace: <code>-DFJNS=fastjet</code> when FastJet was found, <code>-DFJCORE -DFJNS=gambit::fjcore</code> when it was not.</td><td>GAMBIT keeps configuring and building without FastJet. This is a build-system fallback, not an analysis-level one — section 06 has the limits.</td></tr><tr><td><code>6</code></td><td>Nsubjettiness compiled in-tree</td><td><code>add_gambit_library(fjcontrib_nsubjettiness)</code></td><td>Not present. Nsubjettiness was neither built nor linked.</td><td>6 fjcontrib source files are compiled into a GAMBIT object library and folded into <code>GAMBIT_BASIC_COMMON_OBJECTS</code>.</td><td>It is the one fjcontrib component whose compiler flags come from GAMBIT rather than from fjcontrib's own configure, and the only one that needs the unpacked fjcontrib source tree — not just the installed libraries — to be present.</td></tr><tr><td><code>7</code></td><td>Contrib headers on the include path</td><td><code>include_directories</code></td><td>Only <code>${fjcontrib_dir}/RecursiveTools</code> was added.</td><td>Both <code>${fastjet_DIR}/include</code> and <code>${fastjet_DIR}/include/fastjet/contrib</code> are added.</td><td>A line that looks redundant is load-bearing. Removing the second <code>include_directories</code> breaks every bare-name include.</td></tr><tr><td><code>8</code></td><td>LDFLAGS as list elements</td><td><code>quoting, across every contrib</code></td><td>One string: <code>set(fastjet_LDFLAGS "-L${dir} -lfastjet -lfastjettools")</code>.</td><td>Separate elements: <code>set(fastjet_LDFLAGS "-L${dir}" "-lfastjet" ...)</code>.</td><td>Applied consistently to <code>gambit_preload</code>, RestFrames, HepMC, YODA and FastJet, so it is a house rule now rather than a FastJet-specific fix. Cosmetic in effect, but it is the reason those unrelated one-line changes appear in the same diff.</td></tr></tbody>
     </table></div>
     <div class="unit-list">
       
@@ -216,7 +271,7 @@
             <div><dt>before</dt><dd>-lfastjet -lfastjettools</dd></div>
             <div><dt>after</dt><dd>-lfastjettools -lfastjet -lfastjetplugins -lsiscone_spherical -lsiscone</dd></div>
             <div><dt>why</dt><dd>VariableR is a FastJet <em>plugin</em>, so it needs <code>fastjetplugins</code>; the plugin set in turn pulls in both SISCone libraries. Neither was linked before because nothing used a plugin.</dd></div>
-            <div><dt>impact</dt><dd>3 additional libraries. Note the order differs between the two consumption sites — see section 05.</dd></div>
+            <div><dt>impact</dt><dd>3 additional libraries. Note the order differs between the two consumption sites — see section 04.</dd></div>
           </dl>
           <p class="diagram-note"><strong>Evidence.</strong> <code>set(fastjet_LDFLAGS &quot;-L${fastjet_DIR}/lib&quot; &quot;-lfastjettools&quot; &quot;-lfastjet&quot; &quot;-lfastjetplugins&quot; &quot;-lsiscone_spherical&quot; &quot;-lsiscone&quot;)</code></p>
           <details class="unit-diff"><summary>2 source lines &#183; 1 before, 1 after</summary><pre class="unit-hunks"><span class="dh">&#8722;&#8722;&#8722; private-SUSYRun2 &#183; cmake/contrib.cmake</span><span class="dr">  365    set(fastjet_LDFLAGS &quot;-L${fastjet_dir}/local/lib -lfastjet -lfastjettools&quot;)</span><span class="dh">+++ ColliderBit_solo_development &#183; cmake/contrib.cmake</span><span class="da">  306    set(fastjet_LDFLAGS &quot;-L${fastjet_DIR}/lib&quot; &quot;-lfastjettools&quot; &quot;-lfastjet&quot; &quot;-lfastjetplugins&quot; &quot;-lsiscone_spherical&quot; &quot;-lsiscone&quot;)</span></pre></details>
@@ -286,7 +341,7 @@
             <div><dt>why</dt><dd>The analyses are inconsistent about how they include contrib headers: some write <code>#include "fastjet/contrib/Nsubjettiness.hh"</code>, others write a bare <code>#include "SoftDrop.hh"</code>. Adding both roots makes each spelling resolve.</dd></div>
             <div><dt>impact</dt><dd>A line that looks redundant is load-bearing. Removing the second <code>include_directories</code> breaks every bare-name include.</dd></div>
           </dl>
-          <p class="diagram-note"><strong>Evidence.</strong> Both spellings appear in the analysis include list in section 04.</p>
+          <p class="diagram-note"><strong>Evidence.</strong> Both spellings appear in the analysis include list in section 05.</p>
           <details class="unit-diff"><summary>6 source lines &#183; 3 before, 3 after</summary><pre class="unit-hunks"><span class="dh">&#8722;&#8722;&#8722; private-SUSYRun2 &#183; cmake/contrib.cmake</span><span class="dr">  345  #include_directories(&quot;${fjcore_INCLUDE_DIR}&quot;)</span><span class="dr">  363    include_directories(&quot;${fastjet_dir}/local/include&quot;)</span><span class="dr">  397    include_directories(&quot;${fjcontrib_dir}/RecursiveTools&quot;)</span><span class="dh">+++ ColliderBit_solo_development &#183; cmake/contrib.cmake</span><span class="da">  304    include_directories(&quot;${fastjet_DIR}/include&quot;)</span><span class="da">  305    include_directories(&quot;${fastjet_DIR}/include/fastjet/contrib&quot;)</span><span class="da">  318  include_directories(&quot;${fjcore_INCLUDE_DIR}&quot;)</span></pre></details>
         </article>
 
@@ -307,11 +362,11 @@
           <details class="unit-diff"><summary>4 source lines &#183; 2 before, 2 after</summary><pre class="unit-hunks"><span class="dh">&#8722;&#8722;&#8722; private-SUSYRun2 &#183; cmake/contrib.cmake</span><span class="dr">  365    set(fastjet_LDFLAGS &quot;-L${fastjet_dir}/local/lib -lfastjet -lfastjettools&quot;)</span><span class="dr">  406  #  set(FJCONTRIB_CXX_FLAGS &quot;${FJCONTRIB_CXX_FLAGS} -L${fastjet_dir}/local/lib -lfastjet -lfastjettools -Wl,-rpath,${fastjet_dir}/local/lib&quot;)</span><span class="dh">+++ ColliderBit_solo_development &#183; cmake/contrib.cmake</span><span class="da">  306    set(fastjet_LDFLAGS &quot;-L${fastjet_DIR}/lib&quot; &quot;-lfastjettools&quot; &quot;-lfastjet&quot; &quot;-lfastjetplugins&quot; &quot;-lsiscone_spherical&quot; &quot;-lsiscone&quot;)</span><span class="da">  307    set(fjcontrib_LDFLAGS &quot;-L${fastjet_DIR}/lib&quot; &quot;-lfastjetcontribfragile&quot; &quot;-lRecursiveTools&quot; &quot;-lEnergyCorrelator&quot; &quot;-lVariableR&quot;)</span></pre></details>
         </article>
     </div>
-    <p class="diagram-note"><strong>8 of 8 changes quote source lines directly.</strong> The expanders show before and after rather than a diff hunk, because this region was rewritten rather than edited: a unified diff of it is one hunk covering everything, which separates nothing. The whole-region diff is still in section 07.</p>
+    <p class="diagram-note"><strong>8 of 8 changes quote source lines directly.</strong> The expanders show before and after rather than a diff hunk, because this region was rewritten rather than edited: a unified diff of it is one hunk covering everything, which separates nothing. The whole-region diff is still in section 08.</p>
   </section>
 
   <section>
-    <p class="kicker">03 &#183; the decision</p>
+    <p class="kicker">04 &#183; the decision</p>
     <h2>One probe, three consequences</h2>
     <p class="source">The <code>EXISTS</code> test sets three variables, and those fan out to the link flags, the fjcore namespace and whether Rivet is built at all.</p>
     <div class="diagram-shell">
@@ -365,7 +420,7 @@
   </section>
 
   <section>
-    <p class="kicker">04 &#183; who needs it</p>
+    <p class="kicker">05 &#183; who needs it</p>
     <h2>What actually uses the new libraries</h2>
     <p class="source">Extracted by searching ColliderBit for each algorithm. The include column shows the spellings that justify carrying two include roots.</p>
     <div class="mapping-table"><table>
@@ -376,7 +431,7 @@
   </section>
 
   <section>
-    <p class="kicker">05 &#183; the gap</p>
+    <p class="kicker">06 &#183; the gap</p>
     <h2>Nothing in this repository provides FastJet any more</h2>
     <p class="source">The download step was removed. The ignore rules that made sense while CMake downloaded the tarballs are still in place.</p>
     <div class="mapping-table"><table>
@@ -395,7 +450,7 @@
   </section>
 
   <section>
-    <p class="kicker">06 &#183; history</p>
+    <p class="kicker">07 &#183; history</p>
     <h2>How it got here</h2>
     <p class="source">Commits that changed a FastJet-related line in <code>cmake/contrib.cmake</code> since the source branch diverged.</p>
     <div class="mapping-table"><table>
@@ -406,7 +461,7 @@
   </section>
 
   <section>
-    <p class="kicker">07 &#183; exact evidence</p>
+    <p class="kicker">08 &#183; exact evidence</p>
     <h2>Region diff</h2>
     <p class="source">The jet-clustering region of <code>cmake/contrib.cmake</code>, source branch to this branch. Numbered cards above quote from this diff.</p>
     <details class="full" open><summary>cmake/contrib.cmake jet-clustering region (86 lines before, 43 after)</summary><pre class="full">--- private-SUSYRun2 cmake/contrib.cmake

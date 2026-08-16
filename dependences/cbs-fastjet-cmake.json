@@ -119,6 +119,86 @@
     "covered": 8,
     "total": 8
   },
+  "fjcore_rationale": {
+    "always_linked": {
+      "line": 328,
+      "text": "set(GAMBIT_BASIC_COMMON_OBJECTS \"${GAMBIT_BASIC_COMMON_OBJECTS}\" $<TARGET_OBJECTS:fjcore>)"
+    },
+    "fallbacks": [
+      {
+        "consistent": false,
+        "first_hit": {
+          "line": 160,
+          "text": "FJNS::Filter trimmer(fastjet::JetDefinition(fastjet::kt_algorithm, Rsub), fastjet::SelectorPtFractionMin(ptfrac));"
+        },
+        "guard": true,
+        "guard_ends": 38,
+        "literal_fastjet": 8,
+        "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_013.cpp"
+      },
+      {
+        "consistent": false,
+        "first_hit": {
+          "line": 211,
+          "text": "FJNS::Filter trimmer(fastjet::JetDefinition(fastjet::kt_algorithm, Rsub), fastjet::SelectorPtFractionMin(ptfrac));"
+        },
+        "guard": true,
+        "guard_ends": 42,
+        "literal_fastjet": 7,
+        "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_014.cpp"
+      },
+      {
+        "consistent": false,
+        "first_hit": {
+          "line": 103,
+          "text": "FJNS::Filter trimmer(fastjet::JetDefinition(fastjet::kt_algorithm, Rtrim), fastjet::SelectorPtFractionMin(fcut));"
+        },
+        "guard": true,
+        "guard_ends": 35,
+        "literal_fastjet": 5,
+        "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp"
+      },
+      {
+        "consistent": false,
+        "first_hit": {
+          "line": 206,
+          "text": "FJNS::Filter trimmer(fastjet::JetDefinition(fastjet::antikt_algorithm, Rsub), fastjet::SelectorPtFractionMin(ptfrac));"
+        },
+        "guard": true,
+        "guard_ends": 34,
+        "literal_fastjet": 5,
+        "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_07.cpp"
+      },
+      {
+        "consistent": false,
+        "first_hit": {
+          "line": 166,
+          "text": "FJNS::Filter trimmer(fastjet::JetDefinition(fastjet::kt_algorithm, Rsub), fastjet::SelectorPtFractionMin(ptfrac));"
+        },
+        "guard": true,
+        "guard_ends": 38,
+        "literal_fastjet": 7,
+        "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2021_35.cpp"
+      },
+      {
+        "consistent": true,
+        "first_hit": null,
+        "guard": true,
+        "guard_ends": 47,
+        "literal_fastjet": 0,
+        "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_30.cpp"
+      }
+    ],
+    "jet_users": {
+      "ColliderBit": 21,
+      "cmake": 1,
+      "contrib": 9
+    },
+    "namespace": {
+      "line": 173,
+      "text": "#define FJCORE_BEGIN_NAMESPACE namespace gambit { namespace fjcore {"
+    }
+  },
   "fjns": {
     "fjcore_flag": {
       "line": 322,
@@ -628,7 +708,7 @@
       ],
       "evidence": "<code>set(fastjet_LDFLAGS &quot;-L${fastjet_DIR}/lib&quot; &quot;-lfastjettools&quot; &quot;-lfastjet&quot; &quot;-lfastjetplugins&quot; &quot;-lsiscone_spherical&quot; &quot;-lsiscone&quot;)</code>",
       "id": 3,
-      "impact": "3 additional libraries. Note the order differs between the two consumption sites \u2014 see section 05.",
+      "impact": "3 additional libraries. Note the order differs between the two consumption sites \u2014 see section 04.",
       "kind": "expanded",
       "new": "-lfastjettools -lfastjet -lfastjetplugins -lsiscone_spherical -lsiscone",
       "old": "-lfastjet -lfastjettools",
@@ -827,7 +907,7 @@
           "text": "  include_directories(\"${fjcontrib_dir}/RecursiveTools\")"
         }
       ],
-      "evidence": "Both spellings appear in the analysis include list in section 04.",
+      "evidence": "Both spellings appear in the analysis include list in section 05.",
       "id": 7,
       "impact": "A line that looks redundant is load-bearing. Removing the second <code>include_directories</code> breaks every bare-name include.",
       "kind": "added",
