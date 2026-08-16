@@ -101,6 +101,26 @@ python3 scripts/compare-cbs-branches.py \
 - `dependences/CBS_BRANCH_COMPARISON.md`：变更摘要；
 - `site/cbs-branch-comparison.html`：可直接交给 GitHub Pages 的自包含页面。
 
+### 聚焦单个源文件
+
+对于 1000+ 节点的大分支差异，使用聚焦比较器只展开一个源文件、它的直接 include 表面和函数级变化。当前的 `solo.cpp` 页面由下面的命令生成，之后可以替换 `--focus-file` 比较其他文件：
+
+```bash
+python3 scripts/compare-cbs-focus.py \
+  --baseline /Users/P.Zhu/Gambit-Workshop/gambit \
+  --comparison /Users/P.Zhu/Gambit-Workshop/worktree/SUSYRun2 \
+  --focus-file ColliderBit/examples/solo.cpp \
+  --baseline-label ColliderBit_solo_development \
+  --comparison-label SUSYRun2
+```
+
+输出包括：
+
+- `dependences/cbs-solo-comparison.html`：聚焦的 diagram-design 页面；
+- `dependences/cbs-solo-comparison.json`：函数、include、模块和 unified diff 数据；
+- `dependences/CBS_SOLO_COMPARISON.md`：文本摘要；
+- `site/cbs-solo-comparison.html`：GitHub Pages 页面。
+
 图是静态源码证据，不是运行时 trace，也不是完整 C++ AST；CBS 的运行时 functor 图仍应使用 GAMBIT 运行生成的 `.gv` 文件。
 
 ## 变更台账（汇报用 slide）
