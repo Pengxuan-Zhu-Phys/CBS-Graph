@@ -15,8 +15,13 @@ YAML flag named `check_histogram` gates both -- so on one analysis the flag
 changes how many signal regions contribute to the likelihood.
 
 Bin edges, observed and background arrays, macro definitions, the JSON field
-names and the batch merge path are all extracted from the worktree.  Nothing
-is built or run.
+names and the batch merge path are all extracted from the worktree.
+
+One section is the exception: the worked JSON block and the figure beside it
+come from `runs/CBS_result.json`, a run whose output is committed in the tree.
+The figure is regenerated from that same file with the project's own plotting
+script so the two demonstrably match.  Nothing else here is built or run, and
+the page says so where the run output appears.
 """
 
 from __future__ import annotations
@@ -36,6 +41,14 @@ SOLO = "ColliderBit/examples/solo.cpp"
 SOLO_OUTPUT = "ColliderBit/examples/solo_output.cpp"
 SOLO_BATCH = "ColliderBit/examples/solo_batch.cpp"
 PLOTTER = "ColliderBit/scripts/plot_cbs_histograms.py"
+
+# A real run that happens to be committed in the tree, used for the worked
+# JSON block and the plot beside it. This is the one place on this page where
+# numbers come from an execution rather than from source text, so it is called
+# out explicitly wherever it is shown.
+SAMPLE_RUN = "runs/CBS_result.json"
+SAMPLE_ANALYSIS = "ATLAS_EXOT_2019_04"
+PLOT_FILE = "ATLAS_EXOT_2019_04_m_VLB.png"
 
 BASE = "9c955e3a78"
 
@@ -224,6 +237,52 @@ def analyse_consumer(root: Path, path: str) -> dict:
     }
 
 
+def sample_run(root: Path) -> dict | None:
+    """The committed run output, if present, for the worked JSON block.
+
+    Returns the first 1D histogram of SAMPLE_ANALYSIS together with a trimmed
+    copy suitable for quoting: the first two bins in full, the rest elided.
+    """
+    path = root / SAMPLE_RUN
+    if not path.exists():
+        return None
+    data = json.loads(path.read_text())
+    analysis = data.get("analyses", {}).get(SAMPLE_ANALYSIS)
+    if not analysis or "histograms" not in analysis:
+        return None
+    ones = analysis["histograms"].get("1d") or []
+    if not ones:
+        return None
+    hist = ones[0]
+
+    head = {k: hist[k] for k in ("name", "x_label", "edges", "nbins", "is_signal_region")
+            if k in hist}
+    for key in ("obs", "bkg", "bkg_err"):
+        if key in hist:
+            head[key] = hist[key]
+    head["bins"] = hist["bins"][:2] + ["... %d more" % max(0, len(hist["bins"]) - 2)]
+    for key in ("underflow", "overflow", "underflow_error", "overflow_error", "integral"):
+        if key in hist:
+            head[key] = hist[key]
+
+    quoted = json.dumps(head, indent=2)
+    quoted = re.sub(r'"\.\.\. (\d+) more"', r'"... \1 more bins, same shape ..."', quoted)
+
+    return {
+        "path": SAMPLE_RUN,
+        "analysis": SAMPLE_ANALYSIS,
+        "n_events": data.get("run", {}).get("n_events"),
+        "schema": data.get("schema_version"),
+        "hist": {k: hist[k] for k in ("name", "nbins", "integral", "underflow", "overflow")
+                 if k in hist},
+        "counts": [b["count"] for b in hist["bins"]],
+        "sr_labels": [b.get("sr_label") for b in hist["bins"] if b.get("sr_label")],
+        "bin_keys_plain": ["bin_index", "x_low", "x_high", "count", "error", "sumw2"],
+        "bin_keys_sr": ["n_obs", "n_bkg", "n_bkg_err", "sr_label"],
+        "quoted": quoted,
+    }
+
+
 def collect(root: Path) -> dict:
     hist = lines_of(root, HISTOGRAM_HPP)
     macros = lines_of(root, MACROS_HPP)
@@ -271,6 +330,7 @@ def collect(root: Path) -> dict:
     }
 
     consumers = [analyse_consumer(root, path) for path in CONSUMERS]
+    sample = sample_run(root)
 
     numstat = {}
     raw = git(root, "diff", "--numstat", "-M", BASE, "HEAD", "--", *TOUCHED)
@@ -311,6 +371,7 @@ def collect(root: Path) -> dict:
         "json_fields": json_fields,
         "merge": merge,
         "consumers": consumers,
+        "sample": sample,
         "numstat": numstat,
         "status": status,
         "plotter_lines": len(lines_of(root, PLOTTER)),
@@ -526,7 +587,7 @@ __CSS__
   <p class="eyebrow">ColliderBit &#183; analysis layer</p>
   <h1>Histograms</h1>
   <p class="intro">One class does two jobs. Booked one way it is a diagnostic object that reaches the JSON output and the plotter and stops. Booked the other way every bin becomes a signal region that enters the likelihood. The difference is whether one vector is empty &mdash; and a single YAML flag, defaulting to off, gates both.</p>
-  <div class="meta"><span><strong>BASELINE</strong> __BASELINE__</span><span><strong>HEAD</strong> __HEAD__</span><span><strong>NEW FILE</strong> Histogram.hpp, __HIST_LINES__ lines</span><span><strong>STATIC EVIDENCE</strong> no build / no events processed</span></div>
+  <div class="meta"><span><strong>BASELINE</strong> __BASELINE__</span><span><strong>HEAD</strong> __HEAD__</span><span><strong>NEW FILE</strong> Histogram.hpp, __HIST_LINES__ lines</span><span><strong>EVIDENCE</strong> source text, except the run output in &#167;05</span></div>
   <p class="backlink"><span class="lbl">context</span><span>This page expands <a href="cbs-change-ledger.html#8">slide 7 of the CBS change-ledger deck &#8599;</a>. The JSON fields it produces are part of the <a href="cbs-json-output.html">output contract &#8599;</a>, and the batch merge reads them back.</span></p>
 
   <div class="summary-grid" aria-label="Summary">
@@ -537,7 +598,7 @@ __CSS__
     <div class="card"><span class="n">__PLAIN_ANALYSES__</span><span class="label">use plain mode</span></div>
     <div class="card accent"><span class="n">__EXTRA_SRS__</span><span class="label">SRs the flag adds</span></div>
   </div>
-  <div class="note">Bin edges, observed and background arrays, macro bodies, JSON field names and the batch merge sites are read from the worktree when this page is generated. Nothing was compiled and no events were processed, so nothing here is a statement about yields.</div>
+  <div class="note">Bin edges, observed and background arrays, macro bodies, JSON field names and the batch merge sites are read from the worktree when this page is generated. Nothing was compiled and no events were processed for this page &mdash; with one stated exception: &#167;05 quotes a committed run output and the figure made from it, to show the shape of what comes out.</div>
 
   <section id="two-jobs">
     <p class="kicker">01 &#183; one class, two jobs</p>
@@ -602,8 +663,38 @@ __CSS__
     <p class="diagram-note">The three arrays are the real content. <code>mVLB_obs</code>, <code>mVLB_bkg</code> and <code>mVLB_bkg_err</code> are the published numbers, and <code>validate_signal_region_data()</code> insists there be exactly one of each per bin &mdash; so a bin-edge edit that forgets to update the arrays throws instead of quietly producing a shorter set of regions.</p>
   </section>
 
+  <section id="output">
+    <p class="kicker">05 &#183; what comes out</p>
+    <h2>The JSON, and the plot made from it</h2>
+    <p class="source">__SAMPLE_SOURCE__</p>
+    <div class="grid-2">
+      <div>
+        <p class="example-note"><strong>The JSON block</strong> &mdash; <code>__SAMPLE_PATH__</code>, first two bins in full.</p>
+        <pre class="unit-hunks json-block">__SAMPLE_JSON__</pre>
+      </div>
+      <div>
+        <p class="example-note"><strong>The plot</strong> &mdash; produced by <code>plot_cbs_histograms.py</code> from exactly that block.</p>
+        <figure class="plot-figure">
+          <img src="assets/__PLOT_FILE__" alt="ATLAS_EXOT_2019_04 m_VLB: data points with background step, hatched uncertainty band, dashed signal, and a data-over-background ratio panel">
+          <figcaption>__PLOT_CAPTION__</figcaption>
+        </figure>
+      </div>
+    </div>
+    <div class="mapping-table" style="margin-top:16px"><table>
+      <thead><tr><th style="width:20%">Per-bin key</th><th style="width:16%">Present when</th><th>What it is</th></tr></thead>
+      <tbody>
+        <tr><td><code>bin_index</code>, <code>x_low</code>, <code>x_high</code></td><td><span class="status">always</span></td><td>Position. Edges are also repeated at the top level as <code>edges</code>, so a reader can take either.</td></tr>
+        <tr><td><code>count</code>, <code>error</code>, <code>sumw2</code></td><td><span class="status">always</span></td><td>The simulated yield, its MC error and the raw sum of squared weights. <code>error</code> is <code>sqrt(sumw2)</code>, written out so a consumer need not recompute it.</td></tr>
+        <tr><td><code>n_obs</code>, <code>n_bkg</code>, <code>n_bkg_err</code></td><td><span class="status unchanged">SR mode only</span></td><td>The published numbers for that bin, carried per bin as well as in the top-level arrays.</td></tr>
+        <tr><td><code>sr_label</code></td><td><span class="status unchanged">SR mode only</span></td><td>The signal-region name this bin becomes &mdash; <code>__SR_LABEL_EXAMPLE__</code>. It is the join key between the histogram block and the <code>signal_regions</code> block of the same JSON.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="diagram-note"><strong><code>is_signal_region</code> is written into the JSON</strong>, so a consumer does not have to infer the mode from whether <code>obs</code> happens to be present. That is also what the plotting script branches on: a plain histogram gets a single panel with counts and error bars, an SR histogram gets the background step, the hatched uncertainty band, the dashed signal overlay and the data-over-background ratio panel underneath. Same script, same JSON, two layouts &mdash; the same fork as in the C++.</p>
+    <div class="note"><strong>The numbers in this section are the one exception on this page.</strong> Everything else is read from source text; these came from an actual run of __N_EVENTS__ events whose output is committed at <code>__SAMPLE_PATH__</code>, and the image was regenerated from that file with the plotting script so the two match. They are shown to make the shape concrete, not as a physics result &mdash; a single run at this statistics says nothing about whether the analysis reproduces the paper.</div>
+  </section>
+
   <section id="consumers">
-    <p class="kicker">05 &#183; who uses which</p>
+    <p class="kicker">06 &#183; who uses which</p>
     <h2>Two analyses take the signal regions, one does not</h2>
     <p class="source">All three are new on this branch.</p>
     <div class="mapping-table"><table>
@@ -615,7 +706,7 @@ __CSS__
   </section>
 
   <section id="flag">
-    <p class="kicker">06 &#183; the flag</p>
+    <p class="kicker">07 &#183; the flag</p>
     <h2>A diagnostic switch that moves the likelihood</h2>
     <p class="source">One YAML key, read once, set globally.</p>
     <details class="unit-diff" open><summary>solo.cpp:__SWITCH_LINE__</summary><pre class="unit-hunks">__SWITCH__</pre></details>
@@ -624,7 +715,7 @@ __CSS__
   </section>
 
   <section id="roundtrip">
-    <p class="kicker">07 &#183; the round trip</p>
+    <p class="kicker">08 &#183; the round trip</p>
     <h2>Out to JSON, back through the batch merge</h2>
     <p class="source">Histograms are not write-only: batch mode reads them back and accumulates them.</p>
     <div class="grid-2">
@@ -648,7 +739,7 @@ __CSS__
   </section>
 
   <section id="files">
-    <p class="kicker">08 &#183; the footprint</p>
+    <p class="kicker">09 &#183; the footprint</p>
     <h2>Where it landed</h2>
     <div class="mapping-table"><table>
       <thead><tr><th style="width:22%">File</th><th style="width:12%">State</th><th>Role</th><th style="width:14%">Lines</th></tr></thead>
@@ -658,9 +749,9 @@ __CSS__
   </section>
 
   <section>
-    <p class="kicker">09 &#183; boundary</p>
+    <p class="kicker">10 &#183; boundary</p>
     <h2>What this page does not tell you</h2>
-    <div class="note">Everything above is read from source text. No analysis was compiled, no histogram was filled, and no likelihood was evaluated &mdash; so this page shows how a bin becomes a signal region, not whether the resulting per-bin limits reproduce the published ones. The observed and background arrays are quoted as they appear in the source; whether they match the paper's tables is a validation question this page cannot answer, and <code>ATLAS_EXOT_2021_35</code> is in any case marked unvalidated in its own source.</div>
+    <div class="note">Everything above is read from source text, except the run output quoted in &#167;05. No analysis was compiled for this page and no likelihood was evaluated &mdash; so this page shows how a bin becomes a signal region, not whether the resulting per-bin limits reproduce the published ones. The observed and background arrays are quoted as they appear in the source; whether they match the paper's tables is a validation question this page cannot answer, and <code>ATLAS_EXOT_2021_35</code> is in any case marked unvalidated in its own source.</div>
   </section>
 
   <p class="backlink" style="margin-top:26px"><span class="lbl">back</span><span>Return to <a href="cbs-change-ledger.html#8">slide 7 &#8599;</a>, or to the <a href="cbs-change-ledger.html#1">start of the deck &#8599;</a>.</span></p>
@@ -719,6 +810,23 @@ def render_html(data: dict) -> str:
         retired_note = ("No analysis retains a hand-written per-bin signal-region block, so the "
                         "before-and-after comparison is not visible in the current source.")
 
+    sample = data.get("sample")
+    if sample:
+        peak = max(sample["counts"]) if sample["counts"] else 0
+        sample_source = (
+            f'A committed run of <code>{esc(sample["analysis"])}</code> at '
+            f'{sample["n_events"]:,} events, and the figure the plotting script makes from it.'
+        )
+        plot_caption = (
+            f'{esc(sample["hist"]["name"])}, {sample["hist"]["nbins"]} bins. Background step with '
+            f'hatched uncertainty, observed as points, simulated signal dashed, data over '
+            f'background underneath. Peak simulated yield {peak:.2f} events, matching '
+            f'<code>bins[2].count</code> in the block on the left.'
+        )
+    else:
+        sample_source = "No committed run output was found, so this section is empty."
+        plot_caption = ""
+
     # The worked example pairs the smallest plain user with the smallest
     # signal-region user, so the two columns stay comparable in length.
     plain_ex = min(plain_analyses, key=lambda c: len(c["plain_defs"]))
@@ -762,6 +870,14 @@ def render_html(data: dict) -> str:
         "__SR_SRS_OFF__": str(sr_ex["srs_without_flag"]),
         "__SR_SRS_ON__": str(sr_ex["srs_with_flag"]),
         "__SR_LAST_BIN__": str(max(0, sum(d["nbins"] for d in sr_ex["sr_defs"]) - 1)),
+        "__SAMPLE_SOURCE__": sample_source,
+        "__SAMPLE_PATH__": esc(sample["path"]) if sample else "&#8212;",
+        "__SAMPLE_JSON__": esc(sample["quoted"]) if sample else "",
+        "__SR_LABEL_EXAMPLE__": esc(sample["sr_labels"][0]) if sample and sample["sr_labels"]
+                                else "&lt;hist&gt;_bin0",
+        "__N_EVENTS__": f'{sample["n_events"]:,}' if sample and sample["n_events"] else "?",
+        "__PLOT_FILE__": PLOT_FILE,
+        "__PLOT_CAPTION__": plot_caption,
         "__SWITCH_LINE__": str(data["switch"]["read"]["line"]),
         "__SWITCH__": esc(data["excerpts"]["switch"]),
         "__FLAG_SENTENCE__": flag_sentence,

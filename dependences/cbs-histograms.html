@@ -89,6 +89,10 @@
     .tag-plain { color:var(--green); background:var(--green-tint); }
     .tag-sr { color:var(--accent); background:var(--accent-tint); }
     .example-note { color:var(--muted); font-size:11.5px; line-height:1.55; margin:11px 0 5px; }
+    .json-block { border:1px solid var(--rule); border-radius:5px; font-size:10px; max-height:520px; overflow:auto; padding:11px 13px; }
+    .plot-figure { background:#fff; border:1px solid var(--rule); border-radius:6px; margin:0; padding:12px; }
+    .plot-figure img { display:block; width:100%; height:auto; border-radius:3px; }
+    .plot-figure figcaption { color:var(--soft); font-size:11px; line-height:1.55; margin-top:9px; }
     .example-col .unit-hunks { border:1px solid var(--rule); border-radius:5px; font-size:10px; padding:9px 11px; }
     .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
     .mapping-table table { min-width:900px; }
@@ -112,7 +116,7 @@
   <p class="eyebrow">ColliderBit &#183; analysis layer</p>
   <h1>Histograms</h1>
   <p class="intro">One class does two jobs. Booked one way it is a diagnostic object that reaches the JSON output and the plotter and stops. Booked the other way every bin becomes a signal region that enters the likelihood. The difference is whether one vector is empty &mdash; and a single YAML flag, defaulting to off, gates both.</p>
-  <div class="meta"><span><strong>BASELINE</strong> 9c955e3a78</span><span><strong>HEAD</strong> 65aca0890d</span><span><strong>NEW FILE</strong> Histogram.hpp, 678 lines</span><span><strong>STATIC EVIDENCE</strong> no build / no events processed</span></div>
+  <div class="meta"><span><strong>BASELINE</strong> 9c955e3a78</span><span><strong>HEAD</strong> 65aca0890d</span><span><strong>NEW FILE</strong> Histogram.hpp, 678 lines</span><span><strong>EVIDENCE</strong> source text, except the run output in &#167;05</span></div>
   <p class="backlink"><span class="lbl">context</span><span>This page expands <a href="cbs-change-ledger.html#8">slide 7 of the CBS change-ledger deck &#8599;</a>. The JSON fields it produces are part of the <a href="cbs-json-output.html">output contract &#8599;</a>, and the batch merge reads them back.</span></p>
 
   <div class="summary-grid" aria-label="Summary">
@@ -123,7 +127,7 @@
     <div class="card"><span class="n">1</span><span class="label">use plain mode</span></div>
     <div class="card accent"><span class="n">23</span><span class="label">SRs the flag adds</span></div>
   </div>
-  <div class="note">Bin edges, observed and background arrays, macro bodies, JSON field names and the batch merge sites are read from the worktree when this page is generated. Nothing was compiled and no events were processed, so nothing here is a statement about yields.</div>
+  <div class="note">Bin edges, observed and background arrays, macro bodies, JSON field names and the batch merge sites are read from the worktree when this page is generated. Nothing was compiled and no events were processed for this page &mdash; with one stated exception: &#167;05 quotes a committed run output and the figure made from it, to show the shape of what comes out.</div>
 
   <section id="two-jobs">
     <p class="kicker">01 &#183; one class, two jobs</p>
@@ -319,8 +323,112 @@
     <p class="diagram-note">The three arrays are the real content. <code>mVLB_obs</code>, <code>mVLB_bkg</code> and <code>mVLB_bkg_err</code> are the published numbers, and <code>validate_signal_region_data()</code> insists there be exactly one of each per bin &mdash; so a bin-edge edit that forgets to update the arrays throws instead of quietly producing a shorter set of regions.</p>
   </section>
 
+  <section id="output">
+    <p class="kicker">05 &#183; what comes out</p>
+    <h2>The JSON, and the plot made from it</h2>
+    <p class="source">A committed run of <code>ATLAS_EXOT_2019_04</code> at 30,000 events, and the figure the plotting script makes from it.</p>
+    <div class="grid-2">
+      <div>
+        <p class="example-note"><strong>The JSON block</strong> &mdash; <code>runs/CBS_result.json</code>, first two bins in full.</p>
+        <pre class="unit-hunks json-block">{
+  &quot;name&quot;: &quot;m_VLB&quot;,
+  &quot;x_label&quot;: &quot;$m_{\\rm VLB}$ [GeV]&quot;,
+  &quot;edges&quot;: [
+    900.0,
+    1050.0,
+    1150.0,
+    1250.0,
+    1400.0,
+    1600.0,
+    1900.0,
+    2300.0
+  ],
+  &quot;nbins&quot;: 7,
+  &quot;is_signal_region&quot;: true,
+  &quot;obs&quot;: [
+    41.0,
+    62.0,
+    54.0,
+    67.0,
+    24.0,
+    13.0,
+    4.0
+  ],
+  &quot;bkg&quot;: [
+    45.5,
+    61.2,
+    47.9,
+    51.0,
+    28.5,
+    14.8,
+    7.4
+  ],
+  &quot;bkg_err&quot;: [
+    4.6,
+    5.6,
+    5.4,
+    6.2,
+    4.3,
+    2.8,
+    2.0
+  ],
+  &quot;bins&quot;: [
+    {
+      &quot;bin_index&quot;: 0,
+      &quot;count&quot;: 4.676238000000001,
+      &quot;error&quot;: 0.8999424226982525,
+      &quot;n_bkg&quot;: 45.5,
+      &quot;n_bkg_err&quot;: 4.6,
+      &quot;n_obs&quot;: 41.0,
+      &quot;sr_label&quot;: &quot;m_VLB_bin0&quot;,
+      &quot;sumw2&quot;: 0.8098963641720002,
+      &quot;x_high&quot;: 1050.0,
+      &quot;x_low&quot;: 900.0
+    },
+    {
+      &quot;bin_index&quot;: 1,
+      &quot;count&quot;: 18.012176000000004,
+      &quot;error&quot;: 1.7662391712743777,
+      &quot;n_bkg&quot;: 61.2,
+      &quot;n_bkg_err&quot;: 5.6,
+      &quot;n_obs&quot;: 62.0,
+      &quot;sr_label&quot;: &quot;m_VLB_bin1&quot;,
+      &quot;sumw2&quot;: 3.1196008101440005,
+      &quot;x_high&quot;: 1150.0,
+      &quot;x_low&quot;: 1050.0
+    },
+    &quot;... 5 more bins, same shape ...&quot;
+  ],
+  &quot;underflow&quot;: 0.17319400000000001,
+  &quot;overflow&quot;: 0.17319400000000001,
+  &quot;underflow_error&quot;: 0.17319400000000001,
+  &quot;overflow_error&quot;: 0.17319400000000001,
+  &quot;integral&quot;: 58.88596000000001
+}</pre>
+      </div>
+      <div>
+        <p class="example-note"><strong>The plot</strong> &mdash; produced by <code>plot_cbs_histograms.py</code> from exactly that block.</p>
+        <figure class="plot-figure">
+          <img src="assets/ATLAS_EXOT_2019_04_m_VLB.png" alt="ATLAS_EXOT_2019_04 m_VLB: data points with background step, hatched uncertainty band, dashed signal, and a data-over-background ratio panel">
+          <figcaption>m_VLB, 7 bins. Background step with hatched uncertainty, observed as points, simulated signal dashed, data over background underneath. Peak simulated yield 26.50 events, matching <code>bins[2].count</code> in the block on the left.</figcaption>
+        </figure>
+      </div>
+    </div>
+    <div class="mapping-table" style="margin-top:16px"><table>
+      <thead><tr><th style="width:20%">Per-bin key</th><th style="width:16%">Present when</th><th>What it is</th></tr></thead>
+      <tbody>
+        <tr><td><code>bin_index</code>, <code>x_low</code>, <code>x_high</code></td><td><span class="status">always</span></td><td>Position. Edges are also repeated at the top level as <code>edges</code>, so a reader can take either.</td></tr>
+        <tr><td><code>count</code>, <code>error</code>, <code>sumw2</code></td><td><span class="status">always</span></td><td>The simulated yield, its MC error and the raw sum of squared weights. <code>error</code> is <code>sqrt(sumw2)</code>, written out so a consumer need not recompute it.</td></tr>
+        <tr><td><code>n_obs</code>, <code>n_bkg</code>, <code>n_bkg_err</code></td><td><span class="status unchanged">SR mode only</span></td><td>The published numbers for that bin, carried per bin as well as in the top-level arrays.</td></tr>
+        <tr><td><code>sr_label</code></td><td><span class="status unchanged">SR mode only</span></td><td>The signal-region name this bin becomes &mdash; <code>m_VLB_bin0</code>. It is the join key between the histogram block and the <code>signal_regions</code> block of the same JSON.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="diagram-note"><strong><code>is_signal_region</code> is written into the JSON</strong>, so a consumer does not have to infer the mode from whether <code>obs</code> happens to be present. That is also what the plotting script branches on: a plain histogram gets a single panel with counts and error bars, an SR histogram gets the background step, the hatched uncertainty band, the dashed signal overlay and the data-over-background ratio panel underneath. Same script, same JSON, two layouts &mdash; the same fork as in the C++.</p>
+    <div class="note"><strong>The numbers in this section are the one exception on this page.</strong> Everything else is read from source text; these came from an actual run of 30,000 events whose output is committed at <code>runs/CBS_result.json</code>, and the image was regenerated from that file with the plotting script so the two match. They are shown to make the shape concrete, not as a physics result &mdash; a single run at this statistics says nothing about whether the analysis reproduces the paper.</div>
+  </section>
+
   <section id="consumers">
-    <p class="kicker">05 &#183; who uses which</p>
+    <p class="kicker">06 &#183; who uses which</p>
     <h2>Two analyses take the signal regions, one does not</h2>
     <p class="source">All three are new on this branch.</p>
     <div class="mapping-table"><table>
@@ -334,7 +442,7 @@
   </section>
 
   <section id="flag">
-    <p class="kicker">06 &#183; the flag</p>
+    <p class="kicker">07 &#183; the flag</p>
     <h2>A diagnostic switch that moves the likelihood</h2>
     <p class="source">One YAML key, read once, set globally.</p>
     <details class="unit-diff" open><summary>solo.cpp:179</summary><pre class="unit-hunks">  178      // Runtime histogram switch for CBS.
@@ -345,7 +453,7 @@
   </section>
 
   <section id="roundtrip">
-    <p class="kicker">07 &#183; the round trip</p>
+    <p class="kicker">08 &#183; the round trip</p>
     <h2>Out to JSON, back through the batch merge</h2>
     <p class="source">Histograms are not write-only: batch mode reads them back and accumulates them.</p>
     <div class="grid-2">
@@ -400,7 +508,7 @@
   </section>
 
   <section id="files">
-    <p class="kicker">08 &#183; the footprint</p>
+    <p class="kicker">09 &#183; the footprint</p>
     <h2>Where it landed</h2>
     <div class="mapping-table"><table>
       <thead><tr><th style="width:22%">File</th><th style="width:12%">State</th><th>Role</th><th style="width:14%">Lines</th></tr></thead>
@@ -418,9 +526,9 @@
   </section>
 
   <section>
-    <p class="kicker">09 &#183; boundary</p>
+    <p class="kicker">10 &#183; boundary</p>
     <h2>What this page does not tell you</h2>
-    <div class="note">Everything above is read from source text. No analysis was compiled, no histogram was filled, and no likelihood was evaluated &mdash; so this page shows how a bin becomes a signal region, not whether the resulting per-bin limits reproduce the published ones. The observed and background arrays are quoted as they appear in the source; whether they match the paper's tables is a validation question this page cannot answer, and <code>ATLAS_EXOT_2021_35</code> is in any case marked unvalidated in its own source.</div>
+    <div class="note">Everything above is read from source text, except the run output quoted in &#167;05. No analysis was compiled for this page and no likelihood was evaluated &mdash; so this page shows how a bin becomes a signal region, not whether the resulting per-bin limits reproduce the published ones. The observed and background arrays are quoted as they appear in the source; whether they match the paper's tables is a validation question this page cannot answer, and <code>ATLAS_EXOT_2021_35</code> is in any case marked unvalidated in its own source.</div>
   </section>
 
   <p class="backlink" style="margin-top:26px"><span class="lbl">back</span><span>Return to <a href="cbs-change-ledger.html#8">slide 7 &#8599;</a>, or to the <a href="cbs-change-ledger.html#1">start of the deck &#8599;</a>.</span></p>

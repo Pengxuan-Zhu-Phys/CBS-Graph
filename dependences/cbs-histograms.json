@@ -600,6 +600,52 @@
       "srs_with_flag": 2
     }
   ],
+  "sample": {
+    "path": "runs/CBS_result.json",
+    "analysis": "ATLAS_EXOT_2019_04",
+    "n_events": 30000,
+    "schema": "cbs-solo-loglike-v1",
+    "hist": {
+      "name": "m_VLB",
+      "nbins": 7,
+      "integral": 58.88596000000001,
+      "underflow": 0.17319400000000001,
+      "overflow": 0.17319400000000001
+    },
+    "counts": [
+      4.676238000000001,
+      18.012176000000004,
+      26.498682000000002,
+      6.234984000000001,
+      2.7711040000000002,
+      0.17319400000000001,
+      0.519582
+    ],
+    "sr_labels": [
+      "m_VLB_bin0",
+      "m_VLB_bin1",
+      "m_VLB_bin2",
+      "m_VLB_bin3",
+      "m_VLB_bin4",
+      "m_VLB_bin5",
+      "m_VLB_bin6"
+    ],
+    "bin_keys_plain": [
+      "bin_index",
+      "x_low",
+      "x_high",
+      "count",
+      "error",
+      "sumw2"
+    ],
+    "bin_keys_sr": [
+      "n_obs",
+      "n_bkg",
+      "n_bkg_err",
+      "sr_label"
+    ],
+    "quoted": "{\n  \"name\": \"m_VLB\",\n  \"x_label\": \"$m_{\\\\rm VLB}$ [GeV]\",\n  \"edges\": [\n    900.0,\n    1050.0,\n    1150.0,\n    1250.0,\n    1400.0,\n    1600.0,\n    1900.0,\n    2300.0\n  ],\n  \"nbins\": 7,\n  \"is_signal_region\": true,\n  \"obs\": [\n    41.0,\n    62.0,\n    54.0,\n    67.0,\n    24.0,\n    13.0,\n    4.0\n  ],\n  \"bkg\": [\n    45.5,\n    61.2,\n    47.9,\n    51.0,\n    28.5,\n    14.8,\n    7.4\n  ],\n  \"bkg_err\": [\n    4.6,\n    5.6,\n    5.4,\n    6.2,\n    4.3,\n    2.8,\n    2.0\n  ],\n  \"bins\": [\n    {\n      \"bin_index\": 0,\n      \"count\": 4.676238000000001,\n      \"error\": 0.8999424226982525,\n      \"n_bkg\": 45.5,\n      \"n_bkg_err\": 4.6,\n      \"n_obs\": 41.0,\n      \"sr_label\": \"m_VLB_bin0\",\n      \"sumw2\": 0.8098963641720002,\n      \"x_high\": 1050.0,\n      \"x_low\": 900.0\n    },\n    {\n      \"bin_index\": 1,\n      \"count\": 18.012176000000004,\n      \"error\": 1.7662391712743777,\n      \"n_bkg\": 61.2,\n      \"n_bkg_err\": 5.6,\n      \"n_obs\": 62.0,\n      \"sr_label\": \"m_VLB_bin1\",\n      \"sumw2\": 3.1196008101440005,\n      \"x_high\": 1150.0,\n      \"x_low\": 1050.0\n    },\n    \"... 5 more bins, same shape ...\"\n  ],\n  \"underflow\": 0.17319400000000001,\n  \"overflow\": 0.17319400000000001,\n  \"underflow_error\": 0.17319400000000001,\n  \"overflow_error\": 0.17319400000000001,\n  \"integral\": 58.88596000000001\n}"
+  },
   "numstat": {
     "ColliderBit/examples/solo.cpp": {
       "added": 291,
