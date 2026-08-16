@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CBS JSON output contract &#183; cbs-solo-loglike-v1</title>
+  <style>
+    :root { --paper:#f5f5f5; --paper-2:#ececec; --ink:#2d3142; --muted:#4f5d75; --soft:#7a8399; --rule:rgba(45,49,66,.12); --accent:#eb6c36; --accent-tint:rgba(235,108,54,.08); --green:#4f8a69; --green-tint:#eef8f1; --red:#93513f; --red-tint:#f3e9e5; --font-sans:'Geist',system-ui,sans-serif; --font-mono:'Geist Mono',ui-monospace,monospace; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:14px/1.55 var(--font-sans); }
+    .frame { max-width:1520px; margin:0 auto; padding:42px 42px 64px; }
+    .eyebrow,.kicker,.meta,.source,.status,th,footer,.tag { font-family:var(--font-mono); }
+    .eyebrow { color:var(--muted); font-size:10px; letter-spacing:.16em; text-transform:uppercase; margin:0 0 12px; }
+    h1 { font-family:'Instrument Serif',Georgia,serif; font-size:clamp(42px,5vw,72px); font-weight:400; letter-spacing:-.04em; line-height:.98; margin:0 0 14px; }
+    h2 { font-size:28px; font-weight:600; letter-spacing:-.03em; line-height:1.08; margin:0 0 8px; }
+    h3 { font-size:16px; margin:0 0 8px; }
+    p { color:var(--muted); }
+    .intro { max-width:1080px; font-size:15px; line-height:1.65; margin:0 0 18px; }
+    .meta { display:flex; flex-wrap:wrap; gap:8px 18px; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:12px 0; color:var(--muted); font-size:10px; }
+    .meta strong { color:var(--accent); font-weight:600; }
+    .note { border-left:3px solid var(--accent); color:var(--muted); font-size:11px; line-height:1.6; margin:18px 0; max-width:1160px; padding:8px 12px; }
+    .backlink { align-items:baseline; background:#fff; border:1px solid var(--rule); border-left:3px solid var(--accent);
+      border-radius:0 6px 6px 0; color:var(--muted); display:flex; flex-wrap:wrap; font-size:12.5px; gap:4px 12px;
+      line-height:1.6; margin:18px 0 0; max-width:1160px; padding:11px 14px; }
+    .backlink .lbl { color:var(--soft); font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; }
+    .backlink span:last-child { flex:1 1 420px; }
+    .backlink a { border-bottom:1px solid rgba(235,108,54,.42); color:var(--accent); font-weight:600; text-decoration:none; }
+    .backlink a:hover { background:var(--accent-tint); }
+    .summary-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin:22px 0 32px; }
+    .card { background:#fff; border:1px solid var(--rule); border-radius:6px; padding:14px 16px; }
+    .card.accent { border-color:rgba(235,108,54,.45); background:var(--accent-tint); }
+    .card .n { color:var(--ink); display:block; font-size:28px; font-weight:600; letter-spacing:-.04em; line-height:1; margin-bottom:8px; }
+    .card .label { color:var(--soft); font-family:var(--font-mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; }
+    section { border-top:1px solid var(--rule); margin-top:28px; padding:24px 0 0; }
+    .kicker { color:var(--soft); font-size:9px; letter-spacing:.16em; margin:0 0 8px; text-transform:uppercase; }
+    .source { color:var(--soft); font-size:10px; line-height:1.55; margin:0 0 14px; }
+    .diagram-shell { overflow-x:auto; background:#fff; border:1px solid var(--rule); border-radius:8px; padding:8px; }
+    svg { display:block; min-width:1080px; width:100%; height:auto; }
+    svg .zone { fill:rgba(45,49,66,.025); stroke:rgba(45,49,66,.13); stroke-width:1; }
+    svg .zone-label { fill:var(--soft); font:500 10px var(--font-mono); letter-spacing:1.6px; }
+    svg .edge { fill:none; stroke:var(--muted); stroke-width:1.2; marker-end:url(#json-arrow); }
+    svg .node rect { fill:#fff; stroke:var(--ink); stroke-width:1.2; }
+    svg .node.stage rect { fill:rgba(79,93,117,.08); stroke:var(--soft); }
+    svg .node.mod rect { fill:#fff0e8; stroke:#b55c2d; }
+    svg .node.add rect { fill:var(--green-tint); stroke:var(--green); }
+    svg .node.focal rect { fill:var(--accent-tint); stroke:var(--accent); stroke-width:1.6; }
+    svg .node .kind { fill:var(--soft); font:500 9px var(--font-mono); letter-spacing:1.2px; }
+    svg .node .title { fill:var(--ink); font:600 13px var(--font-mono); }
+    svg .node .body { fill:var(--muted); font:9.5px var(--font-mono); }
+    svg .node.mod .kind { fill:#b55c2d; } svg .node.add .kind { fill:var(--green); } svg .node.focal .kind { fill:var(--accent); }
+    svg .legend-label { fill:var(--soft); font:9px var(--font-mono); letter-spacing:.6px; }
+    svg .node.add { color:#4f8a69; } svg .node.mod { color:#b55c2d; }
+    svg .unit-number { fill:var(--ink); font:600 12px var(--font-mono); }
+    svg a { cursor:pointer; }
+    svg a:hover .title { text-decoration:underline; }
+    svg .detail-zone { fill:rgba(45,49,66,.025); stroke:rgba(45,49,66,.13); stroke-width:1; }
+    svg .detail-edge { fill:none; stroke:var(--muted); stroke-width:1.4; }
+    svg .detail-edge.optional { stroke-dasharray:5 4; }
+    svg .node.detail-primary rect { fill:#fff; stroke:var(--soft); }
+    svg .node.detail-data rect { fill:rgba(79,93,117,.08); stroke:var(--soft); }
+    svg .node.detail-mod rect { fill:#fff0e8; stroke:#b55c2d; }
+    svg .node.detail-optional rect { fill:#fff; stroke:var(--soft); stroke-dasharray:5 4; }
+    svg .node.detail-focal rect { fill:var(--accent-tint); stroke:var(--accent); stroke-width:1.6; }
+    .unit-list { display:grid; gap:14px; margin-top:18px; }
+    .unit { border:1px solid var(--rule); border-radius:8px; background:#fff; padding:16px 18px; scroll-margin-top:20px; }
+    .unit:target { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-tint); }
+    .unit-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+    .unit-num { display:grid; place-items:center; width:26px; height:26px; border-radius:50%;
+      border:1.2px solid var(--ink); font:600 13px var(--font-mono); }
+    .unit-title { font-size:16px; font-weight:600; letter-spacing:-.01em; }
+    .unit-title code { font-size:14px; }
+    .unit-kind { padding:2px 7px; border-radius:3px; border:1px solid currentColor;
+      font:8px var(--font-mono); letter-spacing:.9px; text-transform:uppercase; }
+    .unit-kind.extracted { color:#4f8a69; background:var(--green-tint); }
+    .unit-kind.in-place { color:#b55c2d; background:#fff0e8; }
+    .unit-delta { margin-left:auto; font:11px var(--font-mono); color:var(--soft); }
+    .unit-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px 24px; margin:0; }
+    .unit-grid > div { display:flex; gap:10px; border-bottom:1px solid var(--rule); padding-bottom:8px; }
+    .unit-grid dt { flex:0 0 62px; margin:2px 0 0; color:var(--soft);
+      font:9px var(--font-mono); letter-spacing:1px; text-transform:uppercase; }
+    .unit-grid dd { margin:0; color:var(--muted); font-size:12.5px; line-height:1.6; }
+    .unit-code { margin:13px 0 0; padding:13px 15px; border-radius:6px; overflow-x:auto;
+      background:rgba(45,49,66,.04); border:1px solid var(--rule);
+      font:11.5px/1.7 var(--font-mono); color:var(--ink); white-space:pre; }
+    .diagram-note { color:var(--muted); font-size:12px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
+    .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
+    .mapping-table table { min-width:900px; }
+    table { border-collapse:collapse; font-size:11px; width:100%; }
+    th,td { border-bottom:1px solid var(--rule); padding:8px 9px; text-align:left; vertical-align:top; }
+    th { background:#ececec; color:var(--muted); font-size:9px; letter-spacing:.08em; text-transform:uppercase; }
+    td code { color:var(--ink); font-family:var(--font-mono); font-size:10px; word-break:break-word; }
+    .status { font-size:9px; font-weight:600; letter-spacing:.04em; white-space:nowrap; }
+    .status.added-in-right { color:var(--green); } .status.unchanged { color:var(--soft); }
+    footer { border-top:1px solid var(--rule); color:var(--soft); font-size:10px; margin-top:32px; padding-top:14px; }
+    @media (max-width:900px) { .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } }
+    @media (max-width:560px) { h1 { font-size:44px; } }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<main class="frame">
+  <p class="eyebrow">ColliderBit Solo &#183; JSON output contract</p>
+  <h1>cbs-solo-loglike-v1</h1>
+  <p class="intro">How a CBS run arranges its results on disk. This is a new-only description: <code>private-SUSYRun2</code> has no JSON output at all &mdash; no <code>Utils/include/gambit/Utils/json.hpp</code>, and zero occurrences of <code>json</code> in its <code>solo.cpp</code> &mdash; so there is no earlier layout to compare against. Every key, field and line number below is read out of the emitter at page-generation time.</p>
+  <div class="meta"><span><strong>SCHEMA</strong> cbs-solo-loglike-v1</span><span><strong>WRITER</strong> ColliderBit/examples/solo_output.cpp</span><span><strong>INDENT</strong> 2</span><span><strong>LIBRARY</strong> nlohmann::json 3.11.3</span><span><strong>STATIC EVIDENCE</strong> no build / no run</span></div>
+  <p class="backlink"><span class="lbl">context</span><span>This page expands <a href="cbs-change-ledger.html#6">slide 6 of the CBS change-ledger deck &#8599;</a> &mdash; <em>Results became a data contract</em>. The deck says the contract exists; this page says what is actually in it.</span></p>
+  <div class="summary-grid" aria-label="Schema summary">
+    <div class="card accent"><span class="n">8</span><span class="label">top-level keys</span></div>
+    <div class="card"><span class="n">106</span><span class="label">emitted fields</span></div>
+    <div class="card accent"><span class="n">41</span><span class="label">read back by merge</span></div>
+    <div class="card"><span class="n">19</span><span class="label">merge guards</span></div>
+    <div class="card"><span class="n">6</span><span class="label">term kinds</span></div>
+  </div>
+  <div class="note">The value column throughout shows the <em>C++ expression</em> that fills the field, not a number from a run. Nothing on this page was produced by executing CBS: no build, no events, no output file. Field lists and line numbers are extracted from source; the prose around them is written.</div>
+
+  <section>
+    <p class="kicker">01 &#183; document shape</p>
+    <h2>Eight top-level keys, two of them conditional</h2>
+    <p class="source">One document per run. Six keys are always written; <code>sampling_advice</code> and <code>contur</code> appear only when their feature ran. Click a numbered node to jump to its card.</p>
+    <div class="diagram-shell">
+      <svg viewBox="0 0 1160 570" role="img" aria-labelledby="shape-title shape-desc">
+<title id="shape-title">Top-level shape of the CBS JSON output</title>
+<desc id="shape-desc">One root document with 8 top-level keys, 6 always present and 2 conditional.</desc>
+<defs><marker id="json-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4f5d75"/></marker></defs>
+<g class="node focal"><rect x="20" y="248.0" width="210" height="68" rx="7"/><text class="kind" x="36" y="263.0">ROOT OBJECT</text><text class="title" x="36" y="280.0">CBS_output.json</text><text class="body" x="36" y="296.0">cbs-solo-loglike-v1</text></g>
+<g class="node stage"><rect x="268" y="179.0" width="200" height="48" rx="7"/><text class="title" x="284" y="201.0">Always Present</text><text class="body" x="284" y="217.0">6 keys</text></g>
+<path class="edge" d="M230 282.0 H249.0 V203.0 H268"/>
+<a href="#key-1"><g class="node add"><rect x="508" y="34" width="470" height="48" rx="7"/><circle cx="530" cy="58.0" r="13" fill="#fff" stroke="currentColor" stroke-width="1.3"/><text class="unit-number" x="530" y="62.5" text-anchor="middle">1</text><text class="title" x="554" y="56">schema_version</text><text class="body" x="554" y="72">contract identifier</text></g></a>
+<path class="edge" d="M468 203.0 H488.0 V58.0 H508"/>
+<a href="#key-2"><g class="node add"><rect x="508" y="92" width="470" height="48" rx="7"/><circle cx="530" cy="116.0" r="13" fill="#fff" stroke="currentColor" stroke-width="1.3"/><text class="unit-number" x="530" y="120.5" text-anchor="middle">2</text><text class="title" x="554" y="114">run</text><text class="body" x="554" y="130">run-level facts</text></g></a>
+<path class="edge" d="M468 203.0 H488.0 V116.0 H508"/>
+<a href="#key-3"><g class="node add"><rect x="508" y="150" width="470" height="48" rx="7"/><circle cx="530" cy="174.0" r="13" fill="#fff" stroke="currentColor" stroke-width="1.3"/><text class="unit-number" x="530" y="178.5" text-anchor="middle">3</text><text class="title" x="554" y="172">analyses</text><text class="body" x="554" y="188">the physics payload</text></g></a>
+<path class="edge" d="M468 203.0 H488.0 V174.0 H508"/>
+<a href="#key-4"><g class="node add"><rect x="508" y="208" width="470" height="48" rx="7"/><circle cx="530" cy="232.0" r="13" fill="#fff" stroke="currentColor" stroke-width="1.3"/><text class="unit-number" x="530" y="236.5" text-anchor="middle">4</text><text class="title" x="554" y="230">terms</text><text class="body" x="554" y="246">flat likelihood index</text></g></a>
+<path class="edge" d="M468 203.0 H488.0 V232.0 H508"/>
+<a href="#key-5"><g class="node add"><rect x="508" y="266" width="470" height="48" rx="7"/><circle cx="530" cy="290.0" r="13" fill="#fff" stroke="currentColor" stroke-width="1.3"/><text class="unit-number" x="530" y="294.5" text-anchor="middle">5</text><text class="title" x="554" y="288">summary</text><text class="body" x="554" y="304">headline numbers</text></g></a>
+<path class="edge" d="M468 203.0 H488.0 V290.0 H508"/>
+<a href="#key-6"><g class="node add"><rect x="508" y="324" width="470" height="48" rx="7"/><circle cx="530" cy="348.0" r="13" fill="#fff" stroke="currentColor" stroke-width="1.3"/><text class="unit-number" x="530" y="352.5" text-anchor="middle">6</text><text class="title" x="554" y="346">predefined_sets</text><text class="body" x="554" y="362">consumption recipe</text></g></a>
+<path class="edge" d="M468 203.0 H488.0 V348.0 H508"/>
+<g class="node stage"><rect x="268" y="437.0" width="200" height="48" rx="7"/><text class="title" x="284" y="459.0">Conditional</text><text class="body" x="284" y="475.0">2 keys</text></g>
+<path class="edge" d="M230 282.0 H249.0 V461.0 H268"/>
+<a href="#key-7"><g class="node mod"><rect x="508" y="408" width="470" height="48" rx="7"/><circle cx="530" cy="432.0" r="13" fill="#fff" stroke="currentColor" stroke-width="1.3"/><text class="unit-number" x="530" y="436.5" text-anchor="middle">7</text><text class="title" x="554" y="430">sampling_advice</text><text class="body" x="554" y="446">MC budget guidance</text></g></a>
+<path class="edge" d="M468 461.0 H488.0 V432.0 H508"/>
+<a href="#key-8"><g class="node mod"><rect x="508" y="466" width="470" height="48" rx="7"/><circle cx="530" cy="490.0" r="13" fill="#fff" stroke="currentColor" stroke-width="1.3"/><text class="unit-number" x="530" y="494.5" text-anchor="middle">8</text><text class="title" x="554" y="488">contur</text><text class="body" x="554" y="504">measurement likelihoods</text></g></a>
+<path class="edge" d="M468 461.0 H488.0 V490.0 H508"/>
+<text class="legend-label" x="508" y="562">numbered nodes link to the matching detail card below</text>
+</svg>
+    </div>
+    <p class="diagram-note"><strong>The order above is emission order, not file order.</strong> <code>nlohmann::json</code> defaults to <code>std::map</code> for objects (<code>Utils/include/gambit/Utils/json.hpp:3521</code>), so keys land in the file alphabetically: <code>analyses</code>, <code>contur</code>, <code>predefined_sets</code>, <code>run</code>, <code>sampling_advice</code>, <code>schema_version</code>, <code>summary</code>, <code>terms</code>. A consumer must never depend on key order &mdash; and a reviewer comparing two output files should not read a reordering as a change.</p>
+  </section>
+
+  <section>
+    <p class="kicker">02 &#183; keyed detail</p>
+    <h2>What each key carries</h2>
+    <p class="source">One card per top-level key, in the order the emitter writes them.</p>
+    <div class="unit-list">
+      
+        <article class="unit" id="key-1">
+          <header class="unit-head">
+            <span class="unit-num">1</span>
+            <span class="unit-title">schema_version</span>
+            <span class="unit-kind extracted">always</span>
+            <span class="unit-delta">ColliderBit/examples/solo_output.cpp:407</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>role</dt><dd>contract identifier</dd></div>
+            <div><dt>value</dt><dd><code>kSchemaVersion</code></dd></div>
+          </dl>
+          <p class="diagram-note">A single string constant. Every consumer should branch on it before reading anything else, because it is the only field guaranteed to keep its meaning across future revisions.</p>
+          
+        </article>
+
+        <article class="unit" id="key-2">
+          <header class="unit-head">
+            <span class="unit-num">2</span>
+            <span class="unit-title">run</span>
+            <span class="unit-kind extracted">always</span>
+            <span class="unit-delta">ColliderBit/examples/solo_output.cpp:408</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>role</dt><dd>run-level facts</dd></div>
+            <div><dt>value</dt><dd><code>{ {&quot;n_events&quot;, n_events}, {&quot;with_contur&quot;, with_contur} }</code></dd></div>
+          </dl>
+          <p class="diagram-note">Event count, whether Contur ran, and the set of likelihood variants that actually appear in this file. <code>enabled_variants</code> is assembled while the analyses are walked, so it is written last even though it lives under a key created first.</p>
+          <div class="mapping-table" style="margin-top:12px"><table><thead><tr><th>Field</th><th>Value expression</th><th>Emitted at</th></tr></thead><tbody><tr><td><code>n_events</code></td><td><code>n_events</code></td><td><code>ColliderBit/examples/solo_output.cpp:409</code></td></tr><tr><td><code>with_contur</code></td><td><code>with_contur</code></td><td><code>ColliderBit/examples/solo_output.cpp:410</code></td></tr><tr><td><code>enabled_variants</code></td><td><code>variants_json</code></td><td><code>ColliderBit/examples/solo_output.cpp:633</code></td></tr></tbody></table></div>
+        </article>
+
+        <article class="unit" id="key-3">
+          <header class="unit-head">
+            <span class="unit-num">3</span>
+            <span class="unit-title">analyses</span>
+            <span class="unit-kind extracted">always</span>
+            <span class="unit-delta">ColliderBit/examples/solo_output.cpp:566</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>role</dt><dd>the physics payload</dd></div>
+            <div><dt>value</dt><dd><code>analyses_json</code></dd></div>
+          </dl>
+          <p class="diagram-note">An object keyed by analysis name. Everything an analysis produced in this run &mdash; signal regions, the selected combination, cutflows, histograms and the SR covariance when one exists &mdash; hangs here.</p>
+          
+        </article>
+
+        <article class="unit" id="key-4">
+          <header class="unit-head">
+            <span class="unit-num">4</span>
+            <span class="unit-title">terms</span>
+            <span class="unit-kind extracted">always</span>
+            <span class="unit-delta">ColliderBit/examples/solo_output.cpp:567</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>role</dt><dd>flat likelihood index</dd></div>
+            <div><dt>value</dt><dd><code>terms</code></dd></div>
+          </dl>
+          <p class="diagram-note">A flat array over the same numbers already present under <code>analyses</code>, re-expressed so a fitter can consume them without walking the nested tree. Each entry carries the flags that say whether it may be summed and what it is mutually exclusive with.</p>
+          
+        </article>
+
+        <article class="unit" id="key-5">
+          <header class="unit-head">
+            <span class="unit-num">5</span>
+            <span class="unit-title">summary</span>
+            <span class="unit-kind extracted">always</span>
+            <span class="unit-delta">ColliderBit/examples/solo_output.cpp:573</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>role</dt><dd>headline numbers</dd></div>
+            <div><dt>value</dt><dd><code>summary</code></dd></div>
+          </dl>
+          <p class="diagram-note">Analysis count and the combined log-likelihood, plus the Contur total when Contur ran. This is the block a human reads first.</p>
+          
+        </article>
+
+        <article class="unit" id="key-6">
+          <header class="unit-head">
+            <span class="unit-num">6</span>
+            <span class="unit-title">predefined_sets</span>
+            <span class="unit-kind extracted">always</span>
+            <span class="unit-delta">ColliderBit/examples/solo_output.cpp:626</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>role</dt><dd>consumption recipe</dd></div>
+            <div><dt>value</dt><dd><code>predefined_sets</code></dd></div>
+          </dl>
+          <p class="diagram-note">Named lists of <code>term_id</code>s. <code>default_total</code> is the one set the emitter guarantees is safe to sum &mdash; it holds the per-analysis combined terms, plus the Contur total when present.</p>
+          
+        </article>
+
+        <article class="unit" id="key-7">
+          <header class="unit-head">
+            <span class="unit-num">7</span>
+            <span class="unit-title">sampling_advice</span>
+            <span class="unit-kind in-place">only when the batch path produced advice entries</span>
+            <span class="unit-delta">ColliderBit/examples/solo_output.cpp:621</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>role</dt><dd>MC budget guidance</dd></div>
+            <div><dt>value</dt><dd><code>advice_json</code></dd></div>
+          </dl>
+          <p class="diagram-note">Per analysis, for the selected signal region: current fractional uncertainty, and for each requested target how many more events each process needs. Absent entirely in a single-file run.</p>
+          
+        </article>
+
+        <article class="unit" id="key-8">
+          <header class="unit-head">
+            <span class="unit-num">8</span>
+            <span class="unit-title">contur</span>
+            <span class="unit-kind in-place">only when Contur ran</span>
+            <span class="unit-delta">ColliderBit/examples/solo_output.cpp:682</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>role</dt><dd>measurement likelihoods</dd></div>
+            <div><dt>value</dt><dd><code>contur_json</code></dd></div>
+          </dl>
+          <p class="diagram-note">Total Contur log-likelihood and a per-pool breakdown with the dominant measurement tag. Batch mode refuses Contur settings, so this key and <code>sampling_advice</code> never appear in the same file.</p>
+          
+        </article>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">03 &#183; the payload</p>
+    <h2>Nesting under one analysis</h2>
+    <p class="source">Two levels of the document are keyed by run data rather than by the schema: the analysis name, and the signal-region label. Everything below them has fixed field names.</p>
+    <div class="diagram-shell">
+      <svg viewBox="0 0 1160 430" role="img" aria-labelledby="nest-title nest-desc">
+<title id="nest-title">Nesting under a single analysis</title>
+<desc id="nest-desc">The analyses object is keyed by analysis name; each analysis holds scalar metadata, a combination block, signal regions keyed by label, cutflows, histograms and an optional covariance matrix.</desc>
+<rect class="zone" x="16" y="20" width="1128" height="386" rx="9"/>
+<text class="zone-label" x="34" y="46">ANALYSES &#183; OBJECT KEYED BY ANALYSIS NAME</text>
+<rect class="detail-zone" x="36" y="62" width="1088" height="330" rx="8"/>
+<text class="zone-label" x="54" y="88">"ATLAS_SUSY_2018_05" &#183; ONE ENTRY PER ANALYSIS</text>
+<g class="node detail-data">
+<rect x="56" y="104" width="348" height="108" rx="7"/>
+<text class="title" x="72" y="132">scalars</text>
+<text class="body" x="72" y="156">n_signal_regions, luminosity,</text>
+<text class="body" x="72" y="171">bkgjson_path</text>
+</g>
+<g class="node detail-primary">
+<rect x="416" y="104" width="348" height="108" rx="7"/>
+<text class="title" x="432" y="132">combination</text>
+<text class="body" x="432" y="156">selected_sr_label / _index,</text>
+<text class="body" x="432" y="171">nominal_loglike, alternatives</text>
+</g>
+<g class="node detail-mod">
+<rect x="776" y="104" width="348" height="108" rx="7"/>
+<text class="title" x="792" y="132">signal_regions</text>
+<text class="body" x="792" y="156">keyed by sr_label:</text>
+<text class="body" x="792" y="171">yields, errors, loglike, alt_loglikes</text>
+</g>
+<g class="node detail-primary">
+<rect x="56" y="226" width="348" height="108" rx="7"/>
+<text class="title" x="72" y="254">cutflows[]</text>
+<text class="body" x="72" y="278">name + cuts[]:</text>
+<text class="body" x="72" y="293">count, two acceptances</text>
+</g>
+<g class="node detail-primary">
+<rect x="416" y="226" width="348" height="108" rx="7"/>
+<text class="title" x="432" y="254">histograms</text>
+<text class="body" x="432" y="278">1d[] with bins[] and sumw2,</text>
+<text class="body" x="432" y="293">2d[] with counts/errors matrices</text>
+</g>
+<g class="node detail-optional">
+<rect x="776" y="226" width="348" height="108" rx="7"/>
+<text class="title" x="792" y="254">covariance</text>
+<text class="body" x="792" y="278">square matrix, present only when</text>
+<text class="body" x="792" y="293">srcov has rows and columns</text>
+</g>
+<text class="legend-label" x="56" y="418">dashed = conditional &#183; orange = also keyed by a runtime string</text>
+</svg>
+    </div>
+    <p class="diagram-note">Dynamic keys are convenient to read and awkward to validate &mdash; a schema checker cannot enumerate them, and a diff tool will report an added analysis as a wholesale subtree change. The flat <code>terms</code> array in section 04 exists partly to give consumers a fixed-shape alternative.</p>
+  </section>
+
+  <section>
+    <p class="kicker">04 &#183; likelihood index</p>
+    <h2>The same numbers, twice, on purpose</h2>
+    <p class="source">Every log-likelihood already present in the nested tree is emitted a second time as a flat term. Each call site fixes the flags below; the emitter has 6 of them.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th>Component</th><th>term_id</th><th>Variant</th><th>safe_to_sum</th><th>exclusive_group</th><th>in default set</th><th>Line</th></tr></thead>
+      <tbody><tr><td><code>signal_region</code></td><td><code>analysis_name + &quot;::&quot; + sr_data.sr_label + &quot;::nominal&quot;</code></td><td><code>&quot;nominal&quot;</code></td><td><code>false</code></td><td><code>&quot;analysis_sr::&quot; + analysis_name + &quot;::&quot; + sr_data.sr_label</code></td><td><code>false</code></td><td><code>495</code></td></tr><tr><td><code>signal_region</code></td><td><code>analysis_name + &quot;::&quot; + sr_data.sr_label + &quot;::&quot; + alt_key</code></td><td><code>alt_key</code></td><td><code>false</code></td><td><code>&quot;analysis_sr::&quot; + analysis_name + &quot;::&quot; + sr_data.sr_label</code></td><td><code>false</code></td><td><code>514</code></td></tr><tr><td><code>analysis_combined</code></td><td><code>analysis_name + &quot;::combined::nominal&quot;</code></td><td><code>&quot;nominal&quot;</code></td><td><code>true</code></td><td><code>&quot;analysis::&quot; + analysis_name</code></td><td><code>true</code></td><td><code>535</code></td></tr><tr><td><code>analysis_combined</code></td><td><code>analysis_name + &quot;::combined::&quot; + alt_pair.first</code></td><td><code>alt_pair.first</code></td><td><code>true</code></td><td><code>&quot;analysis::&quot; + analysis_name</code></td><td><code>false</code></td><td><code>551</code></td></tr><tr><td><code>contur_pool</code></td><td><code>&quot;contur_pool::&quot; + pool_name + &quot;::nominal&quot;</code></td><td><code>&quot;nominal&quot;</code></td><td><code>false</code></td><td><code>&quot;contur_pool::&quot; + pool_name</code></td><td><code>false</code></td><td><code>653</code></td></tr><tr><td><code>contur_total</code></td><td><code>&quot;contur::total::nominal&quot;</code></td><td><code>&quot;nominal&quot;</code></td><td><code>true</code></td><td><code>&quot;contur::total&quot;</code></td><td><code>true</code></td><td><code>668</code></td></tr></tbody>
+    </table></div>
+    <p class="diagram-note"><strong>The flags carry the arithmetic rules the numbers cannot.</strong> Signal-region terms are <code>safe_to_sum: false</code> because the SRs of one analysis overlap &mdash; summing them double-counts events. Only the per-analysis combined terms and the Contur total are <code>true</code>. Alternative variants of the same quantity share an <code>exclusive_group</code>: pick one per group, never add them. A consumer that ignores these flags and sums the <code>loglike</code> column will get a confident, wrong number, which is exactly why they are in the file rather than in a README.</p>
+    <p class="diagram-note"><code>predefined_sets.default_total</code> is the ready-made answer: the list of <code>term_id</code>s the emitter guarantees is a valid sum. Start there, and treat everything else as opt-in.</p>
+  </section>
+
+  <section>
+    <p class="kicker">05 &#183; second consumer</p>
+    <h2>The file is also the wire format</h2>
+    <p class="source">Batch mode does not merge in memory. The parent writes one YAML per HepMC file, forks a CBS child per job, and gets the result back only through this schema.</p>
+    <div class="diagram-shell">
+      <svg viewBox="0 0 1160 300" role="img" aria-labelledby="rt-title rt-desc">
+<title id="rt-title">The same schema is the batch wire format</title>
+<desc id="rt-desc">In batch mode the parent writes one YAML per HepMC file, forks a CBS child that writes run_N.json, then reads those files back and merges them into a single output document.</desc>
+<defs><marker id="rt-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4f5d75"/></marker></defs>
+<g class="node detail-primary"><rect x="20" y="110" width="176" height="72" rx="7"/><text class="kind" x="36" y="125">PARENT</text><text class="title" x="36" y="142">build_run_jobs</text><text class="body" x="36" y="158">one job per HepMC file</text></g>
+<g class="node detail-data"><rect x="232" y="110" width="196" height="72" rx="7"/><text class="kind" x="248" y="125">CHILD YAML</text><text class="title" x="248" y="142">run_N.yaml</text><text class="body" x="248" y="158">output + screen_output forced</text></g>
+<g class="node detail-primary"><rect x="464" y="110" width="196" height="72" rx="7"/><text class="kind" x="480" y="125">CHILD PROCESS</text><text class="title" x="480" y="142">fork + exec CBS</text><text class="body" x="480" y="158">writes run_N.json</text></g>
+<g class="node detail-mod"><rect x="696" y="110" width="196" height="72" rx="7"/><text class="kind" x="712" y="125">PARENT</text><text class="title" x="712" y="142">read_json_file</text><text class="body" x="712" y="158">parse + validate + merge</text></g>
+<g class="node detail-focal"><rect x="928" y="110" width="212" height="72" rx="7"/><text class="kind" x="944" y="125">PARENT</text><text class="title" x="944" y="142">emit_outputs</text><text class="body" x="944" y="158">one merged document</text></g>
+<path class="detail-edge" d="M196 146 H224" marker-end="url(#rt-arrow)"/>
+<path class="detail-edge" d="M428 146 H456" marker-end="url(#rt-arrow)"/>
+<path class="detail-edge" d="M660 146 H688" marker-end="url(#rt-arrow)"/>
+<path class="detail-edge" d="M892 146 H920" marker-end="url(#rt-arrow)"/>
+<path class="detail-edge optional" d="M562 110 V70 H562" marker-end="url(#rt-arrow)"/>
+<text class="legend-label" x="392" y="62">the child never prints: screen_output is forced false</text>
+<text class="legend-label" x="20" y="234">the per-file JSON is not a by-product &#8212; it is the only channel by which a child result reaches the parent</text>
+<text class="legend-label" x="20" y="252">so every field the merge reads back is load-bearing: change it and batch mode breaks, not just a downstream plot</text>
+</svg>
+    </div>
+    <div class="mapping-table" style="margin-top:16px"><table>
+      <thead><tr><th style="width:18%">Merge function</th><th style="width:34%">Role</th><th style="width:38%">Fields it reads</th><th style="width:10%">Lines</th></tr></thead>
+      <tbody><tr><td><code>parse_sorted_sr_payloads</code></td><td>Reads each signal region back and sorts by <code>sr_index</code>; refuses a file whose indices are not contiguous.</td><td><code>n_bkg</code>, <code>n_bkg_err</code>, <code>n_obs</code>, <code>n_sig_scaled</code>, <code>n_sig_scaled_err</code>, <code>signal_regions</code>, <code>sr_index</code></td><td><code>323&#8211;363</code></td></tr><tr><td><code>parse_cutflows_or_empty</code></td><td>Rebuilds <code>Cutflows</code> from the array, reconstructing cut names by dropping the synthetic <code>initial</code> row.</td><td><code>count</code>, <code>cut_name</code>, <code>cutflows</code>, <code>cuts</code>, <code>name</code></td><td><code>366&#8211;432</code></td></tr><tr><td><code>parse_histograms_or_empty</code></td><td>Rebuilds 1D and 2D histograms including <code>sumw2</code>, so the merged histogram carries a real statistical error rather than a re-derived one.</td><td><code>1d</code>, <code>2d</code>, <code>bins</code>, <code>bkg</code>, <code>bkg_err</code>, <code>count</code>, <code>counts</code>, <code>edges</code>, <code>histograms</code>, <code>is_signal_region</code>, <code>n_bkg</code>, <code>n_bkg_err</code>, <code>n_obs</code>, <code>name</code>, <code>obs</code>, <code>overflow</code>, <code>overflow_error</code>, <code>overflow_total</code>, <code>overflow_total_error</code>, <code>sumw2</code>, <code>underflow</code>, <code>underflow_error</code>, <code>x_edges</code>, <code>x_label</code>, <code>y_edges</code>, <code>y_label</code></td><td><code>585&#8211;675</code></td></tr><tr><td><code>parse_covariance_or_empty</code></td><td></td><td><code>covariance</code></td><td><code>441&#8211;468</code></td></tr><tr><td><code>initialize_accumulator</code></td><td>Seeds the accumulator from the first file seen for an analysis: luminosity, background JSON path, SR labels and indices.</td><td><code>bkgjson_path</code>, <code>luminosity</code></td><td><code>476&#8211;504</code></td></tr><tr><td><code>validate_payload_consistency</code></td><td>Every later file for the same analysis must agree with that seed &mdash; same SR count, same labels in the same order, same observed and background numbers, same luminosity, same background path.</td><td><code>bkgjson_path</code>, <code>luminosity</code></td><td><code>511&#8211;545</code></td></tr><tr><td><code>run_and_merge</code></td><td>Drives the whole round trip: writes a YAML per job, forks a CBS child, reads the child's JSON back, and merges.</td><td><code>analyses</code>, <code>run</code></td><td><code>771&#8211;942</code></td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">41 of the 106 emitted fields are read back by these 7 functions, matched on receiver <em>and</em> key so that a name shared by two objects &mdash; <code>name</code> on both a cutflow and a histogram, <code>analyses</code> at both the root and inside <code>sampling_advice</code> &mdash; is not credited to the wrong one. Renaming a read-back field breaks batch mode itself, not just a downstream plot script.</p>
+    <p class="diagram-note"><strong>What the merge pointedly does not read is as informative as what it does.</strong> Every log-likelihood is emit-only: <code>loglike</code>, <code>alt_loglikes</code> and the whole <code>combination</code> block are ignored on the way back in. The merge combines <em>yields</em> and then recomputes the likelihood from the merged numbers, because averaging per-file log-likelihoods is not the same quantity and would be quietly wrong. The other unread fields &mdash; <code>nbins</code>, <code>integral</code>, <code>bin_index</code>, <code>x_low</code>, <code>x_high</code>, <code>error</code>, <code>sr_label</code> &mdash; are conveniences for a human or a plotting script, each recomputable from <code>edges</code>, <code>counts</code> and <code>sumw2</code>.</p>
+  </section>
+
+  <section>
+    <p class="kicker">06 &#183; merge guards</p>
+    <h2>What the merge refuses</h2>
+    <p class="source">Rather than combining whatever it finds, the merge asserts that the per-file documents describe the same experiment. Each row is an explicit throw in the merge path.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:20%">Function</th><th>Message</th><th style="width:8%">Line</th></tr></thead>
+      <tbody><tr><td><code>parse_sorted_sr_payloads</code></td><td>Missing signal_regions in a per-file JSON output.</td><td><code>326</code></td></tr><tr><td><code>parse_sorted_sr_payloads</code></td><td>Signal-region indices in JSON output are not contiguous.</td><td><code>358</code></td></tr><tr><td><code>parse_cutflows_or_empty</code></td><td>cutflows entry in JSON output must be an array.</td><td><code>376</code></td></tr><tr><td><code>parse_cutflows_or_empty</code></td><td>Each cutflow entry in JSON output must be an object.</td><td><code>383</code></td></tr><tr><td><code>parse_cutflows_or_empty</code></td><td>Cutflow entry in JSON output is missing a non-empty name.</td><td><code>389</code></td></tr><tr><td><code>parse_cutflows_or_empty</code></td><td>Cutflow &#x27;…&#x27; has invalid/missing cuts array in JSON output.</td><td><code>394</code></td></tr><tr><td><code>parse_cutflows_or_empty</code></td><td>Cutflow &#x27;…&#x27; has an empty cuts array in JSON output.</td><td><code>400</code></td></tr><tr><td><code>parse_cutflows_or_empty</code></td><td>Cutflow &#x27;…&#x27; has invalid cut entry in JSON output.</td><td><code>413</code></td></tr><tr><td><code>parse_covariance_or_empty</code></td><td>covariance entry in JSON output must be a matrix.</td><td><code>450</code></td></tr><tr><td><code>parse_covariance_or_empty</code></td><td>covariance matrix in JSON output must be square.</td><td><code>460</code></td></tr><tr><td><code>validate_payload_consistency</code></td><td>Inconsistent number of signal regions for analysis ….</td><td><code>514</code></td></tr><tr><td><code>validate_payload_consistency</code></td><td>Inconsistent analysis luminosity across batch runs for ….</td><td><code>520</code></td></tr><tr><td><code>validate_payload_consistency</code></td><td>Inconsistent bkgjson_path across batch runs for ….</td><td><code>526</code></td></tr><tr><td><code>validate_payload_consistency</code></td><td>Signal-region ordering mismatch in analysis ….</td><td><code>536</code></td></tr><tr><td><code>validate_payload_consistency</code></td><td>Observed/background data mismatch across runs in analysis ….</td><td><code>542</code></td></tr><tr><td><code>run_and_merge</code></td><td>Batch mode requested, but no processes were found in input.</td><td><code>774</code></td></tr><tr><td><code>run_and_merge</code></td><td>A per-file CBS run produced zero events for ….</td><td><code>797</code></td></tr><tr><td><code>run_and_merge</code></td><td>Batch mode produced zero processed events.</td><td><code>811</code></td></tr><tr><td><code>run_and_merge</code></td><td>Missing process event total for process ….</td><td><code>821</code></td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">The combination arithmetic these guards protect: files of the <em>same</em> process are combined with event-count weights that sum to one, so the process keeps its full cross section; yields across <em>different</em> processes then add linearly, while their MC errors accumulate in quadrature.</p>
+    <p class="diagram-note"><strong>One asymmetry worth knowing before reading a batch cutflow.</strong> Histograms are scaled by the process weight before being accumulated; cutflow counts are not &mdash; they are added raw. That is self-consistent for a cutflow read as "how many MC events survived each cut", but it means a batch cutflow table is <em>not</em> a luminosity-scaled yield and its rows do not correspond to the scaled numbers in <code>signal_regions</code>. Worth stating explicitly to anyone about to quote a cutflow from a multi-process run.</p>
+  </section>
+
+  <section>
+    <p class="kicker">07 &#183; object shapes</p>
+    <h2>Every field, with the expression behind it</h2>
+    <p class="source">The complete extracted field list, one block per object shape in the document. "Read back" marks a field the batch merge parses.</p>
+    <div class="unit-list">
+      
+        <article class="unit" id="obj-analysis">
+          <header class="unit-head">
+            <span class="unit-title"><code>analyses[&quot;&lt;ANALYSIS_NAME&gt;&quot;]</code></span>
+            <span class="unit-delta">8 fields &#183; 6 read back by merge</span>
+          </header>
+          <p class="diagram-note">Object keys come from <code>AnalysisData::analysis_name</code> &mdash; they are run data, not part of the schema.</p>
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>n_signal_regions</code></td><td><code>analysis.size()</code></td><td><span class="status unchanged">emit only</span></td><td><code>432</code></td></tr><tr><td><code>luminosity</code></td><td><code>analysis.luminosity</code></td><td><span class="status added-in-right">read back</span></td><td><code>433</code></td></tr><tr><td><code>bkgjson_path</code></td><td><code>analysis.bkgjson_path</code></td><td><span class="status added-in-right">read back</span></td><td><code>434</code></td></tr><tr><td><code>covariance</code></td><td><code>covariance</code></td><td><span class="status added-in-right">read back</span></td><td><code>448</code></td></tr><tr><td><code>combination</code></td><td><code>combination</code></td><td><span class="status unchanged">emit only</span></td><td><code>461</code></td></tr><tr><td><code>cutflows</code></td><td><code>build_cutflows_json(analysis.cutflows)</code></td><td><span class="status added-in-right">read back</span></td><td><code>462</code></td></tr><tr><td><code>histograms</code></td><td><code>build_histograms_json(analysis.histograms)</code></td><td><span class="status added-in-right">read back</span></td><td><code>463</code></td></tr><tr><td><code>signal_regions</code></td><td><code>signal_regions</code></td><td><span class="status added-in-right">read back</span></td><td><code>529</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  // key: AnalysisData::analysis_name
+  &quot;n_signal_regions&quot;: analysis.size(),
+  &quot;luminosity&quot;: analysis.luminosity,
+  &quot;bkgjson_path&quot;: analysis.bkgjson_path,
+  &quot;covariance&quot;: covariance,
+  &quot;combination&quot;: combination,
+  &quot;cutflows&quot;: build_cutflows_json(analysis.cutflows),
+  &quot;histograms&quot;: build_histograms_json(analysis.histograms),
+  &quot;signal_regions&quot;: signal_regions
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-combination">
+          <header class="unit-head">
+            <span class="unit-title"><code>analyses[&quot;&lt;A&gt;&quot;].combination</code></span>
+            <span class="unit-delta">4 fields &#183; 0 read back by merge</span>
+          </header>
+          
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>selected_sr_label</code></td><td><code>ll.combination_sr_label</code></td><td><span class="status unchanged">emit only</span></td><td><code>452</code></td></tr><tr><td><code>selected_sr_index</code></td><td><code>ll.combination_sr_index</code></td><td><span class="status unchanged">emit only</span></td><td><code>453</code></td></tr><tr><td><code>nominal_loglike</code></td><td><code>ll.combination_loglike</code></td><td><span class="status unchanged">emit only</span></td><td><code>454</code></td></tr><tr><td><code>alternatives</code></td><td><code>nlohmann::json::object()</code></td><td><span class="status unchanged">emit only</span></td><td><code>455</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  &quot;selected_sr_label&quot;: ll.combination_sr_label,
+  &quot;selected_sr_index&quot;: ll.combination_sr_index,
+  &quot;nominal_loglike&quot;: ll.combination_loglike,
+  &quot;alternatives&quot;: nlohmann::json::object()
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-signal_region">
+          <header class="unit-head">
+            <span class="unit-title"><code>analyses[&quot;&lt;A&gt;&quot;].signal_regions[&quot;&lt;SR_LABEL&gt;&quot;]</code></span>
+            <span class="unit-delta">10 fields &#183; 6 read back by merge</span>
+          </header>
+          <p class="diagram-note">Object keys come from <code>SignalRegionData::sr_label</code> &mdash; they are run data, not part of the schema.</p>
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>sr_index</code></td><td><code>sr_index</code></td><td><span class="status added-in-right">read back</span></td><td><code>470</code></td></tr><tr><td><code>n_obs</code></td><td><code>sr_data.n_obs</code></td><td><span class="status added-in-right">read back</span></td><td><code>471</code></td></tr><tr><td><code>n_bkg</code></td><td><code>sr_data.n_bkg</code></td><td><span class="status added-in-right">read back</span></td><td><code>472</code></td></tr><tr><td><code>n_bkg_err</code></td><td><code>sr_data.n_bkg_err</code></td><td><span class="status added-in-right">read back</span></td><td><code>473</code></td></tr><tr><td><code>n_sig_MC</code></td><td><code>sr_data.n_sig_MC</code></td><td><span class="status unchanged">emit only</span></td><td><code>474</code></td></tr><tr><td><code>n_sig_MC_stat</code></td><td><code>sr_data.n_sig_MC_stat</code></td><td><span class="status unchanged">emit only</span></td><td><code>475</code></td></tr><tr><td><code>n_sig_scaled</code></td><td><code>sr_data.n_sig_scaled</code></td><td><span class="status added-in-right">read back</span></td><td><code>476</code></td></tr><tr><td><code>n_sig_scaled_err</code></td><td><code>sr_data.calc_n_sig_scaled_err()</code></td><td><span class="status added-in-right">read back</span></td><td><code>477</code></td></tr><tr><td><code>loglike</code></td><td><code>ll.sr_loglikes.at(sr_index)</code></td><td><span class="status unchanged">emit only</span></td><td><code>478</code></td></tr><tr><td><code>alt_loglikes</code></td><td><code>sr_alt_loglikes</code></td><td><span class="status unchanged">emit only</span></td><td><code>491</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  // key: SignalRegionData::sr_label
+  &quot;sr_index&quot;: sr_index,
+  &quot;n_obs&quot;: sr_data.n_obs,
+  &quot;n_bkg&quot;: sr_data.n_bkg,
+  &quot;n_bkg_err&quot;: sr_data.n_bkg_err,
+  &quot;n_sig_MC&quot;: sr_data.n_sig_MC,
+  &quot;n_sig_MC_stat&quot;: sr_data.n_sig_MC_stat,
+  &quot;n_sig_scaled&quot;: sr_data.n_sig_scaled,
+  &quot;n_sig_scaled_err&quot;: sr_data.calc_n_sig_scaled_err(),
+  &quot;loglike&quot;: ll.sr_loglikes.at(sr_index),
+  &quot;alt_loglikes&quot;: sr_alt_loglikes
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-cutflow">
+          <header class="unit-head">
+            <span class="unit-title"><code>analyses[&quot;&lt;A&gt;&quot;].cutflows[]</code></span>
+            <span class="unit-delta">2 fields &#183; 2 read back by merge</span>
+          </header>
+          
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>name</code></td><td><code>cutflow.name</code></td><td><span class="status added-in-right">read back</span></td><td><code>101</code></td></tr><tr><td><code>cuts</code></td><td><code>cuts_json</code></td><td><span class="status added-in-right">read back</span></td><td><code>141</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  &quot;name&quot;: cutflow.name,
+  &quot;cuts&quot;: cuts_json
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-cut">
+          <header class="unit-head">
+            <span class="unit-title"><code>analyses[&quot;&lt;A&gt;&quot;].cutflows[].cuts[]</code></span>
+            <span class="unit-delta">5 fields &#183; 2 read back by merge</span>
+          </header>
+          
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>cut_index</code></td><td><code>i</code></td><td><span class="status unchanged">emit only</span></td><td><code>109</code></td></tr><tr><td><code>cut_name</code></td><td><code>(i == 0) ? &quot;initial&quot; : ((i - 1 &lt; cutflow.cuts.size()) ? cutflow.cuts.at(i - 1) : &quot;unknown_cut&quot;)</code></td><td><span class="status added-in-right">read back</span></td><td><code>110</code></td></tr><tr><td><code>count</code></td><td><code>cutflow.counts.at(i)</code></td><td><span class="status added-in-right">read back</span></td><td><code>114</code></td></tr><tr><td><code>acceptance_cumulative</code></td><td><code>cutflow.counts.at(i) / initial_count</code></td><td><span class="status unchanged">emit only</span></td><td><code>118</code></td></tr><tr><td><code>acceptance_incremental</code></td><td><code>nullptr</code></td><td><span class="status unchanged">emit only</span></td><td><code>127</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  &quot;cut_index&quot;: i,
+  &quot;cut_name&quot;: (i == 0) ? &quot;initial&quot; : ((i - 1 &lt; cutflow.cuts.size()) ? cutflow.cuts.at(i - 1) : &quot;unknown_cut&quot;),
+  &quot;count&quot;: cutflow.counts.at(i),
+  &quot;acceptance_cumulative&quot;: cutflow.counts.at(i) / initial_count,
+  &quot;acceptance_incremental&quot;: nullptr
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-histogram_1d">
+          <header class="unit-head">
+            <span class="unit-title"><code>analyses[&quot;&lt;A&gt;&quot;].histograms[&quot;1d&quot;][]</code></span>
+            <span class="unit-delta">14 fields &#183; 12 read back by merge</span>
+          </header>
+          
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>name</code></td><td><code>h.name</code></td><td><span class="status added-in-right">read back</span></td><td><code>157</code></td></tr><tr><td><code>x_label</code></td><td><code>h.x_label</code></td><td><span class="status added-in-right">read back</span></td><td><code>158</code></td></tr><tr><td><code>edges</code></td><td><code>h.edges</code></td><td><span class="status added-in-right">read back</span></td><td><code>159</code></td></tr><tr><td><code>nbins</code></td><td><code>h.nbins()</code></td><td><span class="status unchanged">emit only</span></td><td><code>160</code></td></tr><tr><td><code>is_signal_region</code></td><td><code>h.is_signal_region()</code></td><td><span class="status added-in-right">read back</span></td><td><code>161</code></td></tr><tr><td><code>obs</code></td><td><code>h.obs</code></td><td><span class="status added-in-right">read back</span></td><td><code>164</code></td></tr><tr><td><code>bkg</code></td><td><code>h.bkg</code></td><td><span class="status added-in-right">read back</span></td><td><code>165</code></td></tr><tr><td><code>bkg_err</code></td><td><code>h.bkg_err</code></td><td><span class="status added-in-right">read back</span></td><td><code>166</code></td></tr><tr><td><code>bins</code></td><td><code>bins_arr</code></td><td><span class="status added-in-right">read back</span></td><td><code>188</code></td></tr><tr><td><code>underflow</code></td><td><code>h.underflow</code></td><td><span class="status added-in-right">read back</span></td><td><code>189</code></td></tr><tr><td><code>overflow</code></td><td><code>h.overflow</code></td><td><span class="status added-in-right">read back</span></td><td><code>190</code></td></tr><tr><td><code>underflow_error</code></td><td><code>std::sqrt(h.underflow_sumw2)</code></td><td><span class="status added-in-right">read back</span></td><td><code>191</code></td></tr><tr><td><code>overflow_error</code></td><td><code>std::sqrt(h.overflow_sumw2)</code></td><td><span class="status added-in-right">read back</span></td><td><code>192</code></td></tr><tr><td><code>integral</code></td><td><code>h.integral()</code></td><td><span class="status unchanged">emit only</span></td><td><code>193</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  &quot;name&quot;: h.name,
+  &quot;x_label&quot;: h.x_label,
+  &quot;edges&quot;: h.edges,
+  &quot;nbins&quot;: h.nbins(),
+  &quot;is_signal_region&quot;: h.is_signal_region(),
+  &quot;obs&quot;: h.obs,
+  &quot;bkg&quot;: h.bkg,
+  &quot;bkg_err&quot;: h.bkg_err,
+  &quot;bins&quot;: bins_arr,
+  &quot;underflow&quot;: h.underflow,
+  &quot;overflow&quot;: h.overflow,
+  &quot;underflow_error&quot;: std::sqrt(h.underflow_sumw2),
+  &quot;overflow_error&quot;: std::sqrt(h.overflow_sumw2),
+  &quot;integral&quot;: h.integral()
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-histogram_bin">
+          <header class="unit-head">
+            <span class="unit-title"><code>analyses[&quot;&lt;A&gt;&quot;].histograms[&quot;1d&quot;][].bins[]</code></span>
+            <span class="unit-delta">10 fields &#183; 5 read back by merge</span>
+          </header>
+          
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>bin_index</code></td><td><code>i</code></td><td><span class="status unchanged">emit only</span></td><td><code>173</code></td></tr><tr><td><code>x_low</code></td><td><code>h.edges[i]</code></td><td><span class="status unchanged">emit only</span></td><td><code>174</code></td></tr><tr><td><code>x_high</code></td><td><code>h.edges[i + 1]</code></td><td><span class="status unchanged">emit only</span></td><td><code>175</code></td></tr><tr><td><code>count</code></td><td><code>h.counts[i]</code></td><td><span class="status added-in-right">read back</span></td><td><code>176</code></td></tr><tr><td><code>error</code></td><td><code>h.bin_error(i)</code></td><td><span class="status unchanged">emit only</span></td><td><code>177</code></td></tr><tr><td><code>sumw2</code></td><td><code>h.sumw2[i]</code></td><td><span class="status added-in-right">read back</span></td><td><code>178</code></td></tr><tr><td><code>n_obs</code></td><td><code>h.obs[i]</code></td><td><span class="status added-in-right">read back</span></td><td><code>181</code></td></tr><tr><td><code>n_bkg</code></td><td><code>h.bkg[i]</code></td><td><span class="status added-in-right">read back</span></td><td><code>182</code></td></tr><tr><td><code>n_bkg_err</code></td><td><code>h.bkg_err[i]</code></td><td><span class="status added-in-right">read back</span></td><td><code>183</code></td></tr><tr><td><code>sr_label</code></td><td><code>h.name + &quot;_bin&quot; + std::to_string(i)</code></td><td><span class="status unchanged">emit only</span></td><td><code>184</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  &quot;bin_index&quot;: i,
+  &quot;x_low&quot;: h.edges[i],
+  &quot;x_high&quot;: h.edges[i + 1],
+  &quot;count&quot;: h.counts[i],
+  &quot;error&quot;: h.bin_error(i),
+  &quot;sumw2&quot;: h.sumw2[i],
+  &quot;n_obs&quot;: h.obs[i],
+  &quot;n_bkg&quot;: h.bkg[i],
+  &quot;n_bkg_err&quot;: h.bkg_err[i],
+  &quot;sr_label&quot;: h.name + &quot;_bin&quot; + std::to_string(i)
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-histogram_2d">
+          <header class="unit-head">
+            <span class="unit-title"><code>analyses[&quot;&lt;A&gt;&quot;].histograms[&quot;2d&quot;][]</code></span>
+            <span class="unit-delta">12 fields &#183; 8 read back by merge</span>
+          </header>
+          
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>name</code></td><td><code>h.name</code></td><td><span class="status added-in-right">read back</span></td><td><code>203</code></td></tr><tr><td><code>x_label</code></td><td><code>h.x_label</code></td><td><span class="status added-in-right">read back</span></td><td><code>204</code></td></tr><tr><td><code>y_label</code></td><td><code>h.y_label</code></td><td><span class="status added-in-right">read back</span></td><td><code>205</code></td></tr><tr><td><code>x_edges</code></td><td><code>h.x_edges</code></td><td><span class="status added-in-right">read back</span></td><td><code>206</code></td></tr><tr><td><code>y_edges</code></td><td><code>h.y_edges</code></td><td><span class="status added-in-right">read back</span></td><td><code>207</code></td></tr><tr><td><code>nx_bins</code></td><td><code>h.nx_bins()</code></td><td><span class="status unchanged">emit only</span></td><td><code>208</code></td></tr><tr><td><code>ny_bins</code></td><td><code>h.ny_bins()</code></td><td><span class="status unchanged">emit only</span></td><td><code>209</code></td></tr><tr><td><code>counts</code></td><td><code>counts_2d</code></td><td><span class="status added-in-right">read back</span></td><td><code>227</code></td></tr><tr><td><code>errors</code></td><td><code>errors_2d</code></td><td><span class="status unchanged">emit only</span></td><td><code>228</code></td></tr><tr><td><code>sumw2</code></td><td><code>sumw2_2d</code></td><td><span class="status added-in-right">read back</span></td><td><code>229</code></td></tr><tr><td><code>overflow_total</code></td><td><code>h.overflow_total</code></td><td><span class="status added-in-right">read back</span></td><td><code>230</code></td></tr><tr><td><code>integral</code></td><td><code>h.integral()</code></td><td><span class="status unchanged">emit only</span></td><td><code>231</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  &quot;name&quot;: h.name,
+  &quot;x_label&quot;: h.x_label,
+  &quot;y_label&quot;: h.y_label,
+  &quot;x_edges&quot;: h.x_edges,
+  &quot;y_edges&quot;: h.y_edges,
+  &quot;nx_bins&quot;: h.nx_bins(),
+  &quot;ny_bins&quot;: h.ny_bins(),
+  &quot;counts&quot;: counts_2d,
+  &quot;errors&quot;: errors_2d,
+  &quot;sumw2&quot;: sumw2_2d,
+  &quot;overflow_total&quot;: h.overflow_total,
+  &quot;integral&quot;: h.integral()
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-term">
+          <header class="unit-head">
+            <span class="unit-title"><code>terms[]</code></span>
+            <span class="unit-delta">9 fields &#183; 0 read back by merge</span>
+          </header>
+          
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>term_id</code></td><td><code>term_id</code></td><td><span class="status unchanged">emit only</span></td><td><code>80</code></td></tr><tr><td><code>component</code></td><td><code>component</code></td><td><span class="status unchanged">emit only</span></td><td><code>81</code></td></tr><tr><td><code>variant</code></td><td><code>variant</code></td><td><span class="status unchanged">emit only</span></td><td><code>82</code></td></tr><tr><td><code>loglike</code></td><td><code>loglike</code></td><td><span class="status unchanged">emit only</span></td><td><code>83</code></td></tr><tr><td><code>safe_to_sum</code></td><td><code>safe_to_sum</code></td><td><span class="status unchanged">emit only</span></td><td><code>84</code></td></tr><tr><td><code>exclusive_group</code></td><td><code>exclusive_group</code></td><td><span class="status unchanged">emit only</span></td><td><code>85</code></td></tr><tr><td><code>selected_in_default</code></td><td><code>selected_in_default</code></td><td><span class="status unchanged">emit only</span></td><td><code>86</code></td></tr><tr><td><code>analysis_name</code></td><td><code>analysis_name</code></td><td><span class="status unchanged">emit only</span></td><td><code>88</code></td></tr><tr><td><code>sr_label</code></td><td><code>sr_label</code></td><td><span class="status unchanged">emit only</span></td><td><code>89</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  &quot;term_id&quot;: term_id,
+  &quot;component&quot;: component,
+  &quot;variant&quot;: variant,
+  &quot;loglike&quot;: loglike,
+  &quot;safe_to_sum&quot;: safe_to_sum,
+  &quot;exclusive_group&quot;: exclusive_group,
+  &quot;selected_in_default&quot;: selected_in_default,
+  &quot;analysis_name&quot;: analysis_name,
+  &quot;sr_label&quot;: sr_label
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-summary">
+          <header class="unit-head">
+            <span class="unit-title"><code>summary</code></span>
+            <span class="unit-delta">3 fields &#183; 0 read back by merge</span>
+          </header>
+          
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>n_analyses</code></td><td><code>analyses_json.size()</code></td><td><span class="status unchanged">emit only</span></td><td><code>570</code></td></tr><tr><td><code>combined_loglike</code></td><td><code>combined_loglike</code></td><td><span class="status unchanged">emit only</span></td><td><code>571</code></td></tr><tr><td><code>contur_loglike</code></td><td><code>contur_total_loglike</code></td><td><span class="status unchanged">emit only</span></td><td><code>572</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  &quot;n_analyses&quot;: analyses_json.size(),
+  &quot;combined_loglike&quot;: combined_loglike,
+  &quot;contur_loglike&quot;: contur_total_loglike
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-advice">
+          <header class="unit-head">
+            <span class="unit-title"><code>sampling_advice</code></span>
+            <span class="unit-delta">2 fields &#183; 0 read back by merge</span>
+          </header>
+          
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>allocation_rule</code></td><td><code>&quot;cross_section_proportional&quot;</code></td><td><span class="status unchanged">emit only</span></td><td><code>578</code></td></tr><tr><td><code>analyses</code></td><td><code>nlohmann::json::array()</code></td><td><span class="status unchanged">emit only</span></td><td><code>579</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  &quot;allocation_rule&quot;: &quot;cross_section_proportional&quot;,
+  &quot;analyses&quot;: nlohmann::json::array()
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-advice_analysis">
+          <header class="unit-head">
+            <span class="unit-title"><code>sampling_advice.analyses[]</code></span>
+            <span class="unit-delta">8 fields &#183; 0 read back by merge</span>
+          </header>
+          
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>analysis_name</code></td><td><code>entry.analysis_name</code></td><td><span class="status unchanged">emit only</span></td><td><code>584</code></td></tr><tr><td><code>selected_sr_label</code></td><td><code>entry.sr_label</code></td><td><span class="status unchanged">emit only</span></td><td><code>585</code></td></tr><tr><td><code>selected_sr_index</code></td><td><code>entry.sr_index</code></td><td><span class="status unchanged">emit only</span></td><td><code>586</code></td></tr><tr><td><code>n_sig_scaled</code></td><td><code>entry.n_sig_scaled</code></td><td><span class="status unchanged">emit only</span></td><td><code>587</code></td></tr><tr><td><code>n_sig_scaled_err</code></td><td><code>entry.n_sig_scaled_err</code></td><td><span class="status unchanged">emit only</span></td><td><code>588</code></td></tr><tr><td><code>fractional_uncert</code></td><td><code>entry.fractional_uncert</code></td><td><span class="status unchanged">emit only</span></td><td><code>589</code></td></tr><tr><td><code>effective_events</code></td><td><code>entry.effective_events</code></td><td><span class="status unchanged">emit only</span></td><td><code>590</code></td></tr><tr><td><code>targets</code></td><td><code>nlohmann::json::array()</code></td><td><span class="status unchanged">emit only</span></td><td><code>591</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  &quot;analysis_name&quot;: entry.analysis_name,
+  &quot;selected_sr_label&quot;: entry.sr_label,
+  &quot;selected_sr_index&quot;: entry.sr_index,
+  &quot;n_sig_scaled&quot;: entry.n_sig_scaled,
+  &quot;n_sig_scaled_err&quot;: entry.n_sig_scaled_err,
+  &quot;fractional_uncert&quot;: entry.fractional_uncert,
+  &quot;effective_events&quot;: entry.effective_events,
+  &quot;targets&quot;: nlohmann::json::array()
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-advice_target">
+          <header class="unit-head">
+            <span class="unit-title"><code>sampling_advice.analyses[].targets[]</code></span>
+            <span class="unit-delta">8 fields &#183; 0 read back by merge</span>
+          </header>
+          
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>target_fractional_uncert</code></td><td><code>target.target_fractional_uncert</code></td><td><span class="status unchanged">emit only</span></td><td><code>596</code></td></tr><tr><td><code>current_fractional_uncert</code></td><td><code>target.current_fractional_uncert</code></td><td><span class="status unchanged">emit only</span></td><td><code>597</code></td></tr><tr><td><code>need_more_mc</code></td><td><code>target.need_more_mc</code></td><td><span class="status unchanged">emit only</span></td><td><code>598</code></td></tr><tr><td><code>scale_factor</code></td><td><code>target.scale_factor</code></td><td><span class="status unchanged">emit only</span></td><td><code>599</code></td></tr><tr><td><code>current_total_events</code></td><td><code>target.current_total_events</code></td><td><span class="status unchanged">emit only</span></td><td><code>600</code></td></tr><tr><td><code>recommended_total_events</code></td><td><code>target.recommended_total_events</code></td><td><span class="status unchanged">emit only</span></td><td><code>601</code></td></tr><tr><td><code>recommended_additional_events</code></td><td><code>target.recommended_additional_events</code></td><td><span class="status unchanged">emit only</span></td><td><code>602</code></td></tr><tr><td><code>process_recommendations</code></td><td><code>nlohmann::json::array()</code></td><td><span class="status unchanged">emit only</span></td><td><code>603</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  &quot;target_fractional_uncert&quot;: target.target_fractional_uncert,
+  &quot;current_fractional_uncert&quot;: target.current_fractional_uncert,
+  &quot;need_more_mc&quot;: target.need_more_mc,
+  &quot;scale_factor&quot;: target.scale_factor,
+  &quot;current_total_events&quot;: target.current_total_events,
+  &quot;recommended_total_events&quot;: target.recommended_total_events,
+  &quot;recommended_additional_events&quot;: target.recommended_additional_events,
+  &quot;process_recommendations&quot;: nlohmann::json::array()
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-advice_process">
+          <header class="unit-head">
+            <span class="unit-title"><code>sampling_advice.analyses[].targets[].process_recommendations[]</code></span>
+            <span class="unit-delta">4 fields &#183; 0 read back by merge</span>
+          </header>
+          
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>process_name</code></td><td><code>process.process_name</code></td><td><span class="status unchanged">emit only</span></td><td><code>608</code></td></tr><tr><td><code>cross_section_fb</code></td><td><code>process.cross_section_fb</code></td><td><span class="status unchanged">emit only</span></td><td><code>609</code></td></tr><tr><td><code>processed_events</code></td><td><code>process.processed_events</code></td><td><span class="status unchanged">emit only</span></td><td><code>610</code></td></tr><tr><td><code>recommended_additional_events</code></td><td><code>process.recommended_additional_events</code></td><td><span class="status unchanged">emit only</span></td><td><code>611</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  &quot;process_name&quot;: process.process_name,
+  &quot;cross_section_fb&quot;: process.cross_section_fb,
+  &quot;processed_events&quot;: process.processed_events,
+  &quot;recommended_additional_events&quot;: process.recommended_additional_events
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-contur">
+          <header class="unit-head">
+            <span class="unit-title"><code>contur</code></span>
+            <span class="unit-delta">2 fields &#183; 0 read back by merge</span>
+          </header>
+          
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>total_loglike</code></td><td><code>contur_total_loglike</code></td><td><span class="status unchanged">emit only</span></td><td><code>638</code></td></tr><tr><td><code>pools</code></td><td><code>nlohmann::json::object()</code></td><td><span class="status unchanged">emit only</span></td><td><code>639</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  &quot;total_loglike&quot;: contur_total_loglike,
+  &quot;pools&quot;: nlohmann::json::object()
+}</pre>
+        </article>
+
+        <article class="unit" id="obj-contur_pool">
+          <header class="unit-head">
+            <span class="unit-title"><code>contur.pools[&quot;&lt;POOL&gt;&quot;]</code></span>
+            <span class="unit-delta">2 fields &#183; 0 read back by merge</span>
+          </header>
+          <p class="diagram-note">Object keys come from <code>pool name from Contur_LHC_measurements_LogLike_perPool</code> &mdash; they are run data, not part of the schema.</p>
+          <div class="mapping-table"><table>
+            <thead><tr><th style="width:20%">Field</th><th style="width:46%">Value expression</th>
+            <th style="width:14%">Merge</th><th style="width:8%">Line</th></tr></thead>
+            <tbody><tr><td><code>loglike</code></td><td><code>pool_loglike</code></td><td><span class="status unchanged">emit only</span></td><td><code>649</code></td></tr><tr><td><code>dominant_measurement</code></td><td><code>dominant_measurement</code></td><td><span class="status unchanged">emit only</span></td><td><code>650</code></td></tr></tbody>
+          </table></div>
+          <pre class="unit-code">{
+  // key: pool name from Contur_LHC_measurements_LogLike_perPool
+  &quot;loglike&quot;: pool_loglike,
+  &quot;dominant_measurement&quot;: dominant_measurement
+}</pre>
+        </article>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">08 &#183; gates</p>
+    <h2>What makes the file appear</h2>
+    <p class="source">Writing is opt-in and independent of the screen summary. Batch mode overrides both for its children.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:22%">Site</th><th style="width:38%">Source</th><th>Effect</th></tr></thead>
+      <tbody><tr><td><code>solo.cpp:241</code></td><td><code>output_config.write_file = settings.hasKey(&quot;output&quot;);</code></td><td>The file is written only when the YAML has an <code>output</code> key.</td></tr><tr><td><code>solo.cpp:244</code></td><td><code>output_config.output_file = settings.getValueOrDef&lt;std::string&gt;(&quot;CBS_output.json&quot;, &quot;output&quot;);</code></td><td>Path default if the key is present but empty-valued.</td></tr><tr><td><code>solo.cpp:240</code></td><td><code>output_config.screen_output = settings.getValueOrDef&lt;bool&gt;(true, &quot;screen_output&quot;);</code></td><td>Screen summary is independent of the file; both, either or neither.</td></tr><tr><td><code>solo.cpp:246</code></td><td><code>ColliderBit::SoloOutput::validate_output_config(output_config);</code></td><td>Refuses a run that asks for a file without a usable path, before any events are read.</td></tr><tr><td><code>solo_batch.cpp:238</code></td><td><code>settings_node[&quot;output&quot;] = job.output_json_file.string();</code></td><td>Batch overrides the child's output path to a temp file &mdash; the user's <code>output</code> key is removed from the child YAML.</td></tr><tr><td><code>solo_batch.cpp:237</code></td><td><code>settings_node[&quot;screen_output&quot;] = false;</code></td><td>Batch forces the child silent so the parent owns all screen output.</td></tr><tr><td><code>solo_batch.cpp:246</code></td><td><code>throw std::runtime_error(&quot;Batch mode does not support rivet-settings/contur-settings.&quot;);</code></td><td>Batch refuses Rivet/Contur settings outright rather than merging them wrongly.</td></tr></tbody>
+    </table></div>
+    <p class="diagram-note"><strong>The two conditional keys can never appear in the same document.</strong> The entrypoint has exactly two <code>emit_outputs</code> call sites. The batch path (<code>solo.cpp:332</code>) passes sampling advice but hard-codes <code>with_contur = false</code> and empty Contur maps; the single-file path (<code>solo.cpp:574</code>) passes real Contur results and no sampling advice at all. So <code>sampling_advice</code> implies a batch run, <code>contur</code> implies a single-file run, and a file carrying both would mean a third call site that does not exist today.</p>
+    <p class="diagram-note"><strong>Boundary.</strong> This page describes what the emitter writes, established by reading <code>solo_output.cpp</code> (689 lines) and <code>solo_batch.cpp</code> (1171 lines). It is not a validation of the numbers: no CBS binary was built and no events were processed. Whether the values are physically correct is a separate exercise and is not claimed here.</p>
+  </section>
+
+  <p class="backlink"><span class="lbl">return</span><span>Back to <a href="cbs-change-ledger.html#6">the change-ledger deck &#183; slide 6 &#8599;</a>, or across to the <a href="cbs-solo-comparison.html#unit-4">entrypoint's output contract change &#8599;</a> that introduced this file.</span></p>
+
+  <footer>Generated by <code>scripts/build-json-output-page.py</code> from <code>ColliderBit/examples/solo_output.cpp</code> and <code>solo_batch.cpp</code>. Schema constant at <code>solo_output.cpp:36</code>.</footer>
+</main>
+</body>
+</html>

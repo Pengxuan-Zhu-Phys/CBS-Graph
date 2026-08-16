@@ -570,6 +570,20 @@ svg{display:block;max-width:100%;height:auto}
       The practical consequence: one pass over the events now yields cutflow, cut-and-count SRs and
       shape histograms simultaneously, and post-processing never has to re-read HepMC.
     </div>
+    <div class="deep">
+      <span class="lbl">Line-level companion page</span>
+      <p>"A versioned serialisation" is the claim; <a href="cbs-json-output.html">cbs-solo-loglike-v1 ·
+      the JSON output contract ↗</a> is the contract itself — eight top-level keys, 106 fields, and the
+      flags that tell a consumer which log-likelihoods may be added together. Nothing to compare against:
+      SUSYRun2 has no <span class="mono">json.hpp</span> at all.</p>
+      <div class="units">
+        <a href="cbs-json-output.html#key-3"><b>3</b> analyses · the payload</a>
+        <a href="cbs-json-output.html#key-4"><b>4</b> terms · flat index</a>
+        <a href="cbs-json-output.html#key-6"><b>6</b> predefined_sets · safe sum</a>
+        <a href="cbs-json-output.html#key-7"><b>7</b> sampling_advice</a>
+        <a href="cbs-json-output.html#key-8"><b>8</b> contur</a>
+      </div>
+    </div>
   </div>
 </section>
 

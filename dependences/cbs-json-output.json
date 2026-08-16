@@ -1,0 +1,1390 @@
+{
+  "call_sites": {
+    "batch": {
+      "line": 332,
+      "path": "ColliderBit/examples/solo.cpp"
+    },
+    "single": {
+      "line": 574,
+      "path": "ColliderBit/examples/solo.cpp"
+    }
+  },
+  "consumers": [
+    {
+      "guards": [
+        {
+          "line": 326,
+          "message": "Missing signal_regions in a per-file JSON output."
+        },
+        {
+          "line": 358,
+          "message": "Signal-region indices in JSON output are not contiguous."
+        }
+      ],
+      "name": "parse_sorted_sr_payloads",
+      "reads": [
+        {
+          "key": "signal_regions",
+          "line": 324,
+          "receiver": "analysis_json"
+        },
+        {
+          "key": "signal_regions",
+          "line": 330,
+          "receiver": "analysis_json"
+        },
+        {
+          "key": "sr_index",
+          "line": 336,
+          "receiver": "sr"
+        },
+        {
+          "key": "n_obs",
+          "line": 338,
+          "receiver": "sr"
+        },
+        {
+          "key": "n_bkg",
+          "line": 339,
+          "receiver": "sr"
+        },
+        {
+          "key": "n_bkg_err",
+          "line": 340,
+          "receiver": "sr"
+        },
+        {
+          "key": "n_sig_scaled",
+          "line": 341,
+          "receiver": "sr"
+        },
+        {
+          "key": "n_sig_scaled_err",
+          "line": 342,
+          "receiver": "sr"
+        }
+      ],
+      "span": [
+        323,
+        363
+      ]
+    },
+    {
+      "guards": [
+        {
+          "line": 376,
+          "message": "cutflows entry in JSON output must be an array."
+        },
+        {
+          "line": 383,
+          "message": "Each cutflow entry in JSON output must be an object."
+        },
+        {
+          "line": 389,
+          "message": "Cutflow entry in JSON output is missing a non-empty name."
+        },
+        {
+          "line": 394,
+          "message": "Cutflow '\u2026' has invalid/missing cuts array in JSON output."
+        },
+        {
+          "line": 400,
+          "message": "Cutflow '\u2026' has an empty cuts array in JSON output."
+        },
+        {
+          "line": 413,
+          "message": "Cutflow '\u2026' has invalid cut entry in JSON output."
+        }
+      ],
+      "name": "parse_cutflows_or_empty",
+      "reads": [
+        {
+          "key": "cutflows",
+          "line": 368,
+          "receiver": "analysis_json"
+        },
+        {
+          "key": "cutflows",
+          "line": 373,
+          "receiver": "analysis_json"
+        },
+        {
+          "key": "name",
+          "line": 386,
+          "receiver": "cf_json"
+        },
+        {
+          "key": "cuts",
+          "line": 392,
+          "receiver": "cf_json"
+        },
+        {
+          "key": "cuts",
+          "line": 392,
+          "receiver": "cf_json"
+        },
+        {
+          "key": "cuts",
+          "line": 397,
+          "receiver": "cf_json"
+        },
+        {
+          "key": "count",
+          "line": 411,
+          "receiver": "cut_json"
+        },
+        {
+          "key": "count",
+          "line": 417,
+          "receiver": "cut_json"
+        },
+        {
+          "key": "cut_name",
+          "line": 421,
+          "receiver": "cut_json"
+        }
+      ],
+      "span": [
+        366,
+        432
+      ]
+    },
+    {
+      "guards": [],
+      "name": "parse_histograms_or_empty",
+      "reads": [
+        {
+          "key": "histograms",
+          "line": 587,
+          "receiver": "analysis_json"
+        },
+        {
+          "key": "histograms",
+          "line": 589,
+          "receiver": "analysis_json"
+        },
+        {
+          "key": "1d",
+          "line": 592,
+          "receiver": "histo_json"
+        },
+        {
+          "key": "1d",
+          "line": 592,
+          "receiver": "histo_json"
+        },
+        {
+          "key": "1d",
+          "line": 594,
+          "receiver": "histo_json"
+        },
+        {
+          "key": "name",
+          "line": 596,
+          "receiver": "h_json"
+        },
+        {
+          "key": "edges",
+          "line": 597,
+          "receiver": "h_json"
+        },
+        {
+          "key": "x_label",
+          "line": 598,
+          "receiver": "h_json"
+        },
+        {
+          "key": "bins",
+          "line": 601,
+          "receiver": "h_json"
+        },
+        {
+          "key": "count",
+          "line": 604,
+          "receiver": "bins[i]"
+        },
+        {
+          "key": "sumw2",
+          "line": 605,
+          "receiver": "bins[i]"
+        },
+        {
+          "key": "is_signal_region",
+          "line": 607,
+          "receiver": "h_json"
+        },
+        {
+          "key": "obs",
+          "line": 609,
+          "receiver": "h_json"
+        },
+        {
+          "key": "bkg",
+          "line": 609,
+          "receiver": "h_json"
+        },
+        {
+          "key": "bkg_err",
+          "line": 609,
+          "receiver": "h_json"
+        },
+        {
+          "key": "obs",
+          "line": 612,
+          "receiver": "h_json"
+        },
+        {
+          "key": "bkg",
+          "line": 613,
+          "receiver": "h_json"
+        },
+        {
+          "key": "bkg_err",
+          "line": 614,
+          "receiver": "h_json"
+        },
+        {
+          "key": "n_obs",
+          "line": 626,
+          "receiver": "bins[i]"
+        },
+        {
+          "key": "n_bkg",
+          "line": 627,
+          "receiver": "bins[i]"
+        },
+        {
+          "key": "n_bkg_err",
+          "line": 628,
+          "receiver": "bins[i]"
+        },
+        {
+          "key": "underflow",
+          "line": 633,
+          "receiver": "h_json"
+        },
+        {
+          "key": "overflow",
+          "line": 634,
+          "receiver": "h_json"
+        },
+        {
+          "key": "underflow_error",
+          "line": 635,
+          "receiver": "h_json"
+        },
+        {
+          "key": "overflow_error",
+          "line": 636,
+          "receiver": "h_json"
+        },
+        {
+          "key": "2d",
+          "line": 645,
+          "receiver": "histo_json"
+        },
+        {
+          "key": "2d",
+          "line": 645,
+          "receiver": "histo_json"
+        },
+        {
+          "key": "2d",
+          "line": 647,
+          "receiver": "histo_json"
+        },
+        {
+          "key": "name",
+          "line": 649,
+          "receiver": "h_json"
+        },
+        {
+          "key": "x_edges",
+          "line": 650,
+          "receiver": "h_json"
+        },
+        {
+          "key": "y_edges",
+          "line": 651,
+          "receiver": "h_json"
+        },
+        {
+          "key": "x_label",
+          "line": 652,
+          "receiver": "h_json"
+        },
+        {
+          "key": "y_label",
+          "line": 653,
+          "receiver": "h_json"
+        },
+        {
+          "key": "counts",
+          "line": 656,
+          "receiver": "h_json"
+        },
+        {
+          "key": "sumw2",
+          "line": 657,
+          "receiver": "h_json"
+        },
+        {
+          "key": "overflow_total",
+          "line": 666,
+          "receiver": "h_json"
+        },
+        {
+          "key": "overflow_total_error",
+          "line": 667,
+          "receiver": "h_json"
+        }
+      ],
+      "span": [
+        585,
+        675
+      ]
+    },
+    {
+      "guards": [
+        {
+          "line": 450,
+          "message": "covariance entry in JSON output must be a matrix."
+        },
+        {
+          "line": 460,
+          "message": "covariance matrix in JSON output must be square."
+        }
+      ],
+      "name": "parse_covariance_or_empty",
+      "reads": [
+        {
+          "key": "covariance",
+          "line": 442,
+          "receiver": "analysis_json"
+        },
+        {
+          "key": "covariance",
+          "line": 447,
+          "receiver": "analysis_json"
+        }
+      ],
+      "span": [
+        441,
+        468
+      ]
+    },
+    {
+      "guards": [],
+      "name": "initialize_accumulator",
+      "reads": [
+        {
+          "key": "luminosity",
+          "line": 479,
+          "receiver": "analysis_json"
+        },
+        {
+          "key": "bkgjson_path",
+          "line": 480,
+          "receiver": "analysis_json"
+        }
+      ],
+      "span": [
+        476,
+        504
+      ]
+    },
+    {
+      "guards": [
+        {
+          "line": 514,
+          "message": "Inconsistent number of signal regions for analysis \u2026."
+        },
+        {
+          "line": 520,
+          "message": "Inconsistent analysis luminosity across batch runs for \u2026."
+        },
+        {
+          "line": 526,
+          "message": "Inconsistent bkgjson_path across batch runs for \u2026."
+        },
+        {
+          "line": 536,
+          "message": "Signal-region ordering mismatch in analysis \u2026."
+        },
+        {
+          "line": 542,
+          "message": "Observed/background data mismatch across runs in analysis \u2026."
+        }
+      ],
+      "name": "validate_payload_consistency",
+      "reads": [
+        {
+          "key": "luminosity",
+          "line": 517,
+          "receiver": "analysis_json"
+        },
+        {
+          "key": "bkgjson_path",
+          "line": 523,
+          "receiver": "analysis_json"
+        }
+      ],
+      "span": [
+        511,
+        545
+      ]
+    },
+    {
+      "guards": [
+        {
+          "line": 774,
+          "message": "Batch mode requested, but no processes were found in input."
+        },
+        {
+          "line": 797,
+          "message": "A per-file CBS run produced zero events for \u2026."
+        },
+        {
+          "line": 811,
+          "message": "Batch mode produced zero processed events."
+        },
+        {
+          "line": 821,
+          "message": "Missing process event total for process \u2026."
+        }
+      ],
+      "name": "run_and_merge",
+      "reads": [
+        {
+          "key": "run",
+          "line": 794,
+          "receiver": "run_json"
+        },
+        {
+          "key": "analyses",
+          "line": 805,
+          "receiver": "run_json"
+        }
+      ],
+      "span": [
+        771,
+        942
+      ]
+    }
+  ],
+  "gates": {
+    "batch_output": {
+      "line": 238,
+      "text": "settings_node[\"output\"] = job.output_json_file.string();"
+    },
+    "batch_reject": {
+      "line": 246,
+      "text": "throw std::runtime_error(\"Batch mode does not support rivet-settings/contur-settings.\");"
+    },
+    "batch_screen": {
+      "line": 237,
+      "text": "settings_node[\"screen_output\"] = false;"
+    },
+    "output_file": {
+      "line": 244,
+      "text": "output_config.output_file = settings.getValueOrDef<std::string>(\"CBS_output.json\", \"output\");"
+    },
+    "screen_output": {
+      "line": 240,
+      "text": "output_config.screen_output = settings.getValueOrDef<bool>(true, \"screen_output\");"
+    },
+    "validate": {
+      "line": 246,
+      "text": "ColliderBit::SoloOutput::validate_output_config(output_config);"
+    },
+    "write_file": {
+      "line": 241,
+      "text": "output_config.write_file = settings.hasKey(\"output\");"
+    }
+  },
+  "generated_by": "scripts/build-json-output-page.py",
+  "indent": 2,
+  "indent_line": 37,
+  "library": {
+    "object_type_line": 3521,
+    "path": "Utils/include/gambit/Utils/json.hpp",
+    "version": "3.11.3"
+  },
+  "objects": [
+    {
+      "fields": [
+        {
+          "expr": "analysis.size()",
+          "key": "n_signal_regions",
+          "line": 432,
+          "read_back": false
+        },
+        {
+          "expr": "analysis.luminosity",
+          "key": "luminosity",
+          "line": 433,
+          "read_back": true
+        },
+        {
+          "expr": "analysis.bkgjson_path",
+          "key": "bkgjson_path",
+          "line": 434,
+          "read_back": true
+        },
+        {
+          "expr": "covariance",
+          "key": "covariance",
+          "line": 448,
+          "read_back": true
+        },
+        {
+          "expr": "combination",
+          "key": "combination",
+          "line": 461,
+          "read_back": false
+        },
+        {
+          "expr": "build_cutflows_json(analysis.cutflows)",
+          "key": "cutflows",
+          "line": 462,
+          "read_back": true
+        },
+        {
+          "expr": "build_histograms_json(analysis.histograms)",
+          "key": "histograms",
+          "line": 463,
+          "read_back": true
+        },
+        {
+          "expr": "signal_regions",
+          "key": "signal_regions",
+          "line": 529,
+          "read_back": true
+        }
+      ],
+      "id": "analysis",
+      "keyed_by": "AnalysisData::analysis_name",
+      "path": "analyses[\"<ANALYSIS_NAME>\"]"
+    },
+    {
+      "fields": [
+        {
+          "expr": "ll.combination_sr_label",
+          "key": "selected_sr_label",
+          "line": 452,
+          "read_back": false
+        },
+        {
+          "expr": "ll.combination_sr_index",
+          "key": "selected_sr_index",
+          "line": 453,
+          "read_back": false
+        },
+        {
+          "expr": "ll.combination_loglike",
+          "key": "nominal_loglike",
+          "line": 454,
+          "read_back": false
+        },
+        {
+          "expr": "nlohmann::json::object()",
+          "key": "alternatives",
+          "line": 455,
+          "read_back": false
+        }
+      ],
+      "id": "combination",
+      "keyed_by": null,
+      "path": "analyses[\"<A>\"].combination"
+    },
+    {
+      "fields": [
+        {
+          "expr": "sr_index",
+          "key": "sr_index",
+          "line": 470,
+          "read_back": true
+        },
+        {
+          "expr": "sr_data.n_obs",
+          "key": "n_obs",
+          "line": 471,
+          "read_back": true
+        },
+        {
+          "expr": "sr_data.n_bkg",
+          "key": "n_bkg",
+          "line": 472,
+          "read_back": true
+        },
+        {
+          "expr": "sr_data.n_bkg_err",
+          "key": "n_bkg_err",
+          "line": 473,
+          "read_back": true
+        },
+        {
+          "expr": "sr_data.n_sig_MC",
+          "key": "n_sig_MC",
+          "line": 474,
+          "read_back": false
+        },
+        {
+          "expr": "sr_data.n_sig_MC_stat",
+          "key": "n_sig_MC_stat",
+          "line": 475,
+          "read_back": false
+        },
+        {
+          "expr": "sr_data.n_sig_scaled",
+          "key": "n_sig_scaled",
+          "line": 476,
+          "read_back": true
+        },
+        {
+          "expr": "sr_data.calc_n_sig_scaled_err()",
+          "key": "n_sig_scaled_err",
+          "line": 477,
+          "read_back": true
+        },
+        {
+          "expr": "ll.sr_loglikes.at(sr_index)",
+          "key": "loglike",
+          "line": 478,
+          "read_back": false
+        },
+        {
+          "expr": "sr_alt_loglikes",
+          "key": "alt_loglikes",
+          "line": 491,
+          "read_back": false
+        }
+      ],
+      "id": "signal_region",
+      "keyed_by": "SignalRegionData::sr_label",
+      "path": "analyses[\"<A>\"].signal_regions[\"<SR_LABEL>\"]"
+    },
+    {
+      "fields": [
+        {
+          "expr": "cutflow.name",
+          "key": "name",
+          "line": 101,
+          "read_back": true
+        },
+        {
+          "expr": "cuts_json",
+          "key": "cuts",
+          "line": 141,
+          "read_back": true
+        }
+      ],
+      "id": "cutflow",
+      "keyed_by": null,
+      "path": "analyses[\"<A>\"].cutflows[]"
+    },
+    {
+      "fields": [
+        {
+          "expr": "i",
+          "key": "cut_index",
+          "line": 109,
+          "read_back": false
+        },
+        {
+          "expr": "(i == 0) ? \"initial\" : ((i - 1 < cutflow.cuts.size()) ? cutflow.cuts.at(i - 1) : \"unknown_cut\")",
+          "key": "cut_name",
+          "line": 110,
+          "read_back": true
+        },
+        {
+          "expr": "cutflow.counts.at(i)",
+          "key": "count",
+          "line": 114,
+          "read_back": true
+        },
+        {
+          "expr": "cutflow.counts.at(i) / initial_count",
+          "key": "acceptance_cumulative",
+          "line": 118,
+          "read_back": false
+        },
+        {
+          "expr": "nullptr",
+          "key": "acceptance_incremental",
+          "line": 127,
+          "read_back": false
+        }
+      ],
+      "id": "cut",
+      "keyed_by": null,
+      "path": "analyses[\"<A>\"].cutflows[].cuts[]"
+    },
+    {
+      "fields": [
+        {
+          "expr": "h.name",
+          "key": "name",
+          "line": 157,
+          "read_back": true
+        },
+        {
+          "expr": "h.x_label",
+          "key": "x_label",
+          "line": 158,
+          "read_back": true
+        },
+        {
+          "expr": "h.edges",
+          "key": "edges",
+          "line": 159,
+          "read_back": true
+        },
+        {
+          "expr": "h.nbins()",
+          "key": "nbins",
+          "line": 160,
+          "read_back": false
+        },
+        {
+          "expr": "h.is_signal_region()",
+          "key": "is_signal_region",
+          "line": 161,
+          "read_back": true
+        },
+        {
+          "expr": "h.obs",
+          "key": "obs",
+          "line": 164,
+          "read_back": true
+        },
+        {
+          "expr": "h.bkg",
+          "key": "bkg",
+          "line": 165,
+          "read_back": true
+        },
+        {
+          "expr": "h.bkg_err",
+          "key": "bkg_err",
+          "line": 166,
+          "read_back": true
+        },
+        {
+          "expr": "bins_arr",
+          "key": "bins",
+          "line": 188,
+          "read_back": true
+        },
+        {
+          "expr": "h.underflow",
+          "key": "underflow",
+          "line": 189,
+          "read_back": true
+        },
+        {
+          "expr": "h.overflow",
+          "key": "overflow",
+          "line": 190,
+          "read_back": true
+        },
+        {
+          "expr": "std::sqrt(h.underflow_sumw2)",
+          "key": "underflow_error",
+          "line": 191,
+          "read_back": true
+        },
+        {
+          "expr": "std::sqrt(h.overflow_sumw2)",
+          "key": "overflow_error",
+          "line": 192,
+          "read_back": true
+        },
+        {
+          "expr": "h.integral()",
+          "key": "integral",
+          "line": 193,
+          "read_back": false
+        }
+      ],
+      "id": "histogram_1d",
+      "keyed_by": null,
+      "path": "analyses[\"<A>\"].histograms[\"1d\"][]"
+    },
+    {
+      "fields": [
+        {
+          "expr": "i",
+          "key": "bin_index",
+          "line": 173,
+          "read_back": false
+        },
+        {
+          "expr": "h.edges[i]",
+          "key": "x_low",
+          "line": 174,
+          "read_back": false
+        },
+        {
+          "expr": "h.edges[i + 1]",
+          "key": "x_high",
+          "line": 175,
+          "read_back": false
+        },
+        {
+          "expr": "h.counts[i]",
+          "key": "count",
+          "line": 176,
+          "read_back": true
+        },
+        {
+          "expr": "h.bin_error(i)",
+          "key": "error",
+          "line": 177,
+          "read_back": false
+        },
+        {
+          "expr": "h.sumw2[i]",
+          "key": "sumw2",
+          "line": 178,
+          "read_back": true
+        },
+        {
+          "expr": "h.obs[i]",
+          "key": "n_obs",
+          "line": 181,
+          "read_back": true
+        },
+        {
+          "expr": "h.bkg[i]",
+          "key": "n_bkg",
+          "line": 182,
+          "read_back": true
+        },
+        {
+          "expr": "h.bkg_err[i]",
+          "key": "n_bkg_err",
+          "line": 183,
+          "read_back": true
+        },
+        {
+          "expr": "h.name + \"_bin\" + std::to_string(i)",
+          "key": "sr_label",
+          "line": 184,
+          "read_back": false
+        }
+      ],
+      "id": "histogram_bin",
+      "keyed_by": null,
+      "path": "analyses[\"<A>\"].histograms[\"1d\"][].bins[]"
+    },
+    {
+      "fields": [
+        {
+          "expr": "h.name",
+          "key": "name",
+          "line": 203,
+          "read_back": true
+        },
+        {
+          "expr": "h.x_label",
+          "key": "x_label",
+          "line": 204,
+          "read_back": true
+        },
+        {
+          "expr": "h.y_label",
+          "key": "y_label",
+          "line": 205,
+          "read_back": true
+        },
+        {
+          "expr": "h.x_edges",
+          "key": "x_edges",
+          "line": 206,
+          "read_back": true
+        },
+        {
+          "expr": "h.y_edges",
+          "key": "y_edges",
+          "line": 207,
+          "read_back": true
+        },
+        {
+          "expr": "h.nx_bins()",
+          "key": "nx_bins",
+          "line": 208,
+          "read_back": false
+        },
+        {
+          "expr": "h.ny_bins()",
+          "key": "ny_bins",
+          "line": 209,
+          "read_back": false
+        },
+        {
+          "expr": "counts_2d",
+          "key": "counts",
+          "line": 227,
+          "read_back": true
+        },
+        {
+          "expr": "errors_2d",
+          "key": "errors",
+          "line": 228,
+          "read_back": false
+        },
+        {
+          "expr": "sumw2_2d",
+          "key": "sumw2",
+          "line": 229,
+          "read_back": true
+        },
+        {
+          "expr": "h.overflow_total",
+          "key": "overflow_total",
+          "line": 230,
+          "read_back": true
+        },
+        {
+          "expr": "h.integral()",
+          "key": "integral",
+          "line": 231,
+          "read_back": false
+        }
+      ],
+      "id": "histogram_2d",
+      "keyed_by": null,
+      "path": "analyses[\"<A>\"].histograms[\"2d\"][]"
+    },
+    {
+      "fields": [
+        {
+          "expr": "term_id",
+          "key": "term_id",
+          "line": 80,
+          "read_back": false
+        },
+        {
+          "expr": "component",
+          "key": "component",
+          "line": 81,
+          "read_back": false
+        },
+        {
+          "expr": "variant",
+          "key": "variant",
+          "line": 82,
+          "read_back": false
+        },
+        {
+          "expr": "loglike",
+          "key": "loglike",
+          "line": 83,
+          "read_back": false
+        },
+        {
+          "expr": "safe_to_sum",
+          "key": "safe_to_sum",
+          "line": 84,
+          "read_back": false
+        },
+        {
+          "expr": "exclusive_group",
+          "key": "exclusive_group",
+          "line": 85,
+          "read_back": false
+        },
+        {
+          "expr": "selected_in_default",
+          "key": "selected_in_default",
+          "line": 86,
+          "read_back": false
+        },
+        {
+          "expr": "analysis_name",
+          "key": "analysis_name",
+          "line": 88,
+          "read_back": false
+        },
+        {
+          "expr": "sr_label",
+          "key": "sr_label",
+          "line": 89,
+          "read_back": false
+        }
+      ],
+      "id": "term",
+      "keyed_by": null,
+      "path": "terms[]"
+    },
+    {
+      "fields": [
+        {
+          "expr": "analyses_json.size()",
+          "key": "n_analyses",
+          "line": 570,
+          "read_back": false
+        },
+        {
+          "expr": "combined_loglike",
+          "key": "combined_loglike",
+          "line": 571,
+          "read_back": false
+        },
+        {
+          "expr": "contur_total_loglike",
+          "key": "contur_loglike",
+          "line": 572,
+          "read_back": false
+        }
+      ],
+      "id": "summary",
+      "keyed_by": null,
+      "path": "summary"
+    },
+    {
+      "fields": [
+        {
+          "expr": "\"cross_section_proportional\"",
+          "key": "allocation_rule",
+          "line": 578,
+          "read_back": false
+        },
+        {
+          "expr": "nlohmann::json::array()",
+          "key": "analyses",
+          "line": 579,
+          "read_back": false
+        }
+      ],
+      "id": "advice",
+      "keyed_by": null,
+      "path": "sampling_advice"
+    },
+    {
+      "fields": [
+        {
+          "expr": "entry.analysis_name",
+          "key": "analysis_name",
+          "line": 584,
+          "read_back": false
+        },
+        {
+          "expr": "entry.sr_label",
+          "key": "selected_sr_label",
+          "line": 585,
+          "read_back": false
+        },
+        {
+          "expr": "entry.sr_index",
+          "key": "selected_sr_index",
+          "line": 586,
+          "read_back": false
+        },
+        {
+          "expr": "entry.n_sig_scaled",
+          "key": "n_sig_scaled",
+          "line": 587,
+          "read_back": false
+        },
+        {
+          "expr": "entry.n_sig_scaled_err",
+          "key": "n_sig_scaled_err",
+          "line": 588,
+          "read_back": false
+        },
+        {
+          "expr": "entry.fractional_uncert",
+          "key": "fractional_uncert",
+          "line": 589,
+          "read_back": false
+        },
+        {
+          "expr": "entry.effective_events",
+          "key": "effective_events",
+          "line": 590,
+          "read_back": false
+        },
+        {
+          "expr": "nlohmann::json::array()",
+          "key": "targets",
+          "line": 591,
+          "read_back": false
+        }
+      ],
+      "id": "advice_analysis",
+      "keyed_by": null,
+      "path": "sampling_advice.analyses[]"
+    },
+    {
+      "fields": [
+        {
+          "expr": "target.target_fractional_uncert",
+          "key": "target_fractional_uncert",
+          "line": 596,
+          "read_back": false
+        },
+        {
+          "expr": "target.current_fractional_uncert",
+          "key": "current_fractional_uncert",
+          "line": 597,
+          "read_back": false
+        },
+        {
+          "expr": "target.need_more_mc",
+          "key": "need_more_mc",
+          "line": 598,
+          "read_back": false
+        },
+        {
+          "expr": "target.scale_factor",
+          "key": "scale_factor",
+          "line": 599,
+          "read_back": false
+        },
+        {
+          "expr": "target.current_total_events",
+          "key": "current_total_events",
+          "line": 600,
+          "read_back": false
+        },
+        {
+          "expr": "target.recommended_total_events",
+          "key": "recommended_total_events",
+          "line": 601,
+          "read_back": false
+        },
+        {
+          "expr": "target.recommended_additional_events",
+          "key": "recommended_additional_events",
+          "line": 602,
+          "read_back": false
+        },
+        {
+          "expr": "nlohmann::json::array()",
+          "key": "process_recommendations",
+          "line": 603,
+          "read_back": false
+        }
+      ],
+      "id": "advice_target",
+      "keyed_by": null,
+      "path": "sampling_advice.analyses[].targets[]"
+    },
+    {
+      "fields": [
+        {
+          "expr": "process.process_name",
+          "key": "process_name",
+          "line": 608,
+          "read_back": false
+        },
+        {
+          "expr": "process.cross_section_fb",
+          "key": "cross_section_fb",
+          "line": 609,
+          "read_back": false
+        },
+        {
+          "expr": "process.processed_events",
+          "key": "processed_events",
+          "line": 610,
+          "read_back": false
+        },
+        {
+          "expr": "process.recommended_additional_events",
+          "key": "recommended_additional_events",
+          "line": 611,
+          "read_back": false
+        }
+      ],
+      "id": "advice_process",
+      "keyed_by": null,
+      "path": "sampling_advice.analyses[].targets[].process_recommendations[]"
+    },
+    {
+      "fields": [
+        {
+          "expr": "contur_total_loglike",
+          "key": "total_loglike",
+          "line": 638,
+          "read_back": false
+        },
+        {
+          "expr": "nlohmann::json::object()",
+          "key": "pools",
+          "line": 639,
+          "read_back": false
+        }
+      ],
+      "id": "contur",
+      "keyed_by": null,
+      "path": "contur"
+    },
+    {
+      "fields": [
+        {
+          "expr": "pool_loglike",
+          "key": "loglike",
+          "line": 649,
+          "read_back": false
+        },
+        {
+          "expr": "dominant_measurement",
+          "key": "dominant_measurement",
+          "line": 650,
+          "read_back": false
+        }
+      ],
+      "id": "contur_pool",
+      "keyed_by": "pool name from Contur_LHC_measurements_LogLike_perPool",
+      "path": "contur.pools[\"<POOL>\"]"
+    }
+  ],
+  "root_fields": [
+    {
+      "expr": "kSchemaVersion",
+      "key": "schema_version",
+      "line": 407
+    },
+    {
+      "expr": "{ {\"n_events\", n_events}, {\"with_contur\", with_contur} }",
+      "key": "run",
+      "line": 408
+    },
+    {
+      "expr": "analyses_json",
+      "key": "analyses",
+      "line": 566
+    },
+    {
+      "expr": "terms",
+      "key": "terms",
+      "line": 567
+    },
+    {
+      "expr": "summary",
+      "key": "summary",
+      "line": 573
+    },
+    {
+      "expr": "advice_json",
+      "key": "sampling_advice",
+      "line": 621
+    },
+    {
+      "expr": "predefined_sets",
+      "key": "predefined_sets",
+      "line": 626
+    },
+    {
+      "expr": "contur_json",
+      "key": "contur",
+      "line": 682
+    }
+  ],
+  "run_pairs": [
+    {
+      "expr": "n_events",
+      "key": "n_events",
+      "line": 409
+    },
+    {
+      "expr": "with_contur",
+      "key": "with_contur",
+      "line": 410
+    },
+    {
+      "expr": "variants_json",
+      "key": "enabled_variants",
+      "line": 633
+    }
+  ],
+  "schema_version": "cbs-solo-loglike-v1",
+  "schema_version_line": 36,
+  "sources": {
+    "batch": {
+      "lines": 1171,
+      "path": "ColliderBit/examples/solo_batch.cpp"
+    },
+    "emitter": {
+      "emit_span": [
+        388,
+        686
+      ],
+      "lines": 689,
+      "path": "ColliderBit/examples/solo_output.cpp"
+    },
+    "entrypoint": {
+      "lines": 598,
+      "path": "ColliderBit/examples/solo.cpp"
+    },
+    "header": {
+      "lines": 78,
+      "path": "ColliderBit/examples/solo_output.hpp"
+    }
+  },
+  "terms": [
+    {
+      "component": "signal_region",
+      "exclusive_group": "\"analysis_sr::\" + analysis_name + \"::\" + sr_data.sr_label",
+      "line": 495,
+      "safe_to_sum": "false",
+      "selected_in_default": "false",
+      "term_id": "analysis_name + \"::\" + sr_data.sr_label + \"::nominal\"",
+      "variant": "\"nominal\""
+    },
+    {
+      "component": "signal_region",
+      "exclusive_group": "\"analysis_sr::\" + analysis_name + \"::\" + sr_data.sr_label",
+      "line": 514,
+      "safe_to_sum": "false",
+      "selected_in_default": "false",
+      "term_id": "analysis_name + \"::\" + sr_data.sr_label + \"::\" + alt_key",
+      "variant": "alt_key"
+    },
+    {
+      "component": "analysis_combined",
+      "exclusive_group": "\"analysis::\" + analysis_name",
+      "line": 535,
+      "safe_to_sum": "true",
+      "selected_in_default": "true",
+      "term_id": "analysis_name + \"::combined::nominal\"",
+      "variant": "\"nominal\""
+    },
+    {
+      "component": "analysis_combined",
+      "exclusive_group": "\"analysis::\" + analysis_name",
+      "line": 551,
+      "safe_to_sum": "true",
+      "selected_in_default": "false",
+      "term_id": "analysis_name + \"::combined::\" + alt_pair.first",
+      "variant": "alt_pair.first"
+    },
+    {
+      "component": "contur_pool",
+      "exclusive_group": "\"contur_pool::\" + pool_name",
+      "line": 653,
+      "safe_to_sum": "false",
+      "selected_in_default": "false",
+      "term_id": "\"contur_pool::\" + pool_name + \"::nominal\"",
+      "variant": "\"nominal\""
+    },
+    {
+      "component": "contur_total",
+      "exclusive_group": "\"contur::total\"",
+      "line": 668,
+      "safe_to_sum": "true",
+      "selected_in_default": "true",
+      "term_id": "\"contur::total::nominal\"",
+      "variant": "\"nominal\""
+    }
+  ],
+  "totals": {
+    "emitted_fields": 106,
+    "merge_guards": 19,
+    "read_back_fields": 41,
+    "top_level_keys": 8
+  }
+}

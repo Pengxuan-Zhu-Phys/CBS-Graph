@@ -123,6 +123,24 @@ python3 scripts/compare-cbs-focus.py \
 
 图是静态源码证据，不是运行时 trace，也不是完整 C++ AST；CBS 的运行时 functor 图仍应使用 GAMBIT 运行生成的 `.gv` 文件。
 
+### JSON 输出契约
+
+`private-SUSYRun2` 完全没有 JSON 输出（连 `Utils/include/gambit/Utils/json.hpp` 都不存在，`solo.cpp` 里 `json` 出现 0 次），所以这一页不是对比，而是**只介绍新的**输出编排：
+
+```bash
+python3 scripts/build-json-output-page.py \
+  --gambit-root ~/Gambit-Workshop/gambit
+```
+
+页面上的每个 key、字段、行号都是生成时从 `solo_output.cpp` 和 `solo_batch.cpp` 里抽取的，不是手写的，因此不会随源码改动而悄悄失效。脚本还会算出一件手写文档算不出来的事：**batch 合并到底读回了哪些字段**——因为 batch 模式下 per-file JSON 就是子进程回传结果的唯一通道，被读回的字段改名会直接弄坏 batch，而不只是弄坏下游画图脚本。
+
+生成：
+
+- `dependences/cbs-json-output.html`：输出契约页面；
+- `dependences/cbs-json-output.json`：抽取出来的字段表、读回集合、合并守卫；
+- `dependences/CBS_JSON_OUTPUT.md`：文本摘要；
+- `site/cbs-json-output.html`：GitHub Pages 页面。
+
 ## 变更台账（汇报用 slide）
 
 `compare-cbs-branches.py` 把两个 worktree 当成普通文件树来 diff，因此**无法识别重命名**：75 个改名的分析会被报成"左边删除 75 个 + 右边新增 75 个"，凭空放大约 150 个文件的改动量。
