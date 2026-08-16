@@ -1013,6 +1013,69 @@ def unified_diff(left: Snapshot, right: Snapshot) -> str:
     return "\n".join(lines)
 
 
+HUNK_HEADER_RE = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@")
+
+
+def split_hunks(diff: str) -> list[dict[str, Any]]:
+    """Split a unified diff into individually addressable hunks."""
+    hunks: list[dict[str, Any]] = []
+    current: dict[str, Any] | None = None
+    for line in diff.splitlines():
+        match = HUNK_HEADER_RE.match(line)
+        if match:
+            old_start, old_count, new_start, new_count = match.groups()
+            current = {
+                "header": line,
+                "old_start": int(old_start),
+                "old_count": int(old_count or 1),
+                "new_start": int(new_start),
+                "new_count": int(new_count or 1),
+                "lines": [],
+            }
+            hunks.append(current)
+        elif current is not None:
+            current["lines"].append(line)
+    for hunk in hunks:
+        hunk["added"] = sum(1 for l in hunk["lines"] if l.startswith("+"))
+        hunk["removed"] = sum(1 for l in hunk["lines"] if l.startswith("-"))
+    return hunks
+
+
+def assign_hunks(units: list[dict[str, Any]], hunks: list[dict[str, Any]]) -> dict[str, Any]:
+    """Attach each diff hunk to the change unit it belongs to.
+
+    Assignment is by token evidence found on the hunk's changed lines only —
+    context lines are ignored, so a hunk is not claimed by a unit merely for
+    sitting near it.  A hunk that matches several units is attached to every one
+    it genuinely touches rather than being forced into a single bucket, and the
+    unmatched remainder is counted so nothing disappears silently.
+    """
+    for unit in units:
+        unit["hunks"] = []
+    matched: set[int] = set()
+    for index, hunk in enumerate(hunks):
+        changed = "\n".join(
+            line for line in hunk["lines"] if line[:1] in {"+", "-"}
+        )
+        # Any distinct token hit on a changed line is enough to claim the hunk.
+        # Ranking by hit count would let a unit with broad tokens (say
+        # calc_LHC_LogLikes, which appears on every apply_setting_if_present
+        # line) outscore and silently displace a unit whose single precise token
+        # is genuinely present in the same hunk.
+        hit = False
+        for unit in units:
+            if any(re.search(re.escape(token), changed) for token in unit["tokens"]):
+                unit["hunks"].append(hunk)
+                hit = True
+        if hit:
+            matched.add(index)
+    return {
+        "total": len(hunks),
+        "mapped": len(matched),
+        "unmapped": len(hunks) - len(matched),
+    }
+
+
 def display_diff(diff: str) -> str:
     """Make trailing spaces visible in HTML without hiding source evidence."""
     displayed = []
@@ -1079,6 +1142,9 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
     changed_includes = [include for include in includes if include["status"] != "unchanged"]
     logic = logic_flow_definitions()
     logic_details = detailed_logic_data()
+    diff_text = unified_diff(left, right)
+    units = change_units()
+    hunk_coverage = assign_hunks(units, split_hunks(diff_text))
     return {
         "schema": "cbs-focus-comparison/v3",
         "focus": {
@@ -1091,7 +1157,8 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
         "sibling_family": sibling_family_stats(
             baseline_root, comparison_root, focus_file
         ),
-        "change_units": change_units(),
+        "change_units": units,
+        "hunk_coverage": hunk_coverage,
         "baseline": branch_metadata(baseline_root, args.baseline_label),
         "comparison": branch_metadata(comparison_root, args.comparison_label),
         "version_roles": {
@@ -1114,7 +1181,7 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
         "logic_flows": logic,
         "logic_mapping": logic_mapping_rows(),
         "logic_details": logic_details,
-        "diff": unified_diff(left, right),
+        "diff": diff_text,
         "scope_note": "Focused static source evidence for one file; comparison direction is SUSYRun2 (old) → ColliderBit_solo_development (new). The two flowcharts are grouped source paths, not a runtime trace or a complete C++ AST.",
     }
 
@@ -1133,6 +1200,7 @@ def change_units() -> list[dict[str, Any]]:
     return [
         {
             "id": 1,
+            "tokens": ["SoloCLI", "parse_command_line", "CommandLineStatus", "CommandLineOptions", "argc < 2", "Usage: "],
             "kind": "extracted",
             "title": "CLI boundary",
             "target": "solo_cli.cpp / .hpp",
@@ -1161,6 +1229,7 @@ def change_units() -> list[dict[str, Any]]:
         },
         {
             "id": 2,
+            "tokens": ["SoloInput", "parse_and_prepare_input", "PreparedInput", "YAML::LoadFile"],
             "kind": "extracted",
             "title": "Input contract",
             "target": "solo_input.cpp / .hpp",
@@ -1186,6 +1255,7 @@ def change_units() -> list[dict[str, Any]]:
         },
         {
             "id": 3,
+            "tokens": ["SoloBatch", "run_and_merge", "build_sampling_advice", "SamplingAdvice", "MergedRunResult"],
             "kind": "extracted",
             "title": "Batch execution",
             "target": "solo_batch.cpp / .hpp",
@@ -1207,6 +1277,7 @@ def change_units() -> list[dict[str, Any]]:
         },
         {
             "id": 4,
+            "tokens": ["SoloOutput", "emit_outputs", "OutputConfig", "validate_output_config", "summary_line"],
             "kind": "extracted",
             "title": "Output contract",
             "target": "solo_output.cpp / .hpp",
@@ -1228,6 +1299,7 @@ def change_units() -> list[dict[str, Any]]:
         },
         {
             "id": 5,
+            "tokens": ["use_FullLikes", "calc_LHC_LogLikes"],
             "kind": "in-place",
             "title": "Likelihood selector",
             "target": "solo.cpp (in main)",
@@ -1251,6 +1323,7 @@ def change_units() -> list[dict[str, Any]]:
         },
         {
             "id": 6,
+            "tokens": ["set_check_cutflow", "set_check_histogram", "print_cutflows"],
             "kind": "in-place",
             "title": "Cutflow / histogram switches",
             "target": "solo.cpp (in main)",
@@ -1266,9 +1339,18 @@ def change_units() -> list[dict[str, Any]]:
             "verification": "`grep -c set_check_cutflow` = 0 on master and SUSYRun2, 1 here",
             "snippet": "// old · solo.cpp:191\n"
                        "AnalysisNumbers.setOption<bool>(\"print_cutflows\", true);\n\n"
-                       "// new · solo.cpp:176\n"
-                       "ColliderBit::Cutflow::set_check_cutflow(check_cutflow);\n"
-                       "ColliderBit::Histogram1D::set_check_histogram(check_histogram);",
+                       "// new · solo.cpp:170 — YAML asks, the build decides whether it can\n"
+                       "const bool requested_check_cutflow =\n"
+                       "  settings.getValueOrDef<bool>(false, \"check_cutflow\");\n"
+                       "#ifdef CHECK_CUTFLOW\n"
+                       "const bool check_cutflow = requested_check_cutflow;\n"
+                       "#else\n"
+                       "const bool check_cutflow = false;\n"
+                       "if (requested_check_cutflow)\n"
+                       "  cerr << \"WARNING: check_cutflow was requested, but this CBS binary \"\n"
+                       "       << \"was built without CUTFLOW support.\";\n"
+                       "#endif\n"
+                       "ColliderBit::Cutflow::set_check_cutflow(check_cutflow);",
         },
     ]
 
@@ -1386,6 +1468,67 @@ def change_table_rows(units: list[dict[str, Any]]) -> str:
     return "\n            ".join(rows)
 
 
+def render_hunks(unit: dict[str, Any]) -> str:
+    """Render a unit's real diff hunks inside a collapsed expander."""
+    hunks = unit.get("hunks") or []
+    if not hunks:
+        return (
+            '<p class="unit-nohunk">No hunk in <code>solo.cpp</code> carries this '
+            "change: the work lives entirely in the new file, which the focused "
+            "diff does not cover. See the module total above.</p>"
+        )
+    added = sum(hunk["added"] for hunk in hunks)
+    removed = sum(hunk["removed"] for hunk in hunks)
+    blocks = []
+    for hunk in hunks:
+        rows = [
+            f'<span class="dh">{html.escape(hunk["header"])}</span>'
+        ]
+        for line in hunk["lines"]:
+            marker = line[:1]
+            css = {"+": "da", "-": "dr"}.get(marker, "dc")
+            rows.append(f'<span class="{css}">{html.escape(display_diff(line))}</span>')
+        blocks.append("\n".join(rows))
+    label = (
+        f"{len(hunks)} hunk{'s' if len(hunks) != 1 else ''} in solo.cpp "
+        f"· +{added} / −{removed}"
+    )
+    return (
+        f'<details class="unit-diff"><summary>{html.escape(label)}</summary>'
+        f'<pre class="unit-hunks">' + "\n\n".join(blocks) + "</pre></details>"
+    )
+
+
+def hunk_coverage_note(data: dict[str, Any]) -> str:
+    """State how much of the raw diff the numbered units actually account for.
+
+    Without this the expanders could quietly present a subset of the diff as if
+    it were the whole change.
+    """
+    coverage = data["hunk_coverage"]
+    total, mapped, unmapped = coverage["total"], coverage["mapped"], coverage["unmapped"]
+    note = (
+        f"<strong>Hunk coverage.</strong> The expanders above carry real hunks sliced "
+        f"from the <code>solo.cpp</code> unified diff, matched to a numbered change by "
+        f"token evidence on their added and removed lines only — context lines never "
+        f"claim a hunk. {mapped} of {total} hunks map to a numbered change."
+    )
+    if unmapped:
+        note += (
+            f" The remaining {unmapped} are include reordering and incidental edits that "
+            f"belong to no single unit; they are visible in full in the complete diff at "
+            f"the end of this page."
+        )
+    else:
+        note += " Every hunk is accounted for."
+    note += (
+        " A hunk touching two units is shown under both rather than forced into one. "
+        "Units whose work lives entirely in a new file have no hunk here by construction: "
+        "the focused diff covers <code>solo.cpp</code> only."
+    )
+    return note
+
+
 def change_unit_cards(units: list[dict[str, Any]]) -> str:
     cards = []
     for unit in units:
@@ -1406,6 +1549,7 @@ def change_unit_cards(units: list[dict[str, Any]]) -> str:
             f'            <div><dt>evidence</dt><dd>{html.escape(unit["verification"])}</dd></div>\n'
             f'          </dl>\n'
             f'          <pre class="unit-code">{html.escape(unit["snippet"])}</pre>\n'
+            f'          {render_hunks(unit)}\n'
             f'        </article>'
         )
     return "\n        ".join(cards)
@@ -1615,6 +1759,22 @@ def page_html(data: dict[str, Any]) -> str:
       font:11.5px/1.7 var(--font-mono); color:var(--ink); white-space:pre; }
     .unit-link { color:var(--accent); font:600 12px var(--font-mono); text-decoration:none; }
     .unit-link:hover { text-decoration:underline; }
+    .unit-diff { margin-top:11px; border:1px solid var(--rule); border-radius:6px; background:#fff; }
+    .unit-diff summary { cursor:pointer; padding:9px 13px; color:var(--accent);
+      font:11px var(--font-mono); letter-spacing:.4px; list-style:none; }
+    .unit-diff summary::-webkit-details-marker { display:none; }
+    .unit-diff summary::before { content:"▸ "; display:inline-block; width:14px; }
+    .unit-diff[open] summary::before { content:"▾ "; }
+    .unit-diff[open] summary { border-bottom:1px solid var(--rule); }
+    .unit-diff summary:hover { background:rgba(235,108,54,.05); }
+    .unit-hunks { margin:0; padding:12px 0; overflow-x:auto; font:11px/1.65 var(--font-mono); }
+    .unit-hunks span { display:block; padding:0 13px; white-space:pre; }
+    .unit-hunks .dh { color:var(--accent); background:rgba(235,108,54,.06); margin:6px 0 4px; padding:3px 13px; }
+    .unit-hunks .da { color:#2f6b4a; background:rgba(79,138,105,.09); }
+    .unit-hunks .dr { color:#8c3a30; background:rgba(164,68,58,.08); }
+    .unit-hunks .dc { color:var(--soft); }
+    .unit-nohunk { margin:11px 0 0; padding:10px 13px; border-radius:6px;
+      background:rgba(45,49,66,.035); color:var(--muted); font-size:12px; line-height:1.6; }
     @media (max-width:900px) { .unit-grid { grid-template-columns:1fr; } }
     .diagram-note { color:var(--muted); font-size:12px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
     .flow-figure { background:#fff; border:1px solid var(--rule); border-radius:8px; padding:8px; }
@@ -1701,6 +1861,7 @@ def page_html(data: dict[str, Any]) -> str:
     <div class="unit-list">
         __CHANGE_UNIT_CARDS__
     </div>
+    <p class="diagram-note">__HUNK_COVERAGE__</p>
     <p class="diagram-note"><strong>Evidence boundary.</strong> Every row above is backed by source presence and a call site, or by a <code>grep</code> over the two branches. None of it is a runtime result: no CBS build was produced and no events were processed for this page. Physics validation is a separate exercise and is not claimed here.</p>
   </section>
 
@@ -1805,6 +1966,7 @@ def page_html(data: dict[str, Any]) -> str:
         "__OVERVIEW_TREE__": overview_tree_svg(data["change_units"]),
         "__CHANGE_TABLE_ROWS__": change_table_rows(data["change_units"]),
         "__CHANGE_UNIT_CARDS__": change_unit_cards(data["change_units"]),
+        "__HUNK_COVERAGE__": hunk_coverage_note(data),
         "__FUNCTIONS__": str(summary["functions"]),
         "__CHANGED_FUNCTIONS__": str(summary["changed_functions"]),
         "__CHANGED_RELATIONS__": str(summary["changed_relations"]),
