@@ -1,0 +1,9 @@
+flowchart LR
+    cbs_main["CBS entry<br/>solo.cpp::main()"] --> input["Input preparation<br/>parse_and_prepare_input()"]
+    input --> loop["LHC event loop<br/>operateLHCLoop"]
+    loop --> event["Event preparation<br/>getEvent · convert · smear"]
+    event --> dispatch["ATLAS dispatch<br/>runATLASAnalyses"]
+    dispatch -.->|resolveDependency| factory["Analysis lookup / factory<br/>getATLASAnalysisContainer · mkAnalysis(name)"]
+    factory --> analysis["Target analysis<br/>Analysis_ATLAS_EXOT_2019_04::run()"]
+    analysis -.->|lifecycle| results["Analysis results<br/>CollectAnalyses · calc_LHC_LogLikes"]
+    results --> output["Output artifact<br/>SoloOutput::emit_outputs() → CBS_result.json"]

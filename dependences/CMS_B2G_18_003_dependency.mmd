@@ -1,0 +1,34 @@
+flowchart TD
+    %% Generated from dependency graph
+    analysis_run["Analysis_CMS_B2G_18_003::run()<br/>analysis_method · target"]
+    baseline_jets["AK4 / AK8 + CSVv2 / DeepCSV baseline jets<br/>jet_collection · analysis"]
+    sort_objects["sort() by pT<br/>call · analysis"]
+    lowmass_signal_jets["Low-mass signal jets and b-tag subsets<br/>object_selection · analysis"]
+    lowmass_preselection["Resolved ≥6-jet preselection<br/>cutflow · analysis"]
+    btag_categories["3T / 3M / 2M1L categories<br/>branch · analysis"]
+    reconstruct_lowmass["reconstruct_lowmass(): tH / tZ chi² assignment<br/>analysis_helper · analysis"]
+    lowmass_histograms["m5j tH / tZ histograms<br/>histogram_fill · analysis"]
+    highmass_preselection["Merged ≥4 AK4 + ≥2 AK8 preselection<br/>cutflow · analysis"]
+    reclustering_grooming["SoftDrop + pruned mass<br/>analysis_stage · analysis"]
+    nsubjettiness_btag["N-subjettiness + AK4 proxy subjet b-tags<br/>analysis_stage · analysis"]
+    highmass_categories["H / Z / top category assignment<br/>branch · analysis"]
+    highmass_counters["8 high-mass signal counters<br/>counter · analysis"]
+    analysis_collect_results["collect_results(): commit low/high-mass outputs<br/>analysis_hook · analysis"]
+    analysis_commit_macros["6 histogram SRs + 8 cut-and-count SRs + cutflows<br/>result_commit · analysis"]
+    analysis_specific_reset["analysis_specific_reset() → book_regions()<br/>analysis_hook · analysis"]
+    analysis_run -->|build AK4/AK8 and b-tag collections| baseline_jets
+    baseline_jets -->|sort AK4 and AK8 jets| sort_objects
+    sort_objects -->|ordered jets → signal jets| lowmass_signal_jets
+    lowmass_signal_jets -->|six-jet and leading-pT cuts| lowmass_preselection
+    lowmass_preselection -->|3T / 3M / 2M1L| btag_categories
+    btag_categories -->|chi² tH/tZ reconstruction| reconstruct_lowmass
+    reconstruct_lowmass -->|m5j result → histogram| lowmass_histograms
+    analysis_run -->|merged search branch| highmass_preselection
+    highmass_preselection -->|SoftDrop / pruning| reclustering_grooming
+    reclustering_grooming -->|groomed jets + proxy subjets| nsubjettiness_btag
+    nsubjettiness_btag -->|tau21/tau32 + b-tag proxy| highmass_categories
+    highmass_categories -->|select one high-mass SR| highmass_counters
+    analysis_run -->|result collection hook| analysis_collect_results
+    analysis_collect_results -->|commit low/high mass results| analysis_commit_macros
+    analysis_run -->|reset and re-book regions| analysis_specific_reset
+    analysis_specific_reset -->|book regions and histograms| analysis_commit_macros

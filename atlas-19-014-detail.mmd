@@ -1,0 +1,11 @@
+flowchart TD
+    run["Analysis_ATLAS_EXOT_2019_04::run()"] --> jets["BASELINE_JETS<br/>event → jet collections"]
+    jets --> trim["Large-R trimming<br/>selection stage"]
+    run --> btag["generateBTagsMap()<br/>b-tag map"]
+    run --> reff["VR_Reff()<br/>variable-R track-jet input"]
+    trim --> candidate["H2T2B / VLB candidate<br/>selection"]
+    btag --> candidate
+    reff --> candidate
+    candidate --> observables["Observables<br/>m_VLB histogram + SR counter"]
+    run -.->|lifecycle| collect["collect_results()"]
+    collect --> commit["Commit macros<br/>signal region · histograms · SRs"]

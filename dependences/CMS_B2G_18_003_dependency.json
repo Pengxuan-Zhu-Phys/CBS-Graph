@@ -1,0 +1,55 @@
+{
+  "scope": {
+    "analysis": "CMS_B2G_18_003",
+    "source": "ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp",
+    "scope_note": "Analysis-local dependency graph showing the resolved low-mass branch and merged high-mass branch."
+  },
+  "extraction": {
+    "mode": "clang-ast-assisted-static",
+    "runtime_instrumentation": false,
+    "cbs_compilation": false,
+    "ast_confirmed_members": ["Analysis_CMS_B2G_18_003::run", "Analysis_CMS_B2G_18_003::collect_results", "Analysis_CMS_B2G_18_003::analysis_specific_reset"],
+    "ast_confirmed_calls": ["sort", "sortByPt"],
+    "source_confirmed_helpers": ["reconstruct_lowmass", "book_regions"],
+    "limitations": [
+      "FastJet and macro stages are represented as semantic nodes rather than every library call.",
+      "The high-mass implementation is a public-recast approximation as documented in the source."
+    ]
+  },
+  "nodes": [
+    {"id":"analysis_run","kind":"analysis_method","label":"Analysis_CMS_B2G_18_003::run()","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":103,"status":"target"},
+    {"id":"baseline_jets","kind":"jet_collection","label":"AK4 / AK8 + CSVv2 / DeepCSV baseline jets","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":112,"status":"analysis"},
+    {"id":"sort_objects","kind":"call","label":"sort() by pT","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":120,"status":"analysis"},
+    {"id":"lowmass_signal_jets","kind":"object_selection","label":"Low-mass signal jets and b-tag subsets","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":127,"status":"analysis"},
+    {"id":"lowmass_preselection","kind":"cutflow","label":"Resolved ≥6-jet preselection","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":132,"status":"analysis"},
+    {"id":"btag_categories","kind":"branch","label":"3T / 3M / 2M1L categories","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":145,"status":"analysis"},
+    {"id":"reconstruct_lowmass","kind":"analysis_helper","label":"reconstruct_lowmass(): tH / tZ chi² assignment","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":599,"status":"analysis"},
+    {"id":"lowmass_histograms","kind":"histogram_fill","label":"m5j tH / tZ histograms","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":166,"status":"analysis"},
+    {"id":"highmass_preselection","kind":"cutflow","label":"Merged ≥4 AK4 + ≥2 AK8 preselection","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":230,"status":"analysis"},
+    {"id":"reclustering_grooming","kind":"analysis_stage","label":"SoftDrop + pruned mass","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":211,"status":"analysis"},
+    {"id":"nsubjettiness_btag","kind":"analysis_stage","label":"N-subjettiness + AK4 proxy subjet b-tags","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":352,"status":"analysis"},
+    {"id":"highmass_categories","kind":"branch","label":"H / Z / top category assignment","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":405,"status":"analysis"},
+    {"id":"highmass_counters","kind":"counter","label":"8 high-mass signal counters","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":450,"status":"analysis"},
+    {"id":"analysis_collect_results","kind":"analysis_hook","label":"collect_results(): commit low/high-mass outputs","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":460,"status":"analysis"},
+    {"id":"analysis_commit_macros","kind":"result_commit","label":"6 histogram SRs + 8 cut-and-count SRs + cutflows","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":465,"status":"analysis"},
+    {"id":"analysis_specific_reset","kind":"analysis_hook","label":"analysis_specific_reset() → book_regions()","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":487,"status":"analysis"}
+  ],
+  "edges": [
+    {"source":"analysis_run","target":"baseline_jets","kind":"semantic","label":"build AK4/AK8 and b-tag collections","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":112}]},
+    {"source":"baseline_jets","target":"sort_objects","kind":"call","label":"sort AK4 and AK8 jets","confidence":"high","evidence":[{"method":"clang_ast","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":120}]},
+    {"source":"sort_objects","target":"lowmass_signal_jets","kind":"dataflow","label":"ordered jets -> signal jets","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":127}]},
+    {"source":"lowmass_signal_jets","target":"lowmass_preselection","kind":"semantic","label":"six-jet and leading-pT cuts","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":132}]},
+    {"source":"lowmass_preselection","target":"btag_categories","kind":"branch","label":"3T / 3M / 2M1L","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":145}]},
+    {"source":"btag_categories","target":"reconstruct_lowmass","kind":"call","label":"chi² tH/tZ reconstruction","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":165}]},
+    {"source":"reconstruct_lowmass","target":"lowmass_histograms","kind":"dataflow","label":"m5j result -> histogram","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":166}]},
+    {"source":"analysis_run","target":"highmass_preselection","kind":"semantic","label":"merged search branch","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":230}]},
+    {"source":"highmass_preselection","target":"reclustering_grooming","kind":"call","label":"SoftDrop / pruning","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":211}]},
+    {"source":"reclustering_grooming","target":"nsubjettiness_btag","kind":"semantic","label":"groomed jets + proxy subjets","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":352}]},
+    {"source":"nsubjettiness_btag","target":"highmass_categories","kind":"dataflow","label":"tau21/tau32 + b-tag proxy","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":370}]},
+    {"source":"highmass_categories","target":"highmass_counters","kind":"call","label":"select one high-mass SR","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":450}]},
+    {"source":"analysis_run","target":"analysis_collect_results","kind":"lifecycle","label":"result collection hook","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":460}]},
+    {"source":"analysis_collect_results","target":"analysis_commit_macros","kind":"semantic","label":"commit low/high mass results","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":465}]},
+    {"source":"analysis_run","target":"analysis_specific_reset","kind":"lifecycle","label":"reset and re-book regions","confidence":"high","evidence":[{"method":"clang_ast","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":487}]},
+    {"source":"analysis_specific_reset","target":"analysis_commit_macros","kind":"semantic","label":"book regions and histograms","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp","line":495}]}
+  ]
+}
