@@ -1,0 +1,17 @@
+# Local Glean databases and query output.
+.glean/
+.cache/
+
+# Generated Pages assets are reproducible from the local Gambit checkout.
+site/assets/*.svg
+site/assets/*.gv
+site/assets/*.json
+
+# Local source/build checkouts.
+_sources/
+_build/
+
+# OS/editor files.
+.DS_Store
+.idea/
+.vscode/

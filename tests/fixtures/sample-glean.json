@@ -1,0 +1,19 @@
+{
+  "id": 1,
+  "key": {
+    "source": {
+      "function_": {
+        "name": {"name": "run", "scope": {"global_": {}}},
+        "source": {"file": "ColliderBit/examples/solo.cpp", "lineBegin": 10}
+      }
+    },
+    "targets": [
+      {
+        "function_": {
+          "name": {"name": "analyze", "scope": {"global_": {}}},
+          "source": {"file": "ColliderBit/src/analysis.cpp", "lineBegin": 20}
+        }
+      }
+    ]
+  }
+}

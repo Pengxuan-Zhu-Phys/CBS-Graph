@@ -1,0 +1,10 @@
+# Export declaration targets for functions defined under ColliderBit.
+#
+# Glean's C++ schema calls this relation DeclarationTargets. It is richer than
+# a pure function-call relation because a declaration may refer to records,
+# variables, namespaces, or functions. The renderer filters the result to
+# declarations that have a source file under the selected GAMBIT prefixes.
+
+T where
+  cxx.DeclarationTargets T;
+  T.source.function_?.source.file = "ColliderBit/"..
