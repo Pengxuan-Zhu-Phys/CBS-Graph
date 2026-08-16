@@ -756,6 +756,173 @@ def flowchart_svg(flow_id: str, definition: dict[str, Any]) -> str:
     return "".join(parts)
 
 
+def detailed_logic_data() -> dict[str, Any]:
+    """Source-grounded detail tables and diagrams for the SUSYRun2 main path."""
+    settings_rows = [
+        {"name": "analyses", "type": "vector<str>", "default": "required", "consumer": "infile → CBS YAML / CollectAnalyses", "source": "solo.cpp:86–90"},
+        {"name": "settings", "type": "YAML map → Options", "default": "required", "consumer": "all runtime settings", "source": "solo.cpp:91–96"},
+        {"name": "debug", "type": "bool", "default": "false", "consumer": "logger; HepMC notice; silenceLoop", "source": "solo.cpp:118"},
+        {"name": "use_lognormal_distribution_for_1d_systematic", "type": "bool", "default": "false", "consumer": "lnpiln vs lnpin backend requirement", "source": "solo.cpp:121,285"},
+        {"name": "jet_pt_min", "type": "double", "default": "10.0", "consumer": "convertHepMCEvent_HEPUtils", "source": "solo.cpp:122,217"},
+        {"name": "event_file", "type": "str", "default": "required", "consumer": "getHepMCEvent; .hepmc/.hepmc2/.hepmc3 check", "source": "solo.cpp:123–128,216"},
+        {"name": "jet_collections", "type": "YAML::Node", "default": "required", "consumer": "getEvent + convertEvent", "source": "solo.cpp:131,220–223"},
+        {"name": "jet_collection_taus", "type": "string", "default": "antikt_R04", "consumer": "getEvent + convertEvent", "source": "solo.cpp:132,220–223"},
+        {"name": "cross_section_pb OR cross_section_fb", "type": "double", "default": "one branch required", "consumer": "getYAMLCrossSection", "source": "solo.cpp:226–236"},
+        {"name": "cross_section_fractional_uncert", "type": "double", "default": "optional alternative", "consumer": "otherwise absolute _uncert_pb/_fb is required", "source": "solo.cpp:229–236"},
+        {"name": "rivet-settings", "type": "YAML map", "default": "absent → withRivet=false", "consumer": "Rivet_measurements", "source": "solo.cpp:141–145,267–272"},
+        {"name": "rivet-settings.drop_YODA_file", "type": "bool", "default": "true", "consumer": "Rivet_measurements", "source": "solo.cpp:267"},
+        {"name": "rivet-settings.analyses", "type": "vector<string>", "default": "required when Rivet is enabled", "consumer": "Rivet_measurements", "source": "solo.cpp:269–270"},
+        {"name": "rivet-settings.exclude_analyses", "type": "vector<string>", "default": "empty", "consumer": "Rivet_measurements", "source": "solo.cpp:271–272"},
+        {"name": "contur-settings", "type": "vector<string>", "default": "absent → withContur=false", "consumer": "Contur_LHC_measurements_from_stream", "source": "solo.cpp:147–154,273–274"},
+        {"name": "Rivet / Contur pairing", "type": "presence gate", "default": "both absent or both present", "consumer": "mismatch throws; missing backend throws", "source": "solo.cpp:156–178"},
+        {"name": "use_covariances", "type": "bool", "default": "not set in main; comment says true", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:242"},
+        {"name": "use_marginalising", "type": "bool", "default": "not set in main; comment says false", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:243"},
+        {"name": "combine_SRs_without_covariances", "type": "bool", "default": "not set in main; comment says false", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:244"},
+        {"name": "nuisance_prof_initstep", "type": "double", "default": "0.1 (comment)", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:246"},
+        {"name": "nuisance_prof_convtol", "type": "double", "default": "0.01 (comment)", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:247"},
+        {"name": "nuisance_prof_maxsteps", "type": "int", "default": "10000 (comment)", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:248"},
+        {"name": "nuisance_prof_convacc", "type": "double", "default": "0.01 (comment)", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:249"},
+        {"name": "nuisance_prof_simplexsize", "type": "double", "default": "1e-5 (comment)", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:250"},
+        {"name": "nuisance_prof_method", "type": "int", "default": "6 (comment)", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:251"},
+        {"name": "nuisance_marg_convthres_abs", "type": "double", "default": "0.05 (comment)", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:253"},
+        {"name": "nuisance_marg_convthres_rel", "type": "double", "default": "0.05 (comment)", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:254"},
+        {"name": "nuisance_marg_nsamples_start", "type": "long", "default": "1000000 (comment)", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:255"},
+        {"name": "nuisance_marg_nulike1sr", "type": "bool", "default": "true (comment)", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:256"},
+        {"name": "calc_noerr_loglikes", "type": "bool", "default": "false (comment)", "consumer": "alternate SR loglikes + summary_line", "source": "solo.cpp:258"},
+        {"name": "calc_expected_loglikes", "type": "bool", "default": "false (comment)", "consumer": "alternate SR loglikes + summary_line", "source": "solo.cpp:259"},
+        {"name": "calc_expected_noerr_loglikes", "type": "bool", "default": "false (comment)", "consumer": "alternate SR loglikes + summary_line", "source": "solo.cpp:260"},
+        {"name": "calc_scaledsignal_loglikes", "type": "bool", "default": "false (comment)", "consumer": "alternate SR loglikes + summary_line", "source": "solo.cpp:261"},
+        {"name": "signal_scalefactor", "type": "double", "default": "1.0 (comment)", "consumer": "calc_LHC_LogLikes_full", "source": "solo.cpp:262"},
+    ]
+    hardcoded_rows = [
+        {"name": "CollectAnalyses.print_cutflows", "value": "true", "consumer": "CollectAnalyses", "source": "solo.cpp:190–191"},
+        {"name": "CBS.min_nEvents", "value": "1000", "consumer": "operateLHCLoop", "source": "solo.cpp:208–213"},
+        {"name": "CBS.max_nEvents", "value": "1000000000", "consumer": "operateLHCLoop", "source": "solo.cpp:208–213"},
+        {"name": "operateLHCLoop.silenceLoop", "value": "!debug", "consumer": "operateLHCLoop", "source": "solo.cpp:212–213"},
+        {"name": "Rivet_measurements.runningStandalone", "value": "true", "consumer": "Rivet_measurements", "source": "solo.cpp:267–268"},
+    ]
+    runtime_rows = [
+        {"step": "operateLHCLoop.reset_and_calculate()", "container": "MCLoopInfo", "value": "event loop state; event_count[\"CBS\"]", "downstream": "n_events + nested event/analysis functors", "source": "solo.cpp:372,385"},
+        {"step": "CollectAnalyses.reset_and_calculate()", "container": "AnalysisDataPointers", "value": "vector<AnalysisData*>; ATLAS + CMS + Identity", "downstream": "AllAnalysisNumbers dependency", "source": "solo.cpp:373; ColliderBit_eventloop.cpp:336"},
+        {"step": "calc_LHC_LogLikes_full.reset_and_calculate()", "container": "map_str_AnalysisLogLikes", "value": "AnalysisLogLikes per analysis / SR", "downstream": "FullLikes backend + nulike marginaliser", "source": "solo.cpp:374; LHC_likelihoods.cpp:1335"},
+        {"step": "get_LHC_LogLike_per_analysis.reset_and_calculate()", "container": "map_str_dbl", "value": "analysis → combination_loglike; alt keys appended", "downstream": "debug log + standalone functor output", "source": "solo.cpp:375; LHC_likelihoods.cpp:1386"},
+        {"step": "calc_combined_LHC_LogLike.reset_and_calculate()", "container": "double", "value": "combined ATLAS+CMS log-likelihood", "downstream": "final loglike variable + stdout", "source": "solo.cpp:376; LHC_likelihoods.cpp:1503"},
+        {"step": "Contur_LHC_measurements_LogLike.reset_and_calculate()", "container": "double", "value": "total Contur LLR", "downstream": "summary_line when withContur", "source": "solo.cpp:379,414; ColliderBit_measurements.cpp:454"},
+        {"step": "Contur_LHC_measurements_LogLike_perPool.reset_and_calculate()", "container": "map_str_dbl", "value": "pool → LLR", "downstream": "pool loop in summary_line", "source": "solo.cpp:380,415; ColliderBit_measurements.cpp:495"},
+        {"step": "Contur_LHC_measurements_histotags_perPool.reset_and_calculate()", "container": "map_str_str", "value": "pool → dominant measurement tag", "downstream": "pool_info[pool.first] in summary_line", "source": "solo.cpp:381,416; ColliderBit_measurements.cpp:533"},
+        {"step": "inline summary aggregation", "container": "stringstream summary_line", "value": "analysis → SR → observed/background/signal/loglike", "downstream": "cout + total combined loglike", "source": "solo.cpp:384–431"},
+    ]
+    dependency_rows = [
+        {"owner": "calc_combined_LHC_LogLike", "links": "calc_LHC_LogLikes_full; operateLHCLoop", "backend": "—", "source": "solo.cpp:280–281"},
+        {"owner": "get_LHC_LogLike_per_analysis", "links": "calc_LHC_LogLikes_full", "backend": "—", "source": "solo.cpp:282"},
+        {"owner": "calc_LHC_LogLikes_full", "links": "CollectAnalyses; operateLHCLoop", "backend": "nulike_lnpiln/lnpin; FullLikes_FileExists/ReadIn/Evaluate", "source": "solo.cpp:283–288"},
+        {"owner": "CollectAnalyses", "links": "runATLASAnalyses; runCMSAnalyses; runIdentityAnalyses", "backend": "—", "source": "solo.cpp:289–291"},
+        {"owner": "runATLASAnalyses", "links": "getATLASAnalysisContainer; smearEventATLAS", "backend": "—", "source": "solo.cpp:292–293"},
+        {"owner": "runCMSAnalyses", "links": "getCMSAnalysisContainer; smearEventCMS", "backend": "—", "source": "solo.cpp:294–295"},
+        {"owner": "runIdentityAnalyses", "links": "getIdentityAnalysisContainer; copyEvent", "backend": "—", "source": "solo.cpp:296–297"},
+        {"owner": "analysis containers", "links": "getYAMLCrossSection; convertEvent; BuckFast/smear/copy", "backend": "ATLAS/CMS/Identity detector paths", "source": "solo.cpp:298–306"},
+        {"owner": "Contur branch", "links": "Rivet_measurements → Contur_LHC_measurements_from_stream → three Contur outputs", "backend": "Contur_get_analyses_from_beam; Contur_LogLike_from_stream", "source": "solo.cpp:308–317"},
+    ]
+    settings_diagram = {
+        "title": "SUSYRun2 YAML settings and defaults",
+        "description": "Detailed SUSYRun2 path from YAML sections to validated settings, defaults, backend options, and configured functors.",
+        "width": 1240,
+        "height": 1220,
+        "nodes": [
+            {"id": "yaml", "shape": "oval", "class": "detail-focal", "x": 480, "y": 40, "w": 280, "h": 88, "kind": "YAML INPUT", "title": "YAML::LoadFile", "body": ["analyses + settings", "top-level sections"], "tag": "solo.cpp:86–96"},
+            {"id": "required", "shape": "rect", "class": "detail-primary", "x": 400, "y": 168, "w": 440, "h": 104, "kind": "REQUIRED CONTRACT", "title": "event + analyses inputs", "body": ["event_file · jet_collections", "analyses · cross section"], "tag": "missing / bad suffix → throw"},
+            {"id": "defaults", "shape": "rect", "class": "detail-primary", "x": 400, "y": 312, "w": 440, "h": 104, "kind": "SCALAR DEFAULTS", "title": "settings.getValueOrDef", "body": ["debug=false · use_lnpiln=false", "jet_pt_min=10 · taus=antikt_R04"], "tag": "seed=-1 → hardware seed"},
+            {"id": "xsec", "shape": "rect", "class": "detail-primary", "x": 400, "y": 456, "w": 440, "h": 104, "kind": "CROSS SECTION", "title": "pb/fb branch + uncertainty", "body": ["cross_section_pb OR cross_section_fb", "fractional OR absolute uncertainty"], "tag": "getYAMLCrossSection"},
+            {"id": "likes", "shape": "rect", "class": "detail-mod", "x": 400, "y": 600, "w": 440, "h": 104, "kind": "LIKELIHOOD OPTIONS", "title": "apply_setting_if_present", "body": ["18 optional likelihood switches", "only forwarded when hasKey"], "tag": "comments record backend defaults"},
+            {"id": "rivet", "shape": "rect", "class": "detail-optional", "x": 400, "y": 744, "w": 440, "h": 104, "kind": "OPTIONAL MEASUREMENTS", "title": "Rivet + Contur settings", "body": ["both absent or both present", "YODA / analyses / pool options"], "tag": "withRivet / withContur"},
+            {"id": "loop", "shape": "rect", "class": "detail-hardcoded", "x": 400, "y": 888, "w": 440, "h": 104, "kind": "HARDCODED MAIN OPTIONS", "title": "CBS loop policy", "body": ["print_cutflows=true · min=1000", "max=1e9 · silenceLoop=!debug"], "tag": "not loaded from YAML"},
+            {"id": "functors", "shape": "oval", "class": "detail-focal", "x": 400, "y": 1032, "w": 440, "h": 88, "kind": "CONFIGURED FUNCTORS", "title": "getEvent + convertEvent + analyses", "body": ["setOption calls complete", "ready for dependency resolution"], "tag": "main continues"},
+        ],
+        "edges": [{"from": "yaml", "to": "required"}, {"from": "required", "to": "defaults"}, {"from": "defaults", "to": "xsec"}, {"from": "xsec", "to": "likes"}, {"from": "likes", "to": "rivet"}, {"from": "rivet", "to": "loop"}, {"from": "loop", "to": "functors"}],
+    }
+    runtime_diagram = {
+        "title": "SUSYRun2 reset and calculate container chain",
+        "description": "Detailed SUSYRun2 dependency and reset_and_calculate order showing the containers consumed by the standalone summary.",
+        "width": 1240,
+        "height": 1260,
+        "nodes": [
+            {"id": "resolve", "shape": "rect", "class": "detail-primary", "x": 400, "y": 32, "w": 440, "h": 108, "kind": "DEPENDENCY + LOOP WIRING", "title": "resolveDependency + setNestedList", "body": ["likelihood ← analyses ← detector paths", "loop managers + FullLikes/nulike pointers"], "tag": "solo.cpp:278–361"},
+            {"id": "init", "shape": "rect", "class": "detail-hardcoded", "x": 400, "y": 176, "w": 440, "h": 108, "kind": "BACKEND INIT", "title": "nulike_init.reset_and_calculate", "body": ["always initialise nulike", "Rivet + Contur init when enabled"], "tag": "solo.cpp:363–369"},
+            {"id": "loop", "shape": "rect", "class": "detail-focal", "x": 400, "y": 320, "w": 440, "h": 108, "kind": "EVENT LOOP", "title": "operateLHCLoop.reset_and_calculate", "body": ["MCLoopInfo; event_count[\"CBS\"]", "nested event + detector + analyses"], "tag": "solo.cpp:372,385"},
+            {"id": "analyses", "shape": "rect", "class": "detail-data", "x": 400, "y": 464, "w": 440, "h": 108, "kind": "ANALYSIS CONTAINER", "title": "CollectAnalyses.reset_and_calculate", "body": ["AnalysisDataPointers", "ATLAS + CMS + Identity"], "tag": "solo.cpp:373"},
+            {"id": "likes", "shape": "rect", "class": "detail-data", "x": 400, "y": 608, "w": 440, "h": 108, "kind": "LIKELIHOOD CONTAINER", "title": "calc_LHC_LogLikes_full.reset", "body": ["map_str_AnalysisLogLikes", "per analysis + signal region"], "tag": "solo.cpp:374"},
+            {"id": "aggregate", "shape": "rect", "class": "detail-data", "x": 400, "y": 752, "w": 440, "h": 108, "kind": "AGGREGATION", "title": "per-analysis + combined loglikes", "body": ["get_LHC_LogLike_per_analysis", "calc_combined_LHC_LogLike → double"], "tag": "solo.cpp:375–376"},
+            {"id": "contur_gate", "shape": "diamond", "class": "detail-decision", "cx": 620, "cy": 936, "w": 280, "h": 128, "kind": "OPTIONAL BRANCH", "title": "withContur?", "body": ["YES: three Contur maps", "NO: skip to summary"], "tag": "solo.cpp:377"},
+            {"id": "contur", "shape": "rect", "class": "detail-optional", "x": 800, "y": 1096, "w": 360, "h": 108, "kind": "CONTUR CONTAINERS", "title": "reset_and_calculate × 3", "body": ["double total LLR", "map_str_dbl pools + map_str_str tags"], "tag": "solo.cpp:379–381"},
+            {"id": "output", "shape": "oval", "class": "detail-focal", "x": 320, "y": 1096, "w": 360, "h": 88, "kind": "INLINE OUTPUT", "title": "summary_line + cout", "body": ["SR fields + total loglike", "catch std::exception → 1"], "tag": "solo.cpp:384–443"},
+        ],
+        "edges": [
+            {"from": "resolve", "to": "init"}, {"from": "init", "to": "loop"}, {"from": "loop", "to": "analyses"}, {"from": "analyses", "to": "likes"}, {"from": "likes", "to": "aggregate"}, {"from": "aggregate", "to": "contur_gate"},
+            {"from": "contur_gate", "to": "contur", "points": [[760, 936], [960, 936], [960, 1096]], "optional": True},
+            {"from": "contur_gate", "to": "output", "points": [[620, 1064], [620, 1080], [500, 1080], [500, 1096]]},
+            {"from": "contur", "to": "output", "points": [[980, 1204], [980, 1228], [680, 1228], [680, 1140]], "optional": True},
+        ],
+    }
+    return {"settings_rows": settings_rows, "hardcoded_rows": hardcoded_rows, "runtime_rows": runtime_rows, "dependency_rows": dependency_rows, "settings_diagram": settings_diagram, "runtime_diagram": runtime_diagram}
+
+
+def _detail_anchor(node: dict[str, Any], side: str) -> tuple[int, int]:
+    if "cx" in node:
+        cx, cy, w, h = node["cx"], node["cy"], node["w"], node["h"]
+        return {"top": (cx, cy - h // 2), "right": (cx + w // 2, cy), "bottom": (cx, cy + h // 2), "left": (cx - w // 2, cy)}[side]
+    x, y, w, h = node["x"], node["y"], node["w"], node["h"]
+    return {"top": (x + w // 2, y), "right": (x + w, y + h // 2), "bottom": (x + w // 2, y + h), "left": (x, y + h // 2)}[side]
+
+
+def detailed_svg(diagram_id: str, definition: dict[str, Any]) -> str:
+    width, height = definition["width"], definition["height"]
+    marker_id = f"solo-{diagram_id}-detail-arrow"
+    title_id = f"solo-{diagram_id}-detail-title"
+    desc_id = f"solo-{diagram_id}-detail-desc"
+    nodes = {node["id"]: node for node in definition["nodes"]}
+    parts = [
+        f'<svg viewBox="0 0 {width} {height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="{title_id} {desc_id}">',
+        f'<title id="{title_id}">{html.escape(definition["title"])}</title>',
+        f'<desc id="{desc_id}">{html.escape(definition["description"])}</desc>',
+        "<defs>",
+        f'<marker id="{marker_id}" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker>',
+        "</defs>",
+        f'<rect width="{width}" height="{height}" fill="#f5f5f5"/>',
+        f'<rect class="detail-zone" x="32" y="12" width="{width - 64}" height="{height - 48}" rx="10"/>',
+        '<text class="zone-label" x="56" y="40">SOURCE-GROUNDED DETAIL · READ TOP TO BOTTOM</text>',
+    ]
+    for edge in definition["edges"]:
+        points = edge.get("points")
+        if points is None:
+            points = [_detail_anchor(nodes[edge["from"]], "bottom"), _detail_anchor(nodes[edge["to"]], "top")]
+        edge_class = "detail-edge optional" if edge.get("optional") else "detail-edge"
+        parts.append(f'<path class="{edge_class}" d="{_flow_path(points)}" style="marker-end:url(#{marker_id})"/>')
+    for node in definition["nodes"]:
+        node_class = f'node {node.get("class", "detail-primary")}'
+        if node["shape"] == "diamond":
+            cx, cy, w, h = node["cx"], node["cy"], node["w"], node["h"]
+            points = f"{cx},{cy-h//2} {cx+w//2},{cy} {cx},{cy+h//2} {cx-w//2},{cy}"
+            parts.append(f'<g class="{node_class}"><polygon points="{points}"/><text class="kind" x="{cx}" y="{cy-24}" text-anchor="middle">{html.escape(node["kind"])}</text><text class="title" x="{cx}" y="{cy+2}" text-anchor="middle">{html.escape(node["title"])}</text><text class="body" x="{cx}" y="{cy+22}" text-anchor="middle">{html.escape(node["body"][0])}</text><text class="body" x="{cx}" y="{cy+36}" text-anchor="middle">{html.escape(node["body"][1])}</text><text class="tag" x="{cx}" y="{cy+52}" text-anchor="middle">{html.escape(node["tag"])}</text></g>')
+        elif node["shape"] == "oval":
+            x, y, w, h = node["x"], node["y"], node["w"], node["h"]
+            cx, cy = x + w // 2, y + h // 2
+            parts.append(f'<g class="{node_class}"><ellipse cx="{cx}" cy="{cy}" rx="{w//2}" ry="{h//2}"/><text class="kind" x="{cx}" y="{cy-18}" text-anchor="middle">{html.escape(node["kind"])}</text><text class="title" x="{cx}" y="{cy+4}" text-anchor="middle">{html.escape(node["title"])}</text><text class="body" x="{cx}" y="{cy+20}" text-anchor="middle">{html.escape(node["body"][0])}</text><text class="tag" x="{cx}" y="{cy+34}" text-anchor="middle">{html.escape(node["body"][1])}</text></g>')
+        else:
+            x, y, w, h = node["x"], node["y"], node["w"], node["h"]
+            parts.append(f'<g class="{node_class}" transform="translate({x} {y})"><rect width="{w}" height="{h}" rx="6"/><text class="kind" x="16" y="22">{html.escape(node["kind"])}</text><text class="title" x="16" y="50">{html.escape(node["title"])}</text><text class="body" x="16" y="70">{html.escape(node["body"][0])}</text><text class="body" x="16" y="84">{html.escape(node["body"][1])}</text><text class="tag" x="16" y="{h-12}">{html.escape(node["tag"])}</text></g>')
+    legend_y = height - 32
+    parts.extend([
+        f'<line x1="48" y1="{legend_y-18}" x2="{width-48}" y2="{legend_y-18}" stroke="rgba(45,49,66,.12)" stroke-width="1"/>',
+        f'<text class="legend-label" x="48" y="{legend_y}">LEGEND</text>',
+        f'<rect x="112" y="{legend_y-10}" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="142" y="{legend_y}">FOCAL / MAIN OWNERSHIP</text>',
+        f'<rect x="322" y="{legend_y-10}" width="20" height="10" rx="3" fill="#fff" stroke="#7a8399"/><text class="legend-label" x="352" y="{legend_y}">DATA CONTAINER</text>',
+        f'<rect x="478" y="{legend_y-10}" width="20" height="10" rx="3" fill="#fff" stroke="#7a8399" stroke-dasharray="5 4"/><text class="legend-label" x="508" y="{legend_y}">OPTIONAL</text>',
+        f'<text class="legend-label" x="630" y="{legend_y}">ARROWS = EXECUTION ORDER · TABLES BELOW = COMPLETE FIELD EVIDENCE</text>',
+        "</svg>",
+    ])
+    return "".join(parts)
+
+
 def unified_diff(left: Snapshot, right: Snapshot) -> str:
     lines = difflib.unified_diff(
         left.text.splitlines(),
@@ -832,6 +999,7 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
     changed_relations = [relation for relation in relation_rows if relation["status"] != "unchanged"]
     changed_includes = [include for include in includes if include["status"] != "unchanged"]
     logic = logic_flow_definitions()
+    logic_details = detailed_logic_data()
     return {
         "schema": "cbs-focus-comparison/v2",
         "focus": {
@@ -858,6 +1026,7 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
         "modules": module_summary(includes, relation_rows, focus_file),
         "logic_flows": logic,
         "logic_mapping": logic_mapping_rows(),
+        "logic_details": logic_details,
         "diff": unified_diff(left, right),
         "scope_note": "Focused static source evidence for one file; the two flowcharts are grouped source paths, not a runtime trace or a complete C++ AST.",
     }
@@ -927,6 +1096,39 @@ def page_html(data: dict[str, Any]) -> str:
         f"<td class=\"status modified\">{html.escape(row['change'])}</td></tr>"
         for row in data["logic_mapping"]
     )
+    details = data["logic_details"]
+    settings_rows = "".join(
+        f"<tr><td><code>{html.escape(row['name'])}</code></td>"
+        f"<td><code>{html.escape(row['type'])}</code></td>"
+        f"<td>{html.escape(row['default'])}</td>"
+        f"<td>{html.escape(row['consumer'])}</td>"
+        f"<td><code>{html.escape(row['source'])}</code></td></tr>"
+        for row in details["settings_rows"]
+    )
+    hardcoded_rows = "".join(
+        f"<tr><td><code>{html.escape(row['name'])}</code></td>"
+        f"<td><code>{html.escape(row['value'])}</code></td>"
+        f"<td>{html.escape(row['consumer'])}</td>"
+        f"<td><code>{html.escape(row['source'])}</code></td></tr>"
+        for row in details["hardcoded_rows"]
+    )
+    runtime_rows = "".join(
+        f"<tr><td><code>{html.escape(row['step'])}</code></td>"
+        f"<td><code>{html.escape(row['container'])}</code></td>"
+        f"<td>{html.escape(row['value'])}</td>"
+        f"<td>{html.escape(row['downstream'])}</td>"
+        f"<td><code>{html.escape(row['source'])}</code></td></tr>"
+        for row in details["runtime_rows"]
+    )
+    dependency_rows = "".join(
+        f"<tr><td><code>{html.escape(row['owner'])}</code></td>"
+        f"<td>{html.escape(row['links'])}</td>"
+        f"<td><code>{html.escape(row['backend'])}</code></td>"
+        f"<td><code>{html.escape(row['source'])}</code></td></tr>"
+        for row in details["dependency_rows"]
+    )
+    settings_detail_svg = detailed_svg("settings", details["settings_diagram"])
+    runtime_detail_svg = detailed_svg("runtime", details["runtime_diagram"])
     diff_summary = f"Show exact diff · +{focus['added_lines']} / −{focus['removed_lines']} lines · {focus['hunks']} hunks"
     title = f"{focus['file']} · {baseline['label']} vs {comparison['label']}"
     template = r'''<!doctype html>
@@ -986,6 +1188,18 @@ def page_html(data: dict[str, Any]) -> str:
     svg .node.wrapper rect, svg .node.wrapper ellipse { fill:#fff; stroke:var(--soft); }
     svg .node.decision polygon { fill:rgba(79,93,117,.08); stroke:var(--soft); stroke-width:1.2; }
     svg .node.stop ellipse { fill:var(--red-tint); stroke:var(--red); stroke-dasharray:5 4; }
+    .detail-figure { background:#fff; border:1px solid var(--rule); border-radius:8px; padding:8px; }
+    .detail-figure svg { min-width:1120px; }
+    svg .detail-zone { fill:rgba(45,49,66,.025); stroke:rgba(45,49,66,.13); stroke-width:1; }
+    svg .detail-edge { fill:none; stroke:var(--muted); stroke-width:1.4; }
+    svg .detail-edge.optional { stroke-dasharray:5 4; }
+    svg .node.detail-primary rect, svg .node.detail-primary ellipse { fill:#fff; stroke:var(--soft); }
+    svg .node.detail-data rect { fill:rgba(79,93,117,.08); stroke:var(--soft); }
+    svg .node.detail-mod rect { fill:#fff0e8; stroke:#b55c2d; }
+    svg .node.detail-hardcoded rect { fill:rgba(79,93,117,.08); stroke:var(--soft); }
+    svg .node.detail-optional rect { fill:#fff; stroke:var(--soft); stroke-dasharray:5 4; }
+    svg .node.detail-decision polygon { fill:rgba(79,93,117,.08); stroke:var(--soft); stroke-width:1.2; }
+    svg .node.detail-focal ellipse { fill:var(--accent-tint); stroke:var(--accent); stroke-width:1.6; }
     .details-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
     .controls { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:12px 0; }
     input,select { background:#fff; border:1px solid rgba(45,49,66,.2); border-radius:4px; color:var(--ink); font:11px var(--font-mono); padding:8px 9px; }
@@ -1013,7 +1227,7 @@ def page_html(data: dict[str, Any]) -> str:
 <main class="frame">
   <p class="eyebrow">ColliderBit Solo · focused source comparison</p>
   <h1>solo.cpp / branch delta</h1>
-  <p class="intro">A focused comparison of <code>__FOCUS_FILE__</code> between the baseline CBS Solo branch and SUSYRun2. The two execution-flow diagrams show where the old and new program logic lives; the evidence below expands to ownership, functions, includes and exact diff hunks.</p>
+  <p class="intro">A focused comparison of <code>__FOCUS_FILE__</code> between the baseline CBS Solo branch and SUSYRun2. The overview and two detail diagrams show where the old and new program logic lives; the evidence below expands to YAML ownership, defaults, data containers, functions, includes and exact diff hunks.</p>
   <div class="meta"><span><strong>BASELINE</strong> __BASELINE__</span><span><strong>COMPARISON</strong> __COMPARISON__</span><span><strong>MODULE</strong> __MODULE__</span><span><strong>STATIC EVIDENCE</strong> no build / no runtime trace</span></div>
   <div class="note">__SCOPE_NOTE__ Function status uses a per-function digest rather than inheriting the whole-file status. Include and build relationships are compared by their source tokens.</div>
   <div class="summary-grid" aria-label="Focused comparison summary">
@@ -1091,26 +1305,52 @@ def page_html(data: dict[str, Any]) -> str:
   </section>
 
   <section>
-    <p class="kicker">05 · module slices</p>
+    <p class="kicker">05 · YAML contract detail</p>
+    <h2>SUSYRun2 · settings, defaults and hard-coded policy</h2>
+    <p class="source">This is the expanded view requested for the comparison branch. “Comment default” means the value is documented beside <code>apply_setting_if_present</code> but is not assigned by <code>solo.cpp</code> itself; the downstream ColliderBit backend supplies the fallback.</p>
+    <div class="detail-figure"><div class="diagram-shell">__SETTINGS_DETAIL_SVG__</div></div>
+    <p class="diagram-note">The diagram shows the configuration path; the tables preserve every setting name and its exact consumer.</p>
+    <div class="scroll"><table><thead><tr><th>YAML key / gate</th><th>Type</th><th>Default / requirement</th><th>Consumer / effect</th><th>Source</th></tr></thead><tbody>__SETTINGS_ROWS__</tbody></table></div>
+    <h3>Not loaded from YAML in SUSYRun2</h3>
+    <div class="scroll"><table><thead><tr><th>Functor option</th><th>Value</th><th>Consumer</th><th>Source</th></tr></thead><tbody>__HARDCODED_ROWS__</tbody></table></div>
+  </section>
+
+  <section>
+    <p class="kicker">06 · container execution detail</p>
+    <h2>What reset_and_calculate() produces</h2>
+    <p class="source">The order below is the explicit order in SUSYRun2 <code>solo.cpp</code>. It distinguishes the functor/container name from the data structure later consumed by the inline summary.</p>
+    <div class="detail-figure"><div class="diagram-shell">__RUNTIME_DETAIL_SVG__</div></div>
+    <div class="scroll"><table><thead><tr><th>Execution step</th><th>Container / return type</th><th>Contents</th><th>Downstream use</th><th>Source</th></tr></thead><tbody>__RUNTIME_ROWS__</tbody></table></div>
+  </section>
+
+  <section>
+    <p class="kicker">07 · dependency wiring detail</p>
+    <h2>Which functor depends on which module</h2>
+    <p class="source">These are the explicit <code>resolveDependency</code> and <code>resolveBackendReq</code> relationships before the reset chain runs.</p>
+    <div class="scroll"><table><thead><tr><th>Owner functor</th><th>Dependencies</th><th>Backend requirements</th><th>Source</th></tr></thead><tbody>__DEPENDENCY_ROWS__</tbody></table></div>
+  </section>
+
+  <section>
+    <p class="kicker">08 · module slices</p>
     <h2>Direct dependency modules</h2>
     <div class="module-strip">__MODULE_ROWS__</div>
   </section>
 
   <div class="details-grid">
     <section>
-      <p class="kicker">06 · function evidence</p>
+      <p class="kicker">09 · function evidence</p>
       <h2>Function-level changes</h2>
       <div class="scroll"><table><thead><tr><th>Status</th><th>Function</th><th>Baseline</th><th>Comparison</th><th>Diff</th></tr></thead><tbody>__FUNCTION_ROWS__</tbody></table></div>
     </section>
     <section>
-      <p class="kicker">07 · source surface</p>
+      <p class="kicker">10 · source surface</p>
       <h2>Include and build relations</h2>
       <div class="scroll"><table><thead><tr><th>Status</th><th>Relation</th><th>Module</th><th>Line / path</th></tr></thead><tbody>__INCLUDE_ROWS__</tbody></table></div>
     </section>
   </div>
 
   <section>
-    <p class="kicker">08 · exact evidence</p>
+    <p class="kicker">11 · exact evidence</p>
     <h2>Unified diff</h2>
     <p class="source">The generated page keeps the exact file-level diff next to the summarized diagram. Added lines belong to the comparison branch; removed lines belong to the baseline branch.</p>
     <details open><summary>__DIFF_SUMMARY__</summary><pre>__DIFF__</pre></details>
@@ -1146,6 +1386,12 @@ def page_html(data: dict[str, Any]) -> str:
         "__BASELINE_FLOW__": baseline_flow,
         "__COMPARISON_FLOW__": comparison_flow,
         "__MAPPING_ROWS__": mapping_rows,
+        "__SETTINGS_DETAIL_SVG__": settings_detail_svg,
+        "__RUNTIME_DETAIL_SVG__": runtime_detail_svg,
+        "__SETTINGS_ROWS__": settings_rows,
+        "__HARDCODED_ROWS__": hardcoded_rows,
+        "__RUNTIME_ROWS__": runtime_rows,
+        "__DEPENDENCY_ROWS__": dependency_rows,
         "__FUNCTION_ROWS__": function_rows,
         "__INCLUDE_ROWS__": include_rows,
         "__DIFF_SUMMARY__": html.escape(diff_summary),
@@ -1184,6 +1430,17 @@ def markdown_summary(data: dict[str, Any]) -> str:
     ]
     for row in data["logic_mapping"]:
         lines.append(f"| {row['concern']} | `{row['baseline']}` | `{row['comparison']}` | {row['change']} |")
+    lines.extend([
+        "",
+        "## SUSYRun2 detail",
+        "",
+        "The HTML page contains the full YAML/default table and dependency table. The reset chain is summarized here:",
+        "",
+        "| Step | Container | Contents | Source |",
+        "|---|---|---|---|",
+    ])
+    for row in data["logic_details"]["runtime_rows"]:
+        lines.append(f"| `{row['step']}` | `{row['container']}` | {row['value']} | `{row['source']}` |")
     lines.extend([
         "",
         "## Functions",

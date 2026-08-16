@@ -26,6 +26,22 @@ The generated HTML contains two grouped static flowcharts: one for the helper-or
 | output contract | `OutputConfig + validate_output_config + emit_outputs` | `summary_line + cout in main` | structured screen/JSON output removed |
 | Rivet / Contur wiring | `main configures and output helper emits maps` | `main configures and prints pool details inline` | ownership remains inline; output path changed |
 
+## SUSYRun2 detail
+
+The HTML page contains the full YAML/default table and dependency table. The reset chain is summarized here:
+
+| Step | Container | Contents | Source |
+|---|---|---|---|
+| `operateLHCLoop.reset_and_calculate()` | `MCLoopInfo` | event loop state; event_count["CBS"] | `solo.cpp:372,385` |
+| `CollectAnalyses.reset_and_calculate()` | `AnalysisDataPointers` | vector<AnalysisData*>; ATLAS + CMS + Identity | `solo.cpp:373; ColliderBit_eventloop.cpp:336` |
+| `calc_LHC_LogLikes_full.reset_and_calculate()` | `map_str_AnalysisLogLikes` | AnalysisLogLikes per analysis / SR | `solo.cpp:374; LHC_likelihoods.cpp:1335` |
+| `get_LHC_LogLike_per_analysis.reset_and_calculate()` | `map_str_dbl` | analysis → combination_loglike; alt keys appended | `solo.cpp:375; LHC_likelihoods.cpp:1386` |
+| `calc_combined_LHC_LogLike.reset_and_calculate()` | `double` | combined ATLAS+CMS log-likelihood | `solo.cpp:376; LHC_likelihoods.cpp:1503` |
+| `Contur_LHC_measurements_LogLike.reset_and_calculate()` | `double` | total Contur LLR | `solo.cpp:379,414; ColliderBit_measurements.cpp:454` |
+| `Contur_LHC_measurements_LogLike_perPool.reset_and_calculate()` | `map_str_dbl` | pool → LLR | `solo.cpp:380,415; ColliderBit_measurements.cpp:495` |
+| `Contur_LHC_measurements_histotags_perPool.reset_and_calculate()` | `map_str_str` | pool → dominant measurement tag | `solo.cpp:381,416; ColliderBit_measurements.cpp:533` |
+| `inline summary aggregation` | `stringstream summary_line` | analysis → SR → observed/background/signal/loglike | `solo.cpp:384–431` |
+
 ## Functions
 
 | Status | Function | Baseline | Comparison | Diff |
