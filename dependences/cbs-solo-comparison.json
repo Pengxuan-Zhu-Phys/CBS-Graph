@@ -104,6 +104,92 @@
     "added_lines": 2978,
     "removed_lines": 153
   },
+  "change_units": [
+    {
+      "id": 1,
+      "kind": "extracted",
+      "title": "CLI boundary",
+      "target": "solo_cli.cpp / .hpp",
+      "delta": "+126 / −0",
+      "old_site": "solo.cpp:64–67 — inline argc check, cerr usage, return 1",
+      "new_site": "solo.cpp:75–83 → SoloCLI::parse_command_line",
+      "what": "Three-state CommandLineStatus{run, help, error} replaces the inline argc guard; adds --help, unknown-flag rejection and getopt state reset.",
+      "why": "A malformed argument previously surfaced only after backend initialisation had already run, and there was no --help at all.",
+      "impact": "Argument errors exit before any backend work; the parser is reusable and independently testable.",
+      "verification": "Source presence + call site at solo.cpp:75–83",
+      "snippet": "// old · solo.cpp:64\nif (argc < 2)\n{\n  cerr << endl << \"Usage: \" << argv[0] << \" <your CBS yaml file>\" << endl;\n  return 1;\n}\n\n// new · solo.cpp:75\nSoloCLI::CommandLineOptions command_line_options;\nconst SoloCLI::CommandLineStatus command_line_status =\n  SoloCLI::parse_command_line(argc, argv, command_line_options);\nif (command_line_status == SoloCLI::CommandLineStatus::help)  return 0;\nif (command_line_status == SoloCLI::CommandLineStatus::error) return 1;"
+    },
+    {
+      "id": 2,
+      "kind": "extracted",
+      "title": "Input contract",
+      "target": "solo_input.cpp / .hpp",
+      "delta": "+514 / −0",
+      "old_site": "solo.cpp:103 — YAML::LoadFile inline in main",
+      "new_site": "solo.cpp:132–133 → SoloInput::parse_and_prepare_input",
+      "what": "YAML parsing normalised into a PreparedInput struct: analyses, settings, event files, named processes and their cross sections.",
+      "why": "The old entrypoint understood a single settings.event_file; the token \"processes\" does not appear anywhere in the SUSYRun2 solo.cpp.",
+      "impact": "Multi-process, multi-file samples become expressible; fb/pb units and absolute vs fractional uncertainties are validated at parse time.",
+      "verification": "Source presence + `grep -c processes` = 0 on SUSYRun2",
+      "snippet": "// new · solo_input contract\nsettings:\n  processes:\n    - name: ttbar\n      cross_section_fb: 831.76\n      cross_section_uncert_fb: 35.1\n      event_file:\n        - run01.hepmc\n        - run02.hepmc"
+    },
+    {
+      "id": 3,
+      "kind": "extracted",
+      "title": "Batch execution",
+      "target": "solo_batch.cpp / .hpp",
+      "delta": "+1256 / −0",
+      "old_site": "no batch branch — one settings.event_file, one pass",
+      "new_site": "solo.cpp:274–285 → run_and_merge + build_sampling_advice",
+      "what": "Each HepMC file runs as a CBS subprocess against a generated per-file YAML; results merge at signal-region level and sampling advice is emitted.",
+      "why": "Production samples arrive split across files and processes; merging them by hand invites statistical error.",
+      "impact": "Same process → event-count weighted; different process → summed in quadrature. The combined likelihood is recomputed, never summed from per-file loglikes.",
+      "verification": "Source presence + call site at solo.cpp:274–285",
+      "snippet": "// new · solo.cpp:274\nSoloBatch::MergedRunResult merged = SoloBatch::run_and_merge(...);\n\nconst std::vector<SoloBatch::AnalysisSamplingAdvice> batch_sampling_advice =\n  SoloBatch::build_sampling_advice(merged, prepared_input, settings);"
+    },
+    {
+      "id": 4,
+      "kind": "extracted",
+      "title": "Output contract",
+      "target": "solo_output.cpp / .hpp",
+      "delta": "+767 / −0",
+      "old_site": "solo.cpp:386–427 — stringstream summary_line + cout",
+      "new_site": "solo.cpp:239–246 config, 332 / 574 → emit_outputs",
+      "what": "OutputConfig + validate_output_config + emit_outputs, writing a schema-versioned JSON document (cbs-solo-loglike-v1) beside the screen summary.",
+      "why": "Results existed only as terminal text and in-process C++ objects; the token \"json\" does not appear in the SUSYRun2 solo.cpp.",
+      "impact": "Cutflows, histograms, SR yields, MC errors, covariance and loglikes become machine-readable and mergeable across runs.",
+      "verification": "Source presence + `grep -ci json` = 0 on SUSYRun2",
+      "snippet": "// new · solo.cpp:239\nSoloOutput::OutputConfig output_config;\nSoloOutput::validate_output_config(output_config);\n...\nSoloOutput::emit_outputs(output_config, ...);   // solo.cpp:332, 574"
+    },
+    {
+      "id": 5,
+      "kind": "in-place",
+      "title": "Likelihood selector",
+      "target": "solo.cpp (in main)",
+      "delta": "in-place",
+      "old_site": "solo.cpp:242+ — calc_LHC_LogLikes_full hard-wired",
+      "new_site": "solo.cpp:151–154, 268–272, 457",
+      "what": "A use_FullLikes setting chooses between calc_LHC_LogLikes and calc_LHC_LogLikes_full, and gates the three FullLikes function pointers.",
+      "why": "On gambit/master this exists only as a commented-out TODO; SUSYRun2 hard-wires the _full path. This branch is the first to implement it.",
+      "impact": "CBS can run without the ATLAS_FullLikes backend installed.",
+      "verification": "master solo.cpp:119–120 is the commented TODO; grep confirms",
+      "snippet": "// gambit/master · solo.cpp:119\n// TODO: Use the use_FullLikes setting to allow CBS runs without\n//       having ATLAS_FullLikes installed\n// bool use_FullLikes = settings.getValueOrDef<bool>(false, \"use_FullLikes\");\n\n// new · solo.cpp:151\nbool use_FullLikes = settings.getValueOrDef<bool>(false, \"use_FullLikes\");\nauto* loglike_functor =\n  use_FullLikes ? &calc_LHC_LogLikes_full : &calc_LHC_LogLikes;"
+    },
+    {
+      "id": 6,
+      "kind": "in-place",
+      "title": "Cutflow / histogram switches",
+      "target": "solo.cpp (in main)",
+      "delta": "in-place",
+      "old_site": "solo.cpp:191 — setOption(\"print_cutflows\", true) hard-coded",
+      "new_site": "solo.cpp:176, 180",
+      "what": "Cutflow::set_check_cutflow and Histogram1D::set_check_histogram become runtime switches driven from the YAML settings block.",
+      "why": "Whether cutflows ran was decided jointly by the CMake CUTFLOW option and a hard-coded true, so users could not tell from the config.",
+      "impact": "The CMake option now only reports capability; the YAML decides behaviour. set_check_cutflow appears in neither master nor SUSYRun2.",
+      "verification": "`grep -c set_check_cutflow` = 0 on master and SUSYRun2, 1 here",
+      "snippet": "// old · solo.cpp:191\nAnalysisNumbers.setOption<bool>(\"print_cutflows\", true);\n\n// new · solo.cpp:176\nColliderBit::Cutflow::set_check_cutflow(check_cutflow);\nColliderBit::Histogram1D::set_check_histogram(check_histogram);"
+    }
+  ],
   "baseline": {
     "label": "SUSYRun2",
     "branch": "private-SUSYRun2",
@@ -1157,7 +1243,7 @@
         "container": "stringstream summary_line",
         "value": "analysis → SR → observed/background/signal/loglike",
         "downstream": "cout + total combined loglike",
-        "source": "solo.cpp:384–431"
+        "source": "solo.cpp:386–427"
       }
     ],
     "dependency_rows": [

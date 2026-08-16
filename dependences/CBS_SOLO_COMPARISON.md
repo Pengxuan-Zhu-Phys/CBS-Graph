@@ -57,7 +57,7 @@ The HTML page contains the full YAML/default table and dependency table. The res
 | `Contur_LHC_measurements_LogLike.reset_and_calculate()` | `double` | total Contur LLR | `solo.cpp:379,414; ColliderBit_measurements.cpp:454` |
 | `Contur_LHC_measurements_LogLike_perPool.reset_and_calculate()` | `map_str_dbl` | pool → LLR | `solo.cpp:380,415; ColliderBit_measurements.cpp:495` |
 | `Contur_LHC_measurements_histotags_perPool.reset_and_calculate()` | `map_str_str` | pool → dominant measurement tag | `solo.cpp:381,416; ColliderBit_measurements.cpp:533` |
-| `inline summary aggregation` | `stringstream summary_line` | analysis → SR → observed/background/signal/loglike | `solo.cpp:384–431` |
+| `inline summary aggregation` | `stringstream summary_line` | analysis → SR → observed/background/signal/loglike | `solo.cpp:386–427` |
 
 ## Functions
 

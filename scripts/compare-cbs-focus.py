@@ -889,7 +889,7 @@ def detailed_logic_data() -> dict[str, Any]:
         {"step": "Contur_LHC_measurements_LogLike.reset_and_calculate()", "container": "double", "value": "total Contur LLR", "downstream": "summary_line when withContur", "source": "solo.cpp:379,414; ColliderBit_measurements.cpp:454"},
         {"step": "Contur_LHC_measurements_LogLike_perPool.reset_and_calculate()", "container": "map_str_dbl", "value": "pool → LLR", "downstream": "pool loop in summary_line", "source": "solo.cpp:380,415; ColliderBit_measurements.cpp:495"},
         {"step": "Contur_LHC_measurements_histotags_perPool.reset_and_calculate()", "container": "map_str_str", "value": "pool → dominant measurement tag", "downstream": "pool_info[pool.first] in summary_line", "source": "solo.cpp:381,416; ColliderBit_measurements.cpp:533"},
-        {"step": "inline summary aggregation", "container": "stringstream summary_line", "value": "analysis → SR → observed/background/signal/loglike", "downstream": "cout + total combined loglike", "source": "solo.cpp:384–431"},
+        {"step": "inline summary aggregation", "container": "stringstream summary_line", "value": "analysis → SR → observed/background/signal/loglike", "downstream": "cout + total combined loglike", "source": "solo.cpp:386–427"},
     ]
     dependency_rows = [
         {"owner": "calc_combined_LHC_LogLike", "links": "calc_LHC_LogLikes_full; operateLHCLoop", "backend": "—", "source": "solo.cpp:280–281"},
@@ -1091,6 +1091,7 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
         "sibling_family": sibling_family_stats(
             baseline_root, comparison_root, focus_file
         ),
+        "change_units": change_units(),
         "baseline": branch_metadata(baseline_root, args.baseline_label),
         "comparison": branch_metadata(comparison_root, args.comparison_label),
         "version_roles": {
@@ -1116,6 +1117,298 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
         "diff": unified_diff(left, right),
         "scope_note": "Focused static source evidence for one file; comparison direction is SUSYRun2 (old) → ColliderBit_solo_development (new). The two flowcharts are grouped source paths, not a runtime trace or a complete C++ AST.",
     }
+
+
+def change_units() -> list[dict[str, Any]]:
+    """The numbered change units carried by the overview tree.
+
+    Each unit is a distinct piece of work with its own evidence.  The tree shows
+    only identity and relationship; everything line-level lives in the detail
+    table keyed by the same number, so the diagram can stay inside a readable
+    node budget instead of trying to carry the YAML and code detail itself.
+
+    ``verification`` records what the evidence actually is.  Nothing here was
+    recompiled or re-run, so no unit may claim a runtime result.
+    """
+    return [
+        {
+            "id": 1,
+            "kind": "extracted",
+            "title": "CLI boundary",
+            "target": "solo_cli.cpp / .hpp",
+            "delta": "+126 / −0",
+            "old_site": "solo.cpp:64–67 — inline argc check, cerr usage, return 1",
+            "new_site": "solo.cpp:75–83 → SoloCLI::parse_command_line",
+            "what": "Three-state CommandLineStatus{run, help, error} replaces the inline "
+                    "argc guard; adds --help, unknown-flag rejection and getopt state reset.",
+            "why": "A malformed argument previously surfaced only after backend "
+                   "initialisation had already run, and there was no --help at all.",
+            "impact": "Argument errors exit before any backend work; the parser is "
+                      "reusable and independently testable.",
+            "verification": "Source presence + call site at solo.cpp:75–83",
+            "snippet": "// old · solo.cpp:64\n"
+                       "if (argc < 2)\n"
+                       "{\n"
+                       "  cerr << endl << \"Usage: \" << argv[0] << \" <your CBS yaml file>\" << endl;\n"
+                       "  return 1;\n"
+                       "}\n\n"
+                       "// new · solo.cpp:75\n"
+                       "SoloCLI::CommandLineOptions command_line_options;\n"
+                       "const SoloCLI::CommandLineStatus command_line_status =\n"
+                       "  SoloCLI::parse_command_line(argc, argv, command_line_options);\n"
+                       "if (command_line_status == SoloCLI::CommandLineStatus::help)  return 0;\n"
+                       "if (command_line_status == SoloCLI::CommandLineStatus::error) return 1;",
+        },
+        {
+            "id": 2,
+            "kind": "extracted",
+            "title": "Input contract",
+            "target": "solo_input.cpp / .hpp",
+            "delta": "+514 / −0",
+            "old_site": "solo.cpp:103 — YAML::LoadFile inline in main",
+            "new_site": "solo.cpp:132–133 → SoloInput::parse_and_prepare_input",
+            "what": "YAML parsing normalised into a PreparedInput struct: analyses, "
+                    "settings, event files, named processes and their cross sections.",
+            "why": "The old entrypoint understood a single settings.event_file; the token "
+                   "\"processes\" does not appear anywhere in the SUSYRun2 solo.cpp.",
+            "impact": "Multi-process, multi-file samples become expressible; fb/pb units "
+                      "and absolute vs fractional uncertainties are validated at parse time.",
+            "verification": "Source presence + `grep -c processes` = 0 on SUSYRun2",
+            "snippet": "// new · solo_input contract\n"
+                       "settings:\n"
+                       "  processes:\n"
+                       "    - name: ttbar\n"
+                       "      cross_section_fb: 831.76\n"
+                       "      cross_section_uncert_fb: 35.1\n"
+                       "      event_file:\n"
+                       "        - run01.hepmc\n"
+                       "        - run02.hepmc",
+        },
+        {
+            "id": 3,
+            "kind": "extracted",
+            "title": "Batch execution",
+            "target": "solo_batch.cpp / .hpp",
+            "delta": "+1256 / −0",
+            "old_site": "no batch branch — one settings.event_file, one pass",
+            "new_site": "solo.cpp:274–285 → run_and_merge + build_sampling_advice",
+            "what": "Each HepMC file runs as a CBS subprocess against a generated per-file "
+                    "YAML; results merge at signal-region level and sampling advice is emitted.",
+            "why": "Production samples arrive split across files and processes; merging them "
+                   "by hand invites statistical error.",
+            "impact": "Same process → event-count weighted; different process → summed in "
+                      "quadrature. The combined likelihood is recomputed, never summed from "
+                      "per-file loglikes.",
+            "verification": "Source presence + call site at solo.cpp:274–285",
+            "snippet": "// new · solo.cpp:274\n"
+                       "SoloBatch::MergedRunResult merged = SoloBatch::run_and_merge(...);\n\n"
+                       "const std::vector<SoloBatch::AnalysisSamplingAdvice> batch_sampling_advice =\n"
+                       "  SoloBatch::build_sampling_advice(merged, prepared_input, settings);",
+        },
+        {
+            "id": 4,
+            "kind": "extracted",
+            "title": "Output contract",
+            "target": "solo_output.cpp / .hpp",
+            "delta": "+767 / −0",
+            "old_site": "solo.cpp:386–427 — stringstream summary_line + cout",
+            "new_site": "solo.cpp:239–246 config, 332 / 574 → emit_outputs",
+            "what": "OutputConfig + validate_output_config + emit_outputs, writing a "
+                    "schema-versioned JSON document (cbs-solo-loglike-v1) beside the screen summary.",
+            "why": "Results existed only as terminal text and in-process C++ objects; the "
+                   "token \"json\" does not appear in the SUSYRun2 solo.cpp.",
+            "impact": "Cutflows, histograms, SR yields, MC errors, covariance and loglikes "
+                      "become machine-readable and mergeable across runs.",
+            "verification": "Source presence + `grep -ci json` = 0 on SUSYRun2",
+            "snippet": "// new · solo.cpp:239\n"
+                       "SoloOutput::OutputConfig output_config;\n"
+                       "SoloOutput::validate_output_config(output_config);\n"
+                       "...\n"
+                       "SoloOutput::emit_outputs(output_config, ...);   // solo.cpp:332, 574",
+        },
+        {
+            "id": 5,
+            "kind": "in-place",
+            "title": "Likelihood selector",
+            "target": "solo.cpp (in main)",
+            "delta": "in-place",
+            "old_site": "solo.cpp:242+ — calc_LHC_LogLikes_full hard-wired",
+            "new_site": "solo.cpp:151–154, 268–272, 457",
+            "what": "A use_FullLikes setting chooses between calc_LHC_LogLikes and "
+                    "calc_LHC_LogLikes_full, and gates the three FullLikes function pointers.",
+            "why": "On gambit/master this exists only as a commented-out TODO; SUSYRun2 "
+                   "hard-wires the _full path. This branch is the first to implement it.",
+            "impact": "CBS can run without the ATLAS_FullLikes backend installed.",
+            "verification": "master solo.cpp:119–120 is the commented TODO; grep confirms",
+            "snippet": "// gambit/master · solo.cpp:119\n"
+                       "// TODO: Use the use_FullLikes setting to allow CBS runs without\n"
+                       "//       having ATLAS_FullLikes installed\n"
+                       "// bool use_FullLikes = settings.getValueOrDef<bool>(false, \"use_FullLikes\");\n\n"
+                       "// new · solo.cpp:151\n"
+                       "bool use_FullLikes = settings.getValueOrDef<bool>(false, \"use_FullLikes\");\n"
+                       "auto* loglike_functor =\n"
+                       "  use_FullLikes ? &calc_LHC_LogLikes_full : &calc_LHC_LogLikes;",
+        },
+        {
+            "id": 6,
+            "kind": "in-place",
+            "title": "Cutflow / histogram switches",
+            "target": "solo.cpp (in main)",
+            "delta": "in-place",
+            "old_site": "solo.cpp:191 — setOption(\"print_cutflows\", true) hard-coded",
+            "new_site": "solo.cpp:176, 180",
+            "what": "Cutflow::set_check_cutflow and Histogram1D::set_check_histogram become "
+                    "runtime switches driven from the YAML settings block.",
+            "why": "Whether cutflows ran was decided jointly by the CMake CUTFLOW option and a "
+                   "hard-coded true, so users could not tell from the config.",
+            "impact": "The CMake option now only reports capability; the YAML decides "
+                      "behaviour. set_check_cutflow appears in neither master nor SUSYRun2.",
+            "verification": "`grep -c set_check_cutflow` = 0 on master and SUSYRun2, 1 here",
+            "snippet": "// old · solo.cpp:191\n"
+                       "AnalysisNumbers.setOption<bool>(\"print_cutflows\", true);\n\n"
+                       "// new · solo.cpp:176\n"
+                       "ColliderBit::Cutflow::set_check_cutflow(check_cutflow);\n"
+                       "ColliderBit::Histogram1D::set_check_histogram(check_histogram);",
+        },
+    ]
+
+
+def overview_tree_svg(units: list[dict[str, Any]]) -> str:
+    """Render the numbered change overview as a tree.
+
+    Node budget is deliberately small: one root, two grouping nodes and the six
+    numbered units — nine nodes and eight edges.  Anything line-level belongs in
+    the keyed detail below, not here.
+    """
+    extracted = [unit for unit in units if unit["kind"] == "extracted"]
+    in_place = [unit for unit in units if unit["kind"] == "in-place"]
+
+    leaf_x, leaf_w, leaf_h, gap = 604, 756, 68, 14
+    parts: list[str] = []
+
+    def leaf_rows(group: list[dict[str, Any]], top: int) -> list[tuple[dict[str, Any], int]]:
+        return [(unit, top + index * (leaf_h + gap)) for index, unit in enumerate(group)]
+
+    extracted_rows = leaf_rows(extracted, 34)
+    in_place_rows = leaf_rows(in_place, 372)
+
+    def group_centre(rows: list[tuple[dict[str, Any], int]]) -> float:
+        return (rows[0][1] + rows[-1][1] + leaf_h) / 2
+
+    groups = [
+        ("EXTRACTED INTO NEW FILES", f"{len(extracted)} units · absent on SUSYRun2",
+         extracted_rows, "add"),
+        ("CHANGED IN PLACE", f"{len(in_place)} units · still inside main()",
+         in_place_rows, "mod"),
+    ]
+
+    root_cy = (group_centre(extracted_rows) + group_centre(in_place_rows)) / 2
+    parts.append(
+        f'<g class="node focal" transform="translate(40 {root_cy - 52:.0f})">'
+        f'<rect width="228" height="104" rx="8"/>'
+        f'<text class="kind" x="18" y="24">FOCUS</text>'
+        f'<text class="title" x="18" y="52">solo.cpp</text>'
+        f'<text class="body" x="18" y="72">CBS entrypoint</text>'
+        f'<text class="tag" x="18" y="92">6 numbered changes</text></g>'
+    )
+
+    for index, (label, sub, rows, css) in enumerate(groups):
+        centre = group_centre(rows)
+        gx, gy = 320, centre - 34
+        parts.append(
+            f'<g class="node stage" transform="translate({gx} {gy:.0f})">'
+            f'<rect width="228" height="68" rx="6"/>'
+            f'<text class="kind" x="16" y="22">GROUP {index + 1}</text>'
+            f'<text class="title" x="16" y="44">{html.escape(label)}</text>'
+            f'<text class="body" x="16" y="60">{html.escape(sub)}</text></g>'
+        )
+        parts.append(
+            f'<path class="edge" d="M 268 {root_cy:.0f} H 294 V {centre:.0f} H 320"/>'
+        )
+        for unit, y in rows:
+            cy = y + leaf_h / 2
+            parts.append(
+                f'<path class="edge" d="M 548 {centre:.0f} H 576 V {cy:.0f} H {leaf_x}"/>'
+            )
+            parts.append(
+                f'<a href="#unit-{unit["id"]}" aria-label="Jump to change {unit["id"]}: '
+                f'{html.escape(unit["title"])}">'
+                f'<g class="node {css}" transform="translate({leaf_x} {y})">'
+                f'<rect width="{leaf_w}" height="{leaf_h}" rx="6"/>'
+                f'<circle cx="30" cy="34" r="15" fill="#fff" stroke="currentColor" '
+                f'stroke-width="1.2" class="unit-badge"/>'
+                f'<text class="unit-number" x="30" y="39" text-anchor="middle">{unit["id"]}</text>'
+                f'<text class="title" x="60" y="30">{html.escape(unit["title"])}</text>'
+                f'<text class="body" x="60" y="50">{html.escape(unit["target"])}</text>'
+                f'<text class="tag" x="{leaf_w - 16}" y="39" text-anchor="end">'
+                f'{html.escape(unit["delta"])}</text></g></a>'
+            )
+
+    height = int(in_place_rows[-1][1] + leaf_h + 96)
+    body = "\n        ".join(parts)
+    return (
+        f'<svg viewBox="0 0 1440 {height}" xmlns="http://www.w3.org/2000/svg" role="img" '
+        f'aria-labelledby="overview-tree-title overview-tree-desc">\n'
+        f'        <title id="overview-tree-title">Numbered overview of the six solo.cpp change units</title>\n'
+        f'        <desc id="overview-tree-desc">A tree grouping six numbered changes into four '
+        f'extracted into new files and two changed in place inside main().</desc>\n'
+        f'        <defs><marker id="focus-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" '
+        f'orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker></defs>\n'
+        f'        <rect width="1440" height="{height}" fill="#f5f5f5"/>\n'
+        f'        {body}\n'
+        f'        <line x1="40" y1="{height - 44}" x2="1400" y2="{height - 44}" '
+        f'stroke="rgba(45,49,66,.12)" stroke-width="1"/>\n'
+        f'        <text class="legend-label" x="40" y="{height - 20}">LEGEND</text>\n'
+        f'        <rect x="128" y="{height - 30}" width="20" height="10" rx="3" fill="#eef8f1" '
+        f'stroke="#4f8a69"/><text class="legend-label" x="158" y="{height - 20}">NEW FILE</text>\n'
+        f'        <rect x="268" y="{height - 30}" width="20" height="10" rx="3" fill="#fff0e8" '
+        f'stroke="#b55c2d"/><text class="legend-label" x="298" y="{height - 20}">IN PLACE</text>\n'
+        f'        <text class="legend-label" x="440" y="{height - 20}">'
+        f'CLICK A NUMBERED NODE TO OPEN ITS DETAIL</text>\n'
+        f'      </svg>'
+    )
+
+
+def change_table_rows(units: list[dict[str, Any]]) -> str:
+    rows = []
+    for unit in units:
+        rows.append(
+            "<tr>"
+            f'<td><a class="unit-link" href="#unit-{unit["id"]}">{unit["id"]}</a></td>'
+            f'<td><code>{html.escape(unit["target"])}</code></td>'
+            f'<td>{html.escape(unit["new_site"])}</td>'
+            f'<td>{html.escape(unit["what"])}</td>'
+            f'<td>{html.escape(unit["why"])}</td>'
+            f'<td>{html.escape(unit["impact"])}</td>'
+            f'<td>{html.escape(unit["verification"])}</td>'
+            "</tr>"
+        )
+    return "\n            ".join(rows)
+
+
+def change_unit_cards(units: list[dict[str, Any]]) -> str:
+    cards = []
+    for unit in units:
+        badge = "NEW FILE" if unit["kind"] == "extracted" else "IN PLACE"
+        cards.append(
+            f'<article class="unit" id="unit-{unit["id"]}">\n'
+            f'          <header class="unit-head">'
+            f'<span class="unit-num">{unit["id"]}</span>'
+            f'<span class="unit-title">{html.escape(unit["title"])}</span>'
+            f'<span class="unit-kind {unit["kind"]}">{badge}</span>'
+            f'<span class="unit-delta">{html.escape(unit["delta"])}</span></header>\n'
+            f'          <dl class="unit-grid">\n'
+            f'            <div><dt>old</dt><dd><code>{html.escape(unit["old_site"])}</code></dd></div>\n'
+            f'            <div><dt>new</dt><dd><code>{html.escape(unit["new_site"])}</code></dd></div>\n'
+            f'            <div><dt>what</dt><dd>{html.escape(unit["what"])}</dd></div>\n'
+            f'            <div><dt>why</dt><dd>{html.escape(unit["why"])}</dd></div>\n'
+            f'            <div><dt>impact</dt><dd>{html.escape(unit["impact"])}</dd></div>\n'
+            f'            <div><dt>evidence</dt><dd>{html.escape(unit["verification"])}</dd></div>\n'
+            f'          </dl>\n'
+            f'          <pre class="unit-code">{html.escape(unit["snippet"])}</pre>\n'
+            f'        </article>'
+        )
+    return "\n        ".join(cards)
 
 
 def family_note(data: dict[str, Any]) -> str:
@@ -1294,6 +1587,35 @@ def page_html(data: dict[str, Any]) -> str:
     svg .node .tag { fill:var(--soft); font:8px var(--font-mono); letter-spacing:.8px; }
     svg .node.mod .kind { fill:#b55c2d; } svg .node.add .kind { fill:var(--green); } svg .node.remove .kind { fill:var(--red); } svg .node.focal .kind { fill:var(--accent); }
     svg .edge-label, svg .legend-label { fill:var(--muted); font:8px var(--font-mono); letter-spacing:.8px; }
+    svg .node.add { color:#4f8a69; } svg .node.mod { color:#b55c2d; }
+    svg .unit-number { fill:var(--ink); font:600 13px var(--font-mono); }
+    svg a { cursor:pointer; }
+    svg a:hover .title { text-decoration:underline; }
+    svg a:focus-visible rect { stroke-width:2.4; outline:none; }
+    .unit-list { display:grid; gap:14px; margin-top:18px; }
+    .unit { border:1px solid var(--rule); border-radius:8px; background:#fff; padding:16px 18px; scroll-margin-top:20px; }
+    .unit:target { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-tint); }
+    .unit-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+    .unit-num { display:grid; place-items:center; width:26px; height:26px; border-radius:50%;
+      border:1.2px solid var(--ink); font:600 13px var(--font-mono); }
+    .unit-title { font-size:16px; font-weight:600; letter-spacing:-.01em; }
+    .unit-kind { padding:2px 7px; border-radius:3px; border:1px solid currentColor;
+      font:8px var(--font-mono); letter-spacing:.9px; text-transform:uppercase; }
+    .unit-kind.extracted { color:#4f8a69; background:var(--green-tint); }
+    .unit-kind.in-place { color:#b55c2d; background:#fff0e8; }
+    .unit-delta { margin-left:auto; font:11px var(--font-mono); color:var(--soft); }
+    .unit-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px 24px; margin:0; }
+    .unit-grid > div { display:flex; gap:10px; border-bottom:1px solid var(--rule); padding-bottom:8px; }
+    .unit-grid dt { flex:0 0 62px; margin:2px 0 0; color:var(--soft);
+      font:9px var(--font-mono); letter-spacing:1px; text-transform:uppercase; }
+    .unit-grid dd { margin:0; color:var(--muted); font-size:12.5px; line-height:1.6; }
+    .unit-grid code { font-size:11.5px; }
+    .unit-code { margin:13px 0 0; padding:13px 15px; border-radius:6px; overflow-x:auto;
+      background:rgba(45,49,66,.04); border:1px solid var(--rule);
+      font:11.5px/1.7 var(--font-mono); color:var(--ink); white-space:pre; }
+    .unit-link { color:var(--accent); font:600 12px var(--font-mono); text-decoration:none; }
+    .unit-link:hover { text-decoration:underline; }
+    @media (max-width:900px) { .unit-grid { grid-template-columns:1fr; } }
     .diagram-note { color:var(--muted); font-size:12px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
     .flow-figure { background:#fff; border:1px solid var(--rule); border-radius:8px; padding:8px; }
     .flow-figure svg { min-width:1080px; }
@@ -1355,46 +1677,31 @@ def page_html(data: dict[str, Any]) -> str:
   <div class="note">__FAMILY_NOTE__</div>
 
   <section>
-    <p class="kicker">01 · focused architecture</p>
-    <h2>One entrypoint, two source surfaces</h2>
-    <p class="source">The branch lanes keep the comparison direction explicit: SUSYRun2 (old) on the left, ColliderBit_solo_development (new) on the right.</p>
+    <p class="kicker">01 · change overview</p>
+    <h2>Six numbered changes</h2>
+    <p class="source">The tree answers which parts changed and how they relate. Every line-level answer lives in the keyed detail below — click a numbered node to jump straight to it.</p>
     <div class="diagram-shell">
-      <svg viewBox="0 0 1440 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="solo-focus-title solo-focus-desc">
-        <title id="solo-focus-title">solo.cpp focused branch comparison</title>
-        <desc id="solo-focus-desc">Focused comparison of the solo.cpp entrypoint, its branch-specific include surface, and the resulting source delta between two CBS branches.</desc>
-        <defs>
-          <marker id="focus-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker>
-          <marker id="focus-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#eb6c36"/></marker>
-        </defs>
-        <rect width="1440" height="560" fill="#f5f5f5"/>
-        <rect class="zone" x="32" y="56" width="648" height="272" rx="8"/>
-        <rect class="zone" x="760" y="56" width="648" height="272" rx="8"/>
-        <rect x="52" y="68" width="220" height="16" rx="2" fill="#f5f5f5"/>
-        <rect x="780" y="68" width="220" height="16" rx="2" fill="#f5f5f5"/>
-        <text class="zone-label" x="56" y="80">OLD · SUSYRUN2</text>
-        <text class="zone-label" x="784" y="80">NEW · COLLIDERBIT SOLO-DEVELOPMENT</text>
-        <path class="edge" d="M 224 188 H 272"/>
-        <path class="edge" d="M 528 188 H 576"/>
-        <path class="edge" d="M 952 188 H 1000"/>
-        <path class="edge" d="M 1256 188 H 1304"/>
-        <path class="edge delta" d="M 440 264 V 364 H 696 Q 704 364 704 372 V 412"/>
-        <path class="edge delta" d="M 1160 264 V 364 H 744 Q 736 364 736 372 V 412"/>
-        <g class="node stage" transform="translate(56 132)"><rect width="168" height="112" rx="6"/><text class="kind" x="12" y="20">BRANCH SNAPSHOT</text><text class="title" x="12" y="48">old</text><text class="body" x="12" y="68">commit __BASE_COMMIT__</text><text class="tag" x="12" y="92">__BASE_LINES__ lines</text></g>
-        <g class="node mod" transform="translate(272 132)"><rect width="256" height="112" rx="6"/><text class="kind" x="12" y="20">FOCUS · OLD</text><text class="title" x="12" y="48">solo.cpp</text><text class="body" x="12" y="68">__OLD_ONLY_INCLUDES__ old-only includes</text><text class="tag" x="12" y="92">__BASE_LINES__ lines · entrypoint</text></g>
-        <g class="node add" transform="translate(576 132)"><rect width="96" height="112" rx="6"/><text class="kind" x="12" y="20">SURFACE</text><text class="title" x="12" y="48">shared API</text><text class="body" x="12" y="68">__SHARED_INCLUDES__</text><text class="tag" x="12" y="92">retained</text></g>
-        <g class="node stage" transform="translate(784 132)"><rect width="168" height="112" rx="6"/><text class="kind" x="12" y="20">BRANCH SNAPSHOT</text><text class="title" x="12" y="48">new</text><text class="body" x="12" y="68">commit __COMPARE_COMMIT__</text><text class="tag" x="12" y="92">__COMPARE_LINES__ lines</text></g>
-        <g class="node focal" transform="translate(1000 132)"><rect width="256" height="112" rx="6"/><text class="kind" x="12" y="20">FOCUS · NEW</text><text class="title" x="12" y="48">solo.cpp</text><text class="body" x="12" y="68">__NEW_HELPERS__ helper includes added</text><text class="tag" x="12" y="92">__COMPARE_LINES__ lines · entrypoint</text></g>
-        <g class="node add" transform="translate(1304 132)"><rect width="96" height="112" rx="6"/><text class="kind" x="12" y="20">SURFACE</text><text class="title" x="12" y="48">helpers</text><text class="body" x="12" y="68">__NEW_HELPERS__</text><text class="tag" x="12" y="92">added</text></g>
-        <g class="node focal" transform="translate(360 412)"><rect width="720" height="96" rx="8"/><text class="kind" x="24" y="28">FILE DELTA · FUNCTION-AWARE</text><text class="title" x="24" y="56" id="delta-title">__ADDED_LINES__ additions · __REMOVED_LINES__ deletions</text><text class="body" x="24" y="78" id="delta-body">__CHANGED_FUNCTIONS__ of __FUNCTIONS__ detected functions changed · __CHANGED_RELATIONS__ direct relations changed</text></g>
-        <line x1="40" y1="520" x2="1400" y2="520" stroke="rgba(45,49,66,.12)" stroke-width="1"/>
-        <text class="legend-label" x="40" y="544">LEGEND</text>
-        <rect x="128" y="534" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="158" y="544">MODIFIED</text>
-        <rect x="260" y="534" width="20" height="10" rx="3" fill="#eef8f1" stroke="#4f8a69"/><text class="legend-label" x="290" y="544">NEW SURFACE</text>
-        <rect x="450" y="534" width="20" height="10" rx="3" fill="#f3e9e5" stroke="#93513f" stroke-dasharray="5 4"/><text class="legend-label" x="480" y="544">OLD-ONLY SURFACE</text>
-        <text class="legend-label" x="760" y="544">SOLID = SOURCE SURFACE</text><text class="legend-label" x="1020" y="544">DASHED = CHANGE EVIDENCE</text>
-      </svg>
+      __OVERVIEW_TREE__
     </div>
-    <p class="diagram-note">The diagram deliberately stops at the direct source surface. Function-level and exact line-level evidence are below, so the overview remains readable when the focused file is large.</p>
+    <p class="diagram-note">Nine nodes, eight edges. The overview deliberately carries identity and relationship only: four responsibilities left <code>main()</code> for files that do not exist on SUSYRun2 at all, and two were made runtime-configurable in place. Section 02 expands each number into its exact sites, reason, impact and evidence.</p>
+  </section>
+
+  <section>
+    <p class="kicker">02 · keyed detail</p>
+    <h2>What each number means</h2>
+    <p class="source">One row per numbered change. The evidence column records what actually backs the claim — nothing on this page was recompiled or re-run.</p>
+    <div class="mapping-table">
+      <table>
+        <thead><tr><th>#</th><th>File</th><th>Site</th><th>Change</th><th>Reason</th><th>Impact</th><th>Evidence</th></tr></thead>
+        <tbody>
+            __CHANGE_TABLE_ROWS__
+        </tbody>
+      </table>
+    </div>
+    <div class="unit-list">
+        __CHANGE_UNIT_CARDS__
+    </div>
+    <p class="diagram-note"><strong>Evidence boundary.</strong> Every row above is backed by source presence and a call site, or by a <code>grep</code> over the two branches. None of it is a runtime result: no CBS build was produced and no events were processed for this page. Physics validation is a separate exercise and is not claimed here.</p>
   </section>
 
   <section>
@@ -1495,6 +1802,9 @@ def page_html(data: dict[str, Any]) -> str:
         "__ADDED_LINES__": str(focus["added_lines"]),
         "__REMOVED_LINES__": str(focus["removed_lines"]),
         "__FAMILY_NOTE__": family_note(data),
+        "__OVERVIEW_TREE__": overview_tree_svg(data["change_units"]),
+        "__CHANGE_TABLE_ROWS__": change_table_rows(data["change_units"]),
+        "__CHANGE_UNIT_CARDS__": change_unit_cards(data["change_units"]),
         "__FUNCTIONS__": str(summary["functions"]),
         "__CHANGED_FUNCTIONS__": str(summary["changed_functions"]),
         "__CHANGED_RELATIONS__": str(summary["changed_relations"]),

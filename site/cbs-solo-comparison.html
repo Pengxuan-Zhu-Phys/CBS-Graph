@@ -46,6 +46,35 @@
     svg .node .tag { fill:var(--soft); font:8px var(--font-mono); letter-spacing:.8px; }
     svg .node.mod .kind { fill:#b55c2d; } svg .node.add .kind { fill:var(--green); } svg .node.remove .kind { fill:var(--red); } svg .node.focal .kind { fill:var(--accent); }
     svg .edge-label, svg .legend-label { fill:var(--muted); font:8px var(--font-mono); letter-spacing:.8px; }
+    svg .node.add { color:#4f8a69; } svg .node.mod { color:#b55c2d; }
+    svg .unit-number { fill:var(--ink); font:600 13px var(--font-mono); }
+    svg a { cursor:pointer; }
+    svg a:hover .title { text-decoration:underline; }
+    svg a:focus-visible rect { stroke-width:2.4; outline:none; }
+    .unit-list { display:grid; gap:14px; margin-top:18px; }
+    .unit { border:1px solid var(--rule); border-radius:8px; background:#fff; padding:16px 18px; scroll-margin-top:20px; }
+    .unit:target { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-tint); }
+    .unit-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+    .unit-num { display:grid; place-items:center; width:26px; height:26px; border-radius:50%;
+      border:1.2px solid var(--ink); font:600 13px var(--font-mono); }
+    .unit-title { font-size:16px; font-weight:600; letter-spacing:-.01em; }
+    .unit-kind { padding:2px 7px; border-radius:3px; border:1px solid currentColor;
+      font:8px var(--font-mono); letter-spacing:.9px; text-transform:uppercase; }
+    .unit-kind.extracted { color:#4f8a69; background:var(--green-tint); }
+    .unit-kind.in-place { color:#b55c2d; background:#fff0e8; }
+    .unit-delta { margin-left:auto; font:11px var(--font-mono); color:var(--soft); }
+    .unit-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px 24px; margin:0; }
+    .unit-grid > div { display:flex; gap:10px; border-bottom:1px solid var(--rule); padding-bottom:8px; }
+    .unit-grid dt { flex:0 0 62px; margin:2px 0 0; color:var(--soft);
+      font:9px var(--font-mono); letter-spacing:1px; text-transform:uppercase; }
+    .unit-grid dd { margin:0; color:var(--muted); font-size:12.5px; line-height:1.6; }
+    .unit-grid code { font-size:11.5px; }
+    .unit-code { margin:13px 0 0; padding:13px 15px; border-radius:6px; overflow-x:auto;
+      background:rgba(45,49,66,.04); border:1px solid var(--rule);
+      font:11.5px/1.7 var(--font-mono); color:var(--ink); white-space:pre; }
+    .unit-link { color:var(--accent); font:600 12px var(--font-mono); text-decoration:none; }
+    .unit-link:hover { text-decoration:underline; }
+    @media (max-width:900px) { .unit-grid { grid-template-columns:1fr; } }
     .diagram-note { color:var(--muted); font-size:12px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
     .flow-figure { background:#fff; border:1px solid var(--rule); border-radius:8px; padding:8px; }
     .flow-figure svg { min-width:1080px; }
@@ -107,46 +136,175 @@
   <div class="note"><strong>Read the headline together with the module total.</strong> A file-scoped diff cannot show an extraction refactor: logic that left <code>ColliderBit/examples/solo.cpp</code> landed in <code>solo_batch.cpp</code>, <code>solo_batch.hpp</code>, <code>solo_cli.cpp</code>, <code>solo_cli.hpp</code>, <code>solo_input.cpp</code>, <code>solo_input.hpp</code>, <code>solo_output.cpp</code> and <code>solo_output.hpp</code>, which do not exist on the old branch at all and are therefore invisible to the counts above. Across the whole <code>ColliderBit/examples/solo*</code> family the change is <strong>+2978 / −153</strong> over 10 files, 8 of them new. The entrypoint did not shrink — the module around it grew.</div>
 
   <section>
-    <p class="kicker">01 · focused architecture</p>
-    <h2>One entrypoint, two source surfaces</h2>
-    <p class="source">The branch lanes keep the comparison direction explicit: SUSYRun2 (old) on the left, ColliderBit_solo_development (new) on the right.</p>
+    <p class="kicker">01 · change overview</p>
+    <h2>Six numbered changes</h2>
+    <p class="source">The tree answers which parts changed and how they relate. Every line-level answer lives in the keyed detail below — click a numbered node to jump straight to it.</p>
     <div class="diagram-shell">
-      <svg viewBox="0 0 1440 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="solo-focus-title solo-focus-desc">
-        <title id="solo-focus-title">solo.cpp focused branch comparison</title>
-        <desc id="solo-focus-desc">Focused comparison of the solo.cpp entrypoint, its branch-specific include surface, and the resulting source delta between two CBS branches.</desc>
-        <defs>
-          <marker id="focus-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker>
-          <marker id="focus-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#eb6c36"/></marker>
-        </defs>
-        <rect width="1440" height="560" fill="#f5f5f5"/>
-        <rect class="zone" x="32" y="56" width="648" height="272" rx="8"/>
-        <rect class="zone" x="760" y="56" width="648" height="272" rx="8"/>
-        <rect x="52" y="68" width="220" height="16" rx="2" fill="#f5f5f5"/>
-        <rect x="780" y="68" width="220" height="16" rx="2" fill="#f5f5f5"/>
-        <text class="zone-label" x="56" y="80">OLD · SUSYRUN2</text>
-        <text class="zone-label" x="784" y="80">NEW · COLLIDERBIT SOLO-DEVELOPMENT</text>
-        <path class="edge" d="M 224 188 H 272"/>
-        <path class="edge" d="M 528 188 H 576"/>
-        <path class="edge" d="M 952 188 H 1000"/>
-        <path class="edge" d="M 1256 188 H 1304"/>
-        <path class="edge delta" d="M 440 264 V 364 H 696 Q 704 364 704 372 V 412"/>
-        <path class="edge delta" d="M 1160 264 V 364 H 744 Q 736 364 736 372 V 412"/>
-        <g class="node stage" transform="translate(56 132)"><rect width="168" height="112" rx="6"/><text class="kind" x="12" y="20">BRANCH SNAPSHOT</text><text class="title" x="12" y="48">old</text><text class="body" x="12" y="68">commit 5989e2d27a</text><text class="tag" x="12" y="92">446 lines</text></g>
-        <g class="node mod" transform="translate(272 132)"><rect width="256" height="112" rx="6"/><text class="kind" x="12" y="20">FOCUS · OLD</text><text class="title" x="12" y="48">solo.cpp</text><text class="body" x="12" y="68">0 old-only includes</text><text class="tag" x="12" y="92">446 lines · entrypoint</text></g>
-        <g class="node add" transform="translate(576 132)"><rect width="96" height="112" rx="6"/><text class="kind" x="12" y="20">SURFACE</text><text class="title" x="12" y="48">shared API</text><text class="body" x="12" y="68">4</text><text class="tag" x="12" y="92">retained</text></g>
-        <g class="node stage" transform="translate(784 132)"><rect width="168" height="112" rx="6"/><text class="kind" x="12" y="20">BRANCH SNAPSHOT</text><text class="title" x="12" y="48">new</text><text class="body" x="12" y="68">commit 65aca0890d</text><text class="tag" x="12" y="92">598 lines</text></g>
-        <g class="node focal" transform="translate(1000 132)"><rect width="256" height="112" rx="6"/><text class="kind" x="12" y="20">FOCUS · NEW</text><text class="title" x="12" y="48">solo.cpp</text><text class="body" x="12" y="68">4 helper includes added</text><text class="tag" x="12" y="92">598 lines · entrypoint</text></g>
-        <g class="node add" transform="translate(1304 132)"><rect width="96" height="112" rx="6"/><text class="kind" x="12" y="20">SURFACE</text><text class="title" x="12" y="48">helpers</text><text class="body" x="12" y="68">4</text><text class="tag" x="12" y="92">added</text></g>
-        <g class="node focal" transform="translate(360 412)"><rect width="720" height="96" rx="8"/><text class="kind" x="24" y="28">FILE DELTA · FUNCTION-AWARE</text><text class="title" x="24" y="56" id="delta-title">291 additions · 139 deletions</text><text class="body" x="24" y="78" id="delta-body">1 of 2 detected functions changed · 10 direct relations changed</text></g>
-        <line x1="40" y1="520" x2="1400" y2="520" stroke="rgba(45,49,66,.12)" stroke-width="1"/>
-        <text class="legend-label" x="40" y="544">LEGEND</text>
-        <rect x="128" y="534" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="158" y="544">MODIFIED</text>
-        <rect x="260" y="534" width="20" height="10" rx="3" fill="#eef8f1" stroke="#4f8a69"/><text class="legend-label" x="290" y="544">NEW SURFACE</text>
-        <rect x="450" y="534" width="20" height="10" rx="3" fill="#f3e9e5" stroke="#93513f" stroke-dasharray="5 4"/><text class="legend-label" x="480" y="544">OLD-ONLY SURFACE</text>
-        <text class="legend-label" x="760" y="544">SOLID = SOURCE SURFACE</text><text class="legend-label" x="1020" y="544">DASHED = CHANGE EVIDENCE</text>
+      <svg viewBox="0 0 1440 618" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="overview-tree-title overview-tree-desc">
+        <title id="overview-tree-title">Numbered overview of the six solo.cpp change units</title>
+        <desc id="overview-tree-desc">A tree grouping six numbered changes into four extracted into new files and two changed in place inside main().</desc>
+        <defs><marker id="focus-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker></defs>
+        <rect width="1440" height="618" fill="#f5f5f5"/>
+        <g class="node focal" transform="translate(40 267)"><rect width="228" height="104" rx="8"/><text class="kind" x="18" y="24">FOCUS</text><text class="title" x="18" y="52">solo.cpp</text><text class="body" x="18" y="72">CBS entrypoint</text><text class="tag" x="18" y="92">6 numbered changes</text></g>
+        <g class="node stage" transform="translate(320 157)"><rect width="228" height="68" rx="6"/><text class="kind" x="16" y="22">GROUP 1</text><text class="title" x="16" y="44">EXTRACTED INTO NEW FILES</text><text class="body" x="16" y="60">4 units · absent on SUSYRun2</text></g>
+        <path class="edge" d="M 268 319 H 294 V 191 H 320"/>
+        <path class="edge" d="M 548 191 H 576 V 68 H 604"/>
+        <a href="#unit-1" aria-label="Jump to change 1: CLI boundary"><g class="node add" transform="translate(604 34)"><rect width="756" height="68" rx="6"/><circle cx="30" cy="34" r="15" fill="#fff" stroke="currentColor" stroke-width="1.2" class="unit-badge"/><text class="unit-number" x="30" y="39" text-anchor="middle">1</text><text class="title" x="60" y="30">CLI boundary</text><text class="body" x="60" y="50">solo_cli.cpp / .hpp</text><text class="tag" x="740" y="39" text-anchor="end">+126 / −0</text></g></a>
+        <path class="edge" d="M 548 191 H 576 V 150 H 604"/>
+        <a href="#unit-2" aria-label="Jump to change 2: Input contract"><g class="node add" transform="translate(604 116)"><rect width="756" height="68" rx="6"/><circle cx="30" cy="34" r="15" fill="#fff" stroke="currentColor" stroke-width="1.2" class="unit-badge"/><text class="unit-number" x="30" y="39" text-anchor="middle">2</text><text class="title" x="60" y="30">Input contract</text><text class="body" x="60" y="50">solo_input.cpp / .hpp</text><text class="tag" x="740" y="39" text-anchor="end">+514 / −0</text></g></a>
+        <path class="edge" d="M 548 191 H 576 V 232 H 604"/>
+        <a href="#unit-3" aria-label="Jump to change 3: Batch execution"><g class="node add" transform="translate(604 198)"><rect width="756" height="68" rx="6"/><circle cx="30" cy="34" r="15" fill="#fff" stroke="currentColor" stroke-width="1.2" class="unit-badge"/><text class="unit-number" x="30" y="39" text-anchor="middle">3</text><text class="title" x="60" y="30">Batch execution</text><text class="body" x="60" y="50">solo_batch.cpp / .hpp</text><text class="tag" x="740" y="39" text-anchor="end">+1256 / −0</text></g></a>
+        <path class="edge" d="M 548 191 H 576 V 314 H 604"/>
+        <a href="#unit-4" aria-label="Jump to change 4: Output contract"><g class="node add" transform="translate(604 280)"><rect width="756" height="68" rx="6"/><circle cx="30" cy="34" r="15" fill="#fff" stroke="currentColor" stroke-width="1.2" class="unit-badge"/><text class="unit-number" x="30" y="39" text-anchor="middle">4</text><text class="title" x="60" y="30">Output contract</text><text class="body" x="60" y="50">solo_output.cpp / .hpp</text><text class="tag" x="740" y="39" text-anchor="end">+767 / −0</text></g></a>
+        <g class="node stage" transform="translate(320 413)"><rect width="228" height="68" rx="6"/><text class="kind" x="16" y="22">GROUP 2</text><text class="title" x="16" y="44">CHANGED IN PLACE</text><text class="body" x="16" y="60">2 units · still inside main()</text></g>
+        <path class="edge" d="M 268 319 H 294 V 447 H 320"/>
+        <path class="edge" d="M 548 447 H 576 V 406 H 604"/>
+        <a href="#unit-5" aria-label="Jump to change 5: Likelihood selector"><g class="node mod" transform="translate(604 372)"><rect width="756" height="68" rx="6"/><circle cx="30" cy="34" r="15" fill="#fff" stroke="currentColor" stroke-width="1.2" class="unit-badge"/><text class="unit-number" x="30" y="39" text-anchor="middle">5</text><text class="title" x="60" y="30">Likelihood selector</text><text class="body" x="60" y="50">solo.cpp (in main)</text><text class="tag" x="740" y="39" text-anchor="end">in-place</text></g></a>
+        <path class="edge" d="M 548 447 H 576 V 488 H 604"/>
+        <a href="#unit-6" aria-label="Jump to change 6: Cutflow / histogram switches"><g class="node mod" transform="translate(604 454)"><rect width="756" height="68" rx="6"/><circle cx="30" cy="34" r="15" fill="#fff" stroke="currentColor" stroke-width="1.2" class="unit-badge"/><text class="unit-number" x="30" y="39" text-anchor="middle">6</text><text class="title" x="60" y="30">Cutflow / histogram switches</text><text class="body" x="60" y="50">solo.cpp (in main)</text><text class="tag" x="740" y="39" text-anchor="end">in-place</text></g></a>
+        <line x1="40" y1="574" x2="1400" y2="574" stroke="rgba(45,49,66,.12)" stroke-width="1"/>
+        <text class="legend-label" x="40" y="598">LEGEND</text>
+        <rect x="128" y="588" width="20" height="10" rx="3" fill="#eef8f1" stroke="#4f8a69"/><text class="legend-label" x="158" y="598">NEW FILE</text>
+        <rect x="268" y="588" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="298" y="598">IN PLACE</text>
+        <text class="legend-label" x="440" y="598">CLICK A NUMBERED NODE TO OPEN ITS DETAIL</text>
       </svg>
     </div>
-    <p class="diagram-note">The diagram deliberately stops at the direct source surface. Function-level and exact line-level evidence are below, so the overview remains readable when the focused file is large.</p>
+    <p class="diagram-note">Nine nodes, eight edges. The overview deliberately carries identity and relationship only: four responsibilities left <code>main()</code> for files that do not exist on SUSYRun2 at all, and two were made runtime-configurable in place. Section 02 expands each number into its exact sites, reason, impact and evidence.</p>
+  </section>
+
+  <section>
+    <p class="kicker">02 · keyed detail</p>
+    <h2>What each number means</h2>
+    <p class="source">One row per numbered change. The evidence column records what actually backs the claim — nothing on this page was recompiled or re-run.</p>
+    <div class="mapping-table">
+      <table>
+        <thead><tr><th>#</th><th>File</th><th>Site</th><th>Change</th><th>Reason</th><th>Impact</th><th>Evidence</th></tr></thead>
+        <tbody>
+            <tr><td><a class="unit-link" href="#unit-1">1</a></td><td><code>solo_cli.cpp / .hpp</code></td><td>solo.cpp:75–83 → SoloCLI::parse_command_line</td><td>Three-state CommandLineStatus{run, help, error} replaces the inline argc guard; adds --help, unknown-flag rejection and getopt state reset.</td><td>A malformed argument previously surfaced only after backend initialisation had already run, and there was no --help at all.</td><td>Argument errors exit before any backend work; the parser is reusable and independently testable.</td><td>Source presence + call site at solo.cpp:75–83</td></tr>
+            <tr><td><a class="unit-link" href="#unit-2">2</a></td><td><code>solo_input.cpp / .hpp</code></td><td>solo.cpp:132–133 → SoloInput::parse_and_prepare_input</td><td>YAML parsing normalised into a PreparedInput struct: analyses, settings, event files, named processes and their cross sections.</td><td>The old entrypoint understood a single settings.event_file; the token &quot;processes&quot; does not appear anywhere in the SUSYRun2 solo.cpp.</td><td>Multi-process, multi-file samples become expressible; fb/pb units and absolute vs fractional uncertainties are validated at parse time.</td><td>Source presence + `grep -c processes` = 0 on SUSYRun2</td></tr>
+            <tr><td><a class="unit-link" href="#unit-3">3</a></td><td><code>solo_batch.cpp / .hpp</code></td><td>solo.cpp:274–285 → run_and_merge + build_sampling_advice</td><td>Each HepMC file runs as a CBS subprocess against a generated per-file YAML; results merge at signal-region level and sampling advice is emitted.</td><td>Production samples arrive split across files and processes; merging them by hand invites statistical error.</td><td>Same process → event-count weighted; different process → summed in quadrature. The combined likelihood is recomputed, never summed from per-file loglikes.</td><td>Source presence + call site at solo.cpp:274–285</td></tr>
+            <tr><td><a class="unit-link" href="#unit-4">4</a></td><td><code>solo_output.cpp / .hpp</code></td><td>solo.cpp:239–246 config, 332 / 574 → emit_outputs</td><td>OutputConfig + validate_output_config + emit_outputs, writing a schema-versioned JSON document (cbs-solo-loglike-v1) beside the screen summary.</td><td>Results existed only as terminal text and in-process C++ objects; the token &quot;json&quot; does not appear in the SUSYRun2 solo.cpp.</td><td>Cutflows, histograms, SR yields, MC errors, covariance and loglikes become machine-readable and mergeable across runs.</td><td>Source presence + `grep -ci json` = 0 on SUSYRun2</td></tr>
+            <tr><td><a class="unit-link" href="#unit-5">5</a></td><td><code>solo.cpp (in main)</code></td><td>solo.cpp:151–154, 268–272, 457</td><td>A use_FullLikes setting chooses between calc_LHC_LogLikes and calc_LHC_LogLikes_full, and gates the three FullLikes function pointers.</td><td>On gambit/master this exists only as a commented-out TODO; SUSYRun2 hard-wires the _full path. This branch is the first to implement it.</td><td>CBS can run without the ATLAS_FullLikes backend installed.</td><td>master solo.cpp:119–120 is the commented TODO; grep confirms</td></tr>
+            <tr><td><a class="unit-link" href="#unit-6">6</a></td><td><code>solo.cpp (in main)</code></td><td>solo.cpp:176, 180</td><td>Cutflow::set_check_cutflow and Histogram1D::set_check_histogram become runtime switches driven from the YAML settings block.</td><td>Whether cutflows ran was decided jointly by the CMake CUTFLOW option and a hard-coded true, so users could not tell from the config.</td><td>The CMake option now only reports capability; the YAML decides behaviour. set_check_cutflow appears in neither master nor SUSYRun2.</td><td>`grep -c set_check_cutflow` = 0 on master and SUSYRun2, 1 here</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="unit-list">
+        <article class="unit" id="unit-1">
+          <header class="unit-head"><span class="unit-num">1</span><span class="unit-title">CLI boundary</span><span class="unit-kind extracted">NEW FILE</span><span class="unit-delta">+126 / −0</span></header>
+          <dl class="unit-grid">
+            <div><dt>old</dt><dd><code>solo.cpp:64–67 — inline argc check, cerr usage, return 1</code></dd></div>
+            <div><dt>new</dt><dd><code>solo.cpp:75–83 → SoloCLI::parse_command_line</code></dd></div>
+            <div><dt>what</dt><dd>Three-state CommandLineStatus{run, help, error} replaces the inline argc guard; adds --help, unknown-flag rejection and getopt state reset.</dd></div>
+            <div><dt>why</dt><dd>A malformed argument previously surfaced only after backend initialisation had already run, and there was no --help at all.</dd></div>
+            <div><dt>impact</dt><dd>Argument errors exit before any backend work; the parser is reusable and independently testable.</dd></div>
+            <div><dt>evidence</dt><dd>Source presence + call site at solo.cpp:75–83</dd></div>
+          </dl>
+          <pre class="unit-code">// old · solo.cpp:64
+if (argc &lt; 2)
+{
+  cerr &lt;&lt; endl &lt;&lt; &quot;Usage: &quot; &lt;&lt; argv[0] &lt;&lt; &quot; &lt;your CBS yaml file&gt;&quot; &lt;&lt; endl;
+  return 1;
+}
+
+// new · solo.cpp:75
+SoloCLI::CommandLineOptions command_line_options;
+const SoloCLI::CommandLineStatus command_line_status =
+  SoloCLI::parse_command_line(argc, argv, command_line_options);
+if (command_line_status == SoloCLI::CommandLineStatus::help)  return 0;
+if (command_line_status == SoloCLI::CommandLineStatus::error) return 1;</pre>
+        </article>
+        <article class="unit" id="unit-2">
+          <header class="unit-head"><span class="unit-num">2</span><span class="unit-title">Input contract</span><span class="unit-kind extracted">NEW FILE</span><span class="unit-delta">+514 / −0</span></header>
+          <dl class="unit-grid">
+            <div><dt>old</dt><dd><code>solo.cpp:103 — YAML::LoadFile inline in main</code></dd></div>
+            <div><dt>new</dt><dd><code>solo.cpp:132–133 → SoloInput::parse_and_prepare_input</code></dd></div>
+            <div><dt>what</dt><dd>YAML parsing normalised into a PreparedInput struct: analyses, settings, event files, named processes and their cross sections.</dd></div>
+            <div><dt>why</dt><dd>The old entrypoint understood a single settings.event_file; the token &quot;processes&quot; does not appear anywhere in the SUSYRun2 solo.cpp.</dd></div>
+            <div><dt>impact</dt><dd>Multi-process, multi-file samples become expressible; fb/pb units and absolute vs fractional uncertainties are validated at parse time.</dd></div>
+            <div><dt>evidence</dt><dd>Source presence + `grep -c processes` = 0 on SUSYRun2</dd></div>
+          </dl>
+          <pre class="unit-code">// new · solo_input contract
+settings:
+  processes:
+    - name: ttbar
+      cross_section_fb: 831.76
+      cross_section_uncert_fb: 35.1
+      event_file:
+        - run01.hepmc
+        - run02.hepmc</pre>
+        </article>
+        <article class="unit" id="unit-3">
+          <header class="unit-head"><span class="unit-num">3</span><span class="unit-title">Batch execution</span><span class="unit-kind extracted">NEW FILE</span><span class="unit-delta">+1256 / −0</span></header>
+          <dl class="unit-grid">
+            <div><dt>old</dt><dd><code>no batch branch — one settings.event_file, one pass</code></dd></div>
+            <div><dt>new</dt><dd><code>solo.cpp:274–285 → run_and_merge + build_sampling_advice</code></dd></div>
+            <div><dt>what</dt><dd>Each HepMC file runs as a CBS subprocess against a generated per-file YAML; results merge at signal-region level and sampling advice is emitted.</dd></div>
+            <div><dt>why</dt><dd>Production samples arrive split across files and processes; merging them by hand invites statistical error.</dd></div>
+            <div><dt>impact</dt><dd>Same process → event-count weighted; different process → summed in quadrature. The combined likelihood is recomputed, never summed from per-file loglikes.</dd></div>
+            <div><dt>evidence</dt><dd>Source presence + call site at solo.cpp:274–285</dd></div>
+          </dl>
+          <pre class="unit-code">// new · solo.cpp:274
+SoloBatch::MergedRunResult merged = SoloBatch::run_and_merge(...);
+
+const std::vector&lt;SoloBatch::AnalysisSamplingAdvice&gt; batch_sampling_advice =
+  SoloBatch::build_sampling_advice(merged, prepared_input, settings);</pre>
+        </article>
+        <article class="unit" id="unit-4">
+          <header class="unit-head"><span class="unit-num">4</span><span class="unit-title">Output contract</span><span class="unit-kind extracted">NEW FILE</span><span class="unit-delta">+767 / −0</span></header>
+          <dl class="unit-grid">
+            <div><dt>old</dt><dd><code>solo.cpp:386–427 — stringstream summary_line + cout</code></dd></div>
+            <div><dt>new</dt><dd><code>solo.cpp:239–246 config, 332 / 574 → emit_outputs</code></dd></div>
+            <div><dt>what</dt><dd>OutputConfig + validate_output_config + emit_outputs, writing a schema-versioned JSON document (cbs-solo-loglike-v1) beside the screen summary.</dd></div>
+            <div><dt>why</dt><dd>Results existed only as terminal text and in-process C++ objects; the token &quot;json&quot; does not appear in the SUSYRun2 solo.cpp.</dd></div>
+            <div><dt>impact</dt><dd>Cutflows, histograms, SR yields, MC errors, covariance and loglikes become machine-readable and mergeable across runs.</dd></div>
+            <div><dt>evidence</dt><dd>Source presence + `grep -ci json` = 0 on SUSYRun2</dd></div>
+          </dl>
+          <pre class="unit-code">// new · solo.cpp:239
+SoloOutput::OutputConfig output_config;
+SoloOutput::validate_output_config(output_config);
+...
+SoloOutput::emit_outputs(output_config, ...);   // solo.cpp:332, 574</pre>
+        </article>
+        <article class="unit" id="unit-5">
+          <header class="unit-head"><span class="unit-num">5</span><span class="unit-title">Likelihood selector</span><span class="unit-kind in-place">IN PLACE</span><span class="unit-delta">in-place</span></header>
+          <dl class="unit-grid">
+            <div><dt>old</dt><dd><code>solo.cpp:242+ — calc_LHC_LogLikes_full hard-wired</code></dd></div>
+            <div><dt>new</dt><dd><code>solo.cpp:151–154, 268–272, 457</code></dd></div>
+            <div><dt>what</dt><dd>A use_FullLikes setting chooses between calc_LHC_LogLikes and calc_LHC_LogLikes_full, and gates the three FullLikes function pointers.</dd></div>
+            <div><dt>why</dt><dd>On gambit/master this exists only as a commented-out TODO; SUSYRun2 hard-wires the _full path. This branch is the first to implement it.</dd></div>
+            <div><dt>impact</dt><dd>CBS can run without the ATLAS_FullLikes backend installed.</dd></div>
+            <div><dt>evidence</dt><dd>master solo.cpp:119–120 is the commented TODO; grep confirms</dd></div>
+          </dl>
+          <pre class="unit-code">// gambit/master · solo.cpp:119
+// TODO: Use the use_FullLikes setting to allow CBS runs without
+//       having ATLAS_FullLikes installed
+// bool use_FullLikes = settings.getValueOrDef&lt;bool&gt;(false, &quot;use_FullLikes&quot;);
+
+// new · solo.cpp:151
+bool use_FullLikes = settings.getValueOrDef&lt;bool&gt;(false, &quot;use_FullLikes&quot;);
+auto* loglike_functor =
+  use_FullLikes ? &amp;calc_LHC_LogLikes_full : &amp;calc_LHC_LogLikes;</pre>
+        </article>
+        <article class="unit" id="unit-6">
+          <header class="unit-head"><span class="unit-num">6</span><span class="unit-title">Cutflow / histogram switches</span><span class="unit-kind in-place">IN PLACE</span><span class="unit-delta">in-place</span></header>
+          <dl class="unit-grid">
+            <div><dt>old</dt><dd><code>solo.cpp:191 — setOption(&quot;print_cutflows&quot;, true) hard-coded</code></dd></div>
+            <div><dt>new</dt><dd><code>solo.cpp:176, 180</code></dd></div>
+            <div><dt>what</dt><dd>Cutflow::set_check_cutflow and Histogram1D::set_check_histogram become runtime switches driven from the YAML settings block.</dd></div>
+            <div><dt>why</dt><dd>Whether cutflows ran was decided jointly by the CMake CUTFLOW option and a hard-coded true, so users could not tell from the config.</dd></div>
+            <div><dt>impact</dt><dd>The CMake option now only reports capability; the YAML decides behaviour. set_check_cutflow appears in neither master nor SUSYRun2.</dd></div>
+            <div><dt>evidence</dt><dd>`grep -c set_check_cutflow` = 0 on master and SUSYRun2, 1 here</dd></div>
+          </dl>
+          <pre class="unit-code">// old · solo.cpp:191
+AnalysisNumbers.setOption&lt;bool&gt;(&quot;print_cutflows&quot;, true);
+
+// new · solo.cpp:176
+ColliderBit::Cutflow::set_check_cutflow(check_cutflow);
+ColliderBit::Histogram1D::set_check_histogram(check_histogram);</pre>
+        </article>
+    </div>
+    <p class="diagram-note"><strong>Evidence boundary.</strong> Every row above is backed by source presence and a call site, or by a <code>grep</code> over the two branches. None of it is a runtime result: no CBS build was produced and no events were processed for this page. Physics validation is a separate exercise and is not claimed here.</p>
   </section>
 
   <section>
@@ -188,7 +346,7 @@
     <h2>What reset_and_calculate() produces</h2>
     <p class="source">The order below is the explicit order in SUSYRun2 (OLD) <code>solo.cpp</code>. It distinguishes the functor/container name from the data structure later consumed by the inline summary.</p>
     <div class="detail-figure"><div class="diagram-shell"><svg viewBox="0 0 1240 1260" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="solo-runtime-detail-title solo-runtime-detail-desc"><title id="solo-runtime-detail-title">SUSYRun2 reset and calculate container chain</title><desc id="solo-runtime-detail-desc">Detailed SUSYRun2 dependency and reset_and_calculate order showing the containers consumed by the standalone summary.</desc><defs><marker id="solo-runtime-detail-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker></defs><rect width="1240" height="1260" fill="#f5f5f5"/><rect class="detail-zone" x="32" y="12" width="1176" height="1212" rx="10"/><text class="zone-label" x="56" y="40">SOURCE-GROUNDED DETAIL · READ TOP TO BOTTOM</text><path class="detail-edge" d="M 620 140 L 620 176" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge" d="M 620 284 L 620 320" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge" d="M 620 428 L 620 464" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge" d="M 620 572 L 620 608" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge" d="M 620 716 L 620 752" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge" d="M 620 860 L 620 872" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge optional" d="M 760 936 L 952 936 Q 960 936 960 944 L 960 1096" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge" d="M 620 1064 L 620 1072 Q 620 1080 612 1080 L 508 1080 Q 500 1080 500 1088 L 500 1096" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge optional" d="M 980 1204 L 980 1220 Q 980 1228 972 1228 L 688 1228 Q 680 1228 680 1220 L 680 1140" style="marker-end:url(#solo-runtime-detail-arrow)"/><g class="node detail-primary" transform="translate(400 32)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">DEPENDENCY + LOOP WIRING</text><text class="title" x="16" y="50">resolveDependency + setNestedList</text><text class="body" x="16" y="70">likelihood ← analyses ← detector paths</text><text class="body" x="16" y="84">loop managers + FullLikes/nulike pointers</text><text class="tag" x="16" y="96">solo.cpp:278–361</text></g><g class="node detail-hardcoded" transform="translate(400 176)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">BACKEND INIT</text><text class="title" x="16" y="50">nulike_init.reset_and_calculate</text><text class="body" x="16" y="70">always initialise nulike</text><text class="body" x="16" y="84">Rivet + Contur init when enabled</text><text class="tag" x="16" y="96">solo.cpp:363–369</text></g><g class="node detail-focal" transform="translate(400 320)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">EVENT LOOP</text><text class="title" x="16" y="50">operateLHCLoop.reset_and_calculate</text><text class="body" x="16" y="70">MCLoopInfo; event_count[&quot;CBS&quot;]</text><text class="body" x="16" y="84">nested event + detector + analyses</text><text class="tag" x="16" y="96">solo.cpp:372,385</text></g><g class="node detail-data" transform="translate(400 464)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">ANALYSIS CONTAINER</text><text class="title" x="16" y="50">CollectAnalyses.reset_and_calculate</text><text class="body" x="16" y="70">AnalysisDataPointers</text><text class="body" x="16" y="84">ATLAS + CMS + Identity</text><text class="tag" x="16" y="96">solo.cpp:373</text></g><g class="node detail-data" transform="translate(400 608)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">LIKELIHOOD CONTAINER</text><text class="title" x="16" y="50">calc_LHC_LogLikes_full.reset</text><text class="body" x="16" y="70">map_str_AnalysisLogLikes</text><text class="body" x="16" y="84">per analysis + signal region</text><text class="tag" x="16" y="96">solo.cpp:374</text></g><g class="node detail-data" transform="translate(400 752)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">AGGREGATION</text><text class="title" x="16" y="50">per-analysis + combined loglikes</text><text class="body" x="16" y="70">get_LHC_LogLike_per_analysis</text><text class="body" x="16" y="84">calc_combined_LHC_LogLike → double</text><text class="tag" x="16" y="96">solo.cpp:375–376</text></g><g class="node detail-decision"><polygon points="620,872 760,936 620,1000 480,936"/><text class="kind" x="620" y="912" text-anchor="middle">OPTIONAL BRANCH</text><text class="title" x="620" y="938" text-anchor="middle">withContur?</text><text class="body" x="620" y="958" text-anchor="middle">YES: three Contur maps</text><text class="body" x="620" y="972" text-anchor="middle">NO: skip to summary</text><text class="tag" x="620" y="988" text-anchor="middle">solo.cpp:377</text></g><g class="node detail-optional" transform="translate(800 1096)"><rect width="360" height="108" rx="6"/><text class="kind" x="16" y="22">CONTUR CONTAINERS</text><text class="title" x="16" y="50">reset_and_calculate × 3</text><text class="body" x="16" y="70">double total LLR</text><text class="body" x="16" y="84">map_str_dbl pools + map_str_str tags</text><text class="tag" x="16" y="96">solo.cpp:379–381</text></g><g class="node detail-focal"><ellipse cx="500" cy="1140" rx="180" ry="44"/><text class="kind" x="500" y="1122" text-anchor="middle">INLINE OUTPUT</text><text class="title" x="500" y="1144" text-anchor="middle">summary_line + cout</text><text class="body" x="500" y="1160" text-anchor="middle">SR fields + total loglike</text><text class="tag" x="500" y="1174" text-anchor="middle">catch std::exception → 1</text></g><line x1="48" y1="1210" x2="1192" y2="1210" stroke="rgba(45,49,66,.12)" stroke-width="1"/><text class="legend-label" x="48" y="1228">LEGEND</text><rect x="112" y="1218" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="142" y="1228">FOCAL / MAIN OWNERSHIP</text><rect x="322" y="1218" width="20" height="10" rx="3" fill="#fff" stroke="#7a8399"/><text class="legend-label" x="352" y="1228">DATA CONTAINER</text><rect x="478" y="1218" width="20" height="10" rx="3" fill="#fff" stroke="#7a8399" stroke-dasharray="5 4"/><text class="legend-label" x="508" y="1228">OPTIONAL</text><text class="legend-label" x="630" y="1228">ARROWS = EXECUTION ORDER · TABLES BELOW = COMPLETE FIELD EVIDENCE</text></svg></div></div>
-    <div class="scroll"><table><thead><tr><th>Execution step</th><th>Container / return type</th><th>Contents</th><th>Downstream use</th><th>Source</th></tr></thead><tbody><tr><td><code>operateLHCLoop.reset_and_calculate()</code></td><td><code>MCLoopInfo</code></td><td>event loop state; event_count[&quot;CBS&quot;]</td><td>n_events + nested event/analysis functors</td><td><code>solo.cpp:372,385</code></td></tr><tr><td><code>CollectAnalyses.reset_and_calculate()</code></td><td><code>AnalysisDataPointers</code></td><td>vector&lt;AnalysisData*&gt;; ATLAS + CMS + Identity</td><td>AllAnalysisNumbers dependency</td><td><code>solo.cpp:373; ColliderBit_eventloop.cpp:336</code></td></tr><tr><td><code>calc_LHC_LogLikes_full.reset_and_calculate()</code></td><td><code>map_str_AnalysisLogLikes</code></td><td>AnalysisLogLikes per analysis / SR</td><td>FullLikes backend + nulike marginaliser</td><td><code>solo.cpp:374; LHC_likelihoods.cpp:1335</code></td></tr><tr><td><code>get_LHC_LogLike_per_analysis.reset_and_calculate()</code></td><td><code>map_str_dbl</code></td><td>analysis → combination_loglike; alt keys appended</td><td>debug log + standalone functor output</td><td><code>solo.cpp:375; LHC_likelihoods.cpp:1386</code></td></tr><tr><td><code>calc_combined_LHC_LogLike.reset_and_calculate()</code></td><td><code>double</code></td><td>combined ATLAS+CMS log-likelihood</td><td>final loglike variable + stdout</td><td><code>solo.cpp:376; LHC_likelihoods.cpp:1503</code></td></tr><tr><td><code>Contur_LHC_measurements_LogLike.reset_and_calculate()</code></td><td><code>double</code></td><td>total Contur LLR</td><td>summary_line when withContur</td><td><code>solo.cpp:379,414; ColliderBit_measurements.cpp:454</code></td></tr><tr><td><code>Contur_LHC_measurements_LogLike_perPool.reset_and_calculate()</code></td><td><code>map_str_dbl</code></td><td>pool → LLR</td><td>pool loop in summary_line</td><td><code>solo.cpp:380,415; ColliderBit_measurements.cpp:495</code></td></tr><tr><td><code>Contur_LHC_measurements_histotags_perPool.reset_and_calculate()</code></td><td><code>map_str_str</code></td><td>pool → dominant measurement tag</td><td>pool_info[pool.first] in summary_line</td><td><code>solo.cpp:381,416; ColliderBit_measurements.cpp:533</code></td></tr><tr><td><code>inline summary aggregation</code></td><td><code>stringstream summary_line</code></td><td>analysis → SR → observed/background/signal/loglike</td><td>cout + total combined loglike</td><td><code>solo.cpp:384–431</code></td></tr></tbody></table></div>
+    <div class="scroll"><table><thead><tr><th>Execution step</th><th>Container / return type</th><th>Contents</th><th>Downstream use</th><th>Source</th></tr></thead><tbody><tr><td><code>operateLHCLoop.reset_and_calculate()</code></td><td><code>MCLoopInfo</code></td><td>event loop state; event_count[&quot;CBS&quot;]</td><td>n_events + nested event/analysis functors</td><td><code>solo.cpp:372,385</code></td></tr><tr><td><code>CollectAnalyses.reset_and_calculate()</code></td><td><code>AnalysisDataPointers</code></td><td>vector&lt;AnalysisData*&gt;; ATLAS + CMS + Identity</td><td>AllAnalysisNumbers dependency</td><td><code>solo.cpp:373; ColliderBit_eventloop.cpp:336</code></td></tr><tr><td><code>calc_LHC_LogLikes_full.reset_and_calculate()</code></td><td><code>map_str_AnalysisLogLikes</code></td><td>AnalysisLogLikes per analysis / SR</td><td>FullLikes backend + nulike marginaliser</td><td><code>solo.cpp:374; LHC_likelihoods.cpp:1335</code></td></tr><tr><td><code>get_LHC_LogLike_per_analysis.reset_and_calculate()</code></td><td><code>map_str_dbl</code></td><td>analysis → combination_loglike; alt keys appended</td><td>debug log + standalone functor output</td><td><code>solo.cpp:375; LHC_likelihoods.cpp:1386</code></td></tr><tr><td><code>calc_combined_LHC_LogLike.reset_and_calculate()</code></td><td><code>double</code></td><td>combined ATLAS+CMS log-likelihood</td><td>final loglike variable + stdout</td><td><code>solo.cpp:376; LHC_likelihoods.cpp:1503</code></td></tr><tr><td><code>Contur_LHC_measurements_LogLike.reset_and_calculate()</code></td><td><code>double</code></td><td>total Contur LLR</td><td>summary_line when withContur</td><td><code>solo.cpp:379,414; ColliderBit_measurements.cpp:454</code></td></tr><tr><td><code>Contur_LHC_measurements_LogLike_perPool.reset_and_calculate()</code></td><td><code>map_str_dbl</code></td><td>pool → LLR</td><td>pool loop in summary_line</td><td><code>solo.cpp:380,415; ColliderBit_measurements.cpp:495</code></td></tr><tr><td><code>Contur_LHC_measurements_histotags_perPool.reset_and_calculate()</code></td><td><code>map_str_str</code></td><td>pool → dominant measurement tag</td><td>pool_info[pool.first] in summary_line</td><td><code>solo.cpp:381,416; ColliderBit_measurements.cpp:533</code></td></tr><tr><td><code>inline summary aggregation</code></td><td><code>stringstream summary_line</code></td><td>analysis → SR → observed/background/signal/loglike</td><td>cout + total combined loglike</td><td><code>solo.cpp:386–427</code></td></tr></tbody></table></div>
   </section>
 
   <section>
