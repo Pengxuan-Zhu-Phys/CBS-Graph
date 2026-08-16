@@ -74,8 +74,10 @@
     .claim p:last-child { font-size:12px; line-height:1.62; margin:0; }
     .ln { color:var(--soft); font-family:var(--font-mono); font-size:9px; display:block; margin-top:3px; }
     .delta { color:var(--accent); font-family:var(--font-mono); font-size:10px; }
+    .grid-2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); gap:16px; align-items:start; }
     .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
     .mapping-table table { min-width:900px; }
+    .grid-2 .mapping-table table { min-width:0; }
     table { border-collapse:collapse; font-size:11px; width:100%; }
     th,td { border-bottom:1px solid var(--rule); padding:8px 9px; text-align:left; vertical-align:top; }
     th { background:#ececec; color:var(--muted); font-size:9px; letter-spacing:.08em; text-transform:uppercase; }
@@ -85,6 +87,6 @@
     .status { font-size:9px; font-weight:600; letter-spacing:.04em; }
     .status.added-in-right { color:var(--green); } .status.unchanged { color:#b55c2d; }
     footer { border-top:1px solid var(--rule); color:var(--soft); font-size:10px; margin-top:32px; padding-top:14px; }
-    @media (max-width:900px) { .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } .claim-grid { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .grid-2 { grid-template-columns:1fr; } .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } .claim-grid { grid-template-columns:1fr; } }
     @media (max-width:560px) { h1 { font-size:44px; } }
   </style>

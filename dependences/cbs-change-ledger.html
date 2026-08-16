@@ -608,7 +608,7 @@ svg{display:block;max-width:100%;height:auto}
         <tr><td class="name mono">ATLAS_EXOT_2019_04</td><td class="num">353</td><td><span class="tag blue">local</span></td><td><span class="tag green">done</span></td><td>VLQ · VRTrackJets · m<sub>VLB</sub> histogram SR</td></tr>
         <tr><td class="name mono">ATLAS_EXOT_2021_35</td><td class="num">337</td><td><span class="tag orange">mixed</span></td><td><span class="tag green">done</span></td><td>shape variables</td></tr>
         <tr><td class="name mono">ATLAS_EXOT_2016_017</td><td class="num">189</td><td><span class="tag orange">mixed</span></td><td><span class="tag green">done</span></td><td>single-lepton Wb · forward jets</td></tr>
-        <tr><td class="name mono">ATLAS_EXOT_2018_60</td><td class="num">38</td><td><span class="tag blue">local</span></td><td><span class="tag red">skeleton</span></td><td>registration only — see next slide</td></tr>
+        <tr><td class="name mono">ATLAS_EXOT_2018_60</td><td class="num">38</td><td><span class="tag blue">local</span></td><td><span class="tag red">skeleton</span></td><td>registration only — see slide 12</td></tr>
       </tbody>
     </table>
     <div class="grid g3" style="margin-top:18px">
@@ -625,9 +625,70 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 8 · rename migration ============ -->
+<!-- ============ 8 · histograms ============ -->
 <section class="slide">
   <p class="eyebrow">08 · analysis layer</p>
+  <h2>Histograms, and histogram signal regions</h2>
+  <p class="lede">One new class does two jobs. Booked one way it is a diagnostic object.
+  Booked the other way <b>every bin becomes a signal region that enters the likelihood</b> —
+  and the difference is whether one vector is empty.</p>
+  <div class="body">
+    <div class="grid g2" style="align-items:start">
+      <div class="card blue">
+        <span class="tag blue">plain histogram</span>
+        <h3 style="margin-top:10px"><code>obs</code> empty</h3>
+        <p>Bins, weights, under/overflow. Reaches the run JSON and the plotting script and stops
+        there. <code>is_signal_region()</code> is false; nothing downstream reads it as physics.</p>
+        <p style="margin-top:10px"><b>Used by</b> <code>ATLAS_EXOT_2021_35</code> — two uniform
+        <code>mVLQlep</code> histograms alongside its 2 cut-and-count SRs, which the histograms
+        do not change.</p>
+      </div>
+      <div class="card orange">
+        <span class="tag orange">signal-region histogram</span>
+        <h3 style="margin-top:10px">+ <code>obs</code> / <code>bkg</code> / <code>bkg_err</code></h3>
+        <p><code>to_signal_regions()</code> turns each bin into a <code>SignalRegionData</code>
+        named <code>&lt;hist&gt;_bin&lt;i&gt;</code>, carrying that bin's observed count, its own
+        content as signal, the published background, and <code>sqrt(sumw2)</code> as the MC error.</p>
+        <p style="margin-top:10px"><b>Used by</b> <code>ATLAS_EXOT_2019_04</code> (m<sub>VLB</sub>,
+        7 bins) and <code>ATLAS_EXOT_2019_07</code> (m<sub>JJ</sub>, 16 bins).</p>
+      </div>
+    </div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="stat"><div class="n">1 → 8</div><div class="k">EXOT_2019_04 SRs</div>
+        <div class="s">flag off → on</div></div>
+      <div class="stat"><div class="n">1 → 17</div><div class="k">EXOT_2019_07 SRs</div>
+        <div class="s">flag off → on</div></div>
+      <div class="stat"><div class="n">16</div><div class="k">lines it replaced</div>
+        <div class="s">hand-written per-bin SRs, still visible commented out</div></div>
+    </div>
+    <div class="note red" style="margin-top:16px">
+      <b>Say this one aloud.</b> <code>check_histogram</code> is read from YAML at
+      <code>solo.cpp:179</code> and <b>defaults to false</b>. It gates booking, filling
+      <i>and</i> committing — so on the two analyses above it does not decide whether plots appear,
+      it decides <b>how many signal regions exist</b>: 23 extra regions in total. A flag named like
+      a diagnostic toggle moves the likelihood, and two runs of the same YAML with it flipped are
+      not comparable.
+    </div>
+    <div class="deep">
+      <span class="lbl">Line-level companion page</span>
+      <p><a href="cbs-histograms.html">Histograms · one class, two jobs ↗</a> carries the member
+      table, the promotion code, all 9 macros, the JSON round trip through the batch merge, and
+      the commented-out block this mechanism replaced.</p>
+      <div class="units">
+        <a href="cbs-histograms.html#two-jobs"><b>1</b> the fork</a>
+        <a href="cbs-histograms.html#promotion"><b>2</b> bin → SR</a>
+        <a href="cbs-histograms.html#macros"><b>3</b> macros</a>
+        <a href="cbs-histograms.html#consumers"><b>4</b> who uses which</a>
+        <a href="cbs-histograms.html#flag"><b>5</b> the flag</a>
+        <a href="cbs-histograms.html#roundtrip"><b>6</b> round trip</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9 · rename migration ============ -->
+<section class="slide">
+  <p class="eyebrow">09 · analysis layer</p>
   <h2>The naming migration</h2>
   <p class="lede">Analyses moved from names describing what they looked at to the report number of
   the paper they reproduce. <b>The file count understates it.</b> 75 files move; what a YAML
@@ -690,9 +751,9 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 9 · event pipeline ============ -->
+<!-- ============ 10 · event pipeline ============ -->
 <section class="slide">
-  <p class="eyebrow">09 · new capability</p>
+  <p class="eyebrow">10 · new capability</p>
   <h2>Variable-R jets, threaded end to end</h2>
   <p class="lede">Previously a per-analysis construction. Now declared in YAML and carried through
   the same conversion path as fixed-R jets — +1,098 lines, no upstream contribution.</p>
@@ -770,9 +831,9 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 10 · dependencies ============ -->
+<!-- ============ 11 · dependencies ============ -->
 <section class="slide">
-  <p class="eyebrow">10 · dependencies</p>
+  <p class="eyebrow">11 · dependencies</p>
   <h2>Which packages moved, and who moved them</h2>
   <p class="lede">Four places record a backend version — <b>cmake</b>, the <b>frontend header</b>, the
   <b>BOSS wrapper tree</b>, the <b>patch directory</b>. Across the three branches they mostly agree.
@@ -870,9 +931,9 @@ svg{display:block;max-width:100%;height:auto}
   </p>
 </section>
 
-<!-- ============ 11 · boundaries ============ -->
+<!-- ============ 12 · boundaries ============ -->
 <section class="slide">
-  <p class="eyebrow">11 · completion boundary</p>
+  <p class="eyebrow">12 · completion boundary</p>
   <h2>What is not finished</h2>
   <p class="lede">Registered in the framework is not the same as reproducing the published analysis.
   Three things should be said plainly rather than discovered later.</p>
@@ -918,9 +979,9 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 12 · next ============ -->
+<!-- ============ 13 · next ============ -->
 <section class="slide">
-  <p class="eyebrow">12 · next</p>
+  <p class="eyebrow">13 · next</p>
   <h2>Where this goes</h2>
   <div class="body">
     <div class="grid g2">
@@ -962,7 +1023,7 @@ svg{display:block;max-width:100%;height:auto}
       <div class="stat"><div class="n">10</div><div class="k">files · runner</div><div class="s">No upstream equivalent</div></div>
       <div class="stat"><div class="n">14</div><div class="k">files · jet pipeline</div><div class="s">No upstream equivalent</div></div>
       <div class="stat"><div class="n">226</div><div class="k">commits authored</div><div class="s">of 606 on the branch</div></div>
-      <div class="stat"><div class="n">2</div><div class="k">open caveats</div><div class="s">Stated on slide 11</div></div>
+      <div class="stat"><div class="n">2</div><div class="k">open caveats</div><div class="s">Stated on slide 12</div></div>
     </div>
   </div>
   <p class="foot">
@@ -977,7 +1038,7 @@ svg{display:block;max-width:100%;height:auto}
 <nav class="nav">
   <button id="prev" aria-label="Previous slide">←</button>
   <button id="next" aria-label="Next slide">→</button>
-  <span class="counter mono" id="counter">1 / 12</span>
+  <span class="counter mono" id="counter">1 / 13</span>
   <span class="mono" id="title">CBS change ledger</span>
   <span class="dots" id="dots"></span>
 </nav>

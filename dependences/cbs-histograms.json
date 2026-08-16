@@ -1,0 +1,607 @@
+{
+  "generated_by": "scripts/build-histogram-page.py",
+  "refs": {
+    "baseline": "9c955e3a78",
+    "head": "65aca0890d"
+  },
+  "struct_lines": {
+    "Histogram1D": 47,
+    "Histogram2D": 357,
+    "Histograms": 547
+  },
+  "members": [
+    {
+      "type": "std::string",
+      "name": "name",
+      "doc": "",
+      "line": 64
+    },
+    {
+      "type": "std::string",
+      "name": "x_label",
+      "doc": "",
+      "line": 65
+    },
+    {
+      "type": "std::vector<double>",
+      "name": "edges",
+      "doc": "N+1 bin edges for N bins (monotonically increasing)",
+      "line": 67
+    },
+    {
+      "type": "std::vector<double>",
+      "name": "counts",
+      "doc": "N bin contents (sum of weights)",
+      "line": 68
+    },
+    {
+      "type": "std::vector<double>",
+      "name": "sumw2",
+      "doc": "N sum-of-weights-squared per bin",
+      "line": 69
+    },
+    {
+      "type": "std::vector<double>",
+      "name": "obs",
+      "doc": "Optional observed counts per bin",
+      "line": 71
+    },
+    {
+      "type": "std::vector<double>",
+      "name": "bkg",
+      "doc": "Optional background central values per bin",
+      "line": 72
+    },
+    {
+      "type": "std::vector<double>",
+      "name": "bkg_err",
+      "doc": "Optional background errors per bin",
+      "line": 73
+    },
+    {
+      "type": "double",
+      "name": "underflow",
+      "doc": "",
+      "line": 75
+    },
+    {
+      "type": "double",
+      "name": "overflow",
+      "doc": "",
+      "line": 76
+    },
+    {
+      "type": "double",
+      "name": "underflow_sumw2",
+      "doc": "",
+      "line": 77
+    },
+    {
+      "type": "double",
+      "name": "overflow_sumw2",
+      "doc": "",
+      "line": 78
+    }
+  ],
+  "hist_lines": 678,
+  "anchors": {
+    "is_signal_region": {
+      "line": 213,
+      "text": "bool is_signal_region() const { return !obs.empty(); }"
+    },
+    "to_signal_regions": {
+      "line": 226
+    },
+    "sr_naming": {
+      "line": 236,
+      "text": "name + \"_bin\" + std::to_string(i),"
+    },
+    "validate": {
+      "line": 327
+    },
+    "combine": {
+      "line": 190
+    }
+  },
+  "excerpts": {
+    "predicate": "  213        bool is_signal_region() const { return !obs.empty(); }",
+    "to_srs": "  226        std::vector<SignalRegionData> to_signal_regions() const\n  227        {\n  228          std::vector<SignalRegionData> srs;\n  229          if (!is_signal_region()) return srs;\n  230  \n  231          validate_signal_region_data();\n  232          srs.reserve(nbins());\n  233          for (size_t i = 0; i < nbins(); ++i)\n  234          {\n  235            SignalRegionData sr(\n  236              name + \"_bin\" + std::to_string(i),\n  237              obs[i],\n  238              counts[i],\n  239              bkg[i],\n  240              0.0,\n  241              bkg_err[i]);\n  242            sr.n_sig_MC_stat = std::sqrt(sumw2[i]);\n  243            srs.push_back(sr);\n  244          }\n  245          return srs;\n  246        }\n  247  ",
+    "validate": "  327        void validate_signal_region_data() const\n  328        {\n  329          if (obs.empty() && bkg.empty() && bkg_err.empty()) return;\n  330          if (obs.size() != nbins() || bkg.size() != nbins() || bkg_err.size() != nbins())\n  331          {\n  332            throw std::runtime_error(\n  333              \"Histogram1D '\" + name + \"' signal-region data must have one obs/bkg/bkg_err value per bin.\");\n  334          }\n  335        }",
+    "switch": "  178      // Runtime histogram switch for CBS.\n  179      const bool check_histogram = settings.getValueOrDef<bool>(false, \"check_histogram\");\n  180      ColliderBit::Histogram1D::set_check_histogram(check_histogram);"
+  },
+  "switch": {
+    "read": {
+      "line": 179,
+      "text": "const bool check_histogram = settings.getValueOrDef<bool>(false, \"check_histogram\");"
+    },
+    "set": {
+      "line": 180,
+      "text": "ColliderBit::Histogram1D::set_check_histogram(check_histogram);"
+    },
+    "default": false
+  },
+  "macros": [
+    {
+      "name": "COMMIT_HISTOGRAMS",
+      "args": "",
+      "body": "add_histograms(_histograms);",
+      "doc": "Commit histograms",
+      "line": 468
+    },
+    {
+      "name": "COMMIT_HISTOGRAM_SRS",
+      "args": "NAME",
+      "body": "for (const SignalRegionData& _sr : _histograms.h1d(NAME).to_signal_regions()) { add_result(_sr); }",
+      "doc": "Commit each bin of a histogram-backed signal-region set",
+      "line": 472
+    },
+    {
+      "name": "DEFINE_HISTOGRAM_1D",
+      "args": "NAME, EDGES, ...",
+      "body": "_histograms.addHistogram(Histogram1D(NAME, EDGES, ##__VA_ARGS__));",
+      "doc": "Define a 1D histogram with variable-width bins",
+      "line": 479
+    },
+    {
+      "name": "DEFINE_HISTOGRAM_SR_1D",
+      "args": "NAME, EDGES, OBS, BKG, BKG_ERR, ...",
+      "body": "_histograms.addHistogram(Histogram1D(NAME, EDGES, OBS, BKG, BKG_ERR, ##__VA_ARGS__));",
+      "doc": "Define a 1D histogram that also maps one signal region to each bin",
+      "line": 483
+    },
+    {
+      "name": "DEFINE_HISTOGRAM_1D_UNIFORM",
+      "args": "NAME, NBINS, XLO, XHI, ...",
+      "body": "_histograms.addHistogram(Histogram1D(NAME, NBINS, XLO, XHI, ##__VA_ARGS__));",
+      "doc": "Define a 1D histogram with uniform bins",
+      "line": 487
+    },
+    {
+      "name": "FILL_HISTOGRAM_1D",
+      "args": "NAME, VALUE",
+      "body": "if (Histogram1D::check_histogram()) _histograms.h1d(NAME).fill(VALUE, event->weight());",
+      "doc": "Fill a 1D histogram",
+      "line": 491
+    },
+    {
+      "name": "DEFINE_HISTOGRAM_2D",
+      "args": "NAME, XEDGES, YEDGES, ...",
+      "body": "_histograms.addHistogram(Histogram2D(NAME, XEDGES, YEDGES, ##__VA_ARGS__));",
+      "doc": "Define a 2D histogram with variable-width bins",
+      "line": 495
+    },
+    {
+      "name": "DEFINE_HISTOGRAM_2D_UNIFORM",
+      "args": "NAME, NX, XLO, XHI, NY, YLO, YHI, ...",
+      "body": "_histograms.addHistogram(Histogram2D(NAME, NX, XLO, XHI, NY, YLO, YHI, ##__VA_ARGS__));",
+      "doc": "Define a 2D histogram with uniform bins",
+      "line": 499
+    },
+    {
+      "name": "FILL_HISTOGRAM_2D",
+      "args": "NAME, XVAL, YVAL",
+      "body": "if (Histogram1D::check_histogram()) _histograms.h2d(NAME).fill(XVAL, YVAL, event->weight());",
+      "doc": "Fill a 2D histogram",
+      "line": 503
+    }
+  ],
+  "json_fields": [
+    {
+      "key": "name",
+      "line": 157
+    },
+    {
+      "key": "x_label",
+      "line": 158
+    },
+    {
+      "key": "edges",
+      "line": 159
+    },
+    {
+      "key": "nbins",
+      "line": 160
+    },
+    {
+      "key": "is_signal_region",
+      "line": 161
+    },
+    {
+      "key": "obs",
+      "line": 164
+    },
+    {
+      "key": "bkg",
+      "line": 165
+    },
+    {
+      "key": "bkg_err",
+      "line": 166
+    },
+    {
+      "key": "bin_index",
+      "line": 173
+    },
+    {
+      "key": "x_low",
+      "line": 174
+    },
+    {
+      "key": "x_high",
+      "line": 175
+    },
+    {
+      "key": "count",
+      "line": 176
+    },
+    {
+      "key": "error",
+      "line": 177
+    },
+    {
+      "key": "sumw2",
+      "line": 178
+    },
+    {
+      "key": "n_obs",
+      "line": 181
+    },
+    {
+      "key": "n_bkg",
+      "line": 182
+    },
+    {
+      "key": "n_bkg_err",
+      "line": 183
+    },
+    {
+      "key": "sr_label",
+      "line": 184
+    },
+    {
+      "key": "bins",
+      "line": 188
+    },
+    {
+      "key": "underflow",
+      "line": 189
+    },
+    {
+      "key": "overflow",
+      "line": 190
+    },
+    {
+      "key": "underflow_error",
+      "line": 191
+    },
+    {
+      "key": "overflow_error",
+      "line": 192
+    },
+    {
+      "key": "integral",
+      "line": 193
+    },
+    {
+      "key": "name",
+      "line": 203
+    },
+    {
+      "key": "x_label",
+      "line": 204
+    },
+    {
+      "key": "y_label",
+      "line": 205
+    },
+    {
+      "key": "x_edges",
+      "line": 206
+    },
+    {
+      "key": "y_edges",
+      "line": 207
+    },
+    {
+      "key": "nx_bins",
+      "line": 208
+    },
+    {
+      "key": "ny_bins",
+      "line": 209
+    },
+    {
+      "key": "counts",
+      "line": 227
+    },
+    {
+      "key": "errors",
+      "line": 228
+    },
+    {
+      "key": "sumw2",
+      "line": 229
+    },
+    {
+      "key": "overflow_total",
+      "line": 230
+    },
+    {
+      "key": "integral",
+      "line": 231
+    }
+  ],
+  "merge": {
+    "parse": 584,
+    "accumulate": 677,
+    "scale": 834,
+    "guard": 694
+  },
+  "consumers": [
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+      "name": "ATLAS_EXOT_2019_04",
+      "mode": "signal region",
+      "sr_defs": [
+        {
+          "hist": "m_VLB",
+          "line": 57,
+          "edges": [
+            900.0,
+            1050.0,
+            1150.0,
+            1250.0,
+            1400.0,
+            1600.0,
+            1900.0,
+            2300.0
+          ],
+          "obs": [
+            41.0,
+            62.0,
+            54.0,
+            67.0,
+            24.0,
+            13.0,
+            4.0
+          ],
+          "bkg": [
+            45.5,
+            61.2,
+            47.9,
+            51.0,
+            28.5,
+            14.8,
+            7.4
+          ],
+          "bkg_err": [
+            4.6,
+            5.6,
+            5.4,
+            6.2,
+            4.3,
+            2.8,
+            2.0
+          ],
+          "nbins": 7
+        }
+      ],
+      "plain_defs": [],
+      "commit_srs": [
+        {
+          "line": 322,
+          "hist": "m_VLB"
+        }
+      ],
+      "counting_srs": [
+        318
+      ],
+      "retired_manual": [],
+      "gates": 3,
+      "fills": 1,
+      "srs_without_flag": 1,
+      "srs_with_flag": 8
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_07.cpp",
+      "name": "ATLAS_EXOT_2019_07",
+      "mode": "signal region",
+      "sr_defs": [
+        {
+          "hist": "m_JJ",
+          "line": 88,
+          "edges": [
+            1000.0,
+            1100.0,
+            1200.0,
+            1300.0,
+            1400.0,
+            1500.0,
+            1600.0,
+            1700.0,
+            1800.0,
+            1900.0,
+            2000.0,
+            2100.0,
+            2200.0,
+            2300.0,
+            2400.0,
+            2500.0,
+            3100.0
+          ],
+          "obs": [
+            100.0,
+            97.0,
+            77.0,
+            58.0,
+            29.0,
+            29.0,
+            21.0,
+            12.0,
+            15.0,
+            10.0,
+            7.0,
+            5.0,
+            3.0,
+            1.0,
+            0.0,
+            1.2
+          ],
+          "bkg": [
+            106.54,
+            101.55,
+            79.52,
+            60.08,
+            39.8,
+            22.82,
+            21.97,
+            16.16,
+            11.58,
+            7.33,
+            6.21,
+            3.9,
+            3.38,
+            2.55,
+            1.65,
+            1.29
+          ],
+          "bkg_err": [
+            6.72,
+            6.06,
+            4.78,
+            4.27,
+            4.02,
+            3.33,
+            2.58,
+            1.7,
+            1.65,
+            0.92,
+            0.89,
+            0.61,
+            0.64,
+            0.58,
+            0.41,
+            0.18
+          ],
+          "nbins": 16
+        }
+      ],
+      "plain_defs": [],
+      "commit_srs": [
+        {
+          "line": 335,
+          "hist": "m_JJ"
+        }
+      ],
+      "counting_srs": [
+        330
+      ],
+      "retired_manual": [
+        313,
+        314,
+        315,
+        316,
+        317,
+        318,
+        319,
+        320,
+        321,
+        322,
+        323,
+        324,
+        325,
+        326,
+        327,
+        328
+      ],
+      "gates": 3,
+      "fills": 1,
+      "srs_without_flag": 1,
+      "srs_with_flag": 17
+    },
+    {
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2021_35.cpp",
+      "name": "ATLAS_EXOT_2021_35",
+      "mode": "plain",
+      "sr_defs": [],
+      "plain_defs": [
+        {
+          "hist": "mVLQlep_sr1",
+          "line": 118,
+          "uniform": true,
+          "args": [
+            10.0,
+            0.0,
+            2000.0
+          ]
+        },
+        {
+          "hist": "mVLQlep_sr2",
+          "line": 119,
+          "uniform": true,
+          "args": [
+            10.0,
+            0.0,
+            2000.0
+          ]
+        }
+      ],
+      "commit_srs": [],
+      "counting_srs": [
+        275,
+        276
+      ],
+      "retired_manual": [],
+      "gates": 3,
+      "fills": 2,
+      "srs_without_flag": 2,
+      "srs_with_flag": 2
+    }
+  ],
+  "numstat": {
+    "ColliderBit/examples/solo.cpp": {
+      "added": 291,
+      "removed": 139
+    },
+    "ColliderBit/examples/solo_batch.cpp": {
+      "added": 1171,
+      "removed": 0
+    },
+    "ColliderBit/examples/solo_output.cpp": {
+      "added": 689,
+      "removed": 0
+    },
+    "ColliderBit/include/gambit/ColliderBit/analyses/Analysis.hpp": {
+      "added": 14,
+      "removed": 0
+    },
+    "ColliderBit/include/gambit/ColliderBit/analyses/AnalysisData.hpp": {
+      "added": 10,
+      "removed": 2
+    },
+    "ColliderBit/include/gambit/ColliderBit/analyses/AnalysisMacros.hpp": {
+      "added": 55,
+      "removed": 0
+    },
+    "ColliderBit/include/gambit/ColliderBit/analyses/Histogram.hpp": {
+      "added": 678,
+      "removed": 0
+    },
+    "ColliderBit/scripts/plot_cbs_histograms.py": {
+      "added": 288,
+      "removed": 0
+    }
+  },
+  "status": {
+    "ColliderBit/examples/solo.cpp": "M",
+    "ColliderBit/examples/solo_batch.cpp": "A",
+    "ColliderBit/examples/solo_output.cpp": "A",
+    "ColliderBit/include/gambit/ColliderBit/analyses/Analysis.hpp": "M",
+    "ColliderBit/include/gambit/ColliderBit/analyses/AnalysisData.hpp": "M",
+    "ColliderBit/include/gambit/ColliderBit/analyses/AnalysisMacros.hpp": "M",
+    "ColliderBit/include/gambit/ColliderBit/analyses/Histogram.hpp": "A",
+    "ColliderBit/scripts/plot_cbs_histograms.py": "A"
+  },
+  "plotter_lines": 288,
+  "caveat": "Static read of the worktree. Nothing was built or run."
+}

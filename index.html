@@ -53,6 +53,7 @@
         <a href="dependences/cbs-fastjet-cmake.html">Open FastJet / fjcontrib build integration ↗</a>
         <a href="dependences/cbs-vr-jets.html">Open variable-R jet pipeline ↗</a>
         <a href="dependences/cbs-rename-migration.html">Open the naming migration ↗</a>
+        <a href="dependences/cbs-histograms.html">Open the histogram mechanism ↗</a>
       </div>
     </div>
 
@@ -63,7 +64,7 @@
         <article class="card featured">
           <span class="tag orange">SLIDE DECK</span>
           <h3><a href="dependences/cbs-change-ledger.html">CBS change ledger · what changed and who changed it</a></h3>
-          <p>A twelve-slide walkthrough of <code>ColliderBit_solo_development</code> against the <code>private-SUSYRun2</code> source branch, with every file attributed to its authors so merged upstream work is not counted as local work. Rename-aware, so the 75 analysis renames read as moves rather than 150 phantom add/deletes. <a href="dependences/cbs-change-ledger.html#10">Slide 10</a> is the package matrix against both <code>gambit/master</code> and <code>private-SUSYRun2</code> — and the one backend where four declaration sources disagree.</p>
+          <p>A thirteen-slide walkthrough of <code>ColliderBit_solo_development</code> against the <code>private-SUSYRun2</code> source branch, with every file attributed to its authors so merged upstream work is not counted as local work. Rename-aware, so the 75 analysis renames read as moves rather than 150 phantom add/deletes. <a href="dependences/cbs-change-ledger.html#11">Slide 11</a> is the package matrix against both <code>gambit/master</code> and <code>private-SUSYRun2</code> — and the one backend where four declaration sources disagree.</p>
           <p><a href="dependences/cbs-change-ledger.json">Ledger JSON</a> · <a href="dependences/cbs-package-matrix.json">package matrix</a> · press <code>P</code> in the deck for a printable view</p>
         </article>
         <article class="card featured">
@@ -104,6 +105,12 @@
           <h3><a href="dependences/cbs-fastjet-cmake.html">FastJet &amp; fjcontrib · what CMake now does</a></h3>
           <p>Three-way: upstream <code>master</code> ships fjcore only, <code>private-SUSYRun2</code> replaced it with a downloaded FastJet, this branch keeps both and selects at configure time. Eight numbered changes, with the provisioning gap stated plainly.</p>
           <p><a href="dependences/cbs-fastjet-cmake.json">Extracted build data</a> · <a href="dependences/CBS_FASTJET_CMAKE.md">summary</a></p>
+        </article>
+        <article class="card featured">
+          <span class="tag orange">ANALYSIS LAYER</span>
+          <h3><a href="dependences/cbs-histograms.html">Histograms &middot; one class, two jobs</a></h3>
+          <p>A plain histogram is a diagnostic that reaches the JSON and the plotter. Add per-bin observed and background arrays and every bin becomes a signal region in the likelihood. The member table, the promotion code, all nine macros, the batch round trip &mdash; and the YAML flag, defaulting to off, that decides how many signal regions exist.</p>
+          <p><a href="dependences/cbs-histograms.json">Histogram data</a> &middot; <a href="dependences/CBS_HISTOGRAMS.md">summary</a></p>
         </article>
         <article class="card featured">
           <span class="tag orange">ANALYSIS LAYER</span>

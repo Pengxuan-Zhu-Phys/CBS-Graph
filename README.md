@@ -196,11 +196,29 @@ python3 scripts/build-change-ledger.py \
 生成：
 
 - `dependences/cbs-change-ledger.json`：逐文件的改动量、提交数、作者列表和归属分类（`own` / `mixed` / `upstream`）；
-- `dependences/cbs-change-ledger.html`：12 页自包含 slide，内联 SVG 流程图，不依赖任何 CDN；按 `P` 展开全部页面以便打印成 PDF。
+- `dependences/cbs-change-ledger.html`：13 页自包含 slide，内联 SVG 流程图，不依赖任何 CDN；按 `P` 展开全部页面以便打印成 PDF。
 
 基线是 `private-SUSYRun2` 与开发分支的共同祖先，而不是 `gambit/master`——因为要回答的问题是"相对合作者手上的源分支我改了什么"。`gambit/master` 已完全合入，分支落后 0 个提交。
 
-### 命名迁移（slide 8 + 专页）
+### Histogram 与 Histogram SR（slide 8 + 专页）
+
+```bash
+python3 scripts/build-histogram-page.py \
+  --gambit-root ~/Gambit-Workshop/gambit
+```
+
+生成 `dependences/cbs-histograms.{html,json}`、`CBS_HISTOGRAMS.md` 和 `site/cbs-histograms.html`。
+
+新增一个头文件 `Histogram.hpp`（678 行），**一个类干两件事**，分界就是一个 vector 空不空：
+
+- **纯 Histogram**（`obs` 为空）：bins / counts / sumw2 / under-overflow。走到 run JSON 和绘图脚本为止，`is_signal_region()` 为 false，下游不会当物理读。`ATLAS_EXOT_2021_35` 用这个。
+- **Histogram SR**（带 `obs` / `bkg` / `bkg_err`）：`to_signal_regions()` 把每个 bin 变成一个 `SignalRegionData`，名字 `<hist>_bin<i>`，带该 bin 的观测数、自身内容作为信号、发表的本底，以及 `sqrt(sumw2)` 作为 MC 统计误差。`ATLAS_EXOT_2019_04`（m_VLB，7 bins）和 `ATLAS_EXOT_2019_07`（m_JJ，16 bins）用这个。
+
+**要当面讲的一条**：`check_histogram` 从 YAML 读进来（`solo.cpp:179`），**默认 false**，而且同时管着 booking、filling 和 committing。所以在上面两个分析里它决定的不是"出不出图"，而是**有几个 signal region**——一共 23 个额外区域。名字像诊断开关，实际动的是 likelihood；同一份 YAML 翻转这个 flag 的两次运行不可比。
+
+另外，`ATLAS_EXOT_2019_07` 里还留着 **16 行注释掉的手写 per-bin `add_result`**（L313–328），观测数和本底都是硬编码字面量——那就是这套机制替换掉的东西，before/after 在同一个文件里看得见。
+
+### 命名迁移（slide 9 + 专页）
 
 分析从"描述看什么"的名字迁移到论文报告号。
 

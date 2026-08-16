@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Histograms in ColliderBit</title>
+  <style>
+    :root { --paper:#f5f5f5; --paper-2:#ececec; --ink:#2d3142; --muted:#4f5d75; --soft:#7a8399; --rule:rgba(45,49,66,.12); --accent:#eb6c36; --accent-tint:rgba(235,108,54,.08); --green:#4f8a69; --green-tint:#eef8f1; --red:#93513f; --red-tint:#f3e9e5; --font-sans:'Geist',system-ui,sans-serif; --font-mono:'Geist Mono',ui-monospace,monospace; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:14px/1.55 var(--font-sans); }
+    .frame { max-width:1520px; margin:0 auto; padding:42px 42px 64px; }
+    .eyebrow,.kicker,.meta,.source,.status,th,footer { font-family:var(--font-mono); }
+    .eyebrow { color:var(--muted); font-size:10px; letter-spacing:.16em; text-transform:uppercase; margin:0 0 12px; }
+    h1 { font-family:'Instrument Serif',Georgia,serif; font-size:clamp(42px,5vw,72px); font-weight:400; letter-spacing:-.04em; line-height:.98; margin:0 0 14px; }
+    h2 { font-size:28px; font-weight:600; letter-spacing:-.03em; line-height:1.08; margin:0 0 8px; }
+    p { color:var(--muted); }
+    .intro { max-width:1080px; font-size:15px; line-height:1.65; margin:0 0 18px; }
+    .meta { display:flex; flex-wrap:wrap; gap:8px 18px; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:12px 0; color:var(--muted); font-size:10px; }
+    .meta strong { color:var(--accent); font-weight:600; }
+    .note { border-left:3px solid var(--accent); color:var(--muted); font-size:11px; line-height:1.6; margin:18px 0; max-width:1160px; padding:8px 12px; }
+    .backlink { align-items:baseline; background:#fff; border:1px solid var(--rule); border-left:3px solid var(--accent);
+      border-radius:0 6px 6px 0; color:var(--muted); display:flex; flex-wrap:wrap; font-size:12.5px; gap:4px 12px;
+      line-height:1.6; margin:18px 0 0; max-width:1160px; padding:11px 14px; }
+    .backlink .lbl { color:var(--soft); font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; }
+    .backlink span:last-child { flex:1 1 420px; }
+    .backlink a { border-bottom:1px solid rgba(235,108,54,.42); color:var(--accent); font-weight:600; text-decoration:none; }
+    .backlink a:hover { background:var(--accent-tint); }
+    .summary-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin:22px 0 32px; }
+    .card { background:#fff; border:1px solid var(--rule); border-radius:6px; padding:14px 16px; }
+    .card.accent { border-color:rgba(235,108,54,.45); background:var(--accent-tint); }
+    .card .n { color:var(--ink); display:block; font-size:26px; font-weight:600; letter-spacing:-.04em; line-height:1; margin-bottom:8px; }
+    .card .label { color:var(--soft); font-family:var(--font-mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; }
+    section { border-top:1px solid var(--rule); margin-top:28px; padding:24px 0 0; }
+    .kicker { color:var(--soft); font-size:9px; letter-spacing:.16em; margin:0 0 8px; text-transform:uppercase; }
+    .source { color:var(--soft); font-size:10px; line-height:1.55; margin:0 0 14px; }
+    .diagram-shell { overflow-x:auto; background:#fff; border:1px solid var(--rule); border-radius:8px; padding:8px; }
+    svg { display:block; min-width:1080px; width:100%; height:auto; }
+    svg .zone { fill:rgba(45,49,66,.025); stroke:rgba(45,49,66,.13); stroke-width:1; }
+    svg .zone-label { fill:var(--soft); font:500 10px var(--font-mono); letter-spacing:1.6px; }
+    svg .node .kind { fill:var(--soft); font:500 9px var(--font-mono); letter-spacing:1.2px; }
+    svg .node .title { fill:var(--ink); font:600 12px var(--font-mono); }
+    svg .node .body { fill:var(--muted); font:9px var(--font-mono); }
+    svg .legend-label { fill:var(--soft); font:9px var(--font-mono); letter-spacing:.6px; }
+    svg .detail-edge { fill:none; stroke:var(--muted); stroke-width:1.4; }
+    svg .node.detail-primary rect { fill:#fff; stroke:var(--soft); stroke-width:1.2; }
+    svg .node.detail-data rect { fill:rgba(79,93,117,.08); stroke:var(--soft); stroke-width:1.2; }
+    svg .node.detail-optional rect { fill:#fff; stroke:var(--soft); stroke-width:1.2; stroke-dasharray:5 4; }
+    svg .node.detail-focal rect { fill:var(--accent-tint); stroke:var(--accent); stroke-width:1.6; }
+    svg .node.detail-focal .kind { fill:var(--accent); }
+    .unit-list { display:grid; gap:14px; margin-top:18px; }
+    .unit { border:1px solid var(--rule); border-radius:8px; background:#fff; padding:16px 18px; scroll-margin-top:20px; }
+    .unit:target { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-tint); }
+    .unit-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+    .unit-num { display:grid; place-items:center; width:26px; height:26px; border-radius:50%;
+      border:1.2px solid var(--ink); font:600 13px var(--font-mono); }
+    .unit-title { font-size:16px; font-weight:600; letter-spacing:-.01em; }
+    .unit-kind { padding:2px 7px; border-radius:3px; border:1px solid currentColor;
+      font:8px var(--font-mono); letter-spacing:.9px; text-transform:uppercase;
+      color:#4f8a69; background:var(--green-tint); }
+    .unit-delta { margin-left:auto; font:11px var(--font-mono); color:var(--soft); }
+    .unit-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px 24px; margin:0; }
+    .unit-grid > div { display:flex; gap:10px; border-bottom:1px solid var(--rule); padding-bottom:8px; }
+    .unit-grid dt { flex:0 0 46px; margin:2px 0 0; color:var(--soft);
+      font:9px var(--font-mono); letter-spacing:1px; text-transform:uppercase; }
+    .unit-grid dd { margin:0; color:var(--muted); font-size:12.5px; line-height:1.6; }
+    .unit-diff { margin-top:11px; border:1px solid var(--rule); border-radius:6px; background:#fff; }
+    .unit-diff summary { cursor:pointer; padding:9px 13px; color:var(--accent);
+      font:11px var(--font-mono); letter-spacing:.4px; list-style:none; }
+    .unit-diff summary::-webkit-details-marker { display:none; }
+    .unit-diff summary::before { content:"\25b8 "; display:inline-block; width:14px; }
+    .unit-diff[open] summary::before { content:"\25be "; }
+    .unit-diff[open] summary { border-bottom:1px solid var(--rule); }
+    .unit-diff summary:hover { background:rgba(235,108,54,.05); }
+    .unit-hunks { margin:0; padding:12px 14px; overflow-x:auto; font:11px/1.7 var(--font-mono);
+      background:#fff; border:0; color:var(--ink); white-space:pre; }
+    .diagram-note { color:var(--muted); font-size:12px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
+    .claim-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:18px; }
+    .claim { background:#fff; border:1px solid var(--rule); border-left:3px solid var(--accent); border-radius:0 6px 6px 0; padding:13px 16px; }
+    .claim-h { color:var(--ink); font-size:13px; font-weight:600; letter-spacing:-.01em; margin:0 0 6px; }
+    .claim p:last-child { font-size:12px; line-height:1.62; margin:0; }
+    .ln { color:var(--soft); font-family:var(--font-mono); font-size:9px; display:block; margin-top:3px; }
+    .delta { color:var(--accent); font-family:var(--font-mono); font-size:10px; }
+    .grid-2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); gap:16px; align-items:start; }
+    .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
+    .mapping-table table { min-width:900px; }
+    .grid-2 .mapping-table table { min-width:0; }
+    table { border-collapse:collapse; font-size:11px; width:100%; }
+    th,td { border-bottom:1px solid var(--rule); padding:8px 9px; text-align:left; vertical-align:top; }
+    th { background:#ececec; color:var(--muted); font-size:9px; letter-spacing:.08em; text-transform:uppercase; }
+    td code { color:var(--ink); font-family:var(--font-mono); font-size:10px; word-break:break-word; }
+    td.num { text-align:right; font-family:var(--font-mono); white-space:nowrap; }
+    .add { color:var(--green); } .del { color:var(--red); }
+    .status { font-size:9px; font-weight:600; letter-spacing:.04em; }
+    .status.added-in-right { color:var(--green); } .status.unchanged { color:#b55c2d; }
+    footer { border-top:1px solid var(--rule); color:var(--soft); font-size:10px; margin-top:32px; padding-top:14px; }
+    @media (max-width:900px) { .grid-2 { grid-template-columns:1fr; } .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } .claim-grid { grid-template-columns:1fr; } }
+    @media (max-width:560px) { h1 { font-size:44px; } }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<main class="frame">
+  <p class="eyebrow">ColliderBit &#183; analysis layer</p>
+  <h1>Histograms</h1>
+  <p class="intro">One class does two jobs. Booked one way it is a diagnostic object that reaches the JSON output and the plotter and stops. Booked the other way every bin becomes a signal region that enters the likelihood. The difference is whether one vector is empty &mdash; and a single YAML flag, defaulting to off, gates both.</p>
+  <div class="meta"><span><strong>BASELINE</strong> 9c955e3a78</span><span><strong>HEAD</strong> 65aca0890d</span><span><strong>NEW FILE</strong> Histogram.hpp, 678 lines</span><span><strong>STATIC EVIDENCE</strong> no build / no events processed</span></div>
+  <p class="backlink"><span class="lbl">context</span><span>This page expands <a href="cbs-change-ledger.html#8">slide 7 of the CBS change-ledger deck &#8599;</a>. The JSON fields it produces are part of the <a href="cbs-json-output.html">output contract &#8599;</a>, and the batch merge reads them back.</span></p>
+
+  <div class="summary-grid" aria-label="Summary">
+    <div class="card accent"><span class="n">8</span><span class="label">files touched</span></div>
+    <div class="card"><span class="n">678</span><span class="label">lines &#183; Histogram.hpp</span></div>
+    <div class="card"><span class="n">9</span><span class="label">booking macros</span></div>
+    <div class="card accent"><span class="n">2</span><span class="label">use SR mode</span></div>
+    <div class="card"><span class="n">1</span><span class="label">use plain mode</span></div>
+    <div class="card accent"><span class="n">23</span><span class="label">SRs the flag adds</span></div>
+  </div>
+  <div class="note">Bin edges, observed and background arrays, macro bodies, JSON field names and the batch merge sites are read from the worktree when this page is generated. Nothing was compiled and no events were processed, so nothing here is a statement about yields.</div>
+
+  <section id="two-jobs">
+    <p class="kicker">01 &#183; one class, two jobs</p>
+    <h2>The fork is an empty vector</h2>
+    <p class="source">There is no <code>HistogramSR</code> type. The same object behaves differently depending on how it was booked.</p>
+    <div class="diagram-shell"><svg viewBox="0 0 1240 330" role="img" aria-labelledby="hm-t hm-d">
+<title id="hm-t">The two jobs one Histogram1D does</title>
+<desc id="hm-d">A Histogram1D booked without observed and background arrays stays a diagnostic object that only reaches the JSON output and the plotter. Booked with them, every bin also becomes a SignalRegionData that enters the likelihood.</desc>
+<defs><marker id="hm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4f5d75"/></marker></defs>
+<g class="node detail-data"><rect x="20" y="120" width="196" height="92" rx="8"/>
+<text class="kind" x="33" y="141">BOOK</text>
+<text class="title" x="33" y="161" style="font-size:11px">DEFINE_HISTOGRAM_*</text>
+<text class="body" x="33" y="179">edges, name, x label</text>
+<text class="body" x="33" y="192">one object either way</text>
+</g>
+<g class="node detail-focal"><rect x="238" y="120" width="168" height="92" rx="8"/>
+<text class="kind" x="251" y="141">FORK</text>
+<text class="title" x="251" y="161" style="font-size:11px">obs.empty()?</text>
+<text class="body" x="251" y="179">L213</text>
+<text class="body" x="251" y="192">the only difference</text>
+</g>
+<g class="node detail-primary"><rect x="430" y="20" width="300" height="92" rx="8"/>
+<text class="kind" x="443" y="41">PLAIN HISTOGRAM</text>
+<text class="title" x="443" y="61" style="font-size:11px">is_signal_region() == false</text>
+<text class="body" x="443" y="79">counts + sumw2 only</text>
+<text class="body" x="443" y="92">never reaches the likelihood</text>
+</g>
+<g class="node detail-focal"><rect x="430" y="218" width="300" height="92" rx="8"/>
+<text class="kind" x="443" y="239">SIGNAL-REGION HISTOGRAM</text>
+<text class="title" x="443" y="259" style="font-size:11px">is_signal_region() == true</text>
+<text class="body" x="443" y="277">obs / bkg / bkg_err per bin</text>
+<text class="body" x="443" y="290">to_signal_regions() -&gt; one SR per bin</text>
+</g>
+<g class="node detail-data"><rect x="756" y="20" width="210" height="92" rx="8"/>
+<text class="kind" x="769" y="41">OUT</text>
+<text class="title" x="769" y="61" style="font-size:11px">JSON histograms</text>
+<text class="body" x="769" y="79">read back by batch merge</text>
+<text class="body" x="769" y="92">plotted by the script</text>
+</g>
+<g class="node detail-data"><rect x="756" y="218" width="210" height="92" rx="8"/>
+<text class="kind" x="769" y="239">OUT</text>
+<text class="title" x="769" y="259" style="font-size:11px">add_result(sr)</text>
+<text class="body" x="769" y="277">name_bin0 ... name_binN</text>
+<text class="body" x="769" y="290">enters the likelihood</text>
+</g>
+<g class="node detail-optional"><rect x="990" y="120" width="230" height="92" rx="8"/>
+<text class="kind" x="1003" y="141">GATE</text>
+<text class="title" x="1003" y="161" style="font-size:11px">check_histogram</text>
+<text class="body" x="1003" y="179">solo.cpp:179</text>
+<text class="body" x="1003" y="192">default false — gates both</text>
+</g>
+<path class="detail-edge" d="M216 166 H233" marker-end="url(#hm-arrow)"/>
+<path class="detail-edge" d="M406 166 H418 V66 H425" marker-end="url(#hm-arrow)"/>
+<path class="detail-edge" d="M406 166 H418 V264 H425" marker-end="url(#hm-arrow)"/>
+<path class="detail-edge" d="M730 66 H751" marker-end="url(#hm-arrow)"/>
+<path class="detail-edge" d="M730 264 H751" marker-end="url(#hm-arrow)"/>
+<path class="detail-edge" d="M966 66 H978 V166 H985" marker-end="url(#hm-arrow)"/>
+<path class="detail-edge" d="M966 264 H978 V166 H985" marker-end="url(#hm-arrow)"/>
+<text class="legend-label" x="20" y="252">one class, one booking macro family;</text>
+<text class="legend-label" x="20" y="270">the fork is a single empty-vector test</text>
+</svg></div>
+    <div class="mapping-table" style="margin-top:16px"><table>
+      <thead><tr><th style="width:16%">Member</th><th style="width:24%">Type</th><th style="width:18%">Present when</th><th>What it holds</th></tr></thead>
+      <tbody><tr><td><code>name</code></td><td><code>std::string</code></td><td><span class="status">always</span></td><td></td></tr>
+<tr><td><code>x_label</code></td><td><code>std::string</code></td><td><span class="status">always</span></td><td></td></tr>
+<tr><td><code>edges</code></td><td><code>std::vector&lt;double&gt;</code></td><td><span class="status">always</span></td><td>N+1 bin edges for N bins (monotonically increasing)</td></tr>
+<tr><td><code>counts</code></td><td><code>std::vector&lt;double&gt;</code></td><td><span class="status">always</span></td><td>N bin contents (sum of weights)</td></tr>
+<tr><td><code>sumw2</code></td><td><code>std::vector&lt;double&gt;</code></td><td><span class="status">always</span></td><td>N sum-of-weights-squared per bin</td></tr>
+<tr><td><code>obs</code></td><td><code>std::vector&lt;double&gt;</code></td><td><span class="status unchanged">signal region only</span></td><td>Optional observed counts per bin</td></tr>
+<tr><td><code>bkg</code></td><td><code>std::vector&lt;double&gt;</code></td><td><span class="status unchanged">signal region only</span></td><td>Optional background central values per bin</td></tr>
+<tr><td><code>bkg_err</code></td><td><code>std::vector&lt;double&gt;</code></td><td><span class="status unchanged">signal region only</span></td><td>Optional background errors per bin</td></tr>
+<tr><td><code>underflow</code></td><td><code>double</code></td><td><span class="status">always</span></td><td></td></tr>
+<tr><td><code>overflow</code></td><td><code>double</code></td><td><span class="status">always</span></td><td></td></tr>
+<tr><td><code>underflow_sumw2</code></td><td><code>double</code></td><td><span class="status">always</span></td><td></td></tr>
+<tr><td><code>overflow_sumw2</code></td><td><code>double</code></td><td><span class="status">always</span></td><td></td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">Three members carry the whole distinction: <code>obs</code>, <code>bkg</code> and <code>bkg_err</code>. <code>is_signal_region()</code> is literally <code>return !obs.empty();</code> at <code>Histogram.hpp:213</code>. Everything else &mdash; the bins, the weights, the under- and overflow accounting &mdash; is identical in both modes, which is why one class is enough and why the plain mode costs nothing to keep.</p>
+  </section>
+
+  <section id="promotion">
+    <p class="kicker">02 &#183; the promotion</p>
+    <h2>How a bin becomes a signal region</h2>
+    <p class="source"><code>to_signal_regions()</code>, quoted from source.</p>
+    <details class="unit-diff" open><summary>Histogram.hpp:226</summary><pre class="unit-hunks">  226        std::vector&lt;SignalRegionData&gt; to_signal_regions() const
+  227        {
+  228          std::vector&lt;SignalRegionData&gt; srs;
+  229          if (!is_signal_region()) return srs;
+  230  
+  231          validate_signal_region_data();
+  232          srs.reserve(nbins());
+  233          for (size_t i = 0; i &lt; nbins(); ++i)
+  234          {
+  235            SignalRegionData sr(
+  236              name + &quot;_bin&quot; + std::to_string(i),
+  237              obs[i],
+  238              counts[i],
+  239              bkg[i],
+  240              0.0,
+  241              bkg_err[i]);
+  242            sr.n_sig_MC_stat = std::sqrt(sumw2[i]);
+  243            srs.push_back(sr);
+  244          }
+  245          return srs;
+  246        }
+  247  </pre></details>
+    <p class="diagram-note">Each bin becomes one <code>SignalRegionData</code> named <code>&lt;histogram&gt;_bin&lt;i&gt;</code>, carrying that bin's observed count, its own content as the signal prediction, and the published background with its error. The MC statistical error is <code>sqrt(sumw2)</code> &mdash; so the histogram's weight bookkeeping is not decoration, it is what makes the per-bin likelihood honest about limited MC.</p>
+    <p class="diagram-note"><strong>Two guards make this safe rather than merely convenient.</strong> <code>validate_signal_region_data()</code> refuses a histogram whose <code>obs</code>/<code>bkg</code>/<code>bkg_err</code> lengths do not match the bin count, and it runs on every promotion, not just at construction. <code>combine()</code> refuses to merge two histograms whose signal-region data disagree. Both throw rather than silently producing a shorter or mismatched set of signal regions &mdash; which matters because these objects are merged across batch subprocesses.</p>
+    <details class="unit-diff"><summary>the length guard &#183; Histogram.hpp:327</summary><pre class="unit-hunks">  327        void validate_signal_region_data() const
+  328        {
+  329          if (obs.empty() &amp;&amp; bkg.empty() &amp;&amp; bkg_err.empty()) return;
+  330          if (obs.size() != nbins() || bkg.size() != nbins() || bkg_err.size() != nbins())
+  331          {
+  332            throw std::runtime_error(
+  333              &quot;Histogram1D &#x27;&quot; + name + &quot;&#x27; signal-region data must have one obs/bkg/bkg_err value per bin.&quot;);
+  334          }
+  335        }</pre></details>
+  </section>
+
+  <section id="macros">
+    <p class="kicker">03 &#183; the macro surface</p>
+    <h2>What an analysis actually writes</h2>
+    <p class="source">Extracted from <code>AnalysisMacros.hpp</code>, with the expansion each one produces.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:24%">Macro</th><th style="width:30%">Arguments</th><th>Expands to</th></tr></thead>
+      <tbody><tr><td><code>COMMIT_HISTOGRAMS</code></td><td><code></code></td><td><code>add_histograms(_histograms);</code></td></tr>
+<tr><td><code>COMMIT_HISTOGRAM_SRS</code></td><td><code>NAME</code></td><td><code>for (const SignalRegionData&amp; _sr : _histograms.h1d(NAME).to_signal_regions()) { add_result(_sr); }</code></td></tr>
+<tr><td><code>DEFINE_HISTOGRAM_1D</code></td><td><code>NAME, EDGES, ...</code></td><td><code>_histograms.addHistogram(Histogram1D(NAME, EDGES, ##__VA_ARGS__));</code></td></tr>
+<tr><td><code>DEFINE_HISTOGRAM_SR_1D</code></td><td><code>NAME, EDGES, OBS, BKG, BKG_ERR, ...</code></td><td><code>_histograms.addHistogram(Histogram1D(NAME, EDGES, OBS, BKG, BKG_ERR, ##__VA_ARGS__));</code></td></tr>
+<tr><td><code>DEFINE_HISTOGRAM_1D_UNIFORM</code></td><td><code>NAME, NBINS, XLO, XHI, ...</code></td><td><code>_histograms.addHistogram(Histogram1D(NAME, NBINS, XLO, XHI, ##__VA_ARGS__));</code></td></tr>
+<tr><td><code>FILL_HISTOGRAM_1D</code></td><td><code>NAME, VALUE</code></td><td><code>if (Histogram1D::check_histogram()) _histograms.h1d(NAME).fill(VALUE, event-&gt;weight());</code></td></tr>
+<tr><td><code>DEFINE_HISTOGRAM_2D</code></td><td><code>NAME, XEDGES, YEDGES, ...</code></td><td><code>_histograms.addHistogram(Histogram2D(NAME, XEDGES, YEDGES, ##__VA_ARGS__));</code></td></tr>
+<tr><td><code>DEFINE_HISTOGRAM_2D_UNIFORM</code></td><td><code>NAME, NX, XLO, XHI, NY, YLO, YHI, ...</code></td><td><code>_histograms.addHistogram(Histogram2D(NAME, NX, XLO, XHI, NY, YLO, YHI, ##__VA_ARGS__));</code></td></tr>
+<tr><td><code>FILL_HISTOGRAM_2D</code></td><td><code>NAME, XVAL, YVAL</code></td><td><code>if (Histogram1D::check_histogram()) _histograms.h2d(NAME).fill(XVAL, YVAL, event-&gt;weight());</code></td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">The pairing is deliberate: <code>DEFINE_HISTOGRAM_1D</code> and <code>DEFINE_HISTOGRAM_SR_1D</code> differ only by the three data arrays, and <code>COMMIT_HISTOGRAMS</code> and <code>COMMIT_HISTOGRAM_SRS</code> are separate calls. An analysis that wants plots but not extra signal regions commits the first and not the second &mdash; the two decisions never get accidentally coupled at the analysis level. <strong>They are coupled at the flag level instead</strong>, which is the next section.</p>
+  </section>
+
+  <section id="consumers">
+    <p class="kicker">04 &#183; who uses which</p>
+    <h2>Two analyses take the signal regions, one does not</h2>
+    <p class="source">All three are new on this branch.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:24%">Analysis</th><th style="width:14%">Mode</th><th style="width:20%">Histogram</th><th style="width:8%">Bins</th><th>Signal regions</th></tr></thead>
+      <tbody><tr><td><code>ATLAS_EXOT_2019_04</code></td><td><span class="status unchanged">signal region</span></td><td><code>m_VLB</code></td><td class="num">7</td><td><strong>1 &rarr; 8</strong><span class="ln">flag off &rarr; on</span></td></tr>
+<tr><td><code>ATLAS_EXOT_2019_07</code></td><td><span class="status unchanged">signal region</span></td><td><code>m_JJ</code></td><td class="num">16</td><td><strong>1 &rarr; 17</strong><span class="ln">flag off &rarr; on</span></td></tr>
+<tr><td><code>ATLAS_EXOT_2021_35</code></td><td><span class="status added-in-right">plain</span></td><td><code>mVLQlep_sr1</code>, <code>mVLQlep_sr2</code></td><td class="num">&#8212;</td><td>2<span class="ln">unaffected by the flag</span></td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">The split is real, not incidental. <code>ATLAS_EXOT_2019_07</code> books its histogram with observed and background arrays taken from the paper and commits every bin, so its signal-region count moves from 1 to 17. <code>ATLAS_EXOT_2021_35</code> books plain uniform histograms, calls <code>COMMIT_HISTOGRAMS</code> and never calls <code>COMMIT_HISTOGRAM_SRS</code> &mdash; its signal regions stay the 2 cut-and-count ones and the histograms are there to be looked at. Both are legitimate uses of the same class, and the source makes which one is in play readable at a glance.</p>
+    <p class="diagram-note"><strong>The reason this mechanism exists is still in the source, commented out.</strong> <code>ATLAS_EXOT_2019_07</code> carries 16 dead lines at L313&ndash;328, each one a hand-written <code>add_result(SignalRegionData(...))</code> for a single m<sub>JJ</sub> bin with its observed count and background pasted in as literals. That is what per-bin signal regions cost before: one counter per bin, one line per bin, and the same numbers repeated in two places that could drift apart. <code>COMMIT_HISTOGRAM_SRS</code> replaces all 16 with one call reading the same arrays the histogram is booked from, so the bin edges, the observed counts and the backgrounds cannot disagree with the plot. Leaving the old block visible is the honest choice &mdash; it is the before-and-after, in one file.</p>
+  </section>
+
+  <section id="flag">
+    <p class="kicker">05 &#183; the flag</p>
+    <h2>A diagnostic switch that moves the likelihood</h2>
+    <p class="source">One YAML key, read once, set globally.</p>
+    <details class="unit-diff" open><summary>solo.cpp:179</summary><pre class="unit-hunks">  178      // Runtime histogram switch for CBS.
+  179      const bool check_histogram = settings.getValueOrDef&lt;bool&gt;(false, &quot;check_histogram&quot;);
+  180      ColliderBit::Histogram1D::set_check_histogram(check_histogram);</pre></details>
+    <p class="diagram-note"><code>check_histogram</code> is read with <code>getValueOrDef</code> and <strong>defaults to <code>false</code></strong>, then set on a static that every analysis reads. It gates three things at once: whether histograms are booked, whether <code>FILL_HISTOGRAM_*</code> does anything, and whether <code>COMMIT_HISTOGRAM_SRS</code> runs.</p>
+    <div class="note"><strong>This is the thing to say aloud.</strong> On the two signal-region analyses the flag does not only decide whether plots are produced &mdash; it decides how many signal regions exist. With the flag on, <code>ATLAS_EXOT_2019_04</code> goes from 1 to 8; <code>ATLAS_EXOT_2019_07</code> goes from 1 to 17. That is 23 extra signal regions in total. A flag named like a diagnostic toggle changes the likelihood, and because it defaults to off, the histogram-derived regions are absent unless someone opts in. Neither behaviour is wrong, but the name does not warn anyone, and two runs of the same YAML with the flag flipped are not comparable.</div>
+  </section>
+
+  <section id="roundtrip">
+    <p class="kicker">06 &#183; the round trip</p>
+    <h2>Out to JSON, back through the batch merge</h2>
+    <p class="source">Histograms are not write-only: batch mode reads them back and accumulates them.</p>
+    <div class="grid-2">
+      <div class="mapping-table"><table>
+        <thead><tr><th style="width:60%">JSON key</th><th>Line</th></tr></thead>
+        <tbody><tr><td><code>name</code></td><td class="num">157</td></tr>
+<tr><td><code>x_label</code></td><td class="num">158</td></tr>
+<tr><td><code>edges</code></td><td class="num">159</td></tr>
+<tr><td><code>nbins</code></td><td class="num">160</td></tr>
+<tr><td><code>is_signal_region</code></td><td class="num">161</td></tr>
+<tr><td><code>obs</code></td><td class="num">164</td></tr>
+<tr><td><code>bkg</code></td><td class="num">165</td></tr>
+<tr><td><code>bkg_err</code></td><td class="num">166</td></tr>
+<tr><td><code>bin_index</code></td><td class="num">173</td></tr>
+<tr><td><code>x_low</code></td><td class="num">174</td></tr>
+<tr><td><code>x_high</code></td><td class="num">175</td></tr>
+<tr><td><code>count</code></td><td class="num">176</td></tr>
+<tr><td><code>error</code></td><td class="num">177</td></tr>
+<tr><td><code>sumw2</code></td><td class="num">178</td></tr>
+<tr><td><code>n_obs</code></td><td class="num">181</td></tr>
+<tr><td><code>n_bkg</code></td><td class="num">182</td></tr>
+<tr><td><code>n_bkg_err</code></td><td class="num">183</td></tr>
+<tr><td><code>sr_label</code></td><td class="num">184</td></tr>
+<tr><td><code>bins</code></td><td class="num">188</td></tr>
+<tr><td><code>underflow</code></td><td class="num">189</td></tr>
+<tr><td><code>overflow</code></td><td class="num">190</td></tr>
+<tr><td><code>underflow_error</code></td><td class="num">191</td></tr>
+<tr><td><code>overflow_error</code></td><td class="num">192</td></tr>
+<tr><td><code>integral</code></td><td class="num">193</td></tr>
+<tr><td><code>y_label</code></td><td class="num">205</td></tr>
+<tr><td><code>x_edges</code></td><td class="num">206</td></tr>
+<tr><td><code>y_edges</code></td><td class="num">207</td></tr>
+<tr><td><code>nx_bins</code></td><td class="num">208</td></tr>
+<tr><td><code>ny_bins</code></td><td class="num">209</td></tr>
+<tr><td><code>counts</code></td><td class="num">227</td></tr>
+<tr><td><code>errors</code></td><td class="num">228</td></tr>
+<tr><td><code>overflow_total</code></td><td class="num">230</td></tr></tbody>
+      </table></div>
+      <div>
+        <div class="mapping-table"><table>
+          <thead><tr><th style="width:46%">Batch step</th><th style="width:16%">Line</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td><code>parse_histograms_or_empty</code></td><td class="num">584</td><td>Rebuilds <code>Histograms</code> from a per-file JSON, or returns empty if the key is absent.</td></tr>
+            <tr><td><code>scale(process_weight)</code></td><td class="num">834</td><td>Applies the cross-section weight before merging, so each subprocess contributes in proportion.</td></tr>
+            <tr><td><code>accumulate_histograms</code></td><td class="num">677</td><td>Adds bin contents and <code>sumw2</code> across files.</td></tr>
+            <tr><td>count guard</td><td class="num">694</td><td>Throws if two files disagree on how many histograms an analysis has.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+    <p class="diagram-note">Because the batch merge reads these fields back, the histogram block is part of the wire format between subprocesses and the merge step &mdash; not just a report. Renaming <code>edges</code>, <code>counts</code> or <code>sumw2</code> breaks batch mode, not merely the plotting script. The same is true of the cutflow and signal-region blocks, and the <a href="cbs-json-output.html">output-contract page</a> covers which fields are load-bearing in that sense.</p>
+  </section>
+
+  <section id="files">
+    <p class="kicker">07 &#183; the footprint</p>
+    <h2>Where it landed</h2>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:22%">File</th><th style="width:12%">State</th><th>Role</th><th style="width:14%">Lines</th></tr></thead>
+      <tbody><tr><td><code>Histogram.hpp</code></td><td><span class="status added-in-right">new file</span></td><td>the class itself: Histogram1D, Histogram2D, and the Histograms container</td><td class="num"><span class="add">+678</span> <span class="del">&minus;0</span></td></tr>
+<tr><td><code>AnalysisMacros.hpp</code></td><td><span class="status">modified</span></td><td>the booking, filling and committing macros</td><td class="num"><span class="add">+55</span> <span class="del">&minus;0</span></td></tr>
+<tr><td><code>Analysis.hpp</code></td><td><span class="status">modified</span></td><td><code>_histograms</code> member and <code>add_histograms</code></td><td class="num"><span class="add">+14</span> <span class="del">&minus;0</span></td></tr>
+<tr><td><code>AnalysisData.hpp</code></td><td><span class="status">modified</span></td><td>carries the histograms alongside the signal regions</td><td class="num"><span class="add">+10</span> <span class="del">&minus;2</span></td></tr>
+<tr><td><code>solo.cpp</code></td><td><span class="status">modified</span></td><td>reads <code>check_histogram</code> from YAML and sets the global switch</td><td class="num"><span class="add">+291</span> <span class="del">&minus;139</span></td></tr>
+<tr><td><code>solo_output.cpp</code></td><td><span class="status added-in-right">new file</span></td><td>serialises histograms into the run JSON</td><td class="num"><span class="add">+689</span> <span class="del">&minus;0</span></td></tr>
+<tr><td><code>solo_batch.cpp</code></td><td><span class="status added-in-right">new file</span></td><td>parses them back, scales by process weight, accumulates across files</td><td class="num"><span class="add">+1171</span> <span class="del">&minus;0</span></td></tr>
+<tr><td><code>plot_cbs_histograms.py</code></td><td><span class="status added-in-right">new file</span></td><td>renders the JSON histograms</td><td class="num"><span class="add">+288</span> <span class="del">&minus;0</span></td></tr>
+<tr><td><strong>total</strong></td><td></td><td>8 files</td><td class="num"><strong><span class="add">+3196</span> <span class="del">&minus;141</span></strong></td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">One new header carries the whole feature; everything else is a small edit at a seam that already existed &mdash; the analysis base class, the data container, the output writer, the batch merge. The plotting script (<code>288</code> lines) is the only other new file and it reads the JSON rather than linking against anything.</p>
+  </section>
+
+  <section>
+    <p class="kicker">08 &#183; boundary</p>
+    <h2>What this page does not tell you</h2>
+    <div class="note">Everything above is read from source text. No analysis was compiled, no histogram was filled, and no likelihood was evaluated &mdash; so this page shows how a bin becomes a signal region, not whether the resulting per-bin limits reproduce the published ones. The observed and background arrays are quoted as they appear in the source; whether they match the paper's tables is a validation question this page cannot answer, and <code>ATLAS_EXOT_2021_35</code> is in any case marked unvalidated in its own source.</div>
+  </section>
+
+  <p class="backlink" style="margin-top:26px"><span class="lbl">back</span><span>Return to <a href="cbs-change-ledger.html#8">slide 7 &#8599;</a>, or to the <a href="cbs-change-ledger.html#1">start of the deck &#8599;</a>.</span></p>
+  <footer>Generated by <code>scripts/build-histogram-page.py</code>. Baseline <code>9c955e3a78</code>, head <code>65aca0890d</code>.</footer>
+</main>
+</body>
+</html>
