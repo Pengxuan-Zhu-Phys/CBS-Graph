@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ColliderBit/examples/solo.cpp · ColliderBit_solo_development vs SUSYRun2</title>
+  <title>ColliderBit/examples/solo.cpp · SUSYRun2 vs ColliderBit_solo_development</title>
   <style>
     :root { --paper:#f5f5f5; --paper-2:#ececec; --ink:#2d3142; --muted:#4f5d75; --soft:#7a8399; --rule:rgba(45,49,66,.12); --accent:#eb6c36; --accent-tint:rgba(235,108,54,.08); --green:#4f8a69; --green-tint:#eef8f1; --red:#93513f; --red-tint:#f3e9e5; --font-sans:'Geist',system-ui,sans-serif; --font-mono:'Geist Mono',ui-monospace,monospace; }
     * { box-sizing:border-box; }
@@ -94,12 +94,12 @@
 <main class="frame">
   <p class="eyebrow">ColliderBit Solo · focused source comparison</p>
   <h1>solo.cpp / branch delta</h1>
-  <p class="intro">A focused comparison of <code>ColliderBit/examples/solo.cpp</code> between the baseline CBS Solo branch and SUSYRun2. The overview and two detail diagrams show where the old and new program logic lives; the evidence below expands to YAML ownership, defaults, data containers, functions, includes and exact diff hunks.</p>
-  <div class="meta"><span><strong>BASELINE</strong> ColliderBit_solo_development · 65aca0890</span><span><strong>COMPARISON</strong> SUSYRun2 · 5989e2d27</span><span><strong>MODULE</strong> examples / entrypoint</span><span><strong>STATIC EVIDENCE</strong> no build / no runtime trace</span></div>
-  <div class="note">Focused static source evidence for one file; the two flowcharts are grouped source paths, not a runtime trace or a complete C++ AST. Function status uses a per-function digest rather than inheriting the whole-file status. Include and build relationships are compared by their source tokens.</div>
+  <p class="intro">A focused comparison of <code>ColliderBit/examples/solo.cpp</code> from SUSYRun2 (old) to ColliderBit_solo_development (new). The overview and two detail diagrams show where the old and new program logic lives; the evidence below expands to YAML ownership, defaults, data containers, functions, includes and exact diff hunks.</p>
+  <div class="meta"><span><strong>OLD</strong> SUSYRun2 · 5989e2d27</span><span><strong>NEW</strong> ColliderBit_solo_development · 65aca0890</span><span><strong>MODULE</strong> examples / entrypoint</span><span><strong>STATIC EVIDENCE</strong> no build / no runtime trace</span></div>
+  <div class="note">Focused static source evidence for one file; comparison direction is SUSYRun2 (old) → ColliderBit_solo_development (new). The two flowcharts are grouped source paths, not a runtime trace or a complete C++ AST. Function status uses a per-function digest rather than inheriting the whole-file status. Include and build relationships are compared by their source tokens.</div>
   <div class="summary-grid" aria-label="Focused comparison summary">
-    <div class="card accent"><span class="n">139</span><span class="label">lines added</span></div>
-    <div class="card"><span class="n">291</span><span class="label">lines removed</span></div>
+    <div class="card accent"><span class="n">291</span><span class="label">lines added</span></div>
+    <div class="card"><span class="n">139</span><span class="label">lines removed</span></div>
     <div class="card"><span class="n">2</span><span class="label">functions inspected</span></div>
     <div class="card accent"><span class="n">1</span><span class="label">functions changed</span></div>
     <div class="card"><span class="n">10</span><span class="label">changed relations</span></div>
@@ -108,7 +108,7 @@
   <section>
     <p class="kicker">01 · focused architecture</p>
     <h2>One entrypoint, two source surfaces</h2>
-    <p class="source">The branch lanes keep the comparison direction explicit: baseline on the left, SUSYRun2 on the right.</p>
+    <p class="source">The branch lanes keep the comparison direction explicit: SUSYRun2 (old) on the left, ColliderBit_solo_development (new) on the right.</p>
     <div class="diagram-shell">
       <svg viewBox="0 0 1440 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="solo-focus-title solo-focus-desc">
         <title id="solo-focus-title">solo.cpp focused branch comparison</title>
@@ -122,26 +122,26 @@
         <rect class="zone" x="760" y="56" width="648" height="272" rx="8"/>
         <rect x="52" y="68" width="220" height="16" rx="2" fill="#f5f5f5"/>
         <rect x="780" y="68" width="220" height="16" rx="2" fill="#f5f5f5"/>
-        <text class="zone-label" x="56" y="80">BASELINE · COLLIDERBIT SOLO</text>
-        <text class="zone-label" x="784" y="80">COMPARISON · SUSYRUN2</text>
+        <text class="zone-label" x="56" y="80">OLD · SUSYRUN2</text>
+        <text class="zone-label" x="784" y="80">NEW · COLLIDERBIT SOLO-DEVELOPMENT</text>
         <path class="edge" d="M 224 188 H 272"/>
         <path class="edge" d="M 528 188 H 576"/>
         <path class="edge" d="M 952 188 H 1000"/>
         <path class="edge" d="M 1256 188 H 1304"/>
         <path class="edge delta" d="M 440 264 V 364 H 696 Q 704 364 704 372 V 412"/>
         <path class="edge delta" d="M 1160 264 V 364 H 744 Q 736 364 736 372 V 412"/>
-        <g class="node stage" transform="translate(56 132)"><rect width="168" height="112" rx="6"/><text class="kind" x="12" y="20">BRANCH SNAPSHOT</text><text class="title" x="12" y="48">baseline</text><text class="body" x="12" y="68">commit 65aca0890</text><text class="tag" x="12" y="92">598 lines</text></g>
-        <g class="node mod" transform="translate(272 132)"><rect width="256" height="112" rx="6"/><text class="kind" x="12" y="20">FOCUS · MODIFIED</text><text class="title" x="12" y="48">solo.cpp</text><text class="body" x="12" y="68">4 removed includes</text><text class="tag" x="12" y="92">598 lines · entrypoint</text></g>
-        <g class="node remove" transform="translate(576 132)"><rect width="96" height="112" rx="6"/><text class="kind" x="12" y="20">SURFACE</text><text class="title" x="12" y="48">helpers</text><text class="body" x="12" y="68">4</text><text class="tag" x="12" y="92">removed</text></g>
-        <g class="node stage" transform="translate(784 132)"><rect width="168" height="112" rx="6"/><text class="kind" x="12" y="20">BRANCH SNAPSHOT</text><text class="title" x="12" y="48">comparison</text><text class="body" x="12" y="68">commit 5989e2d27</text><text class="tag" x="12" y="92">446 lines</text></g>
-        <g class="node focal" transform="translate(1000 132)"><rect width="256" height="112" rx="6"/><text class="kind" x="12" y="20">FOCUS · MODIFIED</text><text class="title" x="12" y="48">solo.cpp</text><text class="body" x="12" y="68">0 new include surface</text><text class="tag" x="12" y="92">446 lines · entrypoint</text></g>
-        <g class="node add" transform="translate(1304 132)"><rect width="96" height="112" rx="6"/><text class="kind" x="12" y="20">SURFACE</text><text class="title" x="12" y="48">shared API</text><text class="body" x="12" y="68">4</text><text class="tag" x="12" y="92">retained</text></g>
-        <g class="node focal" transform="translate(360 412)"><rect width="720" height="96" rx="8"/><text class="kind" x="24" y="28">FILE DELTA · FUNCTION-AWARE</text><text class="title" x="24" y="56" id="delta-title">139 additions · 291 deletions</text><text class="body" x="24" y="78" id="delta-body">1 of 2 detected functions changed · 10 direct relations changed</text></g>
+        <g class="node stage" transform="translate(56 132)"><rect width="168" height="112" rx="6"/><text class="kind" x="12" y="20">BRANCH SNAPSHOT</text><text class="title" x="12" y="48">old</text><text class="body" x="12" y="68">commit 5989e2d27</text><text class="tag" x="12" y="92">446 lines</text></g>
+        <g class="node mod" transform="translate(272 132)"><rect width="256" height="112" rx="6"/><text class="kind" x="12" y="20">FOCUS · OLD</text><text class="title" x="12" y="48">solo.cpp</text><text class="body" x="12" y="68">0 old-only includes</text><text class="tag" x="12" y="92">446 lines · entrypoint</text></g>
+        <g class="node add" transform="translate(576 132)"><rect width="96" height="112" rx="6"/><text class="kind" x="12" y="20">SURFACE</text><text class="title" x="12" y="48">shared API</text><text class="body" x="12" y="68">4</text><text class="tag" x="12" y="92">retained</text></g>
+        <g class="node stage" transform="translate(784 132)"><rect width="168" height="112" rx="6"/><text class="kind" x="12" y="20">BRANCH SNAPSHOT</text><text class="title" x="12" y="48">new</text><text class="body" x="12" y="68">commit 65aca0890</text><text class="tag" x="12" y="92">598 lines</text></g>
+        <g class="node focal" transform="translate(1000 132)"><rect width="256" height="112" rx="6"/><text class="kind" x="12" y="20">FOCUS · NEW</text><text class="title" x="12" y="48">solo.cpp</text><text class="body" x="12" y="68">4 helper includes added</text><text class="tag" x="12" y="92">598 lines · entrypoint</text></g>
+        <g class="node add" transform="translate(1304 132)"><rect width="96" height="112" rx="6"/><text class="kind" x="12" y="20">SURFACE</text><text class="title" x="12" y="48">helpers</text><text class="body" x="12" y="68">4</text><text class="tag" x="12" y="92">added</text></g>
+        <g class="node focal" transform="translate(360 412)"><rect width="720" height="96" rx="8"/><text class="kind" x="24" y="28">FILE DELTA · FUNCTION-AWARE</text><text class="title" x="24" y="56" id="delta-title">291 additions · 139 deletions</text><text class="body" x="24" y="78" id="delta-body">1 of 2 detected functions changed · 10 direct relations changed</text></g>
         <line x1="40" y1="520" x2="1400" y2="520" stroke="rgba(45,49,66,.12)" stroke-width="1"/>
         <text class="legend-label" x="40" y="544">LEGEND</text>
         <rect x="128" y="534" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="158" y="544">MODIFIED</text>
-        <rect x="260" y="534" width="20" height="10" rx="3" fill="#eef8f1" stroke="#4f8a69"/><text class="legend-label" x="290" y="544">COMPARISON SURFACE</text>
-        <rect x="450" y="534" width="20" height="10" rx="3" fill="#f3e9e5" stroke="#93513f" stroke-dasharray="5 4"/><text class="legend-label" x="480" y="544">BASELINE-ONLY SURFACE</text>
+        <rect x="260" y="534" width="20" height="10" rx="3" fill="#eef8f1" stroke="#4f8a69"/><text class="legend-label" x="290" y="544">NEW SURFACE</text>
+        <rect x="450" y="534" width="20" height="10" rx="3" fill="#f3e9e5" stroke="#93513f" stroke-dasharray="5 4"/><text class="legend-label" x="480" y="544">OLD-ONLY SURFACE</text>
         <text class="legend-label" x="760" y="544">SOLID = SOURCE SURFACE</text><text class="legend-label" x="1020" y="544">DASHED = CHANGE EVIDENCE</text>
       </svg>
     </div>
@@ -149,43 +149,43 @@
   </section>
 
   <section>
-    <p class="kicker">02 · baseline logic</p>
-    <h2>Before · helper-oriented execution flow</h2>
-    <p class="source">The baseline path is long because <code>main</code> coordinates several extracted responsibilities. The nodes name the concrete wrappers that own those responsibilities.</p>
-    <div class="flow-figure"><div class="diagram-shell"><svg viewBox="0 0 1240 980" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="solo-baseline-flow-title solo-baseline-flow-desc"><title id="solo-baseline-flow-title">Before · helper-oriented execution flow</title><desc id="solo-baseline-flow-desc">The baseline entrypoint delegates parsing, multi-file execution, merging, sampling advice, and output to dedicated Solo* helpers.</desc><defs><marker id="solo-baseline-flow-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker></defs><rect width="1240" height="980" fill="#f5f5f5"/><rect class="zone" x="32" y="12" width="1176" height="910" rx="10"/><text class="zone-label" x="56" y="40">SOURCE-OWNED EXECUTION PATH · GROUPED BY RESPONSIBILITY</text><path class="flow-edge" d="M 620 96 L 620 132" style="marker-end:url(#solo-baseline-flow-arrow)"/><path class="flow-edge" d="M 620 236 L 620 264" style="marker-end:url(#solo-baseline-flow-arrow)"/><path class="flow-edge" d="M 620 368 L 620 396" style="marker-end:url(#solo-baseline-flow-arrow)"/><path class="flow-edge" d="M 620 504 L 620 515" style="marker-end:url(#solo-baseline-flow-arrow)"/><path class="flow-edge" d="M 760 580 L 972 580 Q 980 580 980 588 L 980 700" style="marker-end:url(#solo-baseline-flow-arrow)"/><text class="edge-label" x="822" y="567">YES · processes</text><path class="flow-edge" d="M 620 645 L 620 653 Q 620 660 612 660 L 268 660 Q 260 660 260 668 L 260 700" style="marker-end:url(#solo-baseline-flow-arrow)"/><text class="edge-label" x="430" y="648">NO · event_file</text><path class="flow-edge" d="M 980 810 L 980 815 Q 980 820 972 820 L 768 820 Q 760 820 760 822 L 760 824" style="marker-end:url(#solo-baseline-flow-arrow)"/><path class="flow-edge" d="M 260 810 L 260 815 Q 260 820 268 820 L 472 820 Q 480 820 480 822 L 480 824" style="marker-end:url(#solo-baseline-flow-arrow)"/><g class="node focal"><ellipse cx="620" cy="60" rx="130" ry="36"/><text class="kind" x="620" y="42" text-anchor="middle">ENTRYPOINT</text><text class="title" x="620" y="64" text-anchor="middle">main(argc, argv)</text><text class="body" x="620" y="80" text-anchor="middle">ColliderBit Solo</text><text class="tag" x="620" y="94" text-anchor="middle">try { … }</text></g><g class="node wrapper" transform="translate(470 132)"><rect width="300" height="104" rx="6"/><text class="kind" x="16" y="22">CLI WRAPPER</text><text class="title" x="16" y="50">SoloCLI::parse_command_line</text><text class="body" x="16" y="70">--help / malformed args</text><text class="body" x="16" y="84">→ status::help|error|run</text><text class="tag" x="16" y="92">solo_cli.hpp/.cpp</text></g><g class="node wrapper" transform="translate(430 264)"><rect width="380" height="104" rx="6"/><text class="kind" x="16" y="22">INPUT WRAPPER</text><text class="title" x="16" y="50">SoloInput::parse_and_prepare_input</text><text class="body" x="16" y="70">YAML + analyses + settings</text><text class="body" x="16" y="84">event_file OR processes + xsec</text><text class="tag" x="16" y="92">solo_input.hpp/.cpp</text></g><g class="node stage" transform="translate(400 396)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">CONFIGURE IN MAIN</text><text class="title" x="16" y="50">backend + runtime options</text><text class="body" x="16" y="70">FullLikes selector, cutflow/histogram</text><text class="body" x="16" y="84">Rivet/Contur + OutputConfig</text><text class="tag" x="16" y="96">main + apply_setting_if_present</text></g><g class="node decision"><polygon points="620,515 760,580 620,645 480,580"/><text class="kind" x="620" y="556" text-anchor="middle">MODE DECISION</text><text class="title" x="620" y="582" text-anchor="middle">settings.processes?</text><text class="body" x="620" y="602" text-anchor="middle">multi-file batch</text><text class="body" x="620" y="616" text-anchor="middle">or one-pass event_file</text><text class="tag" x="620" y="632" text-anchor="middle">main</text></g><g class="node wrapper" transform="translate(800 700)"><rect width="360" height="110" rx="6"/><text class="kind" x="16" y="22">BATCH WRAPPER</text><text class="title" x="16" y="50">SoloBatch::run_and_merge</text><text class="body" x="16" y="70">per-file CBS subprocesses</text><text class="body" x="16" y="84">weighted SR/cutflow/hist merge</text><text class="tag" x="16" y="98">solo_batch.cpp</text></g><g class="node stage" transform="translate(80 700)"><rect width="360" height="110" rx="6"/><text class="kind" x="16" y="22">RUNTIME WIRING</text><text class="title" x="16" y="50">event loop + dependencies</text><text class="body" x="16" y="70">getEvent / convertEvent / xsec</text><text class="body" x="16" y="84">resolve functors + backends</text><text class="tag" x="16" y="98">main · operateLHCLoop</text></g><g class="node focal"><ellipse cx="620" cy="860" rx="220" ry="36"/><text class="kind" x="620" y="842" text-anchor="middle">STRUCTURED OUTPUT</text><text class="title" x="620" y="864" text-anchor="middle">SoloOutput::emit_outputs</text><text class="body" x="620" y="880" text-anchor="middle">analyses + loglikes + Contur</text><text class="tag" x="620" y="894" text-anchor="middle">screen / JSON · catch → 1</text></g><line x1="48" y1="930" x2="1192" y2="930" stroke="rgba(45,49,66,.12)" stroke-width="1"/><text class="legend-label" x="48" y="948">LEGEND</text><rect x="112" y="938" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="142" y="948">INLINE / MODIFIED OWNERSHIP</text><rect x="326" y="938" width="20" height="10" rx="3" fill="#fff" stroke="#7a8399"/><text class="legend-label" x="356" y="948">EXTRACTED WRAPPER</text><polygon points="536,938 546,943 536,948 526,943" fill="rgba(79,93,117,.08)" stroke="#7a8399"/><text class="legend-label" x="556" y="948">DECISION</text><text class="legend-label" x="680" y="948">ARROWS = CONTROL FLOW · LABELS = BRANCH CONDITION</text></svg></div></div>
-    <p class="diagram-note">The key branch is <code>settings.processes?</code>: the YES path enters <code>SoloBatch::run_and_merge</code> and then emits structured output; the NO path wires the ordinary event loop directly.</p>
+    <p class="kicker">02 · old logic</p>
+    <h2>Before · main-owned execution flow</h2>
+    <p class="source">The old SUSYRun2 path keeps argument checks, YAML loading, dependency wiring, event execution and output formatting inside <code>solo.cpp::main</code>.</p>
+    <div class="flow-figure"><div class="diagram-shell"><svg viewBox="0 0 1240 1120" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="solo-baseline-flow-title solo-baseline-flow-desc"><title id="solo-baseline-flow-title">Before · main-owned execution flow</title><desc id="solo-baseline-flow-desc">SUSYRun2 keeps the complete single-file path in solo.cpp::main, with no SoloCLI/SoloInput/SoloBatch/SoloOutput helper boundary.</desc><defs><marker id="solo-baseline-flow-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker></defs><rect width="1240" height="1120" fill="#f5f5f5"/><rect class="zone" x="32" y="12" width="1176" height="1050" rx="10"/><text class="zone-label" x="56" y="40">SOURCE-OWNED EXECUTION PATH · GROUPED BY RESPONSIBILITY</text><path class="flow-edge" d="M 620 96 L 620 110" style="marker-end:url(#solo-baseline-flow-arrow)"/><path class="flow-edge" d="M 470 170 L 368 170 Q 360 170 360 162 L 360 122 Q 360 114 352 114 L 230 114" style="marker-end:url(#solo-baseline-flow-arrow)"/><text class="edge-label" x="392" y="156">YES</text><path class="flow-edge" d="M 620 230 L 620 270" style="marker-end:url(#solo-baseline-flow-arrow)"/><text class="edge-label" x="636" y="252">NO</text><path class="flow-edge" d="M 620 374 L 620 398" style="marker-end:url(#solo-baseline-flow-arrow)"/><path class="flow-edge" d="M 620 502 L 620 534" style="marker-end:url(#solo-baseline-flow-arrow)"/><path class="flow-edge" d="M 620 638 L 620 670" style="marker-end:url(#solo-baseline-flow-arrow)"/><path class="flow-edge" d="M 620 774 L 620 806" style="marker-end:url(#solo-baseline-flow-arrow)"/><path class="flow-edge" d="M 620 910 L 620 942" style="marker-end:url(#solo-baseline-flow-arrow)"/><g class="node focal"><ellipse cx="620" cy="60" rx="130" ry="36"/><text class="kind" x="620" y="42" text-anchor="middle">ENTRYPOINT</text><text class="title" x="620" y="64" text-anchor="middle">main(argc, argv)</text><text class="body" x="620" y="80" text-anchor="middle">ColliderBit Solo</text><text class="tag" x="620" y="94" text-anchor="middle">try { … }</text></g><g class="node decision"><polygon points="620,110 770,170 620,230 470,170"/><text class="kind" x="620" y="146" text-anchor="middle">ARGUMENT GATE</text><text class="title" x="620" y="172" text-anchor="middle">argc &lt; 2?</text><text class="body" x="620" y="192" text-anchor="middle">usage + return 1</text><text class="body" x="620" y="206" text-anchor="middle">otherwise argv[1]</text><text class="tag" x="620" y="222" text-anchor="middle">inline in main</text></g><g class="node stop"><ellipse cx="230" cy="150" rx="110" ry="36"/><text class="kind" x="230" y="132" text-anchor="middle">EARLY EXIT</text><text class="title" x="230" y="154" text-anchor="middle">usage error</text><text class="body" x="230" y="170" text-anchor="middle">cerr &lt;&lt; Usage</text><text class="tag" x="230" y="184" text-anchor="middle">return 1</text></g><g class="node stage" transform="translate(420 270)"><rect width="400" height="104" rx="6"/><text class="kind" x="16" y="22">BACKEND GATES</text><text class="title" x="16" y="50">backendInfo().works</text><text class="body" x="16" y="70">nulike + FullLikes required</text><text class="body" x="16" y="84">Rivet/Contur availability flags</text><text class="tag" x="16" y="92">inline in main</text></g><g class="node mod" transform="translate(420 398)"><rect width="400" height="104" rx="6"/><text class="kind" x="16" y="22">INPUT IN MAIN</text><text class="title" x="16" y="50">YAML::LoadFile</text><text class="body" x="16" y="70">analyses + Options(settings)</text><text class="body" x="16" y="84">event_file + extension check</text><text class="tag" x="16" y="92">no SoloInput wrapper</text></g><g class="node mod" transform="translate(420 534)"><rect width="400" height="104" rx="6"/><text class="kind" x="16" y="22">CONFIG IN MAIN</text><text class="title" x="16" y="50">settings + Rivet/Contur</text><text class="body" x="16" y="70">jet collections + cross section</text><text class="body" x="16" y="84">calc_LHC_LogLikes_full options</text><text class="tag" x="16" y="92">single-file mode</text></g><g class="node mod" transform="translate(420 670)"><rect width="400" height="104" rx="6"/><text class="kind" x="16" y="22">RUNTIME WIRING IN MAIN</text><text class="title" x="16" y="50">resolve + nested functions</text><text class="body" x="16" y="70">operateLHCLoop + event conversion</text><text class="body" x="16" y="84">ATLAS/CMS/Identity + FullLikes</text><text class="tag" x="16" y="92">inline dependency graph</text></g><g class="node mod" transform="translate(420 806)"><rect width="400" height="104" rx="6"/><text class="kind" x="16" y="22">EXECUTE IN MAIN</text><text class="title" x="16" y="50">reset_and_calculate()</text><text class="body" x="16" y="70">loop → CollectAnalyses</text><text class="body" x="16" y="84">full loglikes + optional Contur</text><text class="tag" x="16" y="92">one pass over event_file</text></g><g class="node focal"><ellipse cx="620" cy="986" rx="200" ry="44"/><text class="kind" x="620" y="968" text-anchor="middle">INLINE OUTPUT</text><text class="title" x="620" y="990" text-anchor="middle">summary_line + cout</text><text class="body" x="620" y="1006" text-anchor="middle">loop analyses → SR details</text><text class="tag" x="620" y="1020" text-anchor="middle">total loglike · catch → 1</text></g><line x1="48" y1="1070" x2="1192" y2="1070" stroke="rgba(45,49,66,.12)" stroke-width="1"/><text class="legend-label" x="48" y="1088">LEGEND</text><rect x="112" y="1078" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="142" y="1088">INLINE / MODIFIED OWNERSHIP</text><rect x="326" y="1078" width="20" height="10" rx="3" fill="#fff" stroke="#7a8399"/><text class="legend-label" x="356" y="1088">EXTRACTED WRAPPER</text><polygon points="536,1078 546,1083 536,1088 526,1083" fill="rgba(79,93,117,.08)" stroke="#7a8399"/><text class="legend-label" x="556" y="1088">DECISION</text><text class="legend-label" x="680" y="1088">ARROWS = CONTROL FLOW · LABELS = BRANCH CONDITION</text></svg></div></div>
+    <p class="diagram-note">The old path has one event-file pass: <code>reset_and_calculate()</code> fills analysis and likelihood containers before <code>summary_line</code> prints the result inline.</p>
   </section>
 
   <section>
-    <p class="kicker">03 · comparison logic</p>
-    <h2>After · main-owned execution flow</h2>
-    <p class="source">SUSYRun2 retains the event-loop and likelihood stages but places input validation, configuration, dependency wiring, result aggregation and printing directly in <code>solo.cpp::main</code>.</p>
-    <div class="flow-figure"><div class="diagram-shell"><svg viewBox="0 0 1240 1120" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="solo-comparison-flow-title solo-comparison-flow-desc"><title id="solo-comparison-flow-title">After · main-owned execution flow</title><desc id="solo-comparison-flow-desc">SUSYRun2 keeps the complete single-file path in solo.cpp::main, with no SoloCLI/SoloInput/SoloBatch/SoloOutput helper boundary.</desc><defs><marker id="solo-comparison-flow-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker></defs><rect width="1240" height="1120" fill="#f5f5f5"/><rect class="zone" x="32" y="12" width="1176" height="1050" rx="10"/><text class="zone-label" x="56" y="40">SOURCE-OWNED EXECUTION PATH · GROUPED BY RESPONSIBILITY</text><path class="flow-edge" d="M 620 96 L 620 110" style="marker-end:url(#solo-comparison-flow-arrow)"/><path class="flow-edge" d="M 470 170 L 368 170 Q 360 170 360 162 L 360 122 Q 360 114 352 114 L 230 114" style="marker-end:url(#solo-comparison-flow-arrow)"/><text class="edge-label" x="392" y="156">YES</text><path class="flow-edge" d="M 620 230 L 620 270" style="marker-end:url(#solo-comparison-flow-arrow)"/><text class="edge-label" x="636" y="252">NO</text><path class="flow-edge" d="M 620 374 L 620 398" style="marker-end:url(#solo-comparison-flow-arrow)"/><path class="flow-edge" d="M 620 502 L 620 534" style="marker-end:url(#solo-comparison-flow-arrow)"/><path class="flow-edge" d="M 620 638 L 620 670" style="marker-end:url(#solo-comparison-flow-arrow)"/><path class="flow-edge" d="M 620 774 L 620 806" style="marker-end:url(#solo-comparison-flow-arrow)"/><path class="flow-edge" d="M 620 910 L 620 942" style="marker-end:url(#solo-comparison-flow-arrow)"/><g class="node focal"><ellipse cx="620" cy="60" rx="130" ry="36"/><text class="kind" x="620" y="42" text-anchor="middle">ENTRYPOINT</text><text class="title" x="620" y="64" text-anchor="middle">main(argc, argv)</text><text class="body" x="620" y="80" text-anchor="middle">ColliderBit Solo</text><text class="tag" x="620" y="94" text-anchor="middle">try { … }</text></g><g class="node decision"><polygon points="620,110 770,170 620,230 470,170"/><text class="kind" x="620" y="146" text-anchor="middle">ARGUMENT GATE</text><text class="title" x="620" y="172" text-anchor="middle">argc &lt; 2?</text><text class="body" x="620" y="192" text-anchor="middle">usage + return 1</text><text class="body" x="620" y="206" text-anchor="middle">otherwise argv[1]</text><text class="tag" x="620" y="222" text-anchor="middle">inline in main</text></g><g class="node stop"><ellipse cx="230" cy="150" rx="110" ry="36"/><text class="kind" x="230" y="132" text-anchor="middle">EARLY EXIT</text><text class="title" x="230" y="154" text-anchor="middle">usage error</text><text class="body" x="230" y="170" text-anchor="middle">cerr &lt;&lt; Usage</text><text class="tag" x="230" y="184" text-anchor="middle">return 1</text></g><g class="node stage" transform="translate(420 270)"><rect width="400" height="104" rx="6"/><text class="kind" x="16" y="22">BACKEND GATES</text><text class="title" x="16" y="50">backendInfo().works</text><text class="body" x="16" y="70">nulike + FullLikes required</text><text class="body" x="16" y="84">Rivet/Contur availability flags</text><text class="tag" x="16" y="92">inline in main</text></g><g class="node mod" transform="translate(420 398)"><rect width="400" height="104" rx="6"/><text class="kind" x="16" y="22">INPUT IN MAIN</text><text class="title" x="16" y="50">YAML::LoadFile</text><text class="body" x="16" y="70">analyses + Options(settings)</text><text class="body" x="16" y="84">event_file + extension check</text><text class="tag" x="16" y="92">no SoloInput wrapper</text></g><g class="node mod" transform="translate(420 534)"><rect width="400" height="104" rx="6"/><text class="kind" x="16" y="22">CONFIG IN MAIN</text><text class="title" x="16" y="50">settings + Rivet/Contur</text><text class="body" x="16" y="70">jet collections + cross section</text><text class="body" x="16" y="84">calc_LHC_LogLikes_full options</text><text class="tag" x="16" y="92">single-file mode</text></g><g class="node mod" transform="translate(420 670)"><rect width="400" height="104" rx="6"/><text class="kind" x="16" y="22">RUNTIME WIRING IN MAIN</text><text class="title" x="16" y="50">resolve + nested functions</text><text class="body" x="16" y="70">operateLHCLoop + event conversion</text><text class="body" x="16" y="84">ATLAS/CMS/Identity + FullLikes</text><text class="tag" x="16" y="92">inline dependency graph</text></g><g class="node mod" transform="translate(420 806)"><rect width="400" height="104" rx="6"/><text class="kind" x="16" y="22">EXECUTE IN MAIN</text><text class="title" x="16" y="50">reset_and_calculate()</text><text class="body" x="16" y="70">loop → CollectAnalyses</text><text class="body" x="16" y="84">full loglikes + optional Contur</text><text class="tag" x="16" y="92">one pass over event_file</text></g><g class="node focal"><ellipse cx="620" cy="986" rx="200" ry="44"/><text class="kind" x="620" y="968" text-anchor="middle">INLINE OUTPUT</text><text class="title" x="620" y="990" text-anchor="middle">summary_line + cout</text><text class="body" x="620" y="1006" text-anchor="middle">loop analyses → SR details</text><text class="tag" x="620" y="1020" text-anchor="middle">total loglike · catch → 1</text></g><line x1="48" y1="1070" x2="1192" y2="1070" stroke="rgba(45,49,66,.12)" stroke-width="1"/><text class="legend-label" x="48" y="1088">LEGEND</text><rect x="112" y="1078" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="142" y="1088">INLINE / MODIFIED OWNERSHIP</text><rect x="326" y="1078" width="20" height="10" rx="3" fill="#fff" stroke="#7a8399"/><text class="legend-label" x="356" y="1088">EXTRACTED WRAPPER</text><polygon points="536,1078 546,1083 536,1088 526,1083" fill="rgba(79,93,117,.08)" stroke="#7a8399"/><text class="legend-label" x="556" y="1088">DECISION</text><text class="legend-label" x="680" y="1088">ARROWS = CONTROL FLOW · LABELS = BRANCH CONDITION</text></svg></div></div>
-    <p class="diagram-note">Compared with the baseline, there is no <code>SoloInput</code>, <code>SoloBatch</code> or <code>SoloOutput</code> boundary in this file, and <code>calc_LHC_LogLikes_full</code> is selected directly.</p>
+    <p class="kicker">03 · new logic</p>
+    <h2>After · helper-oriented execution flow</h2>
+    <p class="source">The new ColliderBit_solo_development path extracts CLI parsing, input preparation, batch execution/merge and output emission into dedicated Solo* helpers around the shared CBS runtime.</p>
+    <div class="flow-figure"><div class="diagram-shell"><svg viewBox="0 0 1240 980" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="solo-comparison-flow-title solo-comparison-flow-desc"><title id="solo-comparison-flow-title">After · helper-oriented execution flow</title><desc id="solo-comparison-flow-desc">The new entrypoint delegates parsing, multi-file execution, merging, sampling advice, and output to dedicated Solo* helpers.</desc><defs><marker id="solo-comparison-flow-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker></defs><rect width="1240" height="980" fill="#f5f5f5"/><rect class="zone" x="32" y="12" width="1176" height="910" rx="10"/><text class="zone-label" x="56" y="40">SOURCE-OWNED EXECUTION PATH · GROUPED BY RESPONSIBILITY</text><path class="flow-edge" d="M 620 96 L 620 132" style="marker-end:url(#solo-comparison-flow-arrow)"/><path class="flow-edge" d="M 620 236 L 620 264" style="marker-end:url(#solo-comparison-flow-arrow)"/><path class="flow-edge" d="M 620 368 L 620 396" style="marker-end:url(#solo-comparison-flow-arrow)"/><path class="flow-edge" d="M 620 504 L 620 515" style="marker-end:url(#solo-comparison-flow-arrow)"/><path class="flow-edge" d="M 760 580 L 972 580 Q 980 580 980 588 L 980 700" style="marker-end:url(#solo-comparison-flow-arrow)"/><text class="edge-label" x="822" y="567">YES · processes</text><path class="flow-edge" d="M 620 645 L 620 653 Q 620 660 612 660 L 268 660 Q 260 660 260 668 L 260 700" style="marker-end:url(#solo-comparison-flow-arrow)"/><text class="edge-label" x="430" y="648">NO · event_file</text><path class="flow-edge" d="M 980 810 L 980 815 Q 980 820 972 820 L 768 820 Q 760 820 760 822 L 760 824" style="marker-end:url(#solo-comparison-flow-arrow)"/><path class="flow-edge" d="M 260 810 L 260 815 Q 260 820 268 820 L 472 820 Q 480 820 480 822 L 480 824" style="marker-end:url(#solo-comparison-flow-arrow)"/><g class="node focal"><ellipse cx="620" cy="60" rx="130" ry="36"/><text class="kind" x="620" y="42" text-anchor="middle">ENTRYPOINT</text><text class="title" x="620" y="64" text-anchor="middle">main(argc, argv)</text><text class="body" x="620" y="80" text-anchor="middle">ColliderBit Solo</text><text class="tag" x="620" y="94" text-anchor="middle">try { … }</text></g><g class="node wrapper" transform="translate(470 132)"><rect width="300" height="104" rx="6"/><text class="kind" x="16" y="22">CLI WRAPPER</text><text class="title" x="16" y="50">SoloCLI::parse_command_line</text><text class="body" x="16" y="70">--help / malformed args</text><text class="body" x="16" y="84">→ status::help|error|run</text><text class="tag" x="16" y="92">solo_cli.hpp/.cpp</text></g><g class="node wrapper" transform="translate(430 264)"><rect width="380" height="104" rx="6"/><text class="kind" x="16" y="22">INPUT WRAPPER</text><text class="title" x="16" y="50">SoloInput::parse_and_prepare_input</text><text class="body" x="16" y="70">YAML + analyses + settings</text><text class="body" x="16" y="84">event_file OR processes + xsec</text><text class="tag" x="16" y="92">solo_input.hpp/.cpp</text></g><g class="node stage" transform="translate(400 396)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">CONFIGURE IN MAIN</text><text class="title" x="16" y="50">backend + runtime options</text><text class="body" x="16" y="70">FullLikes selector, cutflow/histogram</text><text class="body" x="16" y="84">Rivet/Contur + OutputConfig</text><text class="tag" x="16" y="96">main + apply_setting_if_present</text></g><g class="node decision"><polygon points="620,515 760,580 620,645 480,580"/><text class="kind" x="620" y="556" text-anchor="middle">MODE DECISION</text><text class="title" x="620" y="582" text-anchor="middle">settings.processes?</text><text class="body" x="620" y="602" text-anchor="middle">multi-file batch</text><text class="body" x="620" y="616" text-anchor="middle">or one-pass event_file</text><text class="tag" x="620" y="632" text-anchor="middle">main</text></g><g class="node wrapper" transform="translate(800 700)"><rect width="360" height="110" rx="6"/><text class="kind" x="16" y="22">BATCH WRAPPER</text><text class="title" x="16" y="50">SoloBatch::run_and_merge</text><text class="body" x="16" y="70">per-file CBS subprocesses</text><text class="body" x="16" y="84">weighted SR/cutflow/hist merge</text><text class="tag" x="16" y="98">solo_batch.cpp</text></g><g class="node stage" transform="translate(80 700)"><rect width="360" height="110" rx="6"/><text class="kind" x="16" y="22">RUNTIME WIRING</text><text class="title" x="16" y="50">event loop + dependencies</text><text class="body" x="16" y="70">getEvent / convertEvent / xsec</text><text class="body" x="16" y="84">resolve functors + backends</text><text class="tag" x="16" y="98">main · operateLHCLoop</text></g><g class="node focal"><ellipse cx="620" cy="860" rx="220" ry="36"/><text class="kind" x="620" y="842" text-anchor="middle">STRUCTURED OUTPUT</text><text class="title" x="620" y="864" text-anchor="middle">SoloOutput::emit_outputs</text><text class="body" x="620" y="880" text-anchor="middle">analyses + loglikes + Contur</text><text class="tag" x="620" y="894" text-anchor="middle">screen / JSON · catch → 1</text></g><line x1="48" y1="930" x2="1192" y2="930" stroke="rgba(45,49,66,.12)" stroke-width="1"/><text class="legend-label" x="48" y="948">LEGEND</text><rect x="112" y="938" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="142" y="948">INLINE / MODIFIED OWNERSHIP</text><rect x="326" y="938" width="20" height="10" rx="3" fill="#fff" stroke="#7a8399"/><text class="legend-label" x="356" y="948">EXTRACTED WRAPPER</text><polygon points="536,938 546,943 536,948 526,943" fill="rgba(79,93,117,.08)" stroke="#7a8399"/><text class="legend-label" x="556" y="948">DECISION</text><text class="legend-label" x="680" y="948">ARROWS = CONTROL FLOW · LABELS = BRANCH CONDITION</text></svg></div></div>
+    <p class="diagram-note">Compared with the old path, the new branch adds <code>SoloCLI</code>, <code>SoloInput</code>, <code>SoloBatch</code> and <code>SoloOutput</code> boundaries, while retaining the shared ColliderBit API.</p>
   </section>
 
   <section>
     <p class="kicker">04 · ownership migration</p>
     <h2>Where each piece of logic lives</h2>
-    <p class="source">This table is the compact reading guide for the two flowcharts: baseline ownership versus SUSYRun2 ownership.</p>
-    <div class="mapping-table"><table><thead><tr><th>Concern</th><th>Baseline owner</th><th>SUSYRun2 owner</th><th>Observed change</th></tr></thead><tbody><tr><td>CLI / help / argument errors</td><td>SoloCLI::parse_command_line · solo_cli.cpp</td><td>main: argc check + argv[1]</td><td class="status modified">helper boundary removed</td></tr><tr><td>YAML, analyses, settings, event inputs</td><td>SoloInput::parse_and_prepare_input · solo_input.cpp</td><td>main: YAML::LoadFile + Options(settings)</td><td class="status modified">input normalization moved inline</td></tr><tr><td>multi-process / multi-file execution</td><td>SoloBatch::run_and_merge + build_sampling_advice</td><td>no batch branch; one settings.event_file</td><td class="status modified">batch abstraction removed</td></tr><tr><td>likelihood implementation choice</td><td>use_FullLikes selects calc_LHC_LogLikes(_full)</td><td>calc_LHC_LogLikes_full is hard-wired</td><td class="status modified">runtime selector simplified</td></tr><tr><td>cutflow / histogram policy</td><td>Cutflow::set_check_cutflow + Histogram1D::set_check_histogram</td><td>CollectAnalyses.setOption(print_cutflows, true)</td><td class="status modified">runtime switches simplified</td></tr><tr><td>output contract</td><td>OutputConfig + validate_output_config + emit_outputs</td><td>summary_line + cout in main</td><td class="status modified">structured screen/JSON output removed</td></tr><tr><td>Rivet / Contur wiring</td><td>main configures and output helper emits maps</td><td>main configures and prints pool details inline</td><td class="status modified">ownership remains inline; output path changed</td></tr></tbody></table></div>
+    <p class="source">This table is the compact reading guide for the two flowcharts: old SUSYRun2 ownership versus new ColliderBit_solo_development ownership.</p>
+    <div class="mapping-table"><table><thead><tr><th>Concern</th><th>Old · SUSYRun2</th><th>New · ColliderBit_solo_development</th><th>Observed change</th></tr></thead><tbody><tr><td>CLI / help / argument errors</td><td>main: argc check + argv[1]</td><td>SoloCLI::parse_command_line · solo_cli.cpp</td><td class="status modified">CLI ownership extracted</td></tr><tr><td>YAML, analyses, settings, event inputs</td><td>main: YAML::LoadFile + Options(settings)</td><td>SoloInput::parse_and_prepare_input · solo_input.cpp</td><td class="status modified">input normalization extracted</td></tr><tr><td>multi-process / multi-file execution</td><td>no batch branch; one settings.event_file</td><td>SoloBatch::run_and_merge + build_sampling_advice</td><td class="status modified">batch abstraction added</td></tr><tr><td>likelihood implementation choice</td><td>calc_LHC_LogLikes_full is hard-wired</td><td>use_FullLikes selects calc_LHC_LogLikes(_full)</td><td class="status modified">runtime selector restored</td></tr><tr><td>cutflow / histogram policy</td><td>CollectAnalyses.setOption(print_cutflows, true)</td><td>Cutflow::set_check_cutflow + Histogram1D::set_check_histogram</td><td class="status modified">runtime switches restored</td></tr><tr><td>output contract</td><td>summary_line + cout in main</td><td>OutputConfig + validate_output_config + emit_outputs</td><td class="status modified">structured screen/JSON output added</td></tr><tr><td>Rivet / Contur wiring</td><td>main configures and prints pool details inline</td><td>main configures and output helper emits maps</td><td class="status modified">Rivet/Contur output extracted</td></tr></tbody></table></div>
   </section>
 
   <section>
     <p class="kicker">05 · YAML contract detail</p>
-    <h2>SUSYRun2 · settings, defaults and hard-coded policy</h2>
-    <p class="source">This is the expanded view requested for the comparison branch. “Comment default” means the value is documented beside <code>apply_setting_if_present</code> but is not assigned by <code>solo.cpp</code> itself; the downstream ColliderBit backend supplies the fallback.</p>
+    <h2>SUSYRun2 (OLD) · settings, defaults and hard-coded policy</h2>
+    <p class="source">This is the expanded view of the old SUSYRun2 branch. “Comment default” means the value is documented beside <code>apply_setting_if_present</code> but is not assigned by <code>solo.cpp</code> itself; the downstream ColliderBit backend supplies the fallback.</p>
     <div class="detail-figure"><div class="diagram-shell"><svg viewBox="0 0 1240 1220" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="solo-settings-detail-title solo-settings-detail-desc"><title id="solo-settings-detail-title">SUSYRun2 YAML settings and defaults</title><desc id="solo-settings-detail-desc">Detailed SUSYRun2 path from YAML sections to validated settings, defaults, backend options, and configured functors.</desc><defs><marker id="solo-settings-detail-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker></defs><rect width="1240" height="1220" fill="#f5f5f5"/><rect class="detail-zone" x="32" y="12" width="1176" height="1172" rx="10"/><text class="zone-label" x="56" y="40">SOURCE-GROUNDED DETAIL · READ TOP TO BOTTOM</text><path class="detail-edge" d="M 620 128 L 620 168" style="marker-end:url(#solo-settings-detail-arrow)"/><path class="detail-edge" d="M 620 272 L 620 312" style="marker-end:url(#solo-settings-detail-arrow)"/><path class="detail-edge" d="M 620 416 L 620 456" style="marker-end:url(#solo-settings-detail-arrow)"/><path class="detail-edge" d="M 620 560 L 620 600" style="marker-end:url(#solo-settings-detail-arrow)"/><path class="detail-edge" d="M 620 704 L 620 744" style="marker-end:url(#solo-settings-detail-arrow)"/><path class="detail-edge" d="M 620 848 L 620 888" style="marker-end:url(#solo-settings-detail-arrow)"/><path class="detail-edge" d="M 620 992 L 620 1032" style="marker-end:url(#solo-settings-detail-arrow)"/><g class="node detail-focal"><ellipse cx="620" cy="84" rx="140" ry="44"/><text class="kind" x="620" y="66" text-anchor="middle">YAML INPUT</text><text class="title" x="620" y="88" text-anchor="middle">YAML::LoadFile</text><text class="body" x="620" y="104" text-anchor="middle">analyses + settings</text><text class="tag" x="620" y="118" text-anchor="middle">top-level sections</text></g><g class="node detail-primary" transform="translate(400 168)"><rect width="440" height="104" rx="6"/><text class="kind" x="16" y="22">REQUIRED CONTRACT</text><text class="title" x="16" y="50">event + analyses inputs</text><text class="body" x="16" y="70">event_file · jet_collections</text><text class="body" x="16" y="84">analyses · cross section</text><text class="tag" x="16" y="92">missing / bad suffix → throw</text></g><g class="node detail-primary" transform="translate(400 312)"><rect width="440" height="104" rx="6"/><text class="kind" x="16" y="22">SCALAR DEFAULTS</text><text class="title" x="16" y="50">settings.getValueOrDef</text><text class="body" x="16" y="70">debug=false · use_lnpiln=false</text><text class="body" x="16" y="84">jet_pt_min=10 · taus=antikt_R04</text><text class="tag" x="16" y="92">seed=-1 → hardware seed</text></g><g class="node detail-primary" transform="translate(400 456)"><rect width="440" height="104" rx="6"/><text class="kind" x="16" y="22">CROSS SECTION</text><text class="title" x="16" y="50">pb/fb branch + uncertainty</text><text class="body" x="16" y="70">cross_section_pb OR cross_section_fb</text><text class="body" x="16" y="84">fractional OR absolute uncertainty</text><text class="tag" x="16" y="92">getYAMLCrossSection</text></g><g class="node detail-mod" transform="translate(400 600)"><rect width="440" height="104" rx="6"/><text class="kind" x="16" y="22">LIKELIHOOD OPTIONS</text><text class="title" x="16" y="50">apply_setting_if_present</text><text class="body" x="16" y="70">18 optional likelihood switches</text><text class="body" x="16" y="84">only forwarded when hasKey</text><text class="tag" x="16" y="92">comments record backend defaults</text></g><g class="node detail-optional" transform="translate(400 744)"><rect width="440" height="104" rx="6"/><text class="kind" x="16" y="22">OPTIONAL MEASUREMENTS</text><text class="title" x="16" y="50">Rivet + Contur settings</text><text class="body" x="16" y="70">both absent or both present</text><text class="body" x="16" y="84">YODA / analyses / pool options</text><text class="tag" x="16" y="92">withRivet / withContur</text></g><g class="node detail-hardcoded" transform="translate(400 888)"><rect width="440" height="104" rx="6"/><text class="kind" x="16" y="22">HARDCODED MAIN OPTIONS</text><text class="title" x="16" y="50">CBS loop policy</text><text class="body" x="16" y="70">print_cutflows=true · min=1000</text><text class="body" x="16" y="84">max=1e9 · silenceLoop=!debug</text><text class="tag" x="16" y="92">not loaded from YAML</text></g><g class="node detail-focal"><ellipse cx="620" cy="1076" rx="220" ry="44"/><text class="kind" x="620" y="1058" text-anchor="middle">CONFIGURED FUNCTORS</text><text class="title" x="620" y="1080" text-anchor="middle">getEvent + convertEvent + analyses</text><text class="body" x="620" y="1096" text-anchor="middle">setOption calls complete</text><text class="tag" x="620" y="1110" text-anchor="middle">ready for dependency resolution</text></g><line x1="48" y1="1170" x2="1192" y2="1170" stroke="rgba(45,49,66,.12)" stroke-width="1"/><text class="legend-label" x="48" y="1188">LEGEND</text><rect x="112" y="1178" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="142" y="1188">FOCAL / MAIN OWNERSHIP</text><rect x="322" y="1178" width="20" height="10" rx="3" fill="#fff" stroke="#7a8399"/><text class="legend-label" x="352" y="1188">DATA CONTAINER</text><rect x="478" y="1178" width="20" height="10" rx="3" fill="#fff" stroke="#7a8399" stroke-dasharray="5 4"/><text class="legend-label" x="508" y="1188">OPTIONAL</text><text class="legend-label" x="630" y="1188">ARROWS = EXECUTION ORDER · TABLES BELOW = COMPLETE FIELD EVIDENCE</text></svg></div></div>
     <p class="diagram-note">The diagram shows the configuration path; the tables preserve every setting name and its exact consumer.</p>
     <div class="scroll"><table><thead><tr><th>YAML key / gate</th><th>Type</th><th>Default / requirement</th><th>Consumer / effect</th><th>Source</th></tr></thead><tbody><tr><td><code>analyses</code></td><td><code>vector&lt;str&gt;</code></td><td>required</td><td>infile → CBS YAML / CollectAnalyses</td><td><code>solo.cpp:86–90</code></td></tr><tr><td><code>settings</code></td><td><code>YAML map → Options</code></td><td>required</td><td>all runtime settings</td><td><code>solo.cpp:91–96</code></td></tr><tr><td><code>debug</code></td><td><code>bool</code></td><td>false</td><td>logger; HepMC notice; silenceLoop</td><td><code>solo.cpp:118</code></td></tr><tr><td><code>use_lognormal_distribution_for_1d_systematic</code></td><td><code>bool</code></td><td>false</td><td>lnpiln vs lnpin backend requirement</td><td><code>solo.cpp:121,285</code></td></tr><tr><td><code>jet_pt_min</code></td><td><code>double</code></td><td>10.0</td><td>convertHepMCEvent_HEPUtils</td><td><code>solo.cpp:122,217</code></td></tr><tr><td><code>event_file</code></td><td><code>str</code></td><td>required</td><td>getHepMCEvent; .hepmc/.hepmc2/.hepmc3 check</td><td><code>solo.cpp:123–128,216</code></td></tr><tr><td><code>jet_collections</code></td><td><code>YAML::Node</code></td><td>required</td><td>getEvent + convertEvent</td><td><code>solo.cpp:131,220–223</code></td></tr><tr><td><code>jet_collection_taus</code></td><td><code>string</code></td><td>antikt_R04</td><td>getEvent + convertEvent</td><td><code>solo.cpp:132,220–223</code></td></tr><tr><td><code>cross_section_pb OR cross_section_fb</code></td><td><code>double</code></td><td>one branch required</td><td>getYAMLCrossSection</td><td><code>solo.cpp:226–236</code></td></tr><tr><td><code>cross_section_fractional_uncert</code></td><td><code>double</code></td><td>optional alternative</td><td>otherwise absolute _uncert_pb/_fb is required</td><td><code>solo.cpp:229–236</code></td></tr><tr><td><code>rivet-settings</code></td><td><code>YAML map</code></td><td>absent → withRivet=false</td><td>Rivet_measurements</td><td><code>solo.cpp:141–145,267–272</code></td></tr><tr><td><code>rivet-settings.drop_YODA_file</code></td><td><code>bool</code></td><td>true</td><td>Rivet_measurements</td><td><code>solo.cpp:267</code></td></tr><tr><td><code>rivet-settings.analyses</code></td><td><code>vector&lt;string&gt;</code></td><td>required when Rivet is enabled</td><td>Rivet_measurements</td><td><code>solo.cpp:269–270</code></td></tr><tr><td><code>rivet-settings.exclude_analyses</code></td><td><code>vector&lt;string&gt;</code></td><td>empty</td><td>Rivet_measurements</td><td><code>solo.cpp:271–272</code></td></tr><tr><td><code>contur-settings</code></td><td><code>vector&lt;string&gt;</code></td><td>absent → withContur=false</td><td>Contur_LHC_measurements_from_stream</td><td><code>solo.cpp:147–154,273–274</code></td></tr><tr><td><code>Rivet / Contur pairing</code></td><td><code>presence gate</code></td><td>both absent or both present</td><td>mismatch throws; missing backend throws</td><td><code>solo.cpp:156–178</code></td></tr><tr><td><code>use_covariances</code></td><td><code>bool</code></td><td>not set in main; comment says true</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:242</code></td></tr><tr><td><code>use_marginalising</code></td><td><code>bool</code></td><td>not set in main; comment says false</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:243</code></td></tr><tr><td><code>combine_SRs_without_covariances</code></td><td><code>bool</code></td><td>not set in main; comment says false</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:244</code></td></tr><tr><td><code>nuisance_prof_initstep</code></td><td><code>double</code></td><td>0.1 (comment)</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:246</code></td></tr><tr><td><code>nuisance_prof_convtol</code></td><td><code>double</code></td><td>0.01 (comment)</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:247</code></td></tr><tr><td><code>nuisance_prof_maxsteps</code></td><td><code>int</code></td><td>10000 (comment)</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:248</code></td></tr><tr><td><code>nuisance_prof_convacc</code></td><td><code>double</code></td><td>0.01 (comment)</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:249</code></td></tr><tr><td><code>nuisance_prof_simplexsize</code></td><td><code>double</code></td><td>1e-5 (comment)</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:250</code></td></tr><tr><td><code>nuisance_prof_method</code></td><td><code>int</code></td><td>6 (comment)</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:251</code></td></tr><tr><td><code>nuisance_marg_convthres_abs</code></td><td><code>double</code></td><td>0.05 (comment)</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:253</code></td></tr><tr><td><code>nuisance_marg_convthres_rel</code></td><td><code>double</code></td><td>0.05 (comment)</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:254</code></td></tr><tr><td><code>nuisance_marg_nsamples_start</code></td><td><code>long</code></td><td>1000000 (comment)</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:255</code></td></tr><tr><td><code>nuisance_marg_nulike1sr</code></td><td><code>bool</code></td><td>true (comment)</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:256</code></td></tr><tr><td><code>calc_noerr_loglikes</code></td><td><code>bool</code></td><td>false (comment)</td><td>alternate SR loglikes + summary_line</td><td><code>solo.cpp:258</code></td></tr><tr><td><code>calc_expected_loglikes</code></td><td><code>bool</code></td><td>false (comment)</td><td>alternate SR loglikes + summary_line</td><td><code>solo.cpp:259</code></td></tr><tr><td><code>calc_expected_noerr_loglikes</code></td><td><code>bool</code></td><td>false (comment)</td><td>alternate SR loglikes + summary_line</td><td><code>solo.cpp:260</code></td></tr><tr><td><code>calc_scaledsignal_loglikes</code></td><td><code>bool</code></td><td>false (comment)</td><td>alternate SR loglikes + summary_line</td><td><code>solo.cpp:261</code></td></tr><tr><td><code>signal_scalefactor</code></td><td><code>double</code></td><td>1.0 (comment)</td><td>calc_LHC_LogLikes_full</td><td><code>solo.cpp:262</code></td></tr></tbody></table></div>
-    <h3>Not loaded from YAML in SUSYRun2</h3>
+    <h3>Not loaded from YAML in SUSYRun2 (OLD)</h3>
     <div class="scroll"><table><thead><tr><th>Functor option</th><th>Value</th><th>Consumer</th><th>Source</th></tr></thead><tbody><tr><td><code>CollectAnalyses.print_cutflows</code></td><td><code>true</code></td><td>CollectAnalyses</td><td><code>solo.cpp:190–191</code></td></tr><tr><td><code>CBS.min_nEvents</code></td><td><code>1000</code></td><td>operateLHCLoop</td><td><code>solo.cpp:208–213</code></td></tr><tr><td><code>CBS.max_nEvents</code></td><td><code>1000000000</code></td><td>operateLHCLoop</td><td><code>solo.cpp:208–213</code></td></tr><tr><td><code>operateLHCLoop.silenceLoop</code></td><td><code>!debug</code></td><td>operateLHCLoop</td><td><code>solo.cpp:212–213</code></td></tr><tr><td><code>Rivet_measurements.runningStandalone</code></td><td><code>true</code></td><td>Rivet_measurements</td><td><code>solo.cpp:267–268</code></td></tr></tbody></table></div>
   </section>
 
   <section>
     <p class="kicker">06 · container execution detail</p>
     <h2>What reset_and_calculate() produces</h2>
-    <p class="source">The order below is the explicit order in SUSYRun2 <code>solo.cpp</code>. It distinguishes the functor/container name from the data structure later consumed by the inline summary.</p>
+    <p class="source">The order below is the explicit order in SUSYRun2 (OLD) <code>solo.cpp</code>. It distinguishes the functor/container name from the data structure later consumed by the inline summary.</p>
     <div class="detail-figure"><div class="diagram-shell"><svg viewBox="0 0 1240 1260" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="solo-runtime-detail-title solo-runtime-detail-desc"><title id="solo-runtime-detail-title">SUSYRun2 reset and calculate container chain</title><desc id="solo-runtime-detail-desc">Detailed SUSYRun2 dependency and reset_and_calculate order showing the containers consumed by the standalone summary.</desc><defs><marker id="solo-runtime-detail-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker></defs><rect width="1240" height="1260" fill="#f5f5f5"/><rect class="detail-zone" x="32" y="12" width="1176" height="1212" rx="10"/><text class="zone-label" x="56" y="40">SOURCE-GROUNDED DETAIL · READ TOP TO BOTTOM</text><path class="detail-edge" d="M 620 140 L 620 176" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge" d="M 620 284 L 620 320" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge" d="M 620 428 L 620 464" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge" d="M 620 572 L 620 608" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge" d="M 620 716 L 620 752" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge" d="M 620 860 L 620 872" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge optional" d="M 760 936 L 952 936 Q 960 936 960 944 L 960 1096" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge" d="M 620 1064 L 620 1072 Q 620 1080 612 1080 L 508 1080 Q 500 1080 500 1088 L 500 1096" style="marker-end:url(#solo-runtime-detail-arrow)"/><path class="detail-edge optional" d="M 980 1204 L 980 1220 Q 980 1228 972 1228 L 688 1228 Q 680 1228 680 1220 L 680 1140" style="marker-end:url(#solo-runtime-detail-arrow)"/><g class="node detail-primary" transform="translate(400 32)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">DEPENDENCY + LOOP WIRING</text><text class="title" x="16" y="50">resolveDependency + setNestedList</text><text class="body" x="16" y="70">likelihood ← analyses ← detector paths</text><text class="body" x="16" y="84">loop managers + FullLikes/nulike pointers</text><text class="tag" x="16" y="96">solo.cpp:278–361</text></g><g class="node detail-hardcoded" transform="translate(400 176)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">BACKEND INIT</text><text class="title" x="16" y="50">nulike_init.reset_and_calculate</text><text class="body" x="16" y="70">always initialise nulike</text><text class="body" x="16" y="84">Rivet + Contur init when enabled</text><text class="tag" x="16" y="96">solo.cpp:363–369</text></g><g class="node detail-focal" transform="translate(400 320)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">EVENT LOOP</text><text class="title" x="16" y="50">operateLHCLoop.reset_and_calculate</text><text class="body" x="16" y="70">MCLoopInfo; event_count[&quot;CBS&quot;]</text><text class="body" x="16" y="84">nested event + detector + analyses</text><text class="tag" x="16" y="96">solo.cpp:372,385</text></g><g class="node detail-data" transform="translate(400 464)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">ANALYSIS CONTAINER</text><text class="title" x="16" y="50">CollectAnalyses.reset_and_calculate</text><text class="body" x="16" y="70">AnalysisDataPointers</text><text class="body" x="16" y="84">ATLAS + CMS + Identity</text><text class="tag" x="16" y="96">solo.cpp:373</text></g><g class="node detail-data" transform="translate(400 608)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">LIKELIHOOD CONTAINER</text><text class="title" x="16" y="50">calc_LHC_LogLikes_full.reset</text><text class="body" x="16" y="70">map_str_AnalysisLogLikes</text><text class="body" x="16" y="84">per analysis + signal region</text><text class="tag" x="16" y="96">solo.cpp:374</text></g><g class="node detail-data" transform="translate(400 752)"><rect width="440" height="108" rx="6"/><text class="kind" x="16" y="22">AGGREGATION</text><text class="title" x="16" y="50">per-analysis + combined loglikes</text><text class="body" x="16" y="70">get_LHC_LogLike_per_analysis</text><text class="body" x="16" y="84">calc_combined_LHC_LogLike → double</text><text class="tag" x="16" y="96">solo.cpp:375–376</text></g><g class="node detail-decision"><polygon points="620,872 760,936 620,1000 480,936"/><text class="kind" x="620" y="912" text-anchor="middle">OPTIONAL BRANCH</text><text class="title" x="620" y="938" text-anchor="middle">withContur?</text><text class="body" x="620" y="958" text-anchor="middle">YES: three Contur maps</text><text class="body" x="620" y="972" text-anchor="middle">NO: skip to summary</text><text class="tag" x="620" y="988" text-anchor="middle">solo.cpp:377</text></g><g class="node detail-optional" transform="translate(800 1096)"><rect width="360" height="108" rx="6"/><text class="kind" x="16" y="22">CONTUR CONTAINERS</text><text class="title" x="16" y="50">reset_and_calculate × 3</text><text class="body" x="16" y="70">double total LLR</text><text class="body" x="16" y="84">map_str_dbl pools + map_str_str tags</text><text class="tag" x="16" y="96">solo.cpp:379–381</text></g><g class="node detail-focal"><ellipse cx="500" cy="1140" rx="180" ry="44"/><text class="kind" x="500" y="1122" text-anchor="middle">INLINE OUTPUT</text><text class="title" x="500" y="1144" text-anchor="middle">summary_line + cout</text><text class="body" x="500" y="1160" text-anchor="middle">SR fields + total loglike</text><text class="tag" x="500" y="1174" text-anchor="middle">catch std::exception → 1</text></g><line x1="48" y1="1210" x2="1192" y2="1210" stroke="rgba(45,49,66,.12)" stroke-width="1"/><text class="legend-label" x="48" y="1228">LEGEND</text><rect x="112" y="1218" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="142" y="1228">FOCAL / MAIN OWNERSHIP</text><rect x="322" y="1218" width="20" height="10" rx="3" fill="#fff" stroke="#7a8399"/><text class="legend-label" x="352" y="1228">DATA CONTAINER</text><rect x="478" y="1218" width="20" height="10" rx="3" fill="#fff" stroke="#7a8399" stroke-dasharray="5 4"/><text class="legend-label" x="508" y="1228">OPTIONAL</text><text class="legend-label" x="630" y="1228">ARROWS = EXECUTION ORDER · TABLES BELOW = COMPLETE FIELD EVIDENCE</text></svg></div></div>
     <div class="scroll"><table><thead><tr><th>Execution step</th><th>Container / return type</th><th>Contents</th><th>Downstream use</th><th>Source</th></tr></thead><tbody><tr><td><code>operateLHCLoop.reset_and_calculate()</code></td><td><code>MCLoopInfo</code></td><td>event loop state; event_count[&quot;CBS&quot;]</td><td>n_events + nested event/analysis functors</td><td><code>solo.cpp:372,385</code></td></tr><tr><td><code>CollectAnalyses.reset_and_calculate()</code></td><td><code>AnalysisDataPointers</code></td><td>vector&lt;AnalysisData*&gt;; ATLAS + CMS + Identity</td><td>AllAnalysisNumbers dependency</td><td><code>solo.cpp:373; ColliderBit_eventloop.cpp:336</code></td></tr><tr><td><code>calc_LHC_LogLikes_full.reset_and_calculate()</code></td><td><code>map_str_AnalysisLogLikes</code></td><td>AnalysisLogLikes per analysis / SR</td><td>FullLikes backend + nulike marginaliser</td><td><code>solo.cpp:374; LHC_likelihoods.cpp:1335</code></td></tr><tr><td><code>get_LHC_LogLike_per_analysis.reset_and_calculate()</code></td><td><code>map_str_dbl</code></td><td>analysis → combination_loglike; alt keys appended</td><td>debug log + standalone functor output</td><td><code>solo.cpp:375; LHC_likelihoods.cpp:1386</code></td></tr><tr><td><code>calc_combined_LHC_LogLike.reset_and_calculate()</code></td><td><code>double</code></td><td>combined ATLAS+CMS log-likelihood</td><td>final loglike variable + stdout</td><td><code>solo.cpp:376; LHC_likelihoods.cpp:1503</code></td></tr><tr><td><code>Contur_LHC_measurements_LogLike.reset_and_calculate()</code></td><td><code>double</code></td><td>total Contur LLR</td><td>summary_line when withContur</td><td><code>solo.cpp:379,414; ColliderBit_measurements.cpp:454</code></td></tr><tr><td><code>Contur_LHC_measurements_LogLike_perPool.reset_and_calculate()</code></td><td><code>map_str_dbl</code></td><td>pool → LLR</td><td>pool loop in summary_line</td><td><code>solo.cpp:380,415; ColliderBit_measurements.cpp:495</code></td></tr><tr><td><code>Contur_LHC_measurements_histotags_perPool.reset_and_calculate()</code></td><td><code>map_str_str</code></td><td>pool → dominant measurement tag</td><td>pool_info[pool.first] in summary_line</td><td><code>solo.cpp:381,416; ColliderBit_measurements.cpp:533</code></td></tr><tr><td><code>inline summary aggregation</code></td><td><code>stringstream summary_line</code></td><td>analysis → SR → observed/background/signal/loglike</td><td>cout + total combined loglike</td><td><code>solo.cpp:384–431</code></td></tr></tbody></table></div>
   </section>
@@ -200,588 +200,588 @@
   <section>
     <p class="kicker">08 · module slices</p>
     <h2>Direct dependency modules</h2>
-    <div class="module-strip"><span><strong>examples / entrypoint</strong> · +0 −4 · 0 retained</span><span><strong>external</strong> · +0 −5 · 0 retained</span><span><strong>GAMBIT core</strong> · +0 −0 · 3 retained</span><span><strong>ColliderBit API</strong> · +0 −0 · 1 retained</span><span><strong>analysis framework</strong> · +0 −1 · 0 retained</span><span><strong>build / CMake</strong> · +0 −0 · 0 retained · 1 build</span></div>
+    <div class="module-strip"><span><strong>examples / entrypoint</strong> · +4 −0 · 0 retained</span><span><strong>external</strong> · +5 −0 · 0 retained</span><span><strong>GAMBIT core</strong> · +0 −0 · 3 retained</span><span><strong>ColliderBit API</strong> · +0 −0 · 1 retained</span><span><strong>analysis framework</strong> · +1 −0 · 0 retained</span><span><strong>build / CMake</strong> · +0 −0 · 0 retained · 1 build</span></div>
   </section>
 
   <div class="details-grid">
     <section>
       <p class="kicker">09 · function evidence</p>
       <h2>Function-level changes</h2>
-      <div class="scroll"><table><thead><tr><th>Status</th><th>Function</th><th>Baseline</th><th>Comparison</th><th>Diff</th></tr></thead><tbody><tr><td class="status unchanged">unchanged</td><td><code>apply_setting_if_present</code></td><td>61–69</td><td>48–56</td><td>+0 / −0 · 0 hunks</td></tr><tr><td class="status modified">modified</td><td><code>main</code></td><td>71–598</td><td>59–445</td><td>+131 / −272 · 28 hunks</td></tr></tbody></table></div>
+      <div class="scroll"><table><thead><tr><th>Status</th><th>Function</th><th>Old</th><th>New</th><th>Diff</th></tr></thead><tbody><tr><td class="status unchanged">unchanged</td><td><code>apply_setting_if_present</code></td><td>48–56</td><td>61–69</td><td>+0 / −0 · 0 hunks</td></tr><tr><td class="status modified">modified</td><td><code>main</code></td><td>59–445</td><td>71–598</td><td>+272 / −131 · 28 hunks</td></tr></tbody></table></div>
     </section>
     <section>
       <p class="kicker">10 · source surface</p>
       <h2>Include and build relations</h2>
-      <div class="scroll"><table><thead><tr><th>Status</th><th>Relation</th><th>Module</th><th>Line / path</th></tr></thead><tbody><tr><td class="status removed-in-right">removed in baseline</td><td><code>#include cstdlib</code></td><td>external</td><td>external · 35</td></tr><tr><td class="status removed-in-right">removed in baseline</td><td><code>#include cstring</code></td><td>external</td><td>external · 36</td></tr><tr><td class="status removed-in-right">removed in baseline</td><td><code>#include fastjet/ClusterSequence.hh</code></td><td>external</td><td>external · 29</td></tr><tr><td class="status unchanged">unchanged</td><td><code>#include gambit/ColliderBit/ColliderBit_rollcall.hpp</code></td><td>ColliderBit API</td><td>ColliderBit/include/gambit/ColliderBit/ColliderBit_rollcall.hpp · 22</td></tr><tr><td class="status removed-in-right">removed in baseline</td><td><code>#include gambit/ColliderBit/analyses/Cutflow.hpp</code></td><td>analysis framework</td><td>ColliderBit/include/gambit/ColliderBit/analyses/Cutflow.hpp · 28</td></tr><tr><td class="status unchanged">unchanged</td><td><code>#include gambit/Elements/standalone_module.hpp</code></td><td>GAMBIT core</td><td>Elements/include/gambit/Elements/standalone_module.hpp · 20</td></tr><tr><td class="status unchanged">unchanged</td><td><code>#include gambit/Utils/cats.hpp</code></td><td>GAMBIT core</td><td>Utils/include/gambit/Utils/cats.hpp · 24</td></tr><tr><td class="status unchanged">unchanged</td><td><code>#include gambit/Utils/util_functions.hpp</code></td><td>GAMBIT core</td><td>Utils/include/gambit/Utils/util_functions.hpp · 23</td></tr><tr><td class="status removed-in-right">removed in baseline</td><td><code>#include limits</code></td><td>external</td><td>external · 37</td></tr><tr><td class="status removed-in-right">removed in baseline</td><td><code>#include solo_batch.hpp</code></td><td>examples / entrypoint</td><td>ColliderBit/examples/solo_batch.hpp · 30</td></tr><tr><td class="status removed-in-right">removed in baseline</td><td><code>#include solo_cli.hpp</code></td><td>examples / entrypoint</td><td>ColliderBit/examples/solo_cli.hpp · 31</td></tr><tr><td class="status removed-in-right">removed in baseline</td><td><code>#include solo_input.hpp</code></td><td>examples / entrypoint</td><td>ColliderBit/examples/solo_input.hpp · 32</td></tr><tr><td class="status removed-in-right">removed in baseline</td><td><code>#include solo_output.hpp</code></td><td>examples / entrypoint</td><td>ColliderBit/examples/solo_output.hpp · 33</td></tr><tr><td class="status removed-in-right">removed in baseline</td><td><code>#include utility</code></td><td>external</td><td>external · 38</td></tr></tbody></table></div>
+      <div class="scroll"><table><thead><tr><th>Status</th><th>Relation</th><th>Module</th><th>Line / path</th></tr></thead><tbody><tr><td class="status added-in-right">added in new</td><td><code>#include cstdlib</code></td><td>external</td><td>external · 35</td></tr><tr><td class="status added-in-right">added in new</td><td><code>#include cstring</code></td><td>external</td><td>external · 36</td></tr><tr><td class="status added-in-right">added in new</td><td><code>#include fastjet/ClusterSequence.hh</code></td><td>external</td><td>external · 29</td></tr><tr><td class="status unchanged">unchanged</td><td><code>#include gambit/ColliderBit/ColliderBit_rollcall.hpp</code></td><td>ColliderBit API</td><td>ColliderBit/include/gambit/ColliderBit/ColliderBit_rollcall.hpp · 25</td></tr><tr><td class="status added-in-right">added in new</td><td><code>#include gambit/ColliderBit/analyses/Cutflow.hpp</code></td><td>analysis framework</td><td>ColliderBit/include/gambit/ColliderBit/analyses/Cutflow.hpp · 28</td></tr><tr><td class="status unchanged">unchanged</td><td><code>#include gambit/Elements/standalone_module.hpp</code></td><td>GAMBIT core</td><td>Elements/include/gambit/Elements/standalone_module.hpp · 23</td></tr><tr><td class="status unchanged">unchanged</td><td><code>#include gambit/Utils/cats.hpp</code></td><td>GAMBIT core</td><td>Utils/include/gambit/Utils/cats.hpp · 27</td></tr><tr><td class="status unchanged">unchanged</td><td><code>#include gambit/Utils/util_functions.hpp</code></td><td>GAMBIT core</td><td>Utils/include/gambit/Utils/util_functions.hpp · 26</td></tr><tr><td class="status added-in-right">added in new</td><td><code>#include limits</code></td><td>external</td><td>external · 37</td></tr><tr><td class="status added-in-right">added in new</td><td><code>#include solo_batch.hpp</code></td><td>examples / entrypoint</td><td>ColliderBit/examples/solo_batch.hpp · 30</td></tr><tr><td class="status added-in-right">added in new</td><td><code>#include solo_cli.hpp</code></td><td>examples / entrypoint</td><td>ColliderBit/examples/solo_cli.hpp · 31</td></tr><tr><td class="status added-in-right">added in new</td><td><code>#include solo_input.hpp</code></td><td>examples / entrypoint</td><td>ColliderBit/examples/solo_input.hpp · 32</td></tr><tr><td class="status added-in-right">added in new</td><td><code>#include solo_output.hpp</code></td><td>examples / entrypoint</td><td>ColliderBit/examples/solo_output.hpp · 33</td></tr><tr><td class="status added-in-right">added in new</td><td><code>#include utility</code></td><td>external</td><td>external · 38</td></tr></tbody></table></div>
     </section>
   </div>
 
   <section>
     <p class="kicker">11 · exact evidence</p>
     <h2>Unified diff</h2>
-    <p class="source">The generated page keeps the exact file-level diff next to the summarized diagram. Added lines belong to the comparison branch; removed lines belong to the baseline branch.</p>
-    <details open><summary>Show exact diff · +139 / −291 lines · 34 hunks</summary><pre>--- ColliderBit/examples/solo.cpp · baseline
-+++ ColliderBit/examples/solo.cpp · comparison
-@@ -16,34 +16,21 @@
+    <p class="source">The generated page keeps the exact file-level diff next to the summarized diagram. Added lines belong to the new ColliderBit_solo_development branch; removed lines belong to the old SUSYRun2 branch.</p>
+    <details open><summary>Show exact diff · +291 / −139 lines · 34 hunks</summary><pre>--- ColliderBit/examples/solo.cpp · old
++++ ColliderBit/examples/solo.cpp · new
+@@ -16,21 +16,34 @@
  ///  (t.procter.1@research.gla.ac.uk)
  ///  \date November 2021
  ///
--///  \author Pengxuan Zhu
--///  (pengxuan.zhu@adelaide.edu.au)
--///  \date Feburary 2025
++///  \author Pengxuan Zhu
++///  (pengxuan.zhu@adelaide.edu.au)
++///  \date Feburary 2025
  ///  *********************************************
 ·
  #include &quot;gambit/Elements/standalone_module.hpp&quot;
  #include &quot;gambit/ColliderBit/ColliderBit_rollcall.hpp&quot;
  #include &quot;gambit/Utils/util_functions.hpp&quot;
  #include &quot;gambit/Utils/cats.hpp&quot;
--#include &quot;gambit/ColliderBit/analyses/Cutflow.hpp&quot;
--#include &quot;fastjet/ClusterSequence.hh&quot;
--#include &quot;solo_batch.hpp&quot;
--#include &quot;solo_cli.hpp&quot;
--#include &quot;solo_input.hpp&quot;
--#include &quot;solo_output.hpp&quot;
++#include &quot;gambit/ColliderBit/analyses/Cutflow.hpp&quot;
++#include &quot;fastjet/ClusterSequence.hh&quot;
++#include &quot;solo_batch.hpp&quot;
++#include &quot;solo_cli.hpp&quot;
++#include &quot;solo_input.hpp&quot;
++#include &quot;solo_output.hpp&quot;
  // #include &quot;gambit/Backends/backend_rollcall.hpp&quot;
--#include &lt;cstdlib&gt;
--#include &lt;cstring&gt;
--#include &lt;limits&gt;
--#include &lt;utility&gt;
++#include &lt;cstdlib&gt;
++#include &lt;cstring&gt;
++#include &lt;limits&gt;
++#include &lt;utility&gt;
 ·
  #define NULIKE_VERSION &quot;1.0.9&quot;
  #define NULIKE_SAFE_VERSION 1_0_9
 ·
--#define RIVET_VERSION &quot;4.1.0&quot;
--#define RIVET_SAFE_VERSION 4_1_0
--#define CONTUR_VERSION &quot;3.0.0&quot;
--#define CONTUR_SAFE_VERSION 3_0_0
-+#define RIVET_VERSION &quot;3.1.8&quot;
-+#define RIVET_SAFE_VERSION 3_1_8
-+#define CONTUR_VERSION &quot;2.4.4&quot;
-+#define CONTUR_SAFE_VERSION 2_4_4
+-#define RIVET_VERSION &quot;3.1.8&quot;
+-#define RIVET_SAFE_VERSION 3_1_8
+-#define CONTUR_VERSION &quot;2.4.4&quot;
+-#define CONTUR_SAFE_VERSION 2_4_4
++#define RIVET_VERSION &quot;4.1.0&quot;
++#define RIVET_SAFE_VERSION 4_1_0
++#define CONTUR_VERSION &quot;3.0.0&quot;
++#define CONTUR_SAFE_VERSION 3_0_0
 ·
  #define FULLLIKES_VERSION &quot;1.0&quot;
  #define FULLLIKES_SAFE_VERSION 1_0
-@@ -67,40 +54,19 @@
+@@ -54,19 +67,40 @@
    }
    return false;
  }
-+
+-
  /// ColliderBit Solo main program
  int main(int argc, char* argv[])
  {
    try
    {
--    ColliderBit::SoloCLI::CommandLineOptions command_line_options;
--    const ColliderBit::SoloCLI::CommandLineStatus command_line_status =
--      ColliderBit::SoloCLI::parse_command_line(argc, argv, command_line_options);
--
--    if (command_line_status == ColliderBit::SoloCLI::CommandLineStatus::help)
+-    // Check the number of command line arguments
+-    if (argc &lt; 2)
 -    {
--      return 0;
--    }
--    if (command_line_status == ColliderBit::SoloCLI::CommandLineStatus::error)
--    {
-+    // Check the number of command line arguments
-+    if (argc &lt; 2)
+-      // Tell the user how to run the program and exit
+-      cerr &lt;&lt; endl &lt;&lt; &quot;Usage: &quot; &lt;&lt; argv[0] &lt;&lt; &quot; &lt;your CBS yaml file&gt;&quot; &lt;&lt; endl &lt;&lt; endl;
++    ColliderBit::SoloCLI::CommandLineOptions command_line_options;
++    const ColliderBit::SoloCLI::CommandLineStatus command_line_status =
++      ColliderBit::SoloCLI::parse_command_line(argc, argv, command_line_options);
++
++    if (command_line_status == ColliderBit::SoloCLI::CommandLineStatus::help)
 +    {
-+      // Tell the user how to run the program and exit
-+      cerr &lt;&lt; endl &lt;&lt; &quot;Usage: &quot; &lt;&lt; argv[0] &lt;&lt; &quot; &lt;your CBS yaml file&gt;&quot; &lt;&lt; endl &lt;&lt; endl;
++      return 0;
++    }
++    if (command_line_status == ColliderBit::SoloCLI::CommandLineStatus::error)
++    {
        return 1;
      }
--
--    const auto env_flag_enabled = [](const char* value) -&gt; bool
--    {
--      if (value == nullptr) return false;
--      if (std::strcmp(value, &quot;1&quot;) == 0) return true;
--      if (std::strcmp(value, &quot;true&quot;) == 0) return true;
--      if (std::strcmp(value, &quot;TRUE&quot;) == 0) return true;
--      if (std::strcmp(value, &quot;yes&quot;) == 0) return true;
--      if (std::strcmp(value, &quot;YES&quot;) == 0) return true;
--      if (std::strcmp(value, &quot;on&quot;) == 0) return true;
--      if (std::strcmp(value, &quot;ON&quot;) == 0) return true;
--      return false;
--    };
--
--    // Initialise required backends (static loadLibrary calls may be optimised
--    // away at -O2, so we must trigger loading via the init functors explicitly).
--    CAT_3(nulike_,NULIKE_SAFE_VERSION,_init).reset_and_calculate();
++
++    const auto env_flag_enabled = [](const char* value) -&gt; bool
++    {
++      if (value == nullptr) return false;
++      if (std::strcmp(value, &quot;1&quot;) == 0) return true;
++      if (std::strcmp(value, &quot;true&quot;) == 0) return true;
++      if (std::strcmp(value, &quot;TRUE&quot;) == 0) return true;
++      if (std::strcmp(value, &quot;yes&quot;) == 0) return true;
++      if (std::strcmp(value, &quot;YES&quot;) == 0) return true;
++      if (std::strcmp(value, &quot;on&quot;) == 0) return true;
++      if (std::strcmp(value, &quot;ON&quot;) == 0) return true;
++      return false;
++    };
++
++    // Initialise required backends (static loadLibrary calls may be optimised
++    // away at -O2, so we must trigger loading via the init functors explicitly).
++    CAT_3(nulike_,NULIKE_SAFE_VERSION,_init).reset_and_calculate();
 ·
      // Make sure that nulike is present.
      if (not Backends::backendInfo().works[str(&quot;nulike&quot;)+NULIKE_VERSION]) backend_error().raise(LOCAL_INFO, str(&quot;nulike &quot;)+NULIKE_VERSION+&quot; is missing!&quot;);
-@@ -111,74 +77,55 @@
+@@ -77,55 +111,74 @@
      if (not Backends::backendInfo().works[str(&quot;Contur&quot;)+CONTUR_VERSION]) { conturWorks = false;}
      if (not Backends::backendInfo().works[str(&quot;Rivet&quot;)+RIVET_VERSION]) { rivetWorks = false;}
 ·
--    // Print the CBS startup banner once, unless suppressed for subprocess runs.
--    const bool suppress_startup_banner = env_flag_enabled(std::getenv(&quot;CBS_SUPPRESS_BANNER&quot;));
--    if (!suppress_startup_banner)
--    {
--      cout &lt;&lt; endl;
--      cout &lt;&lt; &quot;==================================&quot; &lt;&lt; endl;
--      cout &lt;&lt; &quot;||                              ||&quot; &lt;&lt; endl;
--      cout &lt;&lt; &quot;||    CBS: ColliderBit Solo     ||&quot; &lt;&lt; endl;
--      cout &lt;&lt; &quot;||  GAMBIT Collider Workgroup   ||&quot; &lt;&lt; endl;
--      cout &lt;&lt; &quot;||                              ||&quot; &lt;&lt; endl;
--      cout &lt;&lt; &quot;==================================&quot; &lt;&lt; endl;
--      cout &lt;&lt; endl;
--    }
-+    // Make sure that ATLAS FullLikes is present.
-+    if (not Backends::backendInfo().works[str(&quot;ATLAS_FullLikes&quot;) + FULLLIKES_VERSION]) backend_error().raise(LOCAL_INFO, str(&quot;ATLAS_FullLikes &quot;)+FULLLIKES_VERSION&quot; is missing!&quot;);
-+
-+    // Print the banner (if you could call it that)
-+    cout &lt;&lt; endl;
-+    cout &lt;&lt; &quot;==================================&quot; &lt;&lt; endl;
-+    cout &lt;&lt; &quot;||                              ||&quot; &lt;&lt; endl;
-+    cout &lt;&lt; &quot;||    CBS: ColliderBit Solo     ||&quot; &lt;&lt; endl;
-+    cout &lt;&lt; &quot;||  GAMBIT Collider Workgroup   ||&quot; &lt;&lt; endl;
-+    cout &lt;&lt; &quot;||                              ||&quot; &lt;&lt; endl;
-+    cout &lt;&lt; &quot;==================================&quot; &lt;&lt; endl;
-+    cout &lt;&lt; endl;
+-    // Make sure that ATLAS FullLikes is present.
+-    if (not Backends::backendInfo().works[str(&quot;ATLAS_FullLikes&quot;) + FULLLIKES_VERSION]) backend_error().raise(LOCAL_INFO, str(&quot;ATLAS_FullLikes &quot;)+FULLLIKES_VERSION&quot; is missing!&quot;);
+-
+-    // Print the banner (if you could call it that)
+-    cout &lt;&lt; endl;
+-    cout &lt;&lt; &quot;==================================&quot; &lt;&lt; endl;
+-    cout &lt;&lt; &quot;||                              ||&quot; &lt;&lt; endl;
+-    cout &lt;&lt; &quot;||    CBS: ColliderBit Solo     ||&quot; &lt;&lt; endl;
+-    cout &lt;&lt; &quot;||  GAMBIT Collider Workgroup   ||&quot; &lt;&lt; endl;
+-    cout &lt;&lt; &quot;||                              ||&quot; &lt;&lt; endl;
+-    cout &lt;&lt; &quot;==================================&quot; &lt;&lt; endl;
+-    cout &lt;&lt; endl;
++    // Print the CBS startup banner once, unless suppressed for subprocess runs.
++    const bool suppress_startup_banner = env_flag_enabled(std::getenv(&quot;CBS_SUPPRESS_BANNER&quot;));
++    if (!suppress_startup_banner)
++    {
++      cout &lt;&lt; endl;
++      cout &lt;&lt; &quot;==================================&quot; &lt;&lt; endl;
++      cout &lt;&lt; &quot;||                              ||&quot; &lt;&lt; endl;
++      cout &lt;&lt; &quot;||    CBS: ColliderBit Solo     ||&quot; &lt;&lt; endl;
++      cout &lt;&lt; &quot;||  GAMBIT Collider Workgroup   ||&quot; &lt;&lt; endl;
++      cout &lt;&lt; &quot;||                              ||&quot; &lt;&lt; endl;
++      cout &lt;&lt; &quot;==================================&quot; &lt;&lt; endl;
++      cout &lt;&lt; endl;
++    }
 ·
      // Read input file name
--    const std::string&amp; filename_in = command_line_options.filename;
+-    const std::string filename_in = argv[1];
 -
--    // Read and prepare the settings in the input file
--    ColliderBit::SoloInput::PreparedInput prepared_input;
--    prepared_input = ColliderBit::SoloInput::parse_and_prepare_input(filename_in);
--
-+    const std::string filename_in = argv[1];
+-    // Read the settings in the input file
++    const std::string&amp; filename_in = command_line_options.filename;
 +
-+    // Read the settings in the input file
++    // Read and prepare the settings in the input file
++    ColliderBit::SoloInput::PreparedInput prepared_input;
++    prepared_input = ColliderBit::SoloInput::parse_and_prepare_input(filename_in);
++
      YAML::Node infile;
      std::vector&lt;str&gt; analyses;
      Options settings;
--    infile = prepared_input.infile;
--    analyses = prepared_input.analyses;
--    settings = prepared_input.settings;
-+    try
-+    {
-+      // Load up the file
-+      infile = YAML::LoadFile(filename_in);
-+      // Retrieve the analyses
-+      if (infile[&quot;analyses&quot;]) analyses = infile[&quot;analyses&quot;].as&lt;std::vector&lt;str&gt;&gt;();
-+      else throw std::runtime_error(&quot;Analyses list not found in &quot;+filename_in+&quot;.  Quitting...&quot;);
-+      // Retrieve the other settings
-+      if (infile[&quot;settings&quot;]) settings = Options(infile[&quot;settings&quot;]);
-+      else throw std::runtime_error(&quot;Settings section not found in &quot;+filename_in+&quot;.  Quitting...&quot;);
-+    }
-+    catch (YAML::Exception &amp;e)
-+    {
-+      throw std::runtime_error(&quot;YAML error in &quot;+filename_in+&quot;.\n(yaml-cpp error: &quot;+std::string(e.what())+&quot; )&quot;);
-+    }
+-    try
+-    {
+-      // Load up the file
+-      infile = YAML::LoadFile(filename_in);
+-      // Retrieve the analyses
+-      if (infile[&quot;analyses&quot;]) analyses = infile[&quot;analyses&quot;].as&lt;std::vector&lt;str&gt;&gt;();
+-      else throw std::runtime_error(&quot;Analyses list not found in &quot;+filename_in+&quot;.  Quitting...&quot;);
+-      // Retrieve the other settings
+-      if (infile[&quot;settings&quot;]) settings = Options(infile[&quot;settings&quot;]);
+-      else throw std::runtime_error(&quot;Settings section not found in &quot;+filename_in+&quot;.  Quitting...&quot;);
+-    }
+-    catch (YAML::Exception &amp;e)
+-    {
+-      throw std::runtime_error(&quot;YAML error in &quot;+filename_in+&quot;.\n(yaml-cpp error: &quot;+std::string(e.what())+&quot; )&quot;);
+-    }
++    infile = prepared_input.infile;
++    analyses = prepared_input.analyses;
++    settings = prepared_input.settings;
 ·
 ·
      // Translate relevant settings into appropriate variables
      bool debug = settings.getValueOrDef&lt;bool&gt;(false, &quot;debug&quot;);
--    const bool suppress_fastjet_banner =
--      settings.getValueOrDef&lt;bool&gt;(false, &quot;suppress_fastjet_banner&quot;);
--    if (suppress_fastjet_banner)
--    {
--      fastjet::ClusterSequence::set_fastjet_banner_stream(nullptr);
--    }
--    bool use_FullLikes = settings.getValueOrDef&lt;bool&gt;(false, &quot;use_FullLikes&quot;);
--    module_functor&lt;ColliderBit::map_str_AnalysisLogLikes&gt;* calcLogLikes =
--      use_FullLikes ? &amp;calc_LHC_LogLikes_full : &amp;calc_LHC_LogLikes;
--    if (use_FullLikes)
--    {
--      CAT_3(ATLAS_FullLikes_,FULLLIKES_SAFE_VERSION,_init).reset_and_calculate();
--      if (not Backends::backendInfo().works[str(&quot;ATLAS_FullLikes&quot;) + FULLLIKES_VERSION]) backend_error().raise(LOCAL_INFO, str(&quot;ATLAS_FullLikes &quot;)+FULLLIKES_VERSION&quot; is missing!&quot;);
--    }
--
-+    // TODO: Use the use_FullLikes setting to allow CBS runs without having ATLAS_FullLikes installed
-+    // bool use_FullLikes = settings.getValueOrDef&lt;bool&gt;(false, &quot;use_FullLikes&quot;);·
+-    // TODO: Use the use_FullLikes setting to allow CBS runs without having ATLAS_FullLikes installed
+-    // bool use_FullLikes = settings.getValueOrDef&lt;bool&gt;(false, &quot;use_FullLikes&quot;);·
++    const bool suppress_fastjet_banner =
++      settings.getValueOrDef&lt;bool&gt;(false, &quot;suppress_fastjet_banner&quot;);
++    if (suppress_fastjet_banner)
++    {
++      fastjet::ClusterSequence::set_fastjet_banner_stream(nullptr);
++    }
++    bool use_FullLikes = settings.getValueOrDef&lt;bool&gt;(false, &quot;use_FullLikes&quot;);
++    module_functor&lt;ColliderBit::map_str_AnalysisLogLikes&gt;* calcLogLikes =
++      use_FullLikes ? &amp;calc_LHC_LogLikes_full : &amp;calc_LHC_LogLikes;
++    if (use_FullLikes)
++    {
++      CAT_3(ATLAS_FullLikes_,FULLLIKES_SAFE_VERSION,_init).reset_and_calculate();
++      if (not Backends::backendInfo().works[str(&quot;ATLAS_FullLikes&quot;) + FULLLIKES_VERSION]) backend_error().raise(LOCAL_INFO, str(&quot;ATLAS_FullLikes &quot;)+FULLLIKES_VERSION&quot; is missing!&quot;);
++    }
++
      bool use_lnpiln = settings.getValueOrDef&lt;bool&gt;(false, &quot;use_lognormal_distribution_for_1d_systematic&quot;);
--    // Single runtime cutflow switch for CBS. Cutflow filling relies on extra
--    // per-event bookkeeping compiled only when CMake CUTFLOW is enabled.
--    const bool requested_check_cutflow = settings.getValueOrDef&lt;bool&gt;(false, &quot;check_cutflow&quot;);
--#ifdef CHECK_CUTFLOW
--    const bool check_cutflow = requested_check_cutflow;
--#else
--    const bool check_cutflow = false;
--    if (requested_check_cutflow)
--    {
--      std::cerr
--        &lt;&lt; &quot;WARNING: check_cutflow was requested, but this CBS binary was built &quot;
--        &lt;&lt; &quot;without CUTFLOW support. Reconfigure with -DCUTFLOW=ON to enable it.&quot;
--        &lt;&lt; std::endl;
--    }
--#endif
--    ColliderBit::Cutflow::set_check_cutflow(check_cutflow);
--
--    // Runtime histogram switch for CBS.
--    const bool check_histogram = settings.getValueOrDef&lt;bool&gt;(false, &quot;check_histogram&quot;);
--    ColliderBit::Histogram1D::set_check_histogram(check_histogram);
++    // Single runtime cutflow switch for CBS. Cutflow filling relies on extra
++    // per-event bookkeeping compiled only when CMake CUTFLOW is enabled.
++    const bool requested_check_cutflow = settings.getValueOrDef&lt;bool&gt;(false, &quot;check_cutflow&quot;);
++#ifdef CHECK_CUTFLOW
++    const bool check_cutflow = requested_check_cutflow;
++#else
++    const bool check_cutflow = false;
++    if (requested_check_cutflow)
++    {
++      std::cerr
++        &lt;&lt; &quot;WARNING: check_cutflow was requested, but this CBS binary was built &quot;
++        &lt;&lt; &quot;without CUTFLOW support. Reconfigure with -DCUTFLOW=ON to enable it.&quot;
++        &lt;&lt; std::endl;
++    }
++#endif
++    ColliderBit::Cutflow::set_check_cutflow(check_cutflow);
++
++    // Runtime histogram switch for CBS.
++    const bool check_histogram = settings.getValueOrDef&lt;bool&gt;(false, &quot;check_histogram&quot;);
++    ColliderBit::Histogram1D::set_check_histogram(check_histogram);
      double jet_pt_min = settings.getValueOrDef&lt;double&gt;(10.0, &quot;jet_pt_min&quot;);
-+    str event_filename = settings.getValue&lt;str&gt;(&quot;event_file&quot;);
-+    bool event_file_is_HepMC = (   Gambit::Utils::endsWith(event_filename, &quot;.hepmc&quot;)
-+                                || Gambit::Utils::endsWith(event_filename, &quot;.hepmc2&quot;)
-+                                || Gambit::Utils::endsWith(event_filename, &quot;.hepmc3&quot;) );
-+    if (not event_file_is_HepMC)
-+      throw std::runtime_error(&quot;Unrecognised event file format in &quot;+event_filename+&quot;; must be .hepmc.&quot;);
+-    str event_filename = settings.getValue&lt;str&gt;(&quot;event_file&quot;);
+-    bool event_file_is_HepMC = (   Gambit::Utils::endsWith(event_filename, &quot;.hepmc&quot;)
+-                                || Gambit::Utils::endsWith(event_filename, &quot;.hepmc2&quot;)
+-                                || Gambit::Utils::endsWith(event_filename, &quot;.hepmc3&quot;) );
+-    if (not event_file_is_HepMC)
+-      throw std::runtime_error(&quot;Unrecognised event file format in &quot;+event_filename+&quot;; must be .hepmc.&quot;);
 ·
      // Extract the jet collections yaml node
      YAML::Node jet_collections = settings.getValue&lt;YAML::Node&gt;(&quot;jet_collections&quot;);
-@@ -236,132 +183,12 @@
+@@ -183,12 +236,132 @@
        throw std::runtime_error(&quot;YAML error in &quot;+filename_in+&quot;.\n(yaml-cpp error: &quot;+std::string(e.what())+&quot; )&quot;);
      }
 ·
--    ColliderBit::SoloOutput::OutputConfig output_config;
--    output_config.screen_output = settings.getValueOrDef&lt;bool&gt;(true, &quot;screen_output&quot;);
--    output_config.write_file = settings.hasKey(&quot;output&quot;);
--    if (output_config.write_file)
--    {
--      output_config.output_file = settings.getValueOrDef&lt;std::string&gt;(&quot;CBS_output.json&quot;, &quot;output&quot;);
--    }
--    ColliderBit::SoloOutput::validate_output_config(output_config);
--
--    // Process-mode batch running: run one standard CBS pass per file, then merge.
--    if (!prepared_input.processes.empty())
--    {
--      if (withRivet || withContur)
--      {
--        throw std::runtime_error(&quot;settings.processes batch mode does not support rivet-settings/contur-settings.&quot;);
--      }
--
--      // In batch mode each file is run in a subprocess; print FastJet banner only once here.
--      if (!suppress_fastjet_banner)
--      {
--        fastjet::ClusterSequence::print_banner();
--      }
--
--      double (*marginaliser)(const int&amp;, const double&amp;, const double&amp;, const double&amp;) =
--        use_lnpiln
--          ? nulike_lnpiln.handoutFunctionPointer()
--          : nulike_lnpin.handoutFunctionPointer();
--
--      bool (*fullLikesFileExists)(const str&amp;) =
--        use_FullLikes ? FullLikes_FileExists.handoutFunctionPointer() : nullptr;
--      int (*fullLikesReadIn)(const str&amp;, const str&amp;, const str&amp;) =
--        use_FullLikes ? FullLikes_ReadIn.handoutFunctionPointer() : nullptr;
--      double (*fullLikesEvaluate)(std::map&lt;str,double&gt;&amp;, const str&amp;) =
--        use_FullLikes ? FullLikes_Evaluate.handoutFunctionPointer() : nullptr;
--
--      ColliderBit::SoloBatch::MergedRunResult merged = ColliderBit::SoloBatch::run_and_merge(
--        argv[0],
--        prepared_input,
--        settings,
--        marginaliser,
--        fullLikesFileExists,
--        fullLikesReadIn,
--        fullLikesEvaluate
--      );
--
--      const std::vector&lt;ColliderBit::SoloBatch::AnalysisSamplingAdvice&gt; batch_sampling_advice =
--        ColliderBit::SoloBatch::build_sampling_advice(merged, prepared_input, settings);
--
--      std::vector&lt;ColliderBit::SoloOutput::SamplingAdviceEntry&gt; output_sampling_advice;
--      output_sampling_advice.reserve(batch_sampling_advice.size());
--      for (const ColliderBit::SoloBatch::AnalysisSamplingAdvice&amp; in_analysis : batch_sampling_advice)
--      {
--        ColliderBit::SoloOutput::SamplingAdviceEntry out_analysis;
--        out_analysis.analysis_name = in_analysis.analysis_name;
--        out_analysis.sr_label = in_analysis.sr_label;
--        out_analysis.sr_index = in_analysis.sr_index;
--        out_analysis.n_sig_scaled = in_analysis.n_sig_scaled;
--        out_analysis.n_sig_scaled_err = in_analysis.n_sig_scaled_err;
--        out_analysis.fractional_uncert = in_analysis.fractional_uncert;
--        out_analysis.effective_events = in_analysis.effective_events;
--        out_analysis.targets.reserve(in_analysis.targets.size());
--
--        for (const ColliderBit::SoloBatch::SamplingTargetAdvice&amp; in_target : in_analysis.targets)
--        {
--          ColliderBit::SoloOutput::SamplingAdviceTargetEntry out_target;
--          out_target.target_fractional_uncert = in_target.target_fractional_uncert;
--          out_target.need_more_mc = in_target.need_more_mc;
--          out_target.current_fractional_uncert = in_target.current_fractional_uncert;
--          out_target.scale_factor = in_target.scale_factor;
--          out_target.current_total_events = in_target.current_total_events;
--          out_target.recommended_total_events = in_target.recommended_total_events;
--          out_target.recommended_additional_events = in_target.recommended_additional_events;
--          out_target.process_recommendations.reserve(in_target.process_recommendations.size());
--
--          for (const ColliderBit::SoloBatch::ProcessSamplingAdvice&amp; in_process :
--               in_target.process_recommendations)
--          {
--            ColliderBit::SoloOutput::SamplingAdviceProcessEntry out_process;
--            out_process.process_name = in_process.process_name;
--            out_process.cross_section_fb = in_process.cross_section_fb;
--            out_process.processed_events = in_process.processed_events;
--            out_process.recommended_additional_events = in_process.recommended_additional_events;
--            out_target.process_recommendations.push_back(std::move(out_process));
--          }
--
--          out_analysis.targets.push_back(std::move(out_target));
--        }
--
--        output_sampling_advice.push_back(std::move(out_analysis));
--      }
--
--      std::map&lt;std::string, double&gt; empty_contur_pool_loglikes;
--      std::map&lt;std::string, std::string&gt; empty_contur_pool_info;
--      ColliderBit::SoloOutput::emit_outputs(
--        output_config,
--        merged.total_events,
--        merged.combined_loglike,
--        merged.analyses,
--        merged.analysis_loglikes,
--        false,
--        0.0,
--        empty_contur_pool_loglikes,
--        empty_contur_pool_info,
--        output_sampling_advice
--      );
--      return 0;
--    }
--
++    ColliderBit::SoloOutput::OutputConfig output_config;
++    output_config.screen_output = settings.getValueOrDef&lt;bool&gt;(true, &quot;screen_output&quot;);
++    output_config.write_file = settings.hasKey(&quot;output&quot;);
++    if (output_config.write_file)
++    {
++      output_config.output_file = settings.getValueOrDef&lt;std::string&gt;(&quot;CBS_output.json&quot;, &quot;output&quot;);
++    }
++    ColliderBit::SoloOutput::validate_output_config(output_config);
++
++    // Process-mode batch running: run one standard CBS pass per file, then merge.
++    if (!prepared_input.processes.empty())
++    {
++      if (withRivet || withContur)
++      {
++        throw std::runtime_error(&quot;settings.processes batch mode does not support rivet-settings/contur-settings.&quot;);
++      }
++
++      // In batch mode each file is run in a subprocess; print FastJet banner only once here.
++      if (!suppress_fastjet_banner)
++      {
++        fastjet::ClusterSequence::print_banner();
++      }
++
++      double (*marginaliser)(const int&amp;, const double&amp;, const double&amp;, const double&amp;) =
++        use_lnpiln
++          ? nulike_lnpiln.handoutFunctionPointer()
++          : nulike_lnpin.handoutFunctionPointer();
++
++      bool (*fullLikesFileExists)(const str&amp;) =
++        use_FullLikes ? FullLikes_FileExists.handoutFunctionPointer() : nullptr;
++      int (*fullLikesReadIn)(const str&amp;, const str&amp;, const str&amp;) =
++        use_FullLikes ? FullLikes_ReadIn.handoutFunctionPointer() : nullptr;
++      double (*fullLikesEvaluate)(std::map&lt;str,double&gt;&amp;, const str&amp;) =
++        use_FullLikes ? FullLikes_Evaluate.handoutFunctionPointer() : nullptr;
++
++      ColliderBit::SoloBatch::MergedRunResult merged = ColliderBit::SoloBatch::run_and_merge(
++        argv[0],
++        prepared_input,
++        settings,
++        marginaliser,
++        fullLikesFileExists,
++        fullLikesReadIn,
++        fullLikesEvaluate
++      );
++
++      const std::vector&lt;ColliderBit::SoloBatch::AnalysisSamplingAdvice&gt; batch_sampling_advice =
++        ColliderBit::SoloBatch::build_sampling_advice(merged, prepared_input, settings);
++
++      std::vector&lt;ColliderBit::SoloOutput::SamplingAdviceEntry&gt; output_sampling_advice;
++      output_sampling_advice.reserve(batch_sampling_advice.size());
++      for (const ColliderBit::SoloBatch::AnalysisSamplingAdvice&amp; in_analysis : batch_sampling_advice)
++      {
++        ColliderBit::SoloOutput::SamplingAdviceEntry out_analysis;
++        out_analysis.analysis_name = in_analysis.analysis_name;
++        out_analysis.sr_label = in_analysis.sr_label;
++        out_analysis.sr_index = in_analysis.sr_index;
++        out_analysis.n_sig_scaled = in_analysis.n_sig_scaled;
++        out_analysis.n_sig_scaled_err = in_analysis.n_sig_scaled_err;
++        out_analysis.fractional_uncert = in_analysis.fractional_uncert;
++        out_analysis.effective_events = in_analysis.effective_events;
++        out_analysis.targets.reserve(in_analysis.targets.size());
++
++        for (const ColliderBit::SoloBatch::SamplingTargetAdvice&amp; in_target : in_analysis.targets)
++        {
++          ColliderBit::SoloOutput::SamplingAdviceTargetEntry out_target;
++          out_target.target_fractional_uncert = in_target.target_fractional_uncert;
++          out_target.need_more_mc = in_target.need_more_mc;
++          out_target.current_fractional_uncert = in_target.current_fractional_uncert;
++          out_target.scale_factor = in_target.scale_factor;
++          out_target.current_total_events = in_target.current_total_events;
++          out_target.recommended_total_events = in_target.recommended_total_events;
++          out_target.recommended_additional_events = in_target.recommended_additional_events;
++          out_target.process_recommendations.reserve(in_target.process_recommendations.size());
++
++          for (const ColliderBit::SoloBatch::ProcessSamplingAdvice&amp; in_process :
++               in_target.process_recommendations)
++          {
++            ColliderBit::SoloOutput::SamplingAdviceProcessEntry out_process;
++            out_process.process_name = in_process.process_name;
++            out_process.cross_section_fb = in_process.cross_section_fb;
++            out_process.processed_events = in_process.processed_events;
++            out_process.recommended_additional_events = in_process.recommended_additional_events;
++            out_target.process_recommendations.push_back(std::move(out_process));
++          }
++
++          out_analysis.targets.push_back(std::move(out_target));
++        }
++
++        output_sampling_advice.push_back(std::move(out_analysis));
++      }
++
++      std::map&lt;std::string, double&gt; empty_contur_pool_loglikes;
++      std::map&lt;std::string, std::string&gt; empty_contur_pool_info;
++      ColliderBit::SoloOutput::emit_outputs(
++        output_config,
++        merged.total_events,
++        merged.combined_loglike,
++        merged.analyses,
++        merged.analysis_loglikes,
++        false,
++        0.0,
++        empty_contur_pool_loglikes,
++        empty_contur_pool_info,
++        output_sampling_advice
++      );
++      return 0;
++    }
++
      // Choose the event file reader according to file format
--    if (debug)
--    {
--      if (prepared_input.hepmc_filenames.size() == 1)
--      {
--        cout &lt;&lt; &quot;Reading HepMC file: &quot; &lt;&lt; prepared_input.hepmc_filenames.front() &lt;&lt; endl;
--      }
--      else
--      {
--        cout &lt;&lt; &quot;Reading &quot; &lt;&lt; prepared_input.hepmc_filenames.size() &lt;&lt; &quot; HepMC files.&quot; &lt;&lt; endl;
--      }
--    }
-+    if (debug) cout &lt;&lt; &quot;Reading HepMC&quot; &lt;&lt; &quot; file: &quot; &lt;&lt; event_filename &lt;&lt; endl;
+-    if (debug) cout &lt;&lt; &quot;Reading HepMC&quot; &lt;&lt; &quot; file: &quot; &lt;&lt; event_filename &lt;&lt; endl;
++    if (debug)
++    {
++      if (prepared_input.hepmc_filenames.size() == 1)
++      {
++        cout &lt;&lt; &quot;Reading HepMC file: &quot; &lt;&lt; prepared_input.hepmc_filenames.front() &lt;&lt; endl;
++      }
++      else
++      {
++        cout &lt;&lt; &quot;Reading &quot; &lt;&lt; prepared_input.hepmc_filenames.size() &lt;&lt; &quot; HepMC files.&quot; &lt;&lt; endl;
++      }
++    }
      auto&amp; getEvent = getHepMCEvent;
      auto&amp; convertEvent = convertHepMCEvent_HEPUtils;
      auto&amp; AnalysisNumbers = CollectAnalyses;
--    AnalysisNumbers.setOption&lt;bool&gt;(&quot;check_cutflow&quot;, check_cutflow);
--    AnalysisNumbers.setOption&lt;bool&gt;(&quot;print_cutflows&quot;, check_cutflow);
--    AnalysisNumbers.setOption&lt;bool&gt;(&quot;normalized_cutflows&quot;, false);
-+    AnalysisNumbers.setOption&lt;bool&gt;(&quot;print_cutflows&quot;, true);
+-    AnalysisNumbers.setOption&lt;bool&gt;(&quot;print_cutflows&quot;, true);
++    AnalysisNumbers.setOption&lt;bool&gt;(&quot;check_cutflow&quot;, check_cutflow);
++    AnalysisNumbers.setOption&lt;bool&gt;(&quot;print_cutflows&quot;, check_cutflow);
++    AnalysisNumbers.setOption&lt;bool&gt;(&quot;normalized_cutflows&quot;, false);
 ·
      // Initialise logs
      logger().set_log_debug_messages(debug);
-@@ -381,18 +208,12 @@
+@@ -208,12 +381,18 @@
      YAML::Node CBS(infile[&quot;settings&quot;]);
      CBS[&quot;analyses&quot;] = analyses;
      CBS[&quot;min_nEvents&quot;] = (long long)(1000);
--    CBS[&quot;max_nEvents&quot;] = (long long)(std::numeric_limits&lt;int&gt;::max());
--    // CBS policy: always process all events provided by the user (no convergence-based early stop).
--    CBS[&quot;run_convergence_checks&quot;] = false;
-+    CBS[&quot;max_nEvents&quot;] = (long long)(1000000000);
+-    CBS[&quot;max_nEvents&quot;] = (long long)(1000000000);
++    CBS[&quot;max_nEvents&quot;] = (long long)(std::numeric_limits&lt;int&gt;::max());
++    // CBS policy: always process all events provided by the user (no convergence-based early stop).
++    CBS[&quot;run_convergence_checks&quot;] = false;
      operateLHCLoop.setOption&lt;YAML::Node&gt;(&quot;CBS&quot;, CBS);
      operateLHCLoop.setOption&lt;bool&gt;(&quot;silenceLoop&quot;, not debug);
 ·
--    // Tell operateLHCLoop to use the &quot;CBS&quot; collider
--    std::vector&lt;std::string&gt; use_colliders = {&quot;CBS&quot;};
--    operateLHCLoop.setOption&lt;std::vector&lt;std::string&gt;&gt;(&quot;use_colliders&quot;, use_colliders);
--
--    // Pass the event filename and the jet pt cutoff to the HepMC reader/HEPUtils converter function
--    getEvent.setOption&lt;str&gt;(&quot;hepmc_filename&quot;, prepared_input.hepmc_filenames.front());
-+    // Pass the filename and the jet pt cutoff to the HepMC reader/HEPUtils converter function
-+    getEvent.setOption&lt;str&gt;(&quot;hepmc_filename&quot;, event_filename);
+-    // Pass the filename and the jet pt cutoff to the HepMC reader/HEPUtils converter function
+-    getEvent.setOption&lt;str&gt;(&quot;hepmc_filename&quot;, event_filename);
++    // Tell operateLHCLoop to use the &quot;CBS&quot; collider
++    std::vector&lt;std::string&gt; use_colliders = {&quot;CBS&quot;};
++    operateLHCLoop.setOption&lt;std::vector&lt;std::string&gt;&gt;(&quot;use_colliders&quot;, use_colliders);
++
++    // Pass the event filename and the jet pt cutoff to the HepMC reader/HEPUtils converter function
++    getEvent.setOption&lt;str&gt;(&quot;hepmc_filename&quot;, prepared_input.hepmc_filenames.front());
      convertEvent.setOption&lt;double&gt;(&quot;jet_pt_min&quot;, jet_pt_min);
 ·
      // Pass the jet collections yaml node to the hepMC reader/HEPUtils converter function
-@@ -402,34 +223,43 @@
+@@ -223,43 +402,34 @@
      convertEvent.setOption&lt;YAML::Node&gt;(&quot;jet_collections&quot;, jet_collections);
 ·
      // Pass options to the cross-section function
--    getYAMLCrossSection.setOption&lt;std::string&gt;(&quot;collider&quot;, &quot;CBS&quot;);
--    getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_fb&quot;, prepared_input.total_cross_section_fb);
--    getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_uncert_fb&quot;, prepared_input.total_cross_section_uncert_fb);
-+    if (settings.hasKey(&quot;cross_section_pb&quot;))
-+    {
-+      getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_pb&quot;, settings.getValue&lt;double&gt;(&quot;cross_section_pb&quot;));
-+      if (settings.hasKey(&quot;cross_section_fractional_uncert&quot;)) { getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_fractional_uncert&quot;, settings.getValue&lt;double&gt;(&quot;cross_section_fractional_uncert&quot;)); }
-+      else {getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_uncert_pb&quot;, settings.getValue&lt;double&gt;(&quot;cross_section_uncert_pb&quot;)); }
-+    }
-+    else // &lt;-- must have option &quot;cross_section_fb&quot;
-+    {
-+      getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_fb&quot;, settings.getValue&lt;double&gt;(&quot;cross_section_fb&quot;));
-+      if (settings.hasKey(&quot;cross_section_fractional_uncert&quot;)) { getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_fractional_uncert&quot;, settings.getValue&lt;double&gt;(&quot;cross_section_fractional_uncert&quot;)); }
-+      else { getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_uncert_fb&quot;, settings.getValue&lt;double&gt;(&quot;cross_section_uncert_fb&quot;)); }
-+    }
+-    if (settings.hasKey(&quot;cross_section_pb&quot;))
+-    {
+-      getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_pb&quot;, settings.getValue&lt;double&gt;(&quot;cross_section_pb&quot;));
+-      if (settings.hasKey(&quot;cross_section_fractional_uncert&quot;)) { getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_fractional_uncert&quot;, settings.getValue&lt;double&gt;(&quot;cross_section_fractional_uncert&quot;)); }
+-      else {getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_uncert_pb&quot;, settings.getValue&lt;double&gt;(&quot;cross_section_uncert_pb&quot;)); }
+-    }
+-    else // &lt;-- must have option &quot;cross_section_fb&quot;
+-    {
+-      getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_fb&quot;, settings.getValue&lt;double&gt;(&quot;cross_section_fb&quot;));
+-      if (settings.hasKey(&quot;cross_section_fractional_uncert&quot;)) { getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_fractional_uncert&quot;, settings.getValue&lt;double&gt;(&quot;cross_section_fractional_uncert&quot;)); }
+-      else { getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_uncert_fb&quot;, settings.getValue&lt;double&gt;(&quot;cross_section_uncert_fb&quot;)); }
+-    }
++    getYAMLCrossSection.setOption&lt;std::string&gt;(&quot;collider&quot;, &quot;CBS&quot;);
++    getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_fb&quot;, prepared_input.total_cross_section_fb);
++    getYAMLCrossSection.setOption&lt;double&gt;(&quot;cross_section_uncert_fb&quot;, prepared_input.total_cross_section_uncert_fb);
 ·
      // Pass options to the likelihood function
      // TODO: I&#x27;m not specifying the defaults here. I&#x27;ll add the argument only if the user supplies it.
      // ColliderBit can then fall back to its defaults if nothing is supplied.
--    apply_setting_if_present&lt;bool&gt;(&quot;use_covariances&quot;, settings, *calcLogLikes);//Default true
--    apply_setting_if_present&lt;bool&gt;(&quot;use_marginalising&quot;, settings, *calcLogLikes);//Default False
--    apply_setting_if_present&lt;bool&gt;(&quot;combine_SRs_without_covariances&quot;, settings, *calcLogLikes);//Default False
+-    apply_setting_if_present&lt;bool&gt;(&quot;use_covariances&quot;, settings, calc_LHC_LogLikes_full);//Default true
+-    apply_setting_if_present&lt;bool&gt;(&quot;use_marginalising&quot;, settings, calc_LHC_LogLikes_full);//Default False
+-    apply_setting_if_present&lt;bool&gt;(&quot;combine_SRs_without_covariances&quot;, settings, calc_LHC_LogLikes_full);//Default False
 -
--    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_initstep&quot;, settings, *calcLogLikes);//Default 0.1
--    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_convtol&quot;, settings, *calcLogLikes);//Default 0.01
--    apply_setting_if_present&lt;int&gt;(&quot;nuisance_prof_maxsteps&quot;, settings, *calcLogLikes);//Default 10000
--    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_convacc&quot;, settings, *calcLogLikes);//Default 0.01
--    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_simplexsize&quot;, settings, *calcLogLikes);//Default 1e-5
--    apply_setting_if_present&lt;int&gt;(&quot;nuisance_prof_method&quot;, settings, *calcLogLikes);//Default 6
+-    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_initstep&quot;, settings, calc_LHC_LogLikes_full);//Default 0.1
+-    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_convtol&quot;, settings, calc_LHC_LogLikes_full);//Default 0.01
+-    apply_setting_if_present&lt;int&gt;(&quot;nuisance_prof_maxsteps&quot;, settings, calc_LHC_LogLikes_full);//Default 10000
+-    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_convacc&quot;, settings, calc_LHC_LogLikes_full);//Default 0.01
+-    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_simplexsize&quot;, settings, calc_LHC_LogLikes_full);//Default 1e-5
+-    apply_setting_if_present&lt;int&gt;(&quot;nuisance_prof_method&quot;, settings, calc_LHC_LogLikes_full);//Default 6
 -
--    apply_setting_if_present&lt;double&gt;(&quot;nuisance_marg_convthres_abs&quot;, settings, *calcLogLikes);//Default 0.05
--    apply_setting_if_present&lt;double&gt;(&quot;nuisance_marg_convthres_rel&quot;, settings, *calcLogLikes);//Default 0.05
--    apply_setting_if_present&lt;long&gt;(&quot;nuisance_marg_nsamples_start&quot;, settings, *calcLogLikes);//Default 1000000
--    apply_setting_if_present&lt;bool&gt;(&quot;nuisance_marg_nulike1sr&quot;, settings, *calcLogLikes);//Default true
+-    apply_setting_if_present&lt;double&gt;(&quot;nuisance_marg_convthres_abs&quot;, settings, calc_LHC_LogLikes_full);//Default 0.05
+-    apply_setting_if_present&lt;double&gt;(&quot;nuisance_marg_convthres_rel&quot;, settings, calc_LHC_LogLikes_full);//Default 0.05
+-    apply_setting_if_present&lt;long&gt;(&quot;nuisance_marg_nsamples_start&quot;, settings, calc_LHC_LogLikes_full);//Default 1000000
+-    apply_setting_if_present&lt;bool&gt;(&quot;nuisance_marg_nulike1sr&quot;, settings, calc_LHC_LogLikes_full);//Default true
 -
--    apply_setting_if_present&lt;bool&gt;(&quot;calc_noerr_loglikes&quot;, settings, *calcLogLikes);//Default false
--    apply_setting_if_present&lt;bool&gt;(&quot;calc_expected_loglikes&quot;, settings, *calcLogLikes);//Default false
--    apply_setting_if_present&lt;bool&gt;(&quot;calc_expected_noerr_loglikes&quot;, settings, *calcLogLikes);//Default false
--    apply_setting_if_present&lt;bool&gt;(&quot;calc_scaledsignal_loglikes&quot;, settings, *calcLogLikes);//Default false
--    apply_setting_if_present&lt;double&gt;(&quot;signal_scalefactor&quot;, settings, *calcLogLikes);//Default 1.0
-+    apply_setting_if_present&lt;bool&gt;(&quot;use_covariances&quot;, settings, calc_LHC_LogLikes_full);//Default true
-+    apply_setting_if_present&lt;bool&gt;(&quot;use_marginalising&quot;, settings, calc_LHC_LogLikes_full);//Default False
-+    apply_setting_if_present&lt;bool&gt;(&quot;combine_SRs_without_covariances&quot;, settings, calc_LHC_LogLikes_full);//Default False
+-    bool calc_noerr_loglikes = apply_setting_if_present&lt;bool&gt;(&quot;calc_noerr_loglikes&quot;, settings, calc_LHC_LogLikes_full);//Default false
+-    bool calc_expected_loglikes= apply_setting_if_present&lt;bool&gt;(&quot;calc_expected_loglikes&quot;, settings, calc_LHC_LogLikes_full);//Default false
+-    bool calc_expected_noerr_loglikes = apply_setting_if_present&lt;bool&gt;(&quot;calc_expected_noerr_loglikes&quot;, settings, calc_LHC_LogLikes_full);//Default false
+-    bool calc_scaledsignal_loglikes = apply_setting_if_present&lt;bool&gt;(&quot;calc_scaledsignal_loglikes&quot;, settings, calc_LHC_LogLikes_full);//Default false
+-    apply_setting_if_present&lt;double&gt;(&quot;signal_scalefactor&quot;, settings, calc_LHC_LogLikes_full);//Default 1.0
++    apply_setting_if_present&lt;bool&gt;(&quot;use_covariances&quot;, settings, *calcLogLikes);//Default true
++    apply_setting_if_present&lt;bool&gt;(&quot;use_marginalising&quot;, settings, *calcLogLikes);//Default False
++    apply_setting_if_present&lt;bool&gt;(&quot;combine_SRs_without_covariances&quot;, settings, *calcLogLikes);//Default False
 +
-+    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_initstep&quot;, settings, calc_LHC_LogLikes_full);//Default 0.1
-+    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_convtol&quot;, settings, calc_LHC_LogLikes_full);//Default 0.01
-+    apply_setting_if_present&lt;int&gt;(&quot;nuisance_prof_maxsteps&quot;, settings, calc_LHC_LogLikes_full);//Default 10000
-+    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_convacc&quot;, settings, calc_LHC_LogLikes_full);//Default 0.01
-+    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_simplexsize&quot;, settings, calc_LHC_LogLikes_full);//Default 1e-5
-+    apply_setting_if_present&lt;int&gt;(&quot;nuisance_prof_method&quot;, settings, calc_LHC_LogLikes_full);//Default 6
++    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_initstep&quot;, settings, *calcLogLikes);//Default 0.1
++    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_convtol&quot;, settings, *calcLogLikes);//Default 0.01
++    apply_setting_if_present&lt;int&gt;(&quot;nuisance_prof_maxsteps&quot;, settings, *calcLogLikes);//Default 10000
++    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_convacc&quot;, settings, *calcLogLikes);//Default 0.01
++    apply_setting_if_present&lt;double&gt;(&quot;nuisance_prof_simplexsize&quot;, settings, *calcLogLikes);//Default 1e-5
++    apply_setting_if_present&lt;int&gt;(&quot;nuisance_prof_method&quot;, settings, *calcLogLikes);//Default 6
 +
-+    apply_setting_if_present&lt;double&gt;(&quot;nuisance_marg_convthres_abs&quot;, settings, calc_LHC_LogLikes_full);//Default 0.05
-+    apply_setting_if_present&lt;double&gt;(&quot;nuisance_marg_convthres_rel&quot;, settings, calc_LHC_LogLikes_full);//Default 0.05
-+    apply_setting_if_present&lt;long&gt;(&quot;nuisance_marg_nsamples_start&quot;, settings, calc_LHC_LogLikes_full);//Default 1000000
-+    apply_setting_if_present&lt;bool&gt;(&quot;nuisance_marg_nulike1sr&quot;, settings, calc_LHC_LogLikes_full);//Default true
++    apply_setting_if_present&lt;double&gt;(&quot;nuisance_marg_convthres_abs&quot;, settings, *calcLogLikes);//Default 0.05
++    apply_setting_if_present&lt;double&gt;(&quot;nuisance_marg_convthres_rel&quot;, settings, *calcLogLikes);//Default 0.05
++    apply_setting_if_present&lt;long&gt;(&quot;nuisance_marg_nsamples_start&quot;, settings, *calcLogLikes);//Default 1000000
++    apply_setting_if_present&lt;bool&gt;(&quot;nuisance_marg_nulike1sr&quot;, settings, *calcLogLikes);//Default true
 +
-+    bool calc_noerr_loglikes = apply_setting_if_present&lt;bool&gt;(&quot;calc_noerr_loglikes&quot;, settings, calc_LHC_LogLikes_full);//Default false
-+    bool calc_expected_loglikes= apply_setting_if_present&lt;bool&gt;(&quot;calc_expected_loglikes&quot;, settings, calc_LHC_LogLikes_full);//Default false
-+    bool calc_expected_noerr_loglikes = apply_setting_if_present&lt;bool&gt;(&quot;calc_expected_noerr_loglikes&quot;, settings, calc_LHC_LogLikes_full);//Default false
-+    bool calc_scaledsignal_loglikes = apply_setting_if_present&lt;bool&gt;(&quot;calc_scaledsignal_loglikes&quot;, settings, calc_LHC_LogLikes_full);//Default false
-+    apply_setting_if_present&lt;double&gt;(&quot;signal_scalefactor&quot;, settings, calc_LHC_LogLikes_full);//Default 1.0
++    apply_setting_if_present&lt;bool&gt;(&quot;calc_noerr_loglikes&quot;, settings, *calcLogLikes);//Default false
++    apply_setting_if_present&lt;bool&gt;(&quot;calc_expected_loglikes&quot;, settings, *calcLogLikes);//Default false
++    apply_setting_if_present&lt;bool&gt;(&quot;calc_expected_noerr_loglikes&quot;, settings, *calcLogLikes);//Default false
++    apply_setting_if_present&lt;bool&gt;(&quot;calc_scaledsignal_loglikes&quot;, settings, *calcLogLikes);//Default false
++    apply_setting_if_present&lt;double&gt;(&quot;signal_scalefactor&quot;, settings, *calcLogLikes);//Default 1.0
 ·
      // If Rivet/Contur, set Rivet/Contur options
      if (withRivet)
-@@ -447,19 +277,15 @@
+@@ -277,15 +447,19 @@
 ·
      // Resolve ColliderBit dependencies and backend requirements
      convertEvent.resolveDependency(&amp;getEvent);
--    calc_combined_LHC_LogLike.resolveDependency(calcLogLikes);
-+    calc_combined_LHC_LogLike.resolveDependency(&amp;calc_LHC_LogLikes_full);
+-    calc_combined_LHC_LogLike.resolveDependency(&amp;calc_LHC_LogLikes_full);
++    calc_combined_LHC_LogLike.resolveDependency(calcLogLikes);
      calc_combined_LHC_LogLike.resolveDependency(&amp;operateLHCLoop);
--    get_LHC_LogLike_per_analysis.resolveDependency(calcLogLikes);
--    calcLogLikes-&gt;resolveDependency(&amp;CollectAnalyses);
--    calcLogLikes-&gt;resolveDependency(&amp;operateLHCLoop);
--    calcLogLikes-&gt;resolveDependency(&amp;getYAMLCrossSection);
--    calcLogLikes-&gt;resolveBackendReq(use_lnpiln ? &amp;nulike_lnpiln : &amp;nulike_lnpin);
--    if (use_FullLikes)
--    {
--      calcLogLikes-&gt;resolveBackendReq(&amp;FullLikes_FileExists);
--      calcLogLikes-&gt;resolveBackendReq(&amp;FullLikes_ReadIn);
--      calcLogLikes-&gt;resolveBackendReq(&amp;FullLikes_Evaluate);
--    }
-+    get_LHC_LogLike_per_analysis.resolveDependency(&amp;calc_LHC_LogLikes_full);
-+    calc_LHC_LogLikes_full.resolveDependency(&amp;CollectAnalyses);
-+    calc_LHC_LogLikes_full.resolveDependency(&amp;operateLHCLoop);
-+    calc_LHC_LogLikes_full.resolveBackendReq(use_lnpiln ? &amp;nulike_lnpiln : &amp;nulike_lnpin);
-+    calc_LHC_LogLikes_full.resolveBackendReq(&amp;FullLikes_FileExists);
-+    calc_LHC_LogLikes_full.resolveBackendReq(&amp;FullLikes_ReadIn);
-+    calc_LHC_LogLikes_full.resolveBackendReq(&amp;FullLikes_Evaluate);
+-    get_LHC_LogLike_per_analysis.resolveDependency(&amp;calc_LHC_LogLikes_full);
+-    calc_LHC_LogLikes_full.resolveDependency(&amp;CollectAnalyses);
+-    calc_LHC_LogLikes_full.resolveDependency(&amp;operateLHCLoop);
+-    calc_LHC_LogLikes_full.resolveBackendReq(use_lnpiln ? &amp;nulike_lnpiln : &amp;nulike_lnpin);
+-    calc_LHC_LogLikes_full.resolveBackendReq(&amp;FullLikes_FileExists);
+-    calc_LHC_LogLikes_full.resolveBackendReq(&amp;FullLikes_ReadIn);
+-    calc_LHC_LogLikes_full.resolveBackendReq(&amp;FullLikes_Evaluate);
++    get_LHC_LogLike_per_analysis.resolveDependency(calcLogLikes);
++    calcLogLikes-&gt;resolveDependency(&amp;CollectAnalyses);
++    calcLogLikes-&gt;resolveDependency(&amp;operateLHCLoop);
++    calcLogLikes-&gt;resolveDependency(&amp;getYAMLCrossSection);
++    calcLogLikes-&gt;resolveBackendReq(use_lnpiln ? &amp;nulike_lnpiln : &amp;nulike_lnpin);
++    if (use_FullLikes)
++    {
++      calcLogLikes-&gt;resolveBackendReq(&amp;FullLikes_FileExists);
++      calcLogLikes-&gt;resolveBackendReq(&amp;FullLikes_ReadIn);
++      calcLogLikes-&gt;resolveBackendReq(&amp;FullLikes_Evaluate);
++    }
      CollectAnalyses.resolveDependency(&amp;runATLASAnalyses);
      CollectAnalyses.resolveDependency(&amp;runCMSAnalyses);
      CollectAnalyses.resolveDependency(&amp;runIdentityAnalyses);
-@@ -534,8 +360,8 @@
+@@ -360,8 +534,8 @@
 ·
      operateLHCLoop.setNestedList(nested_functions);
 ·
--    // Call the initialisation function for remaining backends
--    // (nulike and optional ATLAS_FullLikes are already initialised before the works[] checks above)
-+    // Call the initialisation function for backends
-+    CAT_3(nulike_,NULIKE_SAFE_VERSION,_init).reset_and_calculate();
+-    // Call the initialisation function for backends
+-    CAT_3(nulike_,NULIKE_SAFE_VERSION,_init).reset_and_calculate();
++    // Call the initialisation function for remaining backends
++    // (nulike and optional ATLAS_FullLikes are already initialised before the works[] checks above)
      if (withRivet)
      {
        CAT_3(Contur_, CONTUR_SAFE_VERSION,_init).reset_and_calculate();
-@@ -545,7 +371,7 @@
+@@ -371,7 +545,7 @@
      // Run the detector sim and selected analyses on all the events read in.
      operateLHCLoop.reset_and_calculate();
      CollectAnalyses.reset_and_calculate();
--    calcLogLikes-&gt;reset_and_calculate();
-+    calc_LHC_LogLikes_full.reset_and_calculate();
+-    calc_LHC_LogLikes_full.reset_and_calculate();
++    calcLogLikes-&gt;reset_and_calculate();
      get_LHC_LogLike_per_analysis.reset_and_calculate();
      calc_combined_LHC_LogLike.reset_and_calculate();
      if (withContur)
-@@ -555,33 +381,54 @@
+@@ -381,54 +555,33 @@
        Contur_LHC_measurements_histotags_perPool.reset_and_calculate();
      }
 ·
--    const int n_events = operateLHCLoop(0).event_count.at(&quot;CBS&quot;);
--    const double loglike = calc_combined_LHC_LogLike(0);
--
--    std::map&lt;std::string, double&gt; contur_pool_loglikes;
--    std::map&lt;std::string, std::string&gt; contur_pool_info;
--    double contur_total_loglike = 0.0;
-+    // Retrieve and print the predicted + observed counts and likelihoods for the individual SRs and analyses, as well as the total likelihood.
-+    int n_events = operateLHCLoop(0).event_count.at(&quot;CBS&quot;);
-+    std::stringstream summary_line;
-+    for (size_t analysis = 0; analysis &lt; CollectAnalyses(0).size(); ++analysis)
-+    {
-+      const Gambit::ColliderBit::AnalysisData&amp; adata = *(CollectAnalyses(0).at(analysis));
-+      const str&amp; analysis_name = adata.analysis_name;
-+      const Gambit::ColliderBit::AnalysisLogLikes&amp; analysis_loglikes = calc_LHC_LogLikes_full(0).at(analysis_name);
-+      summary_line &lt;&lt; &quot;  &quot; &lt;&lt; analysis_name &lt;&lt; &quot;: &quot; &lt;&lt; endl;
-+      for (size_t sr_index = 0; sr_index &lt; adata.size(); ++sr_index)
-+      {
-+        const Gambit::ColliderBit::SignalRegionData srData = adata[sr_index];
-+        const double combined_s_uncertainty = srData.calc_n_sig_scaled_err();
-+        const double combined_bg_uncertainty = srData.n_bkg_err;
-+        summary_line &lt;&lt; &quot;    Signal region &quot; &lt;&lt; srData.sr_label &lt;&lt; &quot; (SR index &quot; &lt;&lt; sr_index &lt;&lt; &quot;):&quot; &lt;&lt; endl;
-+        summary_line &lt;&lt; &quot;      Observed events: &quot; &lt;&lt; srData.n_obs &lt;&lt; endl;
-+        summary_line &lt;&lt; &quot;      SM prediction: &quot; &lt;&lt; srData.n_bkg &lt;&lt; &quot; +/- &quot; &lt;&lt; combined_bg_uncertainty &lt;&lt; endl;
-+        summary_line &lt;&lt; &quot;      Signal prediction: &quot; &lt;&lt; srData.n_sig_scaled &lt;&lt; &quot; +/- &quot; &lt;&lt; combined_s_uncertainty &lt;&lt; endl;
-+        summary_line &lt;&lt; &quot;      Log-likelihood: &quot; &lt;&lt; analysis_loglikes.sr_loglikes.at(sr_index) &lt;&lt; endl;
-+        if (calc_noerr_loglikes) {summary_line &lt;&lt; &quot;      No-Error Log-Likelihood: &quot; &lt;&lt; analysis_loglikes.alt_sr_loglikes.at(&quot;noerr&quot;).at(sr_index) &lt;&lt; &quot;\n&quot;;}
-+        if (calc_expected_loglikes) {summary_line &lt;&lt; &quot;      Expected Log-Likelihood: &quot; &lt;&lt; analysis_loglikes.alt_sr_loglikes.at(&quot;expected&quot;).at(sr_index) &lt;&lt; &quot;\n&quot;;}
-+        if (calc_expected_noerr_loglikes) {summary_line &lt;&lt; &quot;      Expected No-Error Log-Likelihood: &quot; &lt;&lt; analysis_loglikes.alt_sr_loglikes.at(&quot;expected_noerr&quot;).at(sr_index) &lt;&lt; &quot;\n&quot;;}
-+        if (calc_scaledsignal_loglikes) {summary_line &lt;&lt; &quot;      Scaled Signal Log-Likelihood: &quot; &lt;&lt; analysis_loglikes.alt_sr_loglikes.at(&quot;scaledsignal&quot;).at(sr_index) &lt;&lt; std::endl;}
-+      }
-+      summary_line &lt;&lt; &quot;    Selected signal region: &quot; &lt;&lt; analysis_loglikes.combination_sr_label &lt;&lt; endl;
-+      summary_line &lt;&lt; &quot;    Total log-likelihood for analysis:&quot; &lt;&lt; analysis_loglikes.combination_loglike &lt;&lt; endl &lt;&lt; endl;
-+    }
+-    // Retrieve and print the predicted + observed counts and likelihoods for the individual SRs and analyses, as well as the total likelihood.
+-    int n_events = operateLHCLoop(0).event_count.at(&quot;CBS&quot;);
+-    std::stringstream summary_line;
+-    for (size_t analysis = 0; analysis &lt; CollectAnalyses(0).size(); ++analysis)
+-    {
+-      const Gambit::ColliderBit::AnalysisData&amp; adata = *(CollectAnalyses(0).at(analysis));
+-      const str&amp; analysis_name = adata.analysis_name;
+-      const Gambit::ColliderBit::AnalysisLogLikes&amp; analysis_loglikes = calc_LHC_LogLikes_full(0).at(analysis_name);
+-      summary_line &lt;&lt; &quot;  &quot; &lt;&lt; analysis_name &lt;&lt; &quot;: &quot; &lt;&lt; endl;
+-      for (size_t sr_index = 0; sr_index &lt; adata.size(); ++sr_index)
+-      {
+-        const Gambit::ColliderBit::SignalRegionData srData = adata[sr_index];
+-        const double combined_s_uncertainty = srData.calc_n_sig_scaled_err();
+-        const double combined_bg_uncertainty = srData.n_bkg_err;
+-        summary_line &lt;&lt; &quot;    Signal region &quot; &lt;&lt; srData.sr_label &lt;&lt; &quot; (SR index &quot; &lt;&lt; sr_index &lt;&lt; &quot;):&quot; &lt;&lt; endl;
+-        summary_line &lt;&lt; &quot;      Observed events: &quot; &lt;&lt; srData.n_obs &lt;&lt; endl;
+-        summary_line &lt;&lt; &quot;      SM prediction: &quot; &lt;&lt; srData.n_bkg &lt;&lt; &quot; +/- &quot; &lt;&lt; combined_bg_uncertainty &lt;&lt; endl;
+-        summary_line &lt;&lt; &quot;      Signal prediction: &quot; &lt;&lt; srData.n_sig_scaled &lt;&lt; &quot; +/- &quot; &lt;&lt; combined_s_uncertainty &lt;&lt; endl;
+-        summary_line &lt;&lt; &quot;      Log-likelihood: &quot; &lt;&lt; analysis_loglikes.sr_loglikes.at(sr_index) &lt;&lt; endl;
+-        if (calc_noerr_loglikes) {summary_line &lt;&lt; &quot;      No-Error Log-Likelihood: &quot; &lt;&lt; analysis_loglikes.alt_sr_loglikes.at(&quot;noerr&quot;).at(sr_index) &lt;&lt; &quot;\n&quot;;}
+-        if (calc_expected_loglikes) {summary_line &lt;&lt; &quot;      Expected Log-Likelihood: &quot; &lt;&lt; analysis_loglikes.alt_sr_loglikes.at(&quot;expected&quot;).at(sr_index) &lt;&lt; &quot;\n&quot;;}
+-        if (calc_expected_noerr_loglikes) {summary_line &lt;&lt; &quot;      Expected No-Error Log-Likelihood: &quot; &lt;&lt; analysis_loglikes.alt_sr_loglikes.at(&quot;expected_noerr&quot;).at(sr_index) &lt;&lt; &quot;\n&quot;;}
+-        if (calc_scaledsignal_loglikes) {summary_line &lt;&lt; &quot;      Scaled Signal Log-Likelihood: &quot; &lt;&lt; analysis_loglikes.alt_sr_loglikes.at(&quot;scaledsignal&quot;).at(sr_index) &lt;&lt; std::endl;}
+-      }
+-      summary_line &lt;&lt; &quot;    Selected signal region: &quot; &lt;&lt; analysis_loglikes.combination_sr_label &lt;&lt; endl;
+-      summary_line &lt;&lt; &quot;    Total log-likelihood for analysis:&quot; &lt;&lt; analysis_loglikes.combination_loglike &lt;&lt; endl &lt;&lt; endl;
+-    }
++    const int n_events = operateLHCLoop(0).event_count.at(&quot;CBS&quot;);
++    const double loglike = calc_combined_LHC_LogLike(0);
++
++    std::map&lt;std::string, double&gt; contur_pool_loglikes;
++    std::map&lt;std::string, std::string&gt; contur_pool_info;
++    double contur_total_loglike = 0.0;
      if (withContur)
      {
--      contur_total_loglike = Contur_LHC_measurements_LogLike(0);
--      contur_pool_loglikes = Contur_LHC_measurements_LogLike_perPool(0);
--      contur_pool_info = Contur_LHC_measurements_histotags_perPool(0);
+-      summary_line &lt;&lt; &quot;\nContur results:&quot; &lt;&lt; std::endl;
+-      summary_line &lt;&lt; &quot;Total Contur Log-Likelihood: &quot; &lt;&lt; Contur_LHC_measurements_LogLike(0) &lt;&lt; std::endl;
+-      map_str_dbl pool_LLRs = Contur_LHC_measurements_LogLike_perPool(0);
+-      map_str_str pool_info = Contur_LHC_measurements_histotags_perPool(0);
+-      for (const auto &amp; pool : pool_LLRs){
+-        summary_line &lt;&lt; &quot;\tPool &quot; &lt;&lt; pool.first &lt;&lt; &quot;:&quot; &lt;&lt; &quot;\n\t\tLog-likelihood: &quot; &lt;&lt;
+-          pool.second &lt;&lt; &quot;\n\t\tDominant measurement: &quot; &lt;&lt; pool_info[pool.first] &lt;&lt; std::endl;
+-      }
 -    }
+-    double loglike = calc_combined_LHC_LogLike(0);
 -
--    const auto&amp; analysis_results = CollectAnalyses(0);
--    const auto&amp; analysis_loglikes = (*calcLogLikes)(0);
--
--    ColliderBit::SoloOutput::emit_outputs(
--      output_config,
--      n_events,
--      loglike,
--      analysis_results,
--      analysis_loglikes,
--      withContur,
--      contur_total_loglike,
--      contur_pool_loglikes,
--      contur_pool_info
--    );
-+      summary_line &lt;&lt; &quot;\nContur results:&quot; &lt;&lt; std::endl;
-+      summary_line &lt;&lt; &quot;Total Contur Log-Likelihood: &quot; &lt;&lt; Contur_LHC_measurements_LogLike(0) &lt;&lt; std::endl;
-+      map_str_dbl pool_LLRs = Contur_LHC_measurements_LogLike_perPool(0);
-+      map_str_str pool_info = Contur_LHC_measurements_histotags_perPool(0);
-+      for (const auto &amp; pool : pool_LLRs){
-+        summary_line &lt;&lt; &quot;\tPool &quot; &lt;&lt; pool.first &lt;&lt; &quot;:&quot; &lt;&lt; &quot;\n\t\tLog-likelihood: &quot; &lt;&lt;
-+          pool.second &lt;&lt; &quot;\n\t\tDominant measurement: &quot; &lt;&lt; pool_info[pool.first] &lt;&lt; std::endl;
-+      }
+-    cout.precision(5);
+-    cout &lt;&lt; endl;
+-    cout &lt;&lt; &quot;Read and analysed &quot; &lt;&lt; n_events &lt;&lt; &quot; events from HepMC file.&quot; &lt;&lt; endl &lt;&lt; endl;
+-    cout &lt;&lt; &quot;Analysis details:&quot; &lt;&lt; endl &lt;&lt; endl &lt;&lt; summary_line.str() &lt;&lt; endl;
+-    // TODO: Mention LHCb as contur can include an LHCb pool?
+-    cout &lt;&lt; std::scientific &lt;&lt; &quot;Total combined ATLAS+CMS&quot; &lt;&lt; (withContur?&quot; analysis and searches &quot;:&quot; &quot;)·
+-         &lt;&lt; &quot;log-likelihood: &quot; &lt;&lt; loglike &lt;&lt; endl;
+-    cout &lt;&lt; endl;
++      contur_total_loglike = Contur_LHC_measurements_LogLike(0);
++      contur_pool_loglikes = Contur_LHC_measurements_LogLike_perPool(0);
++      contur_pool_info = Contur_LHC_measurements_histotags_perPool(0);
 +    }
-+    double loglike = calc_combined_LHC_LogLike(0);
 +
-+    cout.precision(5);
-+    cout &lt;&lt; endl;
-+    cout &lt;&lt; &quot;Read and analysed &quot; &lt;&lt; n_events &lt;&lt; &quot; events from HepMC file.&quot; &lt;&lt; endl &lt;&lt; endl;
-+    cout &lt;&lt; &quot;Analysis details:&quot; &lt;&lt; endl &lt;&lt; endl &lt;&lt; summary_line.str() &lt;&lt; endl;
-+    // TODO: Mention LHCb as contur can include an LHCb pool?
-+    cout &lt;&lt; std::scientific &lt;&lt; &quot;Total combined ATLAS+CMS&quot; &lt;&lt; (withContur?&quot; analysis and searches &quot;:&quot; &quot;)·
-+         &lt;&lt; &quot;log-likelihood: &quot; &lt;&lt; loglike &lt;&lt; endl;
-+    cout &lt;&lt; endl;
++    const auto&amp; analysis_results = CollectAnalyses(0);
++    const auto&amp; analysis_loglikes = (*calcLogLikes)(0);
++
++    ColliderBit::SoloOutput::emit_outputs(
++      output_config,
++      n_events,
++      loglike,
++      analysis_results,
++      analysis_loglikes,
++      withContur,
++      contur_total_loglike,
++      contur_pool_loglikes,
++      contur_pool_info
++    );
 ·
      // No more to see here folks, go home.
      return 0;
-@@ -596,3 +443,4 @@
+@@ -443,4 +596,3 @@
    return 1;
 ·
  }
-+</pre></details>
+-</pre></details>
   </section>
 
-  <footer>Generated by <code>scripts/compare-cbs-focus.py</code>. Baseline commit: <code>65aca0890d4b627f546192e22fb5e653f4dca9d9</code>; comparison commit: <code>5989e2d27a424c580d2c09cd3b2751c75ced40c4</code>.</footer>
+  <footer>Generated by <code>scripts/compare-cbs-focus.py</code>. Old commit: <code>5989e2d27a424c580d2c09cd3b2751c75ced40c4</code>; new commit: <code>65aca0890d4b627f546192e22fb5e653f4dca9d9</code>.</footer>
 </main>
 </body>
 </html>

@@ -332,10 +332,10 @@ def logic_flow_definitions() -> dict[str, Any]:
     groups keep the diagram readable while naming the concrete functions and
     helper modules that own each stage.
     """
-    return {
+    definitions = {
         "baseline": {
-            "title": "Before · helper-oriented execution flow",
-            "description": "The baseline entrypoint delegates parsing, multi-file execution, merging, sampling advice, and output to dedicated Solo* helpers.",
+            "title": "After · helper-oriented execution flow",
+            "description": "The new entrypoint delegates parsing, multi-file execution, merging, sampling advice, and output to dedicated Solo* helpers.",
             "nodes": [
                 {
                     "id": "start",
@@ -444,7 +444,7 @@ def logic_flow_definitions() -> dict[str, Any]:
             ],
         },
         "comparison": {
-            "title": "After · main-owned execution flow",
+            "title": "Before · main-owned execution flow",
             "description": "SUSYRun2 keeps the complete single-file path in solo.cpp::main, with no SoloCLI/SoloInput/SoloBatch/SoloOutput helper boundary.",
             "nodes": [
                 {
@@ -555,51 +555,55 @@ def logic_flow_definitions() -> dict[str, Any]:
             ],
         },
     }
+    # Keep the public data model in old -> new order.  The literal definitions
+    # above were authored in the original page order, so swap their roles here
+    # rather than silently relabelling the rendered diagrams.
+    return {"baseline": definitions["comparison"], "comparison": definitions["baseline"]}
 
 
 def logic_mapping_rows() -> list[dict[str, str]]:
     return [
         {
             "concern": "CLI / help / argument errors",
-            "baseline": "SoloCLI::parse_command_line · solo_cli.cpp",
-            "comparison": "main: argc check + argv[1]",
-            "change": "helper boundary removed",
+            "baseline": "main: argc check + argv[1]",
+            "comparison": "SoloCLI::parse_command_line · solo_cli.cpp",
+            "change": "CLI ownership extracted",
         },
         {
             "concern": "YAML, analyses, settings, event inputs",
-            "baseline": "SoloInput::parse_and_prepare_input · solo_input.cpp",
-            "comparison": "main: YAML::LoadFile + Options(settings)",
-            "change": "input normalization moved inline",
+            "baseline": "main: YAML::LoadFile + Options(settings)",
+            "comparison": "SoloInput::parse_and_prepare_input · solo_input.cpp",
+            "change": "input normalization extracted",
         },
         {
             "concern": "multi-process / multi-file execution",
-            "baseline": "SoloBatch::run_and_merge + build_sampling_advice",
-            "comparison": "no batch branch; one settings.event_file",
-            "change": "batch abstraction removed",
+            "baseline": "no batch branch; one settings.event_file",
+            "comparison": "SoloBatch::run_and_merge + build_sampling_advice",
+            "change": "batch abstraction added",
         },
         {
             "concern": "likelihood implementation choice",
-            "baseline": "use_FullLikes selects calc_LHC_LogLikes(_full)",
-            "comparison": "calc_LHC_LogLikes_full is hard-wired",
-            "change": "runtime selector simplified",
+            "baseline": "calc_LHC_LogLikes_full is hard-wired",
+            "comparison": "use_FullLikes selects calc_LHC_LogLikes(_full)",
+            "change": "runtime selector restored",
         },
         {
             "concern": "cutflow / histogram policy",
-            "baseline": "Cutflow::set_check_cutflow + Histogram1D::set_check_histogram",
-            "comparison": "CollectAnalyses.setOption(print_cutflows, true)",
-            "change": "runtime switches simplified",
+            "baseline": "CollectAnalyses.setOption(print_cutflows, true)",
+            "comparison": "Cutflow::set_check_cutflow + Histogram1D::set_check_histogram",
+            "change": "runtime switches restored",
         },
         {
             "concern": "output contract",
-            "baseline": "OutputConfig + validate_output_config + emit_outputs",
-            "comparison": "summary_line + cout in main",
-            "change": "structured screen/JSON output removed",
+            "baseline": "summary_line + cout in main",
+            "comparison": "OutputConfig + validate_output_config + emit_outputs",
+            "change": "structured screen/JSON output added",
         },
         {
             "concern": "Rivet / Contur wiring",
-            "baseline": "main configures and output helper emits maps",
-            "comparison": "main configures and prints pool details inline",
-            "change": "ownership remains inline; output path changed",
+            "baseline": "main configures and prints pool details inline",
+            "comparison": "main configures and output helper emits maps",
+            "change": "Rivet/Contur output extracted",
         },
     ]
 
@@ -675,10 +679,11 @@ def _flow_anchor(flow_id: str, node_id: str, side: str) -> tuple[int, int]:
     }[side]
 
 
-def flowchart_svg(flow_id: str, definition: dict[str, Any]) -> str:
-    geometry = _flow_node_geometry(flow_id)
+def flowchart_svg(flow_id: str, definition: dict[str, Any], geometry_id: str | None = None) -> str:
+    layout_id = geometry_id or flow_id
+    geometry = _flow_node_geometry(layout_id)
     marker_id = f"solo-{flow_id}-flow-arrow"
-    width, height = (1240, 980) if flow_id == "baseline" else (1240, 1120)
+    width, height = (1240, 980) if layout_id == "baseline" else (1240, 1120)
     title_id = f"solo-{flow_id}-flow-title"
     desc_id = f"solo-{flow_id}-flow-desc"
     parts = [
@@ -698,7 +703,7 @@ def flowchart_svg(flow_id: str, definition: dict[str, Any]) -> str:
         if points is None:
             source = edge["from"]
             target = edge["to"]
-            if flow_id == "baseline":
+            if layout_id == "baseline":
                 source_side, target_side = ("bottom", "top")
                 if source == "mode" and target == "batch":
                     source_side, target_side = ("right", "top")
@@ -706,14 +711,14 @@ def flowchart_svg(flow_id: str, definition: dict[str, Any]) -> str:
                     source_side, target_side = ("bottom", "top")
                 elif source in {"batch", "runtime"} and target == "output":
                     source_side, target_side = ("bottom", "top")
-                points = [_flow_anchor(flow_id, source, source_side), _flow_anchor(flow_id, target, target_side)]
+                points = [_flow_anchor(layout_id, source, source_side), _flow_anchor(layout_id, target, target_side)]
             else:
-                points = [_flow_anchor(flow_id, source, "bottom"), _flow_anchor(flow_id, target, "top")]
+                points = [_flow_anchor(layout_id, source, "bottom"), _flow_anchor(layout_id, target, "top")]
         else:
             source = edge["from"]
             target = edge["to"]
             if source == "argc" and target == "backend":
-                points = [_flow_anchor(flow_id, source, "bottom"), _flow_anchor(flow_id, target, "top")]
+                points = [_flow_anchor(layout_id, source, "bottom"), _flow_anchor(layout_id, target, "top")]
         path = _flow_path(points)
         parts.append(f'<path class="flow-edge" d="{path}" style="marker-end:url(#{marker_id})"/>')
         if edge.get("label"):
@@ -927,8 +932,8 @@ def unified_diff(left: Snapshot, right: Snapshot) -> str:
     lines = difflib.unified_diff(
         left.text.splitlines(),
         right.text.splitlines(),
-        fromfile=f"{left.path} · baseline",
-        tofile=f"{right.path} · comparison",
+        fromfile=f"{left.path} · old",
+        tofile=f"{right.path} · new",
         lineterm="",
     )
     return "\n".join(lines)
@@ -1001,7 +1006,7 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
     logic = logic_flow_definitions()
     logic_details = detailed_logic_data()
     return {
-        "schema": "cbs-focus-comparison/v2",
+        "schema": "cbs-focus-comparison/v3",
         "focus": {
             "file": focus_file,
             "module": module_for(focus_file),
@@ -1011,6 +1016,10 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
         },
         "baseline": branch_metadata(baseline_root, args.baseline_label),
         "comparison": branch_metadata(comparison_root, args.comparison_label),
+        "version_roles": {
+            "baseline": "old / SUSYRun2",
+            "comparison": "new / ColliderBit_solo_development",
+        },
         "summary": {
             "functions": len(functions),
             "changed_functions": len(changed_functions),
@@ -1028,7 +1037,7 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
         "logic_mapping": logic_mapping_rows(),
         "logic_details": logic_details,
         "diff": unified_diff(left, right),
-        "scope_note": "Focused static source evidence for one file; the two flowcharts are grouped source paths, not a runtime trace or a complete C++ AST.",
+        "scope_note": "Focused static source evidence for one file; comparison direction is SUSYRun2 (old) → ColliderBit_solo_development (new). The two flowcharts are grouped source paths, not a runtime trace or a complete C++ AST.",
     }
 
 
@@ -1038,14 +1047,7 @@ def page_html(data: dict[str, Any]) -> str:
     focus = data["focus"]
     summary = data["summary"]
     include_status = Counter(include["status"] for include in data["includes"])
-    baseline_removed_helpers = sum(
-        1
-        for include in data["includes"]
-        if include["status"] == "removed-in-right"
-        and include["baseline"]
-        and (include["baseline"]["resolved"] or "").startswith("ColliderBit/examples/")
-    )
-    comparison_added_helpers = sum(
+    new_added_helpers = sum(
         1
         for include in data["includes"]
         if include["status"] == "added-in-right"
@@ -1054,8 +1056,8 @@ def page_html(data: dict[str, Any]) -> str:
     )
     shared_includes = include_status["unchanged"]
     status_labels = {
-        "added-in-right": "added in comparison",
-        "removed-in-right": "removed in baseline",
+        "added-in-right": "added in new",
+        "removed-in-right": "removed in new",
         "unchanged": "unchanged",
         "modified": "modified",
     }
@@ -1087,8 +1089,10 @@ def page_html(data: dict[str, Any]) -> str:
             f"{module['unchanged']} retained{build_note}</span>"
         )
     module_rows = "".join(module_rows_parts)
-    baseline_flow = flowchart_svg("baseline", data["logic_flows"]["baseline"])
-    comparison_flow = flowchart_svg("comparison", data["logic_flows"]["comparison"])
+    # The data keys are old/new, while the two layouts were authored in the
+    # opposite visual order.  Keep the geometry paired with its node set.
+    baseline_flow = flowchart_svg("baseline", data["logic_flows"]["baseline"], "comparison")
+    comparison_flow = flowchart_svg("comparison", data["logic_flows"]["comparison"], "baseline")
     mapping_rows = "".join(
         f"<tr><td>{html.escape(row['concern'])}</td>"
         f"<td>{html.escape(row['baseline'])}</td>"
@@ -1227,8 +1231,8 @@ def page_html(data: dict[str, Any]) -> str:
 <main class="frame">
   <p class="eyebrow">ColliderBit Solo · focused source comparison</p>
   <h1>solo.cpp / branch delta</h1>
-  <p class="intro">A focused comparison of <code>__FOCUS_FILE__</code> between the baseline CBS Solo branch and SUSYRun2. The overview and two detail diagrams show where the old and new program logic lives; the evidence below expands to YAML ownership, defaults, data containers, functions, includes and exact diff hunks.</p>
-  <div class="meta"><span><strong>BASELINE</strong> __BASELINE__</span><span><strong>COMPARISON</strong> __COMPARISON__</span><span><strong>MODULE</strong> __MODULE__</span><span><strong>STATIC EVIDENCE</strong> no build / no runtime trace</span></div>
+  <p class="intro">A focused comparison of <code>__FOCUS_FILE__</code> from SUSYRun2 (old) to ColliderBit_solo_development (new). The overview and two detail diagrams show where the old and new program logic lives; the evidence below expands to YAML ownership, defaults, data containers, functions, includes and exact diff hunks.</p>
+  <div class="meta"><span><strong>OLD</strong> __BASELINE__</span><span><strong>NEW</strong> __COMPARISON__</span><span><strong>MODULE</strong> __MODULE__</span><span><strong>STATIC EVIDENCE</strong> no build / no runtime trace</span></div>
   <div class="note">__SCOPE_NOTE__ Function status uses a per-function digest rather than inheriting the whole-file status. Include and build relationships are compared by their source tokens.</div>
   <div class="summary-grid" aria-label="Focused comparison summary">
     <div class="card accent"><span class="n">__ADDED_LINES__</span><span class="label">lines added</span></div>
@@ -1241,7 +1245,7 @@ def page_html(data: dict[str, Any]) -> str:
   <section>
     <p class="kicker">01 · focused architecture</p>
     <h2>One entrypoint, two source surfaces</h2>
-    <p class="source">The branch lanes keep the comparison direction explicit: baseline on the left, SUSYRun2 on the right.</p>
+    <p class="source">The branch lanes keep the comparison direction explicit: SUSYRun2 (old) on the left, ColliderBit_solo_development (new) on the right.</p>
     <div class="diagram-shell">
       <svg viewBox="0 0 1440 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="solo-focus-title solo-focus-desc">
         <title id="solo-focus-title">solo.cpp focused branch comparison</title>
@@ -1255,26 +1259,26 @@ def page_html(data: dict[str, Any]) -> str:
         <rect class="zone" x="760" y="56" width="648" height="272" rx="8"/>
         <rect x="52" y="68" width="220" height="16" rx="2" fill="#f5f5f5"/>
         <rect x="780" y="68" width="220" height="16" rx="2" fill="#f5f5f5"/>
-        <text class="zone-label" x="56" y="80">BASELINE · COLLIDERBIT SOLO</text>
-        <text class="zone-label" x="784" y="80">COMPARISON · SUSYRUN2</text>
+        <text class="zone-label" x="56" y="80">OLD · SUSYRUN2</text>
+        <text class="zone-label" x="784" y="80">NEW · COLLIDERBIT SOLO-DEVELOPMENT</text>
         <path class="edge" d="M 224 188 H 272"/>
         <path class="edge" d="M 528 188 H 576"/>
         <path class="edge" d="M 952 188 H 1000"/>
         <path class="edge" d="M 1256 188 H 1304"/>
         <path class="edge delta" d="M 440 264 V 364 H 696 Q 704 364 704 372 V 412"/>
         <path class="edge delta" d="M 1160 264 V 364 H 744 Q 736 364 736 372 V 412"/>
-        <g class="node stage" transform="translate(56 132)"><rect width="168" height="112" rx="6"/><text class="kind" x="12" y="20">BRANCH SNAPSHOT</text><text class="title" x="12" y="48">baseline</text><text class="body" x="12" y="68">commit __BASE_COMMIT__</text><text class="tag" x="12" y="92">__BASE_LINES__ lines</text></g>
-        <g class="node mod" transform="translate(272 132)"><rect width="256" height="112" rx="6"/><text class="kind" x="12" y="20">FOCUS · MODIFIED</text><text class="title" x="12" y="48">solo.cpp</text><text class="body" x="12" y="68">__BASE_REMOVED__ removed includes</text><text class="tag" x="12" y="92">__BASE_LINES__ lines · entrypoint</text></g>
-        <g class="node remove" transform="translate(576 132)"><rect width="96" height="112" rx="6"/><text class="kind" x="12" y="20">SURFACE</text><text class="title" x="12" y="48">helpers</text><text class="body" x="12" y="68">__BASE_HELPERS__</text><text class="tag" x="12" y="92">removed</text></g>
-        <g class="node stage" transform="translate(784 132)"><rect width="168" height="112" rx="6"/><text class="kind" x="12" y="20">BRANCH SNAPSHOT</text><text class="title" x="12" y="48">comparison</text><text class="body" x="12" y="68">commit __COMPARE_COMMIT__</text><text class="tag" x="12" y="92">__COMPARE_LINES__ lines</text></g>
-        <g class="node focal" transform="translate(1000 132)"><rect width="256" height="112" rx="6"/><text class="kind" x="12" y="20">FOCUS · MODIFIED</text><text class="title" x="12" y="48">solo.cpp</text><text class="body" x="12" y="68">__COMPARE_ADDED__ new include surface</text><text class="tag" x="12" y="92">__COMPARE_LINES__ lines · entrypoint</text></g>
-        <g class="node add" transform="translate(1304 132)"><rect width="96" height="112" rx="6"/><text class="kind" x="12" y="20">SURFACE</text><text class="title" x="12" y="48">shared API</text><text class="body" x="12" y="68">__SHARED_INCLUDES__</text><text class="tag" x="12" y="92">retained</text></g>
+        <g class="node stage" transform="translate(56 132)"><rect width="168" height="112" rx="6"/><text class="kind" x="12" y="20">BRANCH SNAPSHOT</text><text class="title" x="12" y="48">old</text><text class="body" x="12" y="68">commit __BASE_COMMIT__</text><text class="tag" x="12" y="92">__BASE_LINES__ lines</text></g>
+        <g class="node mod" transform="translate(272 132)"><rect width="256" height="112" rx="6"/><text class="kind" x="12" y="20">FOCUS · OLD</text><text class="title" x="12" y="48">solo.cpp</text><text class="body" x="12" y="68">__OLD_ONLY_INCLUDES__ old-only includes</text><text class="tag" x="12" y="92">__BASE_LINES__ lines · entrypoint</text></g>
+        <g class="node add" transform="translate(576 132)"><rect width="96" height="112" rx="6"/><text class="kind" x="12" y="20">SURFACE</text><text class="title" x="12" y="48">shared API</text><text class="body" x="12" y="68">__SHARED_INCLUDES__</text><text class="tag" x="12" y="92">retained</text></g>
+        <g class="node stage" transform="translate(784 132)"><rect width="168" height="112" rx="6"/><text class="kind" x="12" y="20">BRANCH SNAPSHOT</text><text class="title" x="12" y="48">new</text><text class="body" x="12" y="68">commit __COMPARE_COMMIT__</text><text class="tag" x="12" y="92">__COMPARE_LINES__ lines</text></g>
+        <g class="node focal" transform="translate(1000 132)"><rect width="256" height="112" rx="6"/><text class="kind" x="12" y="20">FOCUS · NEW</text><text class="title" x="12" y="48">solo.cpp</text><text class="body" x="12" y="68">__NEW_HELPERS__ helper includes added</text><text class="tag" x="12" y="92">__COMPARE_LINES__ lines · entrypoint</text></g>
+        <g class="node add" transform="translate(1304 132)"><rect width="96" height="112" rx="6"/><text class="kind" x="12" y="20">SURFACE</text><text class="title" x="12" y="48">helpers</text><text class="body" x="12" y="68">__NEW_HELPERS__</text><text class="tag" x="12" y="92">added</text></g>
         <g class="node focal" transform="translate(360 412)"><rect width="720" height="96" rx="8"/><text class="kind" x="24" y="28">FILE DELTA · FUNCTION-AWARE</text><text class="title" x="24" y="56" id="delta-title">__ADDED_LINES__ additions · __REMOVED_LINES__ deletions</text><text class="body" x="24" y="78" id="delta-body">__CHANGED_FUNCTIONS__ of __FUNCTIONS__ detected functions changed · __CHANGED_RELATIONS__ direct relations changed</text></g>
         <line x1="40" y1="520" x2="1400" y2="520" stroke="rgba(45,49,66,.12)" stroke-width="1"/>
         <text class="legend-label" x="40" y="544">LEGEND</text>
         <rect x="128" y="534" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="158" y="544">MODIFIED</text>
-        <rect x="260" y="534" width="20" height="10" rx="3" fill="#eef8f1" stroke="#4f8a69"/><text class="legend-label" x="290" y="544">COMPARISON SURFACE</text>
-        <rect x="450" y="534" width="20" height="10" rx="3" fill="#f3e9e5" stroke="#93513f" stroke-dasharray="5 4"/><text class="legend-label" x="480" y="544">BASELINE-ONLY SURFACE</text>
+        <rect x="260" y="534" width="20" height="10" rx="3" fill="#eef8f1" stroke="#4f8a69"/><text class="legend-label" x="290" y="544">NEW SURFACE</text>
+        <rect x="450" y="534" width="20" height="10" rx="3" fill="#f3e9e5" stroke="#93513f" stroke-dasharray="5 4"/><text class="legend-label" x="480" y="544">OLD-ONLY SURFACE</text>
         <text class="legend-label" x="760" y="544">SOLID = SOURCE SURFACE</text><text class="legend-label" x="1020" y="544">DASHED = CHANGE EVIDENCE</text>
       </svg>
     </div>
@@ -1282,43 +1286,43 @@ def page_html(data: dict[str, Any]) -> str:
   </section>
 
   <section>
-    <p class="kicker">02 · baseline logic</p>
-    <h2>Before · helper-oriented execution flow</h2>
-    <p class="source">The baseline path is long because <code>main</code> coordinates several extracted responsibilities. The nodes name the concrete wrappers that own those responsibilities.</p>
+    <p class="kicker">02 · old logic</p>
+    <h2>Before · main-owned execution flow</h2>
+    <p class="source">The old SUSYRun2 path keeps argument checks, YAML loading, dependency wiring, event execution and output formatting inside <code>solo.cpp::main</code>.</p>
     <div class="flow-figure"><div class="diagram-shell">__BASELINE_FLOW__</div></div>
-    <p class="diagram-note">The key branch is <code>settings.processes?</code>: the YES path enters <code>SoloBatch::run_and_merge</code> and then emits structured output; the NO path wires the ordinary event loop directly.</p>
+    <p class="diagram-note">The old path has one event-file pass: <code>reset_and_calculate()</code> fills analysis and likelihood containers before <code>summary_line</code> prints the result inline.</p>
   </section>
 
   <section>
-    <p class="kicker">03 · comparison logic</p>
-    <h2>After · main-owned execution flow</h2>
-    <p class="source">SUSYRun2 retains the event-loop and likelihood stages but places input validation, configuration, dependency wiring, result aggregation and printing directly in <code>solo.cpp::main</code>.</p>
+    <p class="kicker">03 · new logic</p>
+    <h2>After · helper-oriented execution flow</h2>
+    <p class="source">The new ColliderBit_solo_development path extracts CLI parsing, input preparation, batch execution/merge and output emission into dedicated Solo* helpers around the shared CBS runtime.</p>
     <div class="flow-figure"><div class="diagram-shell">__COMPARISON_FLOW__</div></div>
-    <p class="diagram-note">Compared with the baseline, there is no <code>SoloInput</code>, <code>SoloBatch</code> or <code>SoloOutput</code> boundary in this file, and <code>calc_LHC_LogLikes_full</code> is selected directly.</p>
+    <p class="diagram-note">Compared with the old path, the new branch adds <code>SoloCLI</code>, <code>SoloInput</code>, <code>SoloBatch</code> and <code>SoloOutput</code> boundaries, while retaining the shared ColliderBit API.</p>
   </section>
 
   <section>
     <p class="kicker">04 · ownership migration</p>
     <h2>Where each piece of logic lives</h2>
-    <p class="source">This table is the compact reading guide for the two flowcharts: baseline ownership versus SUSYRun2 ownership.</p>
-    <div class="mapping-table"><table><thead><tr><th>Concern</th><th>Baseline owner</th><th>SUSYRun2 owner</th><th>Observed change</th></tr></thead><tbody>__MAPPING_ROWS__</tbody></table></div>
+    <p class="source">This table is the compact reading guide for the two flowcharts: old SUSYRun2 ownership versus new ColliderBit_solo_development ownership.</p>
+    <div class="mapping-table"><table><thead><tr><th>Concern</th><th>Old · SUSYRun2</th><th>New · ColliderBit_solo_development</th><th>Observed change</th></tr></thead><tbody>__MAPPING_ROWS__</tbody></table></div>
   </section>
 
   <section>
     <p class="kicker">05 · YAML contract detail</p>
-    <h2>SUSYRun2 · settings, defaults and hard-coded policy</h2>
-    <p class="source">This is the expanded view requested for the comparison branch. “Comment default” means the value is documented beside <code>apply_setting_if_present</code> but is not assigned by <code>solo.cpp</code> itself; the downstream ColliderBit backend supplies the fallback.</p>
+    <h2>SUSYRun2 (OLD) · settings, defaults and hard-coded policy</h2>
+    <p class="source">This is the expanded view of the old SUSYRun2 branch. “Comment default” means the value is documented beside <code>apply_setting_if_present</code> but is not assigned by <code>solo.cpp</code> itself; the downstream ColliderBit backend supplies the fallback.</p>
     <div class="detail-figure"><div class="diagram-shell">__SETTINGS_DETAIL_SVG__</div></div>
     <p class="diagram-note">The diagram shows the configuration path; the tables preserve every setting name and its exact consumer.</p>
     <div class="scroll"><table><thead><tr><th>YAML key / gate</th><th>Type</th><th>Default / requirement</th><th>Consumer / effect</th><th>Source</th></tr></thead><tbody>__SETTINGS_ROWS__</tbody></table></div>
-    <h3>Not loaded from YAML in SUSYRun2</h3>
+    <h3>Not loaded from YAML in SUSYRun2 (OLD)</h3>
     <div class="scroll"><table><thead><tr><th>Functor option</th><th>Value</th><th>Consumer</th><th>Source</th></tr></thead><tbody>__HARDCODED_ROWS__</tbody></table></div>
   </section>
 
   <section>
     <p class="kicker">06 · container execution detail</p>
     <h2>What reset_and_calculate() produces</h2>
-    <p class="source">The order below is the explicit order in SUSYRun2 <code>solo.cpp</code>. It distinguishes the functor/container name from the data structure later consumed by the inline summary.</p>
+    <p class="source">The order below is the explicit order in SUSYRun2 (OLD) <code>solo.cpp</code>. It distinguishes the functor/container name from the data structure later consumed by the inline summary.</p>
     <div class="detail-figure"><div class="diagram-shell">__RUNTIME_DETAIL_SVG__</div></div>
     <div class="scroll"><table><thead><tr><th>Execution step</th><th>Container / return type</th><th>Contents</th><th>Downstream use</th><th>Source</th></tr></thead><tbody>__RUNTIME_ROWS__</tbody></table></div>
   </section>
@@ -1340,7 +1344,7 @@ def page_html(data: dict[str, Any]) -> str:
     <section>
       <p class="kicker">09 · function evidence</p>
       <h2>Function-level changes</h2>
-      <div class="scroll"><table><thead><tr><th>Status</th><th>Function</th><th>Baseline</th><th>Comparison</th><th>Diff</th></tr></thead><tbody>__FUNCTION_ROWS__</tbody></table></div>
+      <div class="scroll"><table><thead><tr><th>Status</th><th>Function</th><th>Old</th><th>New</th><th>Diff</th></tr></thead><tbody>__FUNCTION_ROWS__</tbody></table></div>
     </section>
     <section>
       <p class="kicker">10 · source surface</p>
@@ -1352,11 +1356,11 @@ def page_html(data: dict[str, Any]) -> str:
   <section>
     <p class="kicker">11 · exact evidence</p>
     <h2>Unified diff</h2>
-    <p class="source">The generated page keeps the exact file-level diff next to the summarized diagram. Added lines belong to the comparison branch; removed lines belong to the baseline branch.</p>
+    <p class="source">The generated page keeps the exact file-level diff next to the summarized diagram. Added lines belong to the new ColliderBit_solo_development branch; removed lines belong to the old SUSYRun2 branch.</p>
     <details open><summary>__DIFF_SUMMARY__</summary><pre>__DIFF__</pre></details>
   </section>
 
-  <footer>Generated by <code>scripts/compare-cbs-focus.py</code>. Baseline commit: <code>__BASE_COMMIT_FULL__</code>; comparison commit: <code>__COMPARE_COMMIT_FULL__</code>.</footer>
+  <footer>Generated by <code>scripts/compare-cbs-focus.py</code>. Old commit: <code>__BASE_COMMIT_FULL__</code>; new commit: <code>__COMPARE_COMMIT_FULL__</code>.</footer>
 </main>
 </body>
 </html>'''
@@ -1373,9 +1377,8 @@ def page_html(data: dict[str, Any]) -> str:
         "__COMPARE_COMMIT_FULL__": html.escape(comparison["commit"]),
         "__BASE_LINES__": str(focus["baseline"]["lines"]),
         "__COMPARE_LINES__": str(focus["comparison"]["lines"]),
-        "__BASE_REMOVED__": str(baseline_removed_helpers),
-        "__BASE_HELPERS__": str(baseline_removed_helpers),
-        "__COMPARE_ADDED__": str(comparison_added_helpers),
+        "__OLD_ONLY_INCLUDES__": str(include_status["removed-in-right"]),
+        "__NEW_HELPERS__": str(new_added_helpers),
         "__SHARED_INCLUDES__": str(shared_includes),
         "__ADDED_LINES__": str(focus["added_lines"]),
         "__REMOVED_LINES__": str(focus["removed_lines"]),
@@ -1410,8 +1413,8 @@ def markdown_summary(data: dict[str, Any]) -> str:
         "# Focused CBS source comparison",
         "",
         f"File: `{focus['file']}`",
-        f"Baseline: `{baseline['label']}` (`{baseline['short']}`)",
-        f"Comparison: `{comparison['label']}` (`{comparison['short']}`)",
+        f"Old: `{baseline['label']}` (`{baseline['short']}`)",
+        f"New: `{comparison['label']}` (`{comparison['short']}`)",
         "",
         f"- Lines: +{focus['added_lines']} / -{focus['removed_lines']} ({focus['hunks']} hunks)",
         f"- Functions: {data['summary']['changed_functions']} changed of {data['summary']['functions']}",
@@ -1423,16 +1426,16 @@ def markdown_summary(data: dict[str, Any]) -> str:
         "",
         "## Logic flow",
         "",
-        "The generated HTML contains two grouped static flowcharts: one for the helper-oriented baseline and one for the main-owned SUSYRun2 path.",
+        "The generated HTML contains two grouped static flowcharts: the old main-owned SUSYRun2 path and the new helper-oriented ColliderBit_solo_development path.",
         "",
-        "| Concern | Baseline owner | SUSYRun2 owner | Observed change |",
+        "| Concern | Old · SUSYRun2 owner | New · ColliderBit_solo_development owner | Observed change |",
         "|---|---|---|---|",
     ]
     for row in data["logic_mapping"]:
         lines.append(f"| {row['concern']} | `{row['baseline']}` | `{row['comparison']}` | {row['change']} |")
     lines.extend([
         "",
-        "## SUSYRun2 detail",
+        "## SUSYRun2 (OLD) detail",
         "",
         "The HTML page contains the full YAML/default table and dependency table. The reset chain is summarized here:",
         "",
@@ -1445,7 +1448,7 @@ def markdown_summary(data: dict[str, Any]) -> str:
         "",
         "## Functions",
         "",
-        "| Status | Function | Baseline | Comparison | Diff |",
+        "| Status | Function | Old | New | Diff |",
         "|---|---|---:|---:|---:|",
     ])
     for function in data["functions"]:
@@ -1465,8 +1468,8 @@ def main() -> int:
     parser.add_argument("--baseline", type=Path, required=True, help="baseline CBS worktree")
     parser.add_argument("--comparison", type=Path, required=True, help="comparison CBS worktree")
     parser.add_argument("--focus-file", default="ColliderBit/examples/solo.cpp", help="file path relative to both worktrees")
-    parser.add_argument("--baseline-label", default="ColliderBit_solo_development")
-    parser.add_argument("--comparison-label", default="SUSYRun2")
+    parser.add_argument("--baseline-label", default="SUSYRun2")
+    parser.add_argument("--comparison-label", default="ColliderBit_solo_development")
     parser.add_argument("--output-json", type=Path, default=Path("dependences/cbs-solo-comparison.json"))
     parser.add_argument("--output-html", type=Path, default=Path("dependences/cbs-solo-comparison.html"))
     parser.add_argument("--site-html", type=Path, default=Path("site/cbs-solo-comparison.html"))
