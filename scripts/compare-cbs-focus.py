@@ -325,6 +325,437 @@ def build_relations(root: Path, focus_file: str) -> list[dict[str, Any]]:
     return relations
 
 
+def logic_flow_definitions() -> dict[str, Any]:
+    """Return the deliberately grouped execution paths for solo.cpp.
+
+    These are source-grounded editorial groups, not a runtime trace.  The
+    groups keep the diagram readable while naming the concrete functions and
+    helper modules that own each stage.
+    """
+    return {
+        "baseline": {
+            "title": "Before · helper-oriented execution flow",
+            "description": "The baseline entrypoint delegates parsing, multi-file execution, merging, sampling advice, and output to dedicated Solo* helpers.",
+            "nodes": [
+                {
+                    "id": "start",
+                    "shape": "oval",
+                    "class": "focal",
+                    "kind": "ENTRYPOINT",
+                    "title": "main(argc, argv)",
+                    "body": ["ColliderBit Solo", "try { … }"],
+                    "tag": "solo.cpp",
+                },
+                {
+                    "id": "cli",
+                    "shape": "rect",
+                    "class": "wrapper",
+                    "kind": "CLI WRAPPER",
+                    "title": "SoloCLI::parse_command_line",
+                    "body": ["--help / malformed args", "→ status::help|error|run"],
+                    "tag": "solo_cli.hpp/.cpp",
+                },
+                {
+                    "id": "input",
+                    "shape": "rect",
+                    "class": "wrapper",
+                    "kind": "INPUT WRAPPER",
+                    "title": "SoloInput::parse_and_prepare_input",
+                    "body": ["YAML + analyses + settings", "event_file OR processes + xsec"],
+                    "tag": "solo_input.hpp/.cpp",
+                },
+                {
+                    "id": "config",
+                    "shape": "rect",
+                    "class": "stage",
+                    "kind": "CONFIGURE IN MAIN",
+                    "title": "backend + runtime options",
+                    "body": ["FullLikes selector, cutflow/histogram", "Rivet/Contur + OutputConfig"],
+                    "tag": "main + apply_setting_if_present",
+                },
+                {
+                    "id": "mode",
+                    "shape": "diamond",
+                    "class": "decision",
+                    "kind": "MODE DECISION",
+                    "title": "settings.processes?",
+                    "body": ["multi-file batch", "or one-pass event_file"],
+                    "tag": "main",
+                },
+                {
+                    "id": "batch",
+                    "shape": "rect",
+                    "class": "wrapper",
+                    "kind": "BATCH WRAPPER",
+                    "title": "SoloBatch::run_and_merge",
+                    "body": ["per-file CBS subprocesses", "weighted SR/cutflow/hist merge"],
+                    "tag": "solo_batch.cpp",
+                },
+                {
+                    "id": "runtime",
+                    "shape": "rect",
+                    "class": "stage",
+                    "kind": "RUNTIME WIRING",
+                    "title": "event loop + dependencies",
+                    "body": ["getEvent / convertEvent / xsec", "resolve functors + backends"],
+                    "tag": "main · operateLHCLoop",
+                },
+                {
+                    "id": "output",
+                    "shape": "oval",
+                    "class": "focal",
+                    "kind": "STRUCTURED OUTPUT",
+                    "title": "SoloOutput::emit_outputs",
+                    "body": ["analyses + loglikes + Contur", "screen / JSON · catch → 1"],
+                    "tag": "solo_output.hpp/.cpp",
+                },
+            ],
+            "edges": [
+                {"from": "start", "to": "cli"},
+                {"from": "cli", "to": "input"},
+                {"from": "input", "to": "config"},
+                {"from": "config", "to": "mode"},
+                {
+                    "from": "mode",
+                    "to": "batch",
+                    "points": [[760, 580], [980, 580], [980, 700]],
+                    "label": "YES · processes",
+                    "label_x": 822,
+                    "label_y": 567,
+                },
+                {
+                    "from": "mode",
+                    "to": "runtime",
+                    "points": [[620, 645], [620, 660], [260, 660], [260, 700]],
+                    "label": "NO · event_file",
+                    "label_x": 430,
+                    "label_y": 648,
+                },
+                {
+                    "from": "batch",
+                    "to": "output",
+                    "points": [[980, 810], [980, 820], [760, 820], [760, 824]],
+                },
+                {
+                    "from": "runtime",
+                    "to": "output",
+                    "points": [[260, 810], [260, 820], [480, 820], [480, 824]],
+                },
+            ],
+        },
+        "comparison": {
+            "title": "After · main-owned execution flow",
+            "description": "SUSYRun2 keeps the complete single-file path in solo.cpp::main, with no SoloCLI/SoloInput/SoloBatch/SoloOutput helper boundary.",
+            "nodes": [
+                {
+                    "id": "start",
+                    "shape": "oval",
+                    "class": "focal",
+                    "kind": "ENTRYPOINT",
+                    "title": "main(argc, argv)",
+                    "body": ["ColliderBit Solo", "try { … }"],
+                    "tag": "solo.cpp",
+                },
+                {
+                    "id": "argc",
+                    "shape": "diamond",
+                    "class": "decision",
+                    "kind": "ARGUMENT GATE",
+                    "title": "argc < 2?",
+                    "body": ["usage + return 1", "otherwise argv[1]"],
+                    "tag": "inline in main",
+                },
+                {
+                    "id": "stop",
+                    "shape": "oval",
+                    "class": "stop",
+                    "kind": "EARLY EXIT",
+                    "title": "usage error",
+                    "body": ["cerr << Usage", "return 1"],
+                    "tag": "no helper boundary",
+                },
+                {
+                    "id": "backend",
+                    "shape": "rect",
+                    "class": "stage",
+                    "kind": "BACKEND GATES",
+                    "title": "backendInfo().works",
+                    "body": ["nulike + FullLikes required", "Rivet/Contur availability flags"],
+                    "tag": "inline in main",
+                },
+                {
+                    "id": "input",
+                    "shape": "rect",
+                    "class": "mod",
+                    "kind": "INPUT IN MAIN",
+                    "title": "YAML::LoadFile",
+                    "body": ["analyses + Options(settings)", "event_file + extension check"],
+                    "tag": "no SoloInput wrapper",
+                },
+                {
+                    "id": "config",
+                    "shape": "rect",
+                    "class": "mod",
+                    "kind": "CONFIG IN MAIN",
+                    "title": "settings + Rivet/Contur",
+                    "body": ["jet collections + cross section", "calc_LHC_LogLikes_full options"],
+                    "tag": "single-file mode",
+                },
+                {
+                    "id": "runtime",
+                    "shape": "rect",
+                    "class": "mod",
+                    "kind": "RUNTIME WIRING IN MAIN",
+                    "title": "resolve + nested functions",
+                    "body": ["operateLHCLoop + event conversion", "ATLAS/CMS/Identity + FullLikes"],
+                    "tag": "inline dependency graph",
+                },
+                {
+                    "id": "run",
+                    "shape": "rect",
+                    "class": "mod",
+                    "kind": "EXECUTE IN MAIN",
+                    "title": "reset_and_calculate()",
+                    "body": ["loop → CollectAnalyses", "full loglikes + optional Contur"],
+                    "tag": "one pass over event_file",
+                },
+                {
+                    "id": "output",
+                    "shape": "oval",
+                    "class": "focal",
+                    "kind": "INLINE OUTPUT",
+                    "title": "summary_line + cout",
+                    "body": ["loop analyses → SR details", "total loglike · catch → 1"],
+                    "tag": "no SoloOutput wrapper",
+                },
+            ],
+            "edges": [
+                {"from": "start", "to": "argc"},
+                {
+                    "from": "argc",
+                    "to": "stop",
+                    "points": [[470, 170], [360, 170], [360, 114], [230, 114]],
+                    "label": "YES",
+                    "label_x": 392,
+                    "label_y": 156,
+                },
+                {
+                    "from": "argc",
+                    "to": "backend",
+                    "points": [[620, 230], [620, 270]],
+                    "label": "NO",
+                    "label_x": 636,
+                    "label_y": 252,
+                },
+                {"from": "backend", "to": "input"},
+                {"from": "input", "to": "config"},
+                {"from": "config", "to": "runtime"},
+                {"from": "runtime", "to": "run"},
+                {"from": "run", "to": "output"},
+            ],
+        },
+    }
+
+
+def logic_mapping_rows() -> list[dict[str, str]]:
+    return [
+        {
+            "concern": "CLI / help / argument errors",
+            "baseline": "SoloCLI::parse_command_line · solo_cli.cpp",
+            "comparison": "main: argc check + argv[1]",
+            "change": "helper boundary removed",
+        },
+        {
+            "concern": "YAML, analyses, settings, event inputs",
+            "baseline": "SoloInput::parse_and_prepare_input · solo_input.cpp",
+            "comparison": "main: YAML::LoadFile + Options(settings)",
+            "change": "input normalization moved inline",
+        },
+        {
+            "concern": "multi-process / multi-file execution",
+            "baseline": "SoloBatch::run_and_merge + build_sampling_advice",
+            "comparison": "no batch branch; one settings.event_file",
+            "change": "batch abstraction removed",
+        },
+        {
+            "concern": "likelihood implementation choice",
+            "baseline": "use_FullLikes selects calc_LHC_LogLikes(_full)",
+            "comparison": "calc_LHC_LogLikes_full is hard-wired",
+            "change": "runtime selector simplified",
+        },
+        {
+            "concern": "cutflow / histogram policy",
+            "baseline": "Cutflow::set_check_cutflow + Histogram1D::set_check_histogram",
+            "comparison": "CollectAnalyses.setOption(print_cutflows, true)",
+            "change": "runtime switches simplified",
+        },
+        {
+            "concern": "output contract",
+            "baseline": "OutputConfig + validate_output_config + emit_outputs",
+            "comparison": "summary_line + cout in main",
+            "change": "structured screen/JSON output removed",
+        },
+        {
+            "concern": "Rivet / Contur wiring",
+            "baseline": "main configures and output helper emits maps",
+            "comparison": "main configures and prints pool details inline",
+            "change": "ownership remains inline; output path changed",
+        },
+    ]
+
+
+def _flow_path(points: list[list[int]]) -> str:
+    if len(points) < 2:
+        return ""
+    if len(points) == 2:
+        return f"M {points[0][0]} {points[0][1]} L {points[1][0]} {points[1][1]}"
+    path = f"M {points[0][0]} {points[0][1]}"
+    radius = 8
+    for index in range(1, len(points) - 1):
+        previous = points[index - 1]
+        current = points[index]
+        following = points[index + 1]
+        dx_prev = current[0] - previous[0]
+        dy_prev = current[1] - previous[1]
+        dx_next = following[0] - current[0]
+        dy_next = following[1] - current[1]
+        prev_len = max(abs(dx_prev) + abs(dy_prev), 1)
+        next_len = max(abs(dx_next) + abs(dy_next), 1)
+        trim_prev = min(radius, prev_len // 2)
+        trim_next = min(radius, next_len // 2)
+        before = (current[0] - (dx_prev * trim_prev // prev_len), current[1] - (dy_prev * trim_prev // prev_len))
+        after = (current[0] + (dx_next * trim_next // next_len), current[1] + (dy_next * trim_next // next_len))
+        path += f" L {before[0]} {before[1]} Q {current[0]} {current[1]} {after[0]} {after[1]}"
+    path += f" L {points[-1][0]} {points[-1][1]}"
+    return path
+
+
+def _flow_node_geometry(flow_id: str) -> dict[str, dict[str, int]]:
+    if flow_id == "baseline":
+        return {
+            "start": {"x": 490, "y": 24, "w": 260, "h": 72},
+            "cli": {"x": 470, "y": 132, "w": 300, "h": 104},
+            "input": {"x": 430, "y": 264, "w": 380, "h": 104},
+            "config": {"x": 400, "y": 396, "w": 440, "h": 108},
+            "mode": {"cx": 620, "cy": 580, "w": 280, "h": 130},
+            "batch": {"x": 800, "y": 700, "w": 360, "h": 110},
+            "runtime": {"x": 80, "y": 700, "w": 360, "h": 110},
+            "output": {"x": 400, "y": 824, "w": 440, "h": 72},
+        }
+    return {
+        "start": {"x": 490, "y": 24, "w": 260, "h": 72},
+        "argc": {"cx": 620, "cy": 170, "w": 300, "h": 120},
+        "stop": {"x": 120, "y": 114, "w": 220, "h": 72},
+        "backend": {"x": 420, "y": 270, "w": 400, "h": 104},
+        "input": {"x": 420, "y": 398, "w": 400, "h": 104},
+        "config": {"x": 420, "y": 534, "w": 400, "h": 104},
+        "runtime": {"x": 420, "y": 670, "w": 400, "h": 104},
+        "run": {"x": 420, "y": 806, "w": 400, "h": 104},
+        "output": {"x": 420, "y": 942, "w": 400, "h": 88},
+    }
+
+
+def _flow_anchor(flow_id: str, node_id: str, side: str) -> tuple[int, int]:
+    geo = _flow_node_geometry(flow_id)[node_id]
+    if "cx" in geo:
+        half_w = geo["w"] // 2
+        half_h = geo["h"] // 2
+        return {
+            "top": (geo["cx"], geo["cy"] - half_h),
+            "right": (geo["cx"] + half_w, geo["cy"]),
+            "bottom": (geo["cx"], geo["cy"] + half_h),
+            "left": (geo["cx"] - half_w, geo["cy"]),
+        }[side]
+    x, y, w, h = geo["x"], geo["y"], geo["w"], geo["h"]
+    return {
+        "top": (x + w // 2, y),
+        "right": (x + w, y + h // 2),
+        "bottom": (x + w // 2, y + h),
+        "left": (x, y + h // 2),
+    }[side]
+
+
+def flowchart_svg(flow_id: str, definition: dict[str, Any]) -> str:
+    geometry = _flow_node_geometry(flow_id)
+    marker_id = f"solo-{flow_id}-flow-arrow"
+    width, height = (1240, 980) if flow_id == "baseline" else (1240, 1120)
+    title_id = f"solo-{flow_id}-flow-title"
+    desc_id = f"solo-{flow_id}-flow-desc"
+    parts = [
+        f'<svg viewBox="0 0 {width} {height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="{title_id} {desc_id}">',
+        f'<title id="{title_id}">{html.escape(definition["title"])}</title>',
+        f'<desc id="{desc_id}">{html.escape(definition["description"])}</desc>',
+        "<defs>",
+        f'<marker id="{marker_id}" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker>',
+        "</defs>",
+        f'<rect width="{width}" height="{height}" fill="#f5f5f5"/>',
+        f'<rect class="zone" x="32" y="12" width="1176" height="{height - 70}" rx="10"/>',
+        '<text class="zone-label" x="56" y="40">SOURCE-OWNED EXECUTION PATH · GROUPED BY RESPONSIBILITY</text>',
+    ]
+
+    for edge in definition["edges"]:
+        points = edge.get("points")
+        if points is None:
+            source = edge["from"]
+            target = edge["to"]
+            if flow_id == "baseline":
+                source_side, target_side = ("bottom", "top")
+                if source == "mode" and target == "batch":
+                    source_side, target_side = ("right", "top")
+                elif source == "mode" and target == "runtime":
+                    source_side, target_side = ("bottom", "top")
+                elif source in {"batch", "runtime"} and target == "output":
+                    source_side, target_side = ("bottom", "top")
+                points = [_flow_anchor(flow_id, source, source_side), _flow_anchor(flow_id, target, target_side)]
+            else:
+                points = [_flow_anchor(flow_id, source, "bottom"), _flow_anchor(flow_id, target, "top")]
+        else:
+            source = edge["from"]
+            target = edge["to"]
+            if source == "argc" and target == "backend":
+                points = [_flow_anchor(flow_id, source, "bottom"), _flow_anchor(flow_id, target, "top")]
+        path = _flow_path(points)
+        parts.append(f'<path class="flow-edge" d="{path}" style="marker-end:url(#{marker_id})"/>')
+        if edge.get("label"):
+            label_x = edge.get("label_x", 0)
+            label_y = edge.get("label_y", 0)
+            parts.append(f'<text class="edge-label" x="{label_x}" y="{label_y}">{html.escape(edge["label"])}</text>')
+
+    for node in definition["nodes"]:
+        node_id = node["id"]
+        geo = geometry[node_id]
+        node_class = f'node {node.get("class", "stage")}'
+        if node["shape"] == "oval":
+            x, y, w, h = geo["x"], geo["y"], geo["w"], geo["h"]
+            cx, cy = x + w // 2, y + h // 2
+            parts.append(f'<g class="{node_class}"><ellipse cx="{cx}" cy="{cy}" rx="{w // 2}" ry="{h // 2}"/><text class="kind" x="{cx}" y="{cy - 18}" text-anchor="middle">{html.escape(node["kind"])}</text><text class="title" x="{cx}" y="{cy + 4}" text-anchor="middle">{html.escape(node["title"])}</text><text class="body" x="{cx}" y="{cy + 20}" text-anchor="middle">{html.escape(node["body"][0])}</text><text class="tag" x="{cx}" y="{cy + 34}" text-anchor="middle">{html.escape(node["body"][1])}</text></g>')
+            continue
+        if "cx" in geo:
+            cx, cy = geo["cx"], geo["cy"]
+            if node["shape"] == "diamond":
+                points = f"{cx},{cy - geo['h']//2} {cx + geo['w']//2},{cy} {cx},{cy + geo['h']//2} {cx - geo['w']//2},{cy}"
+                parts.append(f'<g class="{node_class}"><polygon points="{points}"/><text class="kind" x="{cx}" y="{cy - 24}" text-anchor="middle">{html.escape(node["kind"])}</text><text class="title" x="{cx}" y="{cy + 2}" text-anchor="middle">{html.escape(node["title"])}</text><text class="body" x="{cx}" y="{cy + 22}" text-anchor="middle">{html.escape(node["body"][0])}</text><text class="body" x="{cx}" y="{cy + 36}" text-anchor="middle">{html.escape(node["body"][1])}</text><text class="tag" x="{cx}" y="{cy + 52}" text-anchor="middle">{html.escape(node["tag"])}</text></g>')
+            else:
+                rx = geo["w"] // 2
+                ry = geo["h"] // 2
+                parts.append(f'<g class="{node_class}"><ellipse cx="{cx}" cy="{cy}" rx="{rx}" ry="{ry}"/><text class="kind" x="{cx}" y="{cy - 18}" text-anchor="middle">{html.escape(node["kind"])}</text><text class="title" x="{cx}" y="{cy + 5}" text-anchor="middle">{html.escape(node["title"])}</text><text class="body" x="{cx}" y="{cy + 23}" text-anchor="middle">{html.escape(node["body"][0])}</text><text class="tag" x="{cx}" y="{cy + 38}" text-anchor="middle">{html.escape(node["tag"])}</text></g>')
+            continue
+        x, y, w, h = geo["x"], geo["y"], geo["w"], geo["h"]
+        parts.append(f'<g class="{node_class}" transform="translate({x} {y})"><rect width="{w}" height="{h}" rx="6"/><text class="kind" x="16" y="22">{html.escape(node["kind"])}</text><text class="title" x="16" y="50">{html.escape(node["title"])}</text><text class="body" x="16" y="70">{html.escape(node["body"][0])}</text><text class="body" x="16" y="84">{html.escape(node["body"][1])}</text><text class="tag" x="16" y="{h - 12}">{html.escape(node["tag"])}</text></g>')
+
+    legend_y = height - 32
+    parts.extend([
+        f'<line x1="48" y1="{legend_y - 18}" x2="1192" y2="{legend_y - 18}" stroke="rgba(45,49,66,.12)" stroke-width="1"/>',
+        f'<text class="legend-label" x="48" y="{legend_y}">LEGEND</text>',
+        f'<rect x="112" y="{legend_y - 10}" width="20" height="10" rx="3" fill="#fff0e8" stroke="#b55c2d"/><text class="legend-label" x="142" y="{legend_y}">INLINE / MODIFIED OWNERSHIP</text>',
+        f'<rect x="326" y="{legend_y - 10}" width="20" height="10" rx="3" fill="#fff" stroke="#7a8399"/><text class="legend-label" x="356" y="{legend_y}">EXTRACTED WRAPPER</text>',
+        f'<polygon points="536,{legend_y-10} 546,{legend_y-5} 536,{legend_y} 526,{legend_y-5}" fill="rgba(79,93,117,.08)" stroke="#7a8399"/><text class="legend-label" x="556" y="{legend_y}">DECISION</text>',
+        f'<text class="legend-label" x="680" y="{legend_y}">ARROWS = CONTROL FLOW · LABELS = BRANCH CONDITION</text>',
+        "</svg>",
+    ])
+    return "".join(parts)
+
+
 def unified_diff(left: Snapshot, right: Snapshot) -> str:
     lines = difflib.unified_diff(
         left.text.splitlines(),
@@ -400,8 +831,9 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
     changed_functions = [function for function in functions if function["status"] != "unchanged"]
     changed_relations = [relation for relation in relation_rows if relation["status"] != "unchanged"]
     changed_includes = [include for include in includes if include["status"] != "unchanged"]
+    logic = logic_flow_definitions()
     return {
-        "schema": "cbs-focus-comparison/v1",
+        "schema": "cbs-focus-comparison/v2",
         "focus": {
             "file": focus_file,
             "module": module_for(focus_file),
@@ -424,8 +856,10 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
         "includes": includes,
         "relations": relation_rows,
         "modules": module_summary(includes, relation_rows, focus_file),
+        "logic_flows": logic,
+        "logic_mapping": logic_mapping_rows(),
         "diff": unified_diff(left, right),
-        "scope_note": "Focused static source evidence for one file; this is not a runtime trace or a complete C++ AST.",
+        "scope_note": "Focused static source evidence for one file; the two flowcharts are grouped source paths, not a runtime trace or a complete C++ AST.",
     }
 
 
@@ -484,6 +918,15 @@ def page_html(data: dict[str, Any]) -> str:
             f"{module['unchanged']} retained{build_note}</span>"
         )
     module_rows = "".join(module_rows_parts)
+    baseline_flow = flowchart_svg("baseline", data["logic_flows"]["baseline"])
+    comparison_flow = flowchart_svg("comparison", data["logic_flows"]["comparison"])
+    mapping_rows = "".join(
+        f"<tr><td>{html.escape(row['concern'])}</td>"
+        f"<td>{html.escape(row['baseline'])}</td>"
+        f"<td>{html.escape(row['comparison'])}</td>"
+        f"<td class=\"status modified\">{html.escape(row['change'])}</td></tr>"
+        for row in data["logic_mapping"]
+    )
     diff_summary = f"Show exact diff · +{focus['added_lines']} / −{focus['removed_lines']} lines · {focus['hunks']} hunks"
     title = f"{focus['file']} · {baseline['label']} vs {comparison['label']}"
     template = r'''<!doctype html>
@@ -527,6 +970,7 @@ def page_html(data: dict[str, Any]) -> str:
     svg .node.add rect { fill:var(--green-tint); stroke:var(--green); }
     svg .node.remove rect { fill:var(--red-tint); stroke:var(--red); stroke-dasharray:5 4; }
     svg .node.focal rect { fill:var(--accent-tint); stroke:var(--accent); stroke-width:1.6; }
+    svg .node.focal ellipse { fill:var(--accent-tint); stroke:var(--accent); stroke-width:1.6; }
     svg .node .kind { fill:var(--soft); font:500 9px var(--font-mono); letter-spacing:1.2px; }
     svg .node .title { fill:var(--ink); font:600 13px var(--font-sans); }
     svg .node .body { fill:var(--muted); font:9px var(--font-mono); }
@@ -534,6 +978,14 @@ def page_html(data: dict[str, Any]) -> str:
     svg .node.mod .kind { fill:#b55c2d; } svg .node.add .kind { fill:var(--green); } svg .node.remove .kind { fill:var(--red); } svg .node.focal .kind { fill:var(--accent); }
     svg .edge-label, svg .legend-label { fill:var(--muted); font:8px var(--font-mono); letter-spacing:.8px; }
     .diagram-note { color:var(--muted); font-size:12px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
+    .flow-figure { background:#fff; border:1px solid var(--rule); border-radius:8px; padding:8px; }
+    .flow-figure svg { min-width:1080px; }
+    .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
+    .mapping-table table { min-width:1080px; }
+    svg .flow-edge { fill:none; stroke:var(--muted); stroke-width:1.4; }
+    svg .node.wrapper rect, svg .node.wrapper ellipse { fill:#fff; stroke:var(--soft); }
+    svg .node.decision polygon { fill:rgba(79,93,117,.08); stroke:var(--soft); stroke-width:1.2; }
+    svg .node.stop ellipse { fill:var(--red-tint); stroke:var(--red); stroke-dasharray:5 4; }
     .details-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
     .controls { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:12px 0; }
     input,select { background:#fff; border:1px solid rgba(45,49,66,.2); border-radius:4px; color:var(--ink); font:11px var(--font-mono); padding:8px 9px; }
@@ -561,7 +1013,7 @@ def page_html(data: dict[str, Any]) -> str:
 <main class="frame">
   <p class="eyebrow">ColliderBit Solo · focused source comparison</p>
   <h1>solo.cpp / branch delta</h1>
-  <p class="intro">A focused comparison of <code>__FOCUS_FILE__</code> between the baseline CBS Solo branch and SUSYRun2. The overview isolates the entrypoint and its direct source surface; the evidence below expands to functions, includes and exact diff hunks.</p>
+  <p class="intro">A focused comparison of <code>__FOCUS_FILE__</code> between the baseline CBS Solo branch and SUSYRun2. The two execution-flow diagrams show where the old and new program logic lives; the evidence below expands to ownership, functions, includes and exact diff hunks.</p>
   <div class="meta"><span><strong>BASELINE</strong> __BASELINE__</span><span><strong>COMPARISON</strong> __COMPARISON__</span><span><strong>MODULE</strong> __MODULE__</span><span><strong>STATIC EVIDENCE</strong> no build / no runtime trace</span></div>
   <div class="note">__SCOPE_NOTE__ Function status uses a per-function digest rather than inheriting the whole-file status. Include and build relationships are compared by their source tokens.</div>
   <div class="summary-grid" aria-label="Focused comparison summary">
@@ -616,26 +1068,49 @@ def page_html(data: dict[str, Any]) -> str:
   </section>
 
   <section>
-    <p class="kicker">02 · module slices</p>
+    <p class="kicker">02 · baseline logic</p>
+    <h2>Before · helper-oriented execution flow</h2>
+    <p class="source">The baseline path is long because <code>main</code> coordinates several extracted responsibilities. The nodes name the concrete wrappers that own those responsibilities.</p>
+    <div class="flow-figure"><div class="diagram-shell">__BASELINE_FLOW__</div></div>
+    <p class="diagram-note">The key branch is <code>settings.processes?</code>: the YES path enters <code>SoloBatch::run_and_merge</code> and then emits structured output; the NO path wires the ordinary event loop directly.</p>
+  </section>
+
+  <section>
+    <p class="kicker">03 · comparison logic</p>
+    <h2>After · main-owned execution flow</h2>
+    <p class="source">SUSYRun2 retains the event-loop and likelihood stages but places input validation, configuration, dependency wiring, result aggregation and printing directly in <code>solo.cpp::main</code>.</p>
+    <div class="flow-figure"><div class="diagram-shell">__COMPARISON_FLOW__</div></div>
+    <p class="diagram-note">Compared with the baseline, there is no <code>SoloInput</code>, <code>SoloBatch</code> or <code>SoloOutput</code> boundary in this file, and <code>calc_LHC_LogLikes_full</code> is selected directly.</p>
+  </section>
+
+  <section>
+    <p class="kicker">04 · ownership migration</p>
+    <h2>Where each piece of logic lives</h2>
+    <p class="source">This table is the compact reading guide for the two flowcharts: baseline ownership versus SUSYRun2 ownership.</p>
+    <div class="mapping-table"><table><thead><tr><th>Concern</th><th>Baseline owner</th><th>SUSYRun2 owner</th><th>Observed change</th></tr></thead><tbody>__MAPPING_ROWS__</tbody></table></div>
+  </section>
+
+  <section>
+    <p class="kicker">05 · module slices</p>
     <h2>Direct dependency modules</h2>
     <div class="module-strip">__MODULE_ROWS__</div>
   </section>
 
   <div class="details-grid">
     <section>
-      <p class="kicker">03 · function evidence</p>
+      <p class="kicker">06 · function evidence</p>
       <h2>Function-level changes</h2>
       <div class="scroll"><table><thead><tr><th>Status</th><th>Function</th><th>Baseline</th><th>Comparison</th><th>Diff</th></tr></thead><tbody>__FUNCTION_ROWS__</tbody></table></div>
     </section>
     <section>
-      <p class="kicker">04 · source surface</p>
+      <p class="kicker">07 · source surface</p>
       <h2>Include and build relations</h2>
       <div class="scroll"><table><thead><tr><th>Status</th><th>Relation</th><th>Module</th><th>Line / path</th></tr></thead><tbody>__INCLUDE_ROWS__</tbody></table></div>
     </section>
   </div>
 
   <section>
-    <p class="kicker">05 · exact evidence</p>
+    <p class="kicker">08 · exact evidence</p>
     <h2>Unified diff</h2>
     <p class="source">The generated page keeps the exact file-level diff next to the summarized diagram. Added lines belong to the comparison branch; removed lines belong to the baseline branch.</p>
     <details open><summary>__DIFF_SUMMARY__</summary><pre>__DIFF__</pre></details>
@@ -668,6 +1143,9 @@ def page_html(data: dict[str, Any]) -> str:
         "__CHANGED_FUNCTIONS__": str(summary["changed_functions"]),
         "__CHANGED_RELATIONS__": str(summary["changed_relations"]),
         "__MODULE_ROWS__": module_rows,
+        "__BASELINE_FLOW__": baseline_flow,
+        "__COMPARISON_FLOW__": comparison_flow,
+        "__MAPPING_ROWS__": mapping_rows,
         "__FUNCTION_ROWS__": function_rows,
         "__INCLUDE_ROWS__": include_rows,
         "__DIFF_SUMMARY__": html.escape(diff_summary),
@@ -697,11 +1175,22 @@ def markdown_summary(data: dict[str, Any]) -> str:
         "",
         data["scope_note"],
         "",
+        "## Logic flow",
+        "",
+        "The generated HTML contains two grouped static flowcharts: one for the helper-oriented baseline and one for the main-owned SUSYRun2 path.",
+        "",
+        "| Concern | Baseline owner | SUSYRun2 owner | Observed change |",
+        "|---|---|---|---|",
+    ]
+    for row in data["logic_mapping"]:
+        lines.append(f"| {row['concern']} | `{row['baseline']}` | `{row['comparison']}` | {row['change']} |")
+    lines.extend([
+        "",
         "## Functions",
         "",
         "| Status | Function | Baseline | Comparison | Diff |",
         "|---|---|---:|---:|---:|",
-    ]
+    ])
     for function in data["functions"]:
         lines.append(
             f"| {function['status']} | `{function['name']}` | {function.get('baseline_line') or '—'}–{function.get('baseline_line_end') or '—'} | {function.get('comparison_line') or '—'}–{function.get('comparison_line_end') or '—'} | +{function['added_lines']} / -{function['removed_lines']} |"
