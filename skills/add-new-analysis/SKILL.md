@@ -102,6 +102,7 @@ Rules:
 
 ## Step 4 — Implement `collect_results()`
 
+{% raw %}
 ```cpp
 virtual void collect_results()
 {
@@ -113,6 +114,7 @@ virtual void collect_results()
   // COMMIT_HISTOGRAMS
 }
 ```
+{% endraw %}
 
 The covariance matrix dimension and ordering must match the committed SR sequence exactly.
 

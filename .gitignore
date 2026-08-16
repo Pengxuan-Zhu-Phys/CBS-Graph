@@ -17,6 +17,5 @@ _build/
 .vscode/
 __pycache__/
 *.pyc
-
 # Local GitHub build logs.
 github/
