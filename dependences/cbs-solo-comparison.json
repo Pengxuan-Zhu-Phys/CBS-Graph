@@ -15,18 +15,107 @@
     "removed_lines": 139,
     "hunks": 34
   },
+  "sibling_family": {
+    "directory": "ColliderBit/examples",
+    "prefix": "solo",
+    "files": [
+      {
+        "name": "solo.cpp",
+        "status": "modified",
+        "added_lines": 291,
+        "removed_lines": 139,
+        "in_old": true,
+        "in_new": true
+      },
+      {
+        "name": "solo_batch.cpp",
+        "status": "added",
+        "added_lines": 1171,
+        "removed_lines": 0,
+        "in_old": false,
+        "in_new": true
+      },
+      {
+        "name": "solo_batch.hpp",
+        "status": "added",
+        "added_lines": 85,
+        "removed_lines": 0,
+        "in_old": false,
+        "in_new": true
+      },
+      {
+        "name": "solo_cli.cpp",
+        "status": "added",
+        "added_lines": 83,
+        "removed_lines": 0,
+        "in_old": false,
+        "in_new": true
+      },
+      {
+        "name": "solo_cli.hpp",
+        "status": "added",
+        "added_lines": 43,
+        "removed_lines": 0,
+        "in_old": false,
+        "in_new": true
+      },
+      {
+        "name": "solo_example.yaml",
+        "status": "modified",
+        "added_lines": 24,
+        "removed_lines": 14,
+        "in_old": true,
+        "in_new": true
+      },
+      {
+        "name": "solo_input.cpp",
+        "status": "added",
+        "added_lines": 458,
+        "removed_lines": 0,
+        "in_old": false,
+        "in_new": true
+      },
+      {
+        "name": "solo_input.hpp",
+        "status": "added",
+        "added_lines": 56,
+        "removed_lines": 0,
+        "in_old": false,
+        "in_new": true
+      },
+      {
+        "name": "solo_output.cpp",
+        "status": "added",
+        "added_lines": 689,
+        "removed_lines": 0,
+        "in_old": false,
+        "in_new": true
+      },
+      {
+        "name": "solo_output.hpp",
+        "status": "added",
+        "added_lines": 78,
+        "removed_lines": 0,
+        "in_old": false,
+        "in_new": true
+      }
+    ],
+    "files_added": 8,
+    "added_lines": 2978,
+    "removed_lines": 153
+  },
   "baseline": {
     "label": "SUSYRun2",
-    "branch": "SUSYRun2",
+    "branch": "private-SUSYRun2",
     "commit": "5989e2d27a424c580d2c09cd3b2751c75ced40c4",
-    "short": "5989e2d27",
+    "short": "5989e2d27a",
     "subject": "Corrected typo for one background in Analysis_ATLAS_13TeV_1OR3LEP_StopHZ_139invfb.cpp"
   },
   "comparison": {
     "label": "ColliderBit_solo_development",
     "branch": "ColliderBit_solo_development",
     "commit": "65aca0890d4b627f546192e22fb5e653f4dca9d9",
-    "short": "65aca0890",
+    "short": "65aca0890d",
     "subject": "Merge remote-tracking branch 'gambit/master' into ColliderBit_solo_development"
   },
   "version_roles": {
@@ -712,13 +801,13 @@
       "concern": "likelihood implementation choice",
       "baseline": "calc_LHC_LogLikes_full is hard-wired",
       "comparison": "use_FullLikes selects calc_LHC_LogLikes(_full)",
-      "change": "runtime selector restored"
+      "change": "upstream TODO implemented"
     },
     {
       "concern": "cutflow / histogram policy",
       "baseline": "CollectAnalyses.setOption(print_cutflows, true)",
       "comparison": "Cutflow::set_check_cutflow + Histogram1D::set_check_histogram",
-      "change": "runtime switches restored"
+      "change": "runtime switches introduced"
     },
     {
       "concern": "output contract",

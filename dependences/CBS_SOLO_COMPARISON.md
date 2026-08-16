@@ -1,8 +1,8 @@
 # Focused CBS source comparison
 
 File: `ColliderBit/examples/solo.cpp`
-Old: `SUSYRun2` (`5989e2d27`)
-New: `ColliderBit_solo_development` (`65aca0890`)
+Old: `SUSYRun2` (`5989e2d27a`)
+New: `ColliderBit_solo_development` (`65aca0890d`)
 
 - Lines: +291 / -139 (34 hunks)
 - Functions: 1 changed of 2
@@ -11,6 +11,23 @@ New: `ColliderBit_solo_development` (`65aca0890`)
 - Changed build relations: 0
 
 Focused static source evidence for one file; comparison direction is SUSYRun2 (old) → ColliderBit_solo_development (new). The two flowcharts are grouped source paths, not a runtime trace or a complete C++ AST.
+
+## Module total
+
+The counts above are file-scoped and therefore cannot show an extraction refactor. Across the whole `ColliderBit/examples/solo*` family the change is **+2978 / -153** over 10 files, 8 of them new on `ColliderBit_solo_development`.
+
+| File | Status | Added | Removed |
+|---|---|---:|---:|
+| `solo.cpp` | modified | +291 | -139 |
+| `solo_batch.cpp` | added | +1171 | -0 |
+| `solo_batch.hpp` | added | +85 | -0 |
+| `solo_cli.cpp` | added | +83 | -0 |
+| `solo_cli.hpp` | added | +43 | -0 |
+| `solo_example.yaml` | modified | +24 | -14 |
+| `solo_input.cpp` | added | +458 | -0 |
+| `solo_input.hpp` | added | +56 | -0 |
+| `solo_output.cpp` | added | +689 | -0 |
+| `solo_output.hpp` | added | +78 | -0 |
 
 ## Logic flow
 
@@ -21,8 +38,8 @@ The generated HTML contains two grouped static flowcharts: the old main-owned SU
 | CLI / help / argument errors | `main: argc check + argv[1]` | `SoloCLI::parse_command_line · solo_cli.cpp` | CLI ownership extracted |
 | YAML, analyses, settings, event inputs | `main: YAML::LoadFile + Options(settings)` | `SoloInput::parse_and_prepare_input · solo_input.cpp` | input normalization extracted |
 | multi-process / multi-file execution | `no batch branch; one settings.event_file` | `SoloBatch::run_and_merge + build_sampling_advice` | batch abstraction added |
-| likelihood implementation choice | `calc_LHC_LogLikes_full is hard-wired` | `use_FullLikes selects calc_LHC_LogLikes(_full)` | runtime selector restored |
-| cutflow / histogram policy | `CollectAnalyses.setOption(print_cutflows, true)` | `Cutflow::set_check_cutflow + Histogram1D::set_check_histogram` | runtime switches restored |
+| likelihood implementation choice | `calc_LHC_LogLikes_full is hard-wired` | `use_FullLikes selects calc_LHC_LogLikes(_full)` | upstream TODO implemented |
+| cutflow / histogram policy | `CollectAnalyses.setOption(print_cutflows, true)` | `Cutflow::set_check_cutflow + Histogram1D::set_check_histogram` | runtime switches introduced |
 | output contract | `summary_line + cout in main` | `OutputConfig + validate_output_config + emit_outputs` | structured screen/JSON output added |
 | Rivet / Contur wiring | `main configures and prints pool details inline` | `main configures and output helper emits maps` | Rivet/Contur output extracted |
 

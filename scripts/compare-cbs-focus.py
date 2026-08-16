@@ -15,7 +15,7 @@ import difflib
 import hashlib
 import html
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 import subprocess
 from typing import Any
@@ -77,6 +77,75 @@ def load_snapshot(root: Path, relative: str) -> Snapshot:
         raise SystemExit(f"Focused file does not exist: {path}")
     text = path.read_text(encoding="utf-8", errors="replace")
     return Snapshot(relative, text, hashlib.sha256(text.encode("utf-8")).hexdigest())
+
+
+def sibling_family_stats(
+    baseline_root: Path, comparison_root: Path, focus_file: str
+) -> dict[str, Any]:
+    """Aggregate the focus file together with its same-prefix siblings.
+
+    A file-scoped diff cannot represent an extraction refactor.  When logic moves
+    out of ``solo.cpp`` into ``solo_cli`` / ``solo_input`` / ``solo_batch`` /
+    ``solo_output``, the focused view can only ever show the removal half, because
+    the destination files are outside its scope — so the entrypoint looks like it
+    shrank when the surrounding module actually grew.  Reporting the family total
+    next to the file total stops the page from implying the opposite of what
+    happened.
+    """
+    directory = PurePosixPath(focus_file).parent
+    prefix = PurePosixPath(focus_file).stem.split("_")[0]
+
+    def family(root: Path) -> dict[str, Path]:
+        base = root / directory
+        if not base.is_dir():
+            return {}
+        return {
+            entry.name: entry
+            for entry in sorted(base.iterdir())
+            if entry.is_file() and entry.stem.split("_")[0] == prefix
+        }
+
+    old_files = family(baseline_root)
+    new_files = family(comparison_root)
+    empty = Path("/dev/null")
+
+    rows: list[dict[str, Any]] = []
+    total_added = total_removed = 0
+    for name in sorted(set(old_files) | set(new_files)):
+        old_path = old_files.get(name)
+        new_path = new_files.get(name)
+        if old_path is None:
+            status = "added"
+        elif new_path is None:
+            status = "removed"
+        else:
+            status = "modified"
+        # Use the same differ as the focused headline, so a file appearing in
+        # both the summary card and this table cannot report two line counts.
+        stats = git_diff_stats(old_path or empty, new_path or empty)
+        added = stats.get("added_lines", 0)
+        removed = stats.get("removed_lines", 0)
+        if status == "modified" and not added and not removed:
+            status = "unchanged"
+        total_added += added
+        total_removed += removed
+        rows.append({
+            "name": name,
+            "status": status,
+            "added_lines": added,
+            "removed_lines": removed,
+            "in_old": old_path is not None,
+            "in_new": new_path is not None,
+        })
+
+    return {
+        "directory": str(directory),
+        "prefix": prefix,
+        "files": rows,
+        "files_added": sum(1 for row in rows if row["status"] == "added"),
+        "added_lines": total_added,
+        "removed_lines": total_removed,
+    }
 
 
 def strip_comments(text: str) -> str:
@@ -585,13 +654,18 @@ def logic_mapping_rows() -> list[dict[str, str]]:
             "concern": "likelihood implementation choice",
             "baseline": "calc_LHC_LogLikes_full is hard-wired",
             "comparison": "use_FullLikes selects calc_LHC_LogLikes(_full)",
-            "change": "runtime selector restored",
+            # On gambit/master this selector exists only as a commented-out TODO
+            # ("// bool use_FullLikes = settings.getValueOrDef..."); SUSYRun2
+            # hard-wires the _full path.  This branch is the first to implement
+            # it, so "restored" would understate what happened here.
+            "change": "upstream TODO implemented",
         },
         {
             "concern": "cutflow / histogram policy",
             "baseline": "CollectAnalyses.setOption(print_cutflows, true)",
             "comparison": "Cutflow::set_check_cutflow + Histogram1D::set_check_histogram",
-            "change": "runtime switches restored",
+            # set_check_cutflow appears in neither master nor SUSYRun2.
+            "change": "runtime switches introduced",
         },
         {
             "concern": "output contract",
@@ -1014,6 +1088,9 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
             "comparison": {"lines": len(right.text.splitlines()), "digest": right.digest},
             **file_stats,
         },
+        "sibling_family": sibling_family_stats(
+            baseline_root, comparison_root, focus_file
+        ),
         "baseline": branch_metadata(baseline_root, args.baseline_label),
         "comparison": branch_metadata(comparison_root, args.comparison_label),
         "version_roles": {
@@ -1039,6 +1116,40 @@ def build_data(args: argparse.Namespace) -> dict[str, Any]:
         "diff": unified_diff(left, right),
         "scope_note": "Focused static source evidence for one file; comparison direction is SUSYRun2 (old) → ColliderBit_solo_development (new). The two flowcharts are grouped source paths, not a runtime trace or a complete C++ AST.",
     }
+
+
+def family_note(data: dict[str, Any]) -> str:
+    """Explain the file-scoped counts in terms of the wider module.
+
+    Without this the headline reads as though the entrypoint simply grew by a
+    few hundred lines, when most of the work landed in sibling files the focused
+    diff cannot see.
+    """
+    family = data["sibling_family"]
+    focus = data["focus"]
+    new_names = [
+        f"<code>{html.escape(row['name'])}</code>"
+        for row in family["files"]
+        if row["status"] == "added"
+    ]
+    if not new_names:
+        return (
+            f"The focused file changed by +{focus['added_lines']} / "
+            f"−{focus['removed_lines']} lines. No sibling "
+            f"<code>{html.escape(family['prefix'])}*</code> files were added, so the "
+            "file-scoped counts are the whole story here."
+        )
+    listed = ", ".join(new_names[:-1]) + " and " + new_names[-1] if len(new_names) > 1 else new_names[0]
+    return (
+        f"<strong>Read the headline together with the module total.</strong> "
+        f"A file-scoped diff cannot show an extraction refactor: logic that left "
+        f"<code>{html.escape(focus['file'])}</code> landed in {listed}, which do not exist "
+        f"on the old branch at all and are therefore invisible to the counts above. "
+        f"Across the whole <code>{html.escape(family['directory'])}/{html.escape(family['prefix'])}*</code> "
+        f"family the change is <strong>+{family['added_lines']} / −{family['removed_lines']}</strong> "
+        f"over {len(family['files'])} files, {family['files_added']} of them new. "
+        f"The entrypoint did not shrink — the module around it grew."
+    )
 
 
 def page_html(data: dict[str, Any]) -> str:
@@ -1241,6 +1352,7 @@ def page_html(data: dict[str, Any]) -> str:
     <div class="card accent"><span class="n">__CHANGED_FUNCTIONS__</span><span class="label">functions changed</span></div>
     <div class="card"><span class="n">__CHANGED_RELATIONS__</span><span class="label">changed relations</span></div>
   </div>
+  <div class="note">__FAMILY_NOTE__</div>
 
   <section>
     <p class="kicker">01 · focused architecture</p>
@@ -1382,6 +1494,7 @@ def page_html(data: dict[str, Any]) -> str:
         "__SHARED_INCLUDES__": str(shared_includes),
         "__ADDED_LINES__": str(focus["added_lines"]),
         "__REMOVED_LINES__": str(focus["removed_lines"]),
+        "__FAMILY_NOTE__": family_note(data),
         "__FUNCTIONS__": str(summary["functions"]),
         "__CHANGED_FUNCTIONS__": str(summary["changed_functions"]),
         "__CHANGED_RELATIONS__": str(summary["changed_relations"]),
@@ -1409,6 +1522,7 @@ def markdown_summary(data: dict[str, Any]) -> str:
     focus = data["focus"]
     baseline = data["baseline"]
     comparison = data["comparison"]
+    family = data["sibling_family"]
     lines = [
         "# Focused CBS source comparison",
         "",
@@ -1423,6 +1537,23 @@ def markdown_summary(data: dict[str, Any]) -> str:
         f"- Changed build relations: {data['summary']['changed_build_relations']}",
         "",
         data["scope_note"],
+        "",
+        "## Module total",
+        "",
+        (
+            f"The counts above are file-scoped and therefore cannot show an extraction "
+            f"refactor. Across the whole `{family['directory']}/{family['prefix']}*` family the "
+            f"change is **+{family['added_lines']} / -{family['removed_lines']}** over "
+            f"{len(family['files'])} files, {family['files_added']} of them new on "
+            f"`{comparison['label']}`."
+        ),
+        "",
+        "| File | Status | Added | Removed |",
+        "|---|---|---:|---:|",
+        *[
+            f"| `{row['name']}` | {row['status']} | +{row['added_lines']} | -{row['removed_lines']} |"
+            for row in family["files"]
+        ],
         "",
         "## Logic flow",
         "",
