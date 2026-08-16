@@ -1,0 +1,1025 @@
+{
+  "schema_version": "colliderbit-dependency-graph-v2",
+  "graph_version": "v2",
+  "generated_at": "2026-08-15",
+  "project": "GAMBIT ColliderBit",
+  "scope": {
+    "path": "CBS -> ATLAS_EXOT_2019_04",
+    "root": "ColliderBit/examples/solo.cpp::main",
+    "analysis": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+    "scope_note": "Targeted graph for the analysis path; it is not a complete whole-project call graph.",
+    "behavior_note": "The core ColliderBit execution flow is unchanged; the graph isolates the analysis-specific path and its evidence."
+  },
+  "edge_direction": {
+    "call": "caller -> callee",
+    "runtime_dependency": "dependent functor -> dependency functor, matching resolveDependency()",
+    "dataflow": "producer or upstream stage -> downstream consumer",
+    "lifecycle": "framework-managed hook or execution stage -> related hook/stage",
+    "semantic": "source-level analysis stage -> next analysis stage"
+  },
+  "extraction": {
+    "mode": "clang-ast-assisted-static",
+    "tools": [
+      "Apple Clang AST JSON dump",
+      "rg source evidence search",
+      "jq JSON validation"
+    ],
+    "runtime_instrumentation": false,
+    "cbs_compilation": false,
+    "cbs_execution": false,
+    "compile_commands_found": false,
+    "ast_command_template": [
+      "clang++",
+      "-fsyntax-only",
+      "-Xclang",
+      "-ast-dump=json",
+      "-Xclang",
+      "-ast-dump-filter=Analysis_ATLAS_EXOT_2019_04",
+      "<manually supplied ColliderBit/GAMBIT include paths>",
+      "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp"
+    ],
+    "ast_confirmed_members": [
+      {
+        "qualified_name": "Analysis_ATLAS_EXOT_2019_04::run",
+        "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+        "line": 63
+      },
+      {
+        "qualified_name": "Analysis_ATLAS_EXOT_2019_04::collect_results",
+        "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+        "line": 316
+      },
+      {
+        "qualified_name": "Analysis_ATLAS_EXOT_2019_04::analysis_specific_reset",
+        "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+        "line": 328
+      },
+      {
+        "qualified_name": "Analysis_ATLAS_EXOT_2019_04::VR_Reff",
+        "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+        "line": 343
+      }
+    ],
+    "ast_confirmed_calls": [
+      "sortByPt",
+      "generateBTagsMap",
+      "VR_Reff"
+    ],
+    "limitations": [
+      "GAMBIT module-functor scheduling is represented from source-level resolveDependency() evidence, not inferred as ordinary C++ calls.",
+      "Macro semantics such as BASELINE_JETS, FILL_HISTOGRAM_1D and COMMIT_* are retained as labelled source stages.",
+      "The graph does not prove which branch executes for a particular event."
+    ]
+  },
+  "nodes": [
+    {
+      "id": "cbs_main",
+      "label": "CBS: solo.cpp::main()",
+      "kind": "entry",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "symbol": "main"
+        }
+      ]
+    },
+    {
+      "id": "solo_parse_command_line",
+      "label": "SoloCLI::parse_command_line()",
+      "kind": "function",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 77
+        }
+      ]
+    },
+    {
+      "id": "solo_parse_input",
+      "label": "SoloInput::parse_and_prepare_input()",
+      "kind": "function",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 133
+        }
+      ]
+    },
+    {
+      "id": "operate_lhc_loop",
+      "label": "operateLHCLoop",
+      "kind": "event_loop",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 535,
+          "detail": "setNestedList"
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 546,
+          "detail": "reset_and_calculate"
+        }
+      ]
+    },
+    {
+      "id": "get_event",
+      "label": "getEvent",
+      "kind": "functor",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 449,
+          "detail": "convertEvent.resolveDependency(&getEvent)"
+        }
+      ]
+    },
+    {
+      "id": "convert_event",
+      "label": "convertHepMCEvent_HEPUtils",
+      "kind": "event_conversion",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/src/getHepMCEvent.cpp",
+          "line": 221
+        }
+      ]
+    },
+    {
+      "id": "smear_event_atlas",
+      "label": "smearEventATLAS",
+      "kind": "detector_smearing",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 467,
+          "detail": "runATLASAnalyses.resolveDependency(&smearEventATLAS)"
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 476,
+          "detail": "smearEventATLAS.resolveDependency(&convertEvent)"
+        }
+      ]
+    },
+    {
+      "id": "run_atlas_analyses",
+      "label": "runATLASAnalyses",
+      "kind": "analysis_dispatch",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 463,
+          "detail": "CollectAnalyses.resolveDependency(&runATLASAnalyses)"
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 466,
+          "detail": "runATLASAnalyses.resolveDependency(&getATLASAnalysisContainer)"
+        }
+      ]
+    },
+    {
+      "id": "get_atlas_analysis_container",
+      "label": "getATLASAnalysisContainer",
+      "kind": "analysis_container",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 466
+        }
+      ]
+    },
+    {
+      "id": "analysis_container_factory",
+      "label": "AnalysisContainer::mkAnalysis(name)",
+      "kind": "factory",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/AnalysisContainer.cpp",
+          "line": 223
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/AnalysisContainer.cpp",
+          "line": 388,
+          "detail": "analysis selection by name"
+        }
+      ]
+    },
+    {
+      "id": "analysis_atlas_exot_2019_04_run",
+      "label": "Analysis_ATLAS_EXOT_2019_04::run()",
+      "kind": "analysis_method",
+      "status": "target",
+      "evidence": [
+        {
+          "method": "clang_ast",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 63
+        }
+      ]
+    },
+    {
+      "id": "baseline_jets",
+      "label": "BASELINE_JETS / event->jets()",
+      "kind": "jet_collection",
+      "status": "semantic",
+      "evidence": [
+        {
+          "method": "source_macro_semantics",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 78,
+          "detail": "antikt_R04 central"
+        },
+        {
+          "method": "source_macro_semantics",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 79,
+          "detail": "antikt_R04 forward"
+        },
+        {
+          "method": "source_macro_semantics",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 80,
+          "detail": "antikt_R10 large-R"
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 89,
+          "detail": "VRTrackJets"
+        }
+      ]
+    },
+    {
+      "id": "sort_by_pt",
+      "label": "sortByPt()",
+      "kind": "call",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "clang_ast",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 95
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 98
+        }
+      ]
+    },
+    {
+      "id": "large_r_trimming",
+      "label": "large-R jet trimming and selection",
+      "kind": "analysis_stage",
+      "status": "semantic",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 100
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 118
+        }
+      ]
+    },
+    {
+      "id": "generate_btags_map",
+      "label": "generateBTagsMap()",
+      "kind": "call",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "clang_ast",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 157
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 228
+        }
+      ]
+    },
+    {
+      "id": "vr_reff",
+      "label": "VR_Reff()",
+      "kind": "member_call",
+      "status": "target",
+      "evidence": [
+        {
+          "method": "clang_ast",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 343
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 180
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 270
+        }
+      ]
+    },
+    {
+      "id": "h2t2b_vlb_candidate",
+      "label": "H2T2B / VLB candidate selection",
+      "kind": "analysis_stage",
+      "status": "semantic",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 159,
+          "detail": "H2T2B Higgs candidate"
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 230,
+          "detail": "VLB candidate construction"
+        }
+      ]
+    },
+    {
+      "id": "m_vlb_histogram",
+      "label": "FILL_HISTOGRAM_1D(\"m_VLB\")",
+      "kind": "histogram_fill",
+      "status": "semantic",
+      "evidence": [
+        {
+          "method": "source_macro_semantics",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 311
+        }
+      ]
+    },
+    {
+      "id": "sr_counter",
+      "label": "SR counter: add_event()",
+      "kind": "counter",
+      "status": "semantic",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 313
+        }
+      ]
+    },
+    {
+      "id": "analysis_collect_results",
+      "label": "Analysis_ATLAS_EXOT_2019_04::collect_results()",
+      "kind": "analysis_hook",
+      "status": "target",
+      "evidence": [
+        {
+          "method": "clang_ast",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 316
+        }
+      ]
+    },
+    {
+      "id": "analysis_commit_macros",
+      "label": "COMMIT_SIGNAL_REGION / COMMIT_HISTOGRAMS / COMMIT_HISTOGRAM_SRS",
+      "kind": "result_commit",
+      "status": "semantic",
+      "evidence": [
+        {
+          "method": "source_macro_semantics",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 318
+        },
+        {
+          "method": "source_macro_semantics",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 321
+        },
+        {
+          "method": "source_macro_semantics",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 322
+        }
+      ]
+    },
+    {
+      "id": "analysis_specific_reset",
+      "label": "Analysis_ATLAS_EXOT_2019_04::analysis_specific_reset()",
+      "kind": "analysis_hook",
+      "status": "target",
+      "evidence": [
+        {
+          "method": "clang_ast",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 328
+        }
+      ]
+    },
+    {
+      "id": "collect_analyses",
+      "label": "CollectAnalyses",
+      "kind": "functor",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/src/ColliderBit_eventloop.cpp",
+          "line": 452
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 547,
+          "detail": "reset_and_calculate"
+        }
+      ]
+    },
+    {
+      "id": "calc_lhc_loglikes",
+      "label": "calc_LHC_LogLikes",
+      "kind": "functor",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 453,
+          "detail": "resolveDependency(&CollectAnalyses)"
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 548,
+          "detail": "reset_and_calculate"
+        }
+      ]
+    },
+    {
+      "id": "solo_output",
+      "label": "SoloOutput::emit_outputs()",
+      "kind": "output_function",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 574
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo_output.cpp",
+          "line": 376
+        }
+      ]
+    },
+    {
+      "id": "cbs_result_json",
+      "label": "CBS_result.json",
+      "kind": "output_file",
+      "status": "unchanged",
+      "evidence": [
+        {
+          "method": "output_artifact",
+          "file": "runs/CBS_result.json",
+          "detail": "contains analyses, cutflows, histograms and signal_regions"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "cbs_main",
+      "target": "solo_parse_command_line",
+      "kind": "call",
+      "label": "parse command line",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 77
+        }
+      ]
+    },
+    {
+      "source": "cbs_main",
+      "target": "solo_parse_input",
+      "kind": "call",
+      "label": "parse and prepare input",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 133
+        }
+      ]
+    },
+    {
+      "source": "cbs_main",
+      "target": "operate_lhc_loop",
+      "kind": "call",
+      "label": "reset_and_calculate",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 546
+        }
+      ]
+    },
+    {
+      "source": "operate_lhc_loop",
+      "target": "get_event",
+      "kind": "runtime_dependency",
+      "label": "loop-managed event source",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 496
+        }
+      ]
+    },
+    {
+      "source": "operate_lhc_loop",
+      "target": "convert_event",
+      "kind": "runtime_dependency",
+      "label": "loop-managed event conversion",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 497
+        }
+      ]
+    },
+    {
+      "source": "smear_event_atlas",
+      "target": "convert_event",
+      "kind": "runtime_dependency",
+      "label": "resolveDependency",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 476
+        }
+      ]
+    },
+    {
+      "source": "convert_event",
+      "target": "smear_event_atlas",
+      "kind": "dataflow",
+      "label": "converted event -> ATLAS smearing",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "method": "semantic_from_dependency",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 476
+        }
+      ]
+    },
+    {
+      "source": "collect_analyses",
+      "target": "run_atlas_analyses",
+      "kind": "runtime_dependency",
+      "label": "resolveDependency",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 463
+        }
+      ]
+    },
+    {
+      "source": "run_atlas_analyses",
+      "target": "smear_event_atlas",
+      "kind": "runtime_dependency",
+      "label": "resolveDependency",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 467
+        }
+      ]
+    },
+    {
+      "source": "smear_event_atlas",
+      "target": "run_atlas_analyses",
+      "kind": "dataflow",
+      "label": "smeared event -> analysis dispatch",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "method": "semantic_from_dependency",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 467
+        }
+      ]
+    },
+    {
+      "source": "run_atlas_analyses",
+      "target": "get_atlas_analysis_container",
+      "kind": "runtime_dependency",
+      "label": "resolveDependency",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 466
+        }
+      ]
+    },
+    {
+      "source": "get_atlas_analysis_container",
+      "target": "analysis_container_factory",
+      "kind": "dependency",
+      "label": "analysis lookup and construction",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/AnalysisContainer.cpp",
+          "line": 388
+        }
+      ]
+    },
+    {
+      "source": "analysis_container_factory",
+      "target": "analysis_atlas_exot_2019_04_run",
+      "kind": "dynamic_dispatch",
+      "label": "analysis selected by name",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/AnalysisContainer.cpp",
+          "line": 223
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/AnalysisContainer.cpp",
+          "line": 388
+        }
+      ]
+    },
+    {
+      "source": "analysis_atlas_exot_2019_04_run",
+      "target": "baseline_jets",
+      "kind": "semantic",
+      "label": "jet collection construction",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source_macro_semantics",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 78
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 89
+        }
+      ]
+    },
+    {
+      "source": "analysis_atlas_exot_2019_04_run",
+      "target": "sort_by_pt",
+      "kind": "call",
+      "label": "sort jets and objects",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "clang_ast",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 95
+        }
+      ]
+    },
+    {
+      "source": "baseline_jets",
+      "target": "large_r_trimming",
+      "kind": "semantic",
+      "label": "large-R jet selection stage",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 100
+        }
+      ]
+    },
+    {
+      "source": "analysis_atlas_exot_2019_04_run",
+      "target": "generate_btags_map",
+      "kind": "call",
+      "label": "build b-tag map",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "clang_ast",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 157
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 228
+        }
+      ]
+    },
+    {
+      "source": "large_r_trimming",
+      "target": "h2t2b_vlb_candidate",
+      "kind": "semantic",
+      "label": "trimmed large-R jet candidate",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 153
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 159
+        }
+      ]
+    },
+    {
+      "source": "generate_btags_map",
+      "target": "h2t2b_vlb_candidate",
+      "kind": "dataflow",
+      "label": "b-tagged jets -> H2T2B/VLB selection",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 196
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 230
+        }
+      ]
+    },
+    {
+      "source": "analysis_atlas_exot_2019_04_run",
+      "target": "vr_reff",
+      "kind": "member_call",
+      "label": "variable-R effective radius",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "clang_ast",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 343
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 180
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 270
+        }
+      ]
+    },
+    {
+      "source": "vr_reff",
+      "target": "h2t2b_vlb_candidate",
+      "kind": "semantic",
+      "label": "VR track-jet selection input",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 180
+        },
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 270
+        }
+      ]
+    },
+    {
+      "source": "h2t2b_vlb_candidate",
+      "target": "m_vlb_histogram",
+      "kind": "semantic",
+      "label": "selected VLB candidate mass",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source_macro_semantics",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 311
+        }
+      ]
+    },
+    {
+      "source": "h2t2b_vlb_candidate",
+      "target": "sr_counter",
+      "kind": "call",
+      "label": "increment SR counter",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 313
+        }
+      ]
+    },
+    {
+      "source": "analysis_atlas_exot_2019_04_run",
+      "target": "analysis_collect_results",
+      "kind": "lifecycle",
+      "label": "analysis result collection hook",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "clang_ast",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 316
+        }
+      ]
+    },
+    {
+      "source": "analysis_collect_results",
+      "target": "analysis_commit_macros",
+      "kind": "semantic",
+      "label": "commit signal region and histograms",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source_macro_semantics",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 318
+        },
+        {
+          "method": "source_macro_semantics",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 321
+        },
+        {
+          "method": "source_macro_semantics",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 322
+        }
+      ]
+    },
+    {
+      "source": "analysis_atlas_exot_2019_04_run",
+      "target": "analysis_specific_reset",
+      "kind": "lifecycle",
+      "label": "analysis reset hook",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "clang_ast",
+          "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+          "line": 328
+        }
+      ]
+    },
+    {
+      "source": "operate_lhc_loop",
+      "target": "collect_analyses",
+      "kind": "lifecycle",
+      "label": "event-loop analysis collection",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 547
+        }
+      ]
+    },
+    {
+      "source": "calc_lhc_loglikes",
+      "target": "collect_analyses",
+      "kind": "runtime_dependency",
+      "label": "resolveDependency",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 453
+        }
+      ]
+    },
+    {
+      "source": "collect_analyses",
+      "target": "calc_lhc_loglikes",
+      "kind": "dataflow",
+      "label": "analysis results -> likelihood calculation",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "method": "semantic_from_dependency",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 453
+        }
+      ]
+    },
+    {
+      "source": "collect_analyses",
+      "target": "solo_output",
+      "kind": "dataflow",
+      "label": "analysis results passed to output",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 574
+        }
+      ]
+    },
+    {
+      "source": "calc_lhc_loglikes",
+      "target": "solo_output",
+      "kind": "dataflow",
+      "label": "likelihood results passed to output",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo.cpp",
+          "line": 574
+        }
+      ]
+    },
+    {
+      "source": "solo_output",
+      "target": "cbs_result_json",
+      "kind": "output",
+      "label": "write result JSON",
+      "confidence": "high",
+      "evidence": [
+        {
+          "method": "source",
+          "file": "ColliderBit/examples/solo_output.cpp",
+          "line": 376
+        },
+        {
+          "method": "output_artifact",
+          "file": "runs/CBS_result.json"
+        }
+      ]
+    }
+  ]
+}

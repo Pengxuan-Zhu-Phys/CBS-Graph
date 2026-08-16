@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ColliderBit · Three analysis dependency graphs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --paper:#f5f5f5; --ink:#2d3142; --muted:#4f5d75; --soft:#7a8399; --accent:#eb6c36; --rule:rgba(45,49,66,.12); --font-sans:'Geist',system-ui,sans-serif; --font-serif:'Instrument Serif',serif; --font-mono:'Geist Mono',ui-monospace,monospace; }
+    body { background:var(--paper); color:var(--ink); min-height:100vh; display:flex; justify-content:center; padding:38px; font-family:var(--font-sans); }
+    .frame { width:min(1280px,100%); }
+    .eyebrow { color:var(--muted); font-family:var(--font-mono); font-size:9px; letter-spacing:.16em; margin-bottom:8px; text-transform:uppercase; }
+    h1 { font-family:var(--font-serif); font-size:34px; font-weight:400; letter-spacing:-.02em; line-height:1.1; margin-bottom:10px; }
+    .intro { color:var(--muted); font-size:13px; line-height:1.55; max-width:980px; margin-bottom:28px; }
+    section { border-top:1px solid var(--rule); padding-top:20px; margin-top:22px; }
+    .kicker { color:var(--soft); font-family:var(--font-mono); font-size:8px; letter-spacing:.15em; text-transform:uppercase; margin-bottom:7px; }
+    h2 { font-family:var(--font-serif); font-size:25px; font-weight:400; margin-bottom:2px; }
+    .source { color:var(--soft); font-family:var(--font-mono); font-size:9px; margin-bottom:12px; }
+    svg { display:block; width:100%; height:auto; }
+    .note { color:var(--muted); font-size:12px; line-height:1.5; margin-top:12px; }
+    .meta { border-top:1px solid var(--rule); margin-top:26px; padding-top:16px; color:var(--muted); font-size:11px; line-height:1.55; }
+    code { font-family:var(--font-mono); font-size:.92em; }
+    @media (max-width:800px) { body { padding:22px; } h1 { font-size:28px; } }
+  </style>
+</head>
+<body>
+  <main class="frame">
+    <p class="eyebrow">ColliderBit · Analysis-local static dependency graphs</p>
+    <h1>Three analysis structures, side by side</h1>
+    <p class="intro">These graphs are generated from the normalized JSON files in <code>dependences/</code>. The shared CBS execution backbone is intentionally omitted here so that the differences inside each analysis remain readable.</p>
+
+    <section>
+      <p class="kicker">01 · ATLAS EXOT 2019-04</p>
+      <h2>VLB candidate construction</h2>
+      <p class="source">12 nodes · 13 edges · focused on trimming, variable-R jets and candidate mass</p>
+      <svg viewBox="0 0 1280 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="exot-title exot-desc">
+        <title id="exot-title">ATLAS EXOT 2019 04 analysis dependency graph</title>
+        <desc id="exot-desc">The ATLAS EXOT 2019 04 graph connects the run method to baseline objects, large-R trimming, b-tag maps, variable-R inputs, H2T2B/VLB candidate selection, observables, result collection and reset.</desc>
+        <defs><marker id="exot-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker></defs>
+        <rect width="1280" height="540" fill="#f5f5f5"/>
+        <rect x="34" y="126" width="822" height="294" rx="8" fill="rgba(45,49,66,.025)" stroke="rgba(45,49,66,.10)"/>
+        <rect x="884" y="126" width="362" height="294" rx="8" fill="rgba(45,49,66,.025)" stroke="rgba(45,49,66,.10)"/>
+        <text x="52" y="143" fill="#7a8399" font-size="8" font-family="'Geist Mono',monospace" letter-spacing=".14em">EVENT OBJECTS &amp; CANDIDATE SELECTION</text>
+        <text x="902" y="143" fill="#7a8399" font-size="8" font-family="'Geist Mono',monospace" letter-spacing=".14em">RESULT LIFECYCLE</text>
+        <g fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#exot-arrow)">
+          <line x1="580" y1="106" x2="142" y2="186"/><line x1="600" y1="106" x2="270" y2="186"/><line x1="620" y1="106" x2="398" y2="186"/><line x1="640" y1="106" x2="526" y2="186"/><line x1="660" y1="106" x2="654" y2="186"/>
+          <line x1="142" y1="266" x2="398" y2="326"/><line x1="526" y1="266" x2="508" y2="326"/><line x1="654" y1="266" x2="618" y2="326"/>
+          <line x1="508" y1="406" x2="398" y2="446"/><line x1="618" y1="406" x2="618" y2="446"/>
+          <line x1="700" y1="66" x2="950" y2="186" stroke-dasharray="5 4"/><line x1="1024" y1="298" x2="1024" y2="326"/><line x1="1024" y1="106" x2="1090" y2="186" stroke-dasharray="5 4"/>
+        </g>
+        <text x="830" y="151" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">lifecycle</text>
+        <g font-family="'Geist',sans-serif">
+          <g transform="translate(530 26)"><rect width="220" height="80" rx="7" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width="1.3"/><text x="12" y="17" fill="#eb6c36" font-size="8" font-family="'Geist Mono',monospace">TARGET · AST MEMBER</text><text x="110" y="44" text-anchor="middle" fill="#2d3142" font-size="12" font-weight="600">ATLAS_EXOT_2019_04</text><text x="110" y="62" text-anchor="middle" fill="#4f5d75" font-size="9" font-family="'Geist Mono',monospace">::run()</text></g>
+          <g transform="translate(78 186)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="10" y="17" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">SOURCE STAGE</text><text x="64" y="43" text-anchor="middle" fill="#2d3142" font-size="11" font-weight="600">BASELINE_*</text><text x="64" y="61" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">objects</text></g>
+          <g transform="translate(206 186)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="10" y="17" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">AST CALL</text><text x="64" y="43" text-anchor="middle" fill="#2d3142" font-size="11" font-weight="600">sortByPt()</text><text x="64" y="61" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">ordered jets</text></g>
+          <g transform="translate(334 186)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="10" y="17" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">STAGE</text><text x="64" y="43" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">Large-R trim</text><text x="64" y="61" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">pT / eta / mass</text></g>
+          <g transform="translate(462 186)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="10" y="17" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">AST CALL</text><text x="64" y="43" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">generateBTagsMap</text><text x="64" y="61" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">b-tag map</text></g>
+          <g transform="translate(590 186)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="10" y="17" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">AST MEMBER</text><text x="64" y="43" text-anchor="middle" fill="#2d3142" font-size="11" font-weight="600">VR_Reff()</text><text x="64" y="61" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">track jets</text></g>
+          <g transform="translate(398 326)"><rect width="220" height="80" rx="7" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width="1.2"/><text x="12" y="17" fill="#eb6c36" font-size="8" font-family="'Geist Mono',monospace">MERGED SEMANTIC STAGE</text><text x="110" y="44" text-anchor="middle" fill="#2d3142" font-size="12" font-weight="600">H2T2B / VLB candidate</text><text x="110" y="62" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">trim + b-tag + VR inputs</text></g>
+          <g transform="translate(334 446)"><rect width="128" height="64" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="28" text-anchor="middle" fill="#2d3142" font-size="11" font-weight="600">m_VLB hist</text><text x="64" y="45" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">FILL_HISTOGRAM</text></g>
+          <g transform="translate(554 446)"><rect width="128" height="64" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="28" text-anchor="middle" fill="#2d3142" font-size="11" font-weight="600">SR counter</text><text x="64" y="45" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">add_event()</text></g>
+          <g transform="translate(950 186)"><rect width="210" height="112" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="10" y="17" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">AST MEMBER · LINE 316</text><text x="105" y="39" text-anchor="middle" fill="#2d3142" font-size="11" font-weight="600">collect_results()</text><text x="105" y="60" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">COMMIT_SIGNAL_REGION</text><text x="105" y="75" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">if histogram valid:</text><text x="105" y="90" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">COMMIT_HISTOGRAMS</text><text x="105" y="105" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">COMMIT_HISTOGRAM_SRS</text></g>
+          <g transform="translate(950 326)"><rect width="210" height="80" rx="6" fill="rgba(45,49,66,.05)" stroke="#4f5d75"/><text x="105" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">Result payload</text><text x="105" y="51" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">SR counter + m_VLB SR</text></g>
+          <g transform="translate(1090 186)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="10" y="17" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">AST MEMBER</text><text x="64" y="43" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">reset()</text><text x="64" y="61" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">line 328</text></g>
+        </g>
+      </svg>
+      <p class="note">结构特征：一个集中式候选构造核心，三个物理输入分支（trim、b-tag、VR）汇聚到 H2T2B/VLB 候选。</p>
+    </section>
+
+    <section>
+      <p class="kicker">02 · ATLAS SUSY 2018-05</p>
+      <h2>Object cleaning and MET-significance regions</h2>
+      <p class="source">15 nodes · 17 edges · sequential object preparation followed by parallel mT2 / MET-significance features</p>
+      <svg viewBox="0 0 1280 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="susy-title susy-desc">
+        <title id="susy-title">ATLAS SUSY 2018 05 analysis dependency graph</title>
+        <desc id="susy-desc">The ATLAS SUSY 2018 05 graph shows baseline leptons and jets, efficiencies, overlap removal, signal objects, sorting, preselection, MET significance, mT2, signal regions, counters, collection and reset.</desc>
+        <defs><marker id="susy-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker></defs>
+        <rect width="1280" height="620" fill="#f5f5f5"/>
+        <rect x="34" y="122" width="892" height="330" rx="8" fill="rgba(45,49,66,.025)" stroke="rgba(45,49,66,.10)"/>
+        <rect x="952" y="122" width="294" height="330" rx="8" fill="rgba(45,49,66,.025)" stroke="rgba(45,49,66,.10)"/>
+        <text x="52" y="139" fill="#7a8399" font-size="8" font-family="'Geist Mono',monospace" letter-spacing=".14em">OBJECT PREPARATION &amp; SIGNAL REGIONS</text>
+        <text x="970" y="139" fill="#7a8399" font-size="8" font-family="'Geist Mono',monospace" letter-spacing=".14em">RESULT LIFECYCLE</text>
+        <g fill="none" stroke="#4f5d75" stroke-width="1.15" marker-end="url(#susy-arrow)">
+          <line x1="560" y1="106" x2="142" y2="182"/><line x1="590" y1="106" x2="280" y2="182"/><line x1="142" y1="262" x2="406" y2="302"/><line x1="280" y1="262" x2="406" y2="302"/><line x1="406" y1="262" x2="534" y2="302"/><line x1="534" y1="262" x2="662" y2="302"/><line x1="662" y1="262" x2="790" y2="302"/>
+          <line x1="790" y1="382" x2="662" y2="432"/><line x1="790" y1="382" x2="790" y2="432"/>
+          <line x1="790" y1="382" x2="1030" y2="182" stroke-dasharray="5 4"/><line x1="1094" y1="262" x2="1094" y2="322"/><line x1="1094" y1="106" x2="1094" y2="182" stroke-dasharray="5 4"/>
+        </g>
+        <g font-family="'Geist',sans-serif">
+          <g transform="translate(510 26)"><rect width="220" height="80" rx="7" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width="1.3"/><text x="12" y="17" fill="#eb6c36" font-size="8" font-family="'Geist Mono',monospace">TARGET · AST MEMBER</text><text x="110" y="44" text-anchor="middle" fill="#2d3142" font-size="12" font-weight="600">ATLAS_SUSY_2018_05</text><text x="110" y="62" text-anchor="middle" fill="#4f5d75" font-size="9" font-family="'Geist Mono',monospace">::run()</text></g>
+          <g transform="translate(78 182)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">Baseline e/μ/γ</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">particles</text></g>
+          <g transform="translate(216 182)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">Baseline jets</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">antikt_R04</text></g>
+          <g transform="translate(344 182)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">Efficiencies</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">ATLAS e/μ ID</text></g>
+          <g transform="translate(472 182)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">Overlap removal</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">removeOverlap()</text></g>
+          <g transform="translate(600 182)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">Signal objects</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">jets · leptons · b</text></g>
+          <g transform="translate(728 182)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">sort() by pT</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">ordered objects</text></g>
+          <g transform="translate(662 302)"><rect width="256" height="80" rx="7" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width="1.2"/><text x="128" y="31" text-anchor="middle" fill="#2d3142" font-size="12" font-weight="600">2-lepton preselection</text><text x="128" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">mll · jets · SF · mT2 inputs</text></g>
+          <g transform="translate(342 432)"><rect width="128" height="64" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="28" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">MET significance</text><text x="64" y="45" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">calcMETSignificance</text></g>
+          <g transform="translate(534 432)"><rect width="128" height="64" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="28" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">mT2</text><text x="64" y="45" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">mt2_bisect</text></g>
+          <g transform="translate(726 432)"><rect width="128" height="64" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="28" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">SR branches</text><text x="64" y="45" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">High / Int / Low</text></g>
+          <g transform="translate(1030 166)"><rect width="200" height="112" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="100" y="17" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">AST MEMBER · LINE 581</text><text x="100" y="39" text-anchor="middle" fill="#2d3142" font-size="11" font-weight="600">collect_results()</text><text x="100" y="61" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">13 × COMMIT_SIGNAL_REGION</text><text x="100" y="77" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">+ COMMIT_CUTFLOWS</text><text x="100" y="93" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">→ likelihood inputs</text></g>
+          <g transform="translate(1030 322)"><rect width="200" height="80" rx="6" fill="rgba(45,49,66,.05)" stroke="#4f5d75"/><text x="100" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">Result payload</text><text x="100" y="51" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">13 SRs + cutflows</text></g>
+          <g transform="translate(1090 26)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">reset()</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">line 601</text></g>
+        </g>
+      </svg>
+      <p class="note">结构特征：先进行较长的对象清理链，再分成 MET significance 与 mT2 两个特征计算分支，最后汇聚到大量 signal region。</p>
+    </section>
+
+    <section>
+      <p class="kicker">03 · CMS B2G 18-003</p>
+      <h2>Resolved low-mass and merged high-mass branches</h2>
+      <p class="source">16 nodes · 16 edges · two parallel physics branches with separate result mechanisms</p>
+      <svg viewBox="0 0 1280 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="cms-title cms-desc">
+        <title id="cms-title">CMS B2G 18 003 analysis dependency graph</title>
+        <desc id="cms-desc">The CMS B2G 18 003 graph splits after the run method into a resolved low-mass five-jet reconstruction branch and a merged high-mass SoftDrop, N-subjettiness and proxy b-tag branch, then collects both outputs.</desc>
+        <defs><marker id="cms-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker></defs>
+        <rect width="1280" height="620" fill="#f5f5f5"/>
+        <rect x="34" y="122" width="884" height="330" rx="8" fill="rgba(45,49,66,.025)" stroke="rgba(45,49,66,.10)"/>
+        <rect x="944" y="122" width="302" height="330" rx="8" fill="rgba(45,49,66,.025)" stroke="rgba(45,49,66,.10)"/>
+        <text x="52" y="139" fill="#7a8399" font-size="8" font-family="'Geist Mono',monospace" letter-spacing=".14em">LOW-MASS RESOLVED BRANCH</text>
+        <text x="52" y="311" fill="#7a8399" font-size="8" font-family="'Geist Mono',monospace" letter-spacing=".14em">HIGH-MASS MERGED BRANCH</text>
+        <text x="962" y="139" fill="#7a8399" font-size="8" font-family="'Geist Mono',monospace" letter-spacing=".14em">RESULT LIFECYCLE</text>
+        <g fill="none" stroke="#4f5d75" stroke-width="1.15" marker-end="url(#cms-arrow)">
+          <line x1="570" y1="106" x2="142" y2="182"/><line x1="600" y1="106" x2="142" y2="354"/><line x1="730" y1="66" x2="990" y2="74" stroke-dasharray="5 4"/><line x1="680" y1="106" x2="414" y2="522" stroke-dasharray="5 4"/>
+          <line x1="206" y1="222" x2="334" y2="222"/><line x1="462" y1="222" x2="590" y2="222"/><line x1="718" y1="222" x2="846" y2="222"/>
+          <line x1="206" y1="394" x2="334" y2="394"/><line x1="462" y1="394" x2="590" y2="394"/><line x1="718" y1="394" x2="846" y2="394"/>
+          <line x1="974" y1="222" x2="1030" y2="222" stroke-dasharray="5 4"/><line x1="974" y1="394" x2="1030" y2="394"/><line x1="1094" y1="262" x2="1094" y2="500"/><line x1="1094" y1="434" x2="1094" y2="500"/>
+        </g>
+        <g font-family="'Geist',sans-serif">
+          <g transform="translate(510 26)"><rect width="220" height="80" rx="7" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width="1.3"/><text x="12" y="17" fill="#eb6c36" font-size="8" font-family="'Geist Mono',monospace">TARGET · AST MEMBER</text><text x="110" y="44" text-anchor="middle" fill="#2d3142" font-size="12" font-weight="600">CMS_B2G_18_003</text><text x="110" y="62" text-anchor="middle" fill="#4f5d75" font-size="9" font-family="'Geist Mono',monospace">::run()</text></g>
+          <g transform="translate(78 182)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">AK4 / AK8 jets</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">DeepCSV + CSVv2</text></g>
+          <g transform="translate(334 182)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">sort() by pT</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">line 120</text></g>
+          <g transform="translate(590 182)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">Low-mass jets</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">signal + b subsets</text></g>
+          <g transform="translate(846 182)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">3T / 3M / 2M1L</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">categories</text></g>
+          <g transform="translate(78 354)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">Merged preselection</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">≥4 AK4 + ≥2 AK8</text></g>
+          <g transform="translate(334 354)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">SoftDrop / pruning</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">groomed masses</text></g>
+          <g transform="translate(590 354)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">N-subjettiness</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">+ proxy b-tags</text></g>
+          <g transform="translate(846 354)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">H / Z / top SRs</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">8 counters</text></g>
+          <g transform="translate(1030 182)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">Low-mass m5j</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">histogram SRs</text></g>
+          <g transform="translate(1030 354)"><rect width="128" height="80" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">High-mass SRs</text><text x="64" y="50" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">cut-and-count</text></g>
+          <g transform="translate(990 18)"><rect width="200" height="112" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="100" y="17" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">AST MEMBER · LINE 460</text><text x="100" y="39" text-anchor="middle" fill="#2d3142" font-size="11" font-weight="600">collect_results()</text><text x="100" y="61" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">COMMIT_HISTOGRAMS</text><text x="100" y="77" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">6 histogram-backed SRs</text><text x="100" y="93" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">8 cut-and-count + cutflows</text></g>
+          <g transform="translate(990 500)"><rect width="200" height="80" rx="6" fill="rgba(45,49,66,.05)" stroke="#4f5d75"/><text x="100" y="31" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">Result payload</text><text x="100" y="51" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">low-mass + high-mass outputs</text></g>
+          <g transform="translate(350 522)"><rect width="128" height="64" rx="6" fill="#f5f5f5" stroke="#2d3142"/><text x="64" y="28" text-anchor="middle" fill="#2d3142" font-size="10" font-weight="600">reset()</text><text x="64" y="45" text-anchor="middle" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace">book_regions()</text></g>
+        </g>
+      </svg>
+      <p class="note">结构特征：这是三张图中最明显的双分支结构；低质量分支把五喷注质量送入 histogram-backed SR， 高质量分支走 grooming、N-subjettiness 和代理 b-tag。</p>
+    </section>
+
+    <div class="meta"><strong>读图说明.</strong> 实线表示执行/数据流，虚线表示生命周期或动态关系；橙色节点是每张图的分析入口或核心汇聚阶段。所有图均为静态源码证据图，不代表真实事件执行频率。</div>
+  </main>
+</body>
+</html>

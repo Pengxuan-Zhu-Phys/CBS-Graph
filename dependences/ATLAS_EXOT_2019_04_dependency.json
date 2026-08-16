@@ -1,0 +1,52 @@
+{
+  "scope": {
+    "analysis": "ATLAS_EXOT_2019_04",
+    "source": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+    "scope_note": "Analysis-local dependency graph; the CBS shared backbone is omitted from this first comparison set."
+  },
+  "extraction": {
+    "mode": "clang-ast-assisted-static",
+    "runtime_instrumentation": false,
+    "cbs_compilation": false,
+    "ast_confirmed_members": [
+      "Analysis_ATLAS_EXOT_2019_04::run",
+      "Analysis_ATLAS_EXOT_2019_04::collect_results",
+      "Analysis_ATLAS_EXOT_2019_04::analysis_specific_reset",
+      "Analysis_ATLAS_EXOT_2019_04::VR_Reff"
+    ],
+    "ast_confirmed_calls": ["sortByPt", "generateBTagsMap", "VR_Reff"],
+    "limitations": [
+      "BASELINE_* and COMMIT_* are represented as source-level semantic stages.",
+      "The graph does not prove which event branch executes at runtime."
+    ]
+  },
+  "nodes": [
+    {"id":"analysis_run","kind":"analysis_method","label":"Analysis_ATLAS_EXOT_2019_04::run()","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":63,"status":"target"},
+    {"id":"baseline_objects","kind":"object_selection","label":"BASELINE_* / SIGNAL_* objects","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":65,"status":"analysis"},
+    {"id":"sort_objects","kind":"call","label":"sortByPt()","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":95,"status":"analysis"},
+    {"id":"large_r_trimming","kind":"analysis_stage","label":"Large-R trimming and selection","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":100,"status":"analysis"},
+    {"id":"generate_btags_map","kind":"call","label":"generateBTagsMap()","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":157,"status":"analysis"},
+    {"id":"vr_reff","kind":"member_call","label":"VR_Reff()","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":180,"status":"analysis"},
+    {"id":"h2t2b_vlb_candidate","kind":"analysis_stage","label":"H2T2B / VLB candidate selection","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":159,"status":"analysis"},
+    {"id":"m_vlb_histogram","kind":"histogram_fill","label":"m_VLB histogram","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":311,"status":"analysis"},
+    {"id":"sr_counter","kind":"counter","label":"SR counter: add_event()","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":313,"status":"analysis"},
+    {"id":"analysis_collect_results","kind":"analysis_hook","label":"collect_results(): commit SR + histogram outputs","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":316,"status":"analysis"},
+    {"id":"analysis_commit_macros","kind":"result_commit","label":"SR counter + m_VLB histogram-backed SR","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":318,"status":"analysis"},
+    {"id":"analysis_specific_reset","kind":"analysis_hook","label":"analysis_specific_reset()","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":328,"status":"analysis"}
+  ],
+  "edges": [
+    {"source":"analysis_run","target":"baseline_objects","kind":"semantic","label":"build event objects","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":65}]},
+    {"source":"analysis_run","target":"sort_objects","kind":"call","label":"sort jets and leptons","confidence":"high","evidence":[{"method":"clang_ast","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":95}]},
+    {"source":"baseline_objects","target":"large_r_trimming","kind":"semantic","label":"large-R jets -> trimming","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":100}]},
+    {"source":"analysis_run","target":"generate_btags_map","kind":"call","label":"build b-tag maps","confidence":"high","evidence":[{"method":"clang_ast","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":157}]},
+    {"source":"analysis_run","target":"vr_reff","kind":"member_call","label":"variable-R radius","confidence":"high","evidence":[{"method":"clang_ast","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":180}]},
+    {"source":"large_r_trimming","target":"h2t2b_vlb_candidate","kind":"semantic","label":"trimmed large-R candidate","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":153}]},
+    {"source":"generate_btags_map","target":"h2t2b_vlb_candidate","kind":"dataflow","label":"b-tagged jets -> candidate","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":157}]},
+    {"source":"vr_reff","target":"h2t2b_vlb_candidate","kind":"semantic","label":"VR track-jet input","confidence":"medium","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":180}]},
+    {"source":"h2t2b_vlb_candidate","target":"m_vlb_histogram","kind":"semantic","label":"candidate mass -> histogram","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":311}]},
+    {"source":"h2t2b_vlb_candidate","target":"sr_counter","kind":"call","label":"increment SR counter","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":313}]},
+    {"source":"analysis_run","target":"analysis_collect_results","kind":"lifecycle","label":"result collection hook","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":316}]},
+    {"source":"analysis_collect_results","target":"analysis_commit_macros","kind":"semantic","label":"commit SR and histograms","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":318}]},
+    {"source":"analysis_run","target":"analysis_specific_reset","kind":"lifecycle","label":"analysis reset hook","confidence":"high","evidence":[{"method":"clang_ast","file":"ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp","line":328}]}
+  ]
+}

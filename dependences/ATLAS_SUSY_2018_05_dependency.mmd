@@ -1,0 +1,34 @@
+flowchart TD
+    %% Generated from dependency graph
+    analysis_run["Analysis_ATLAS_SUSY_2018_05::run()<br/>analysis_method · target"]
+    baseline_leptons["Baseline e / μ / γ objects<br/>object_selection · analysis"]
+    baseline_jets["Baseline antikt_R04 jets<br/>jet_collection · analysis"]
+    efficiencies["ATLAS lepton efficiencies<br/>detector_efficiency · analysis"]
+    overlap_removal["removeOverlap()<br/>call · analysis"]
+    signal_objects["Signal leptons / jets / b-jets<br/>object_selection · analysis"]
+    sort_objects["sort() by pT<br/>call · analysis"]
+    preselection["2-lepton + jet preselection<br/>cutflow · analysis"]
+    met_significance["calcMETSignificance()<br/>call · analysis"]
+    mt2["mt2_bisect::mt2::get_mt2()<br/>call · analysis"]
+    signal_regions["SRHigh / SRInt / SRLow / SROffShell<br/>branch · analysis"]
+    fill_counters["LOG_CUT / FILL_SIGNAL_REGION<br/>counter · analysis"]
+    analysis_collect_results["collect_results(): commit 13 SRs + cutflows<br/>analysis_hook · analysis"]
+    analysis_commit_macros["13 COMMIT_SIGNAL_REGION + COMMIT_CUTFLOWS<br/>result_commit · analysis"]
+    analysis_specific_reset["analysis_specific_reset()<br/>analysis_hook · analysis"]
+    analysis_run -->|build baseline particles| baseline_leptons
+    analysis_run -->|build antikt_R04 jets| baseline_jets
+    baseline_leptons -->|applyEfficiency| efficiencies
+    baseline_jets -->|jet-lepton cleaning| overlap_removal
+    baseline_leptons -->|lepton-lepton cleaning| overlap_removal
+    efficiencies -->|loose / medium signal IDs| signal_objects
+    overlap_removal -->|cleaned objects → signal objects| signal_objects
+    signal_objects -->|sort pT ordered objects| sort_objects
+    sort_objects -->|ordered objects → cuts| preselection
+    preselection -->|MET significance branch| met_significance
+    preselection -->|compute mT2| mt2
+    met_significance -->|metsig thresholds| signal_regions
+    mt2 -->|mT2 thresholds| signal_regions
+    signal_regions -->|LOG_CUT / fill signal regions| fill_counters
+    analysis_run -->|result collection hook| analysis_collect_results
+    analysis_collect_results -->|commit SRs and cutflows| analysis_commit_macros
+    analysis_run -->|analysis reset hook| analysis_specific_reset

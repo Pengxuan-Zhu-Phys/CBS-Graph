@@ -1,0 +1,8 @@
+Summary: <One-line description of the search: final state, target model, dataset>
+InspireID: -1
+ExptRun: ATLAS-R2
+Lumi_ifb: 139.0
+Ecm_TeV: 13.0
+Signatures: ['=0L + >=2J + MET']
+Keywords: []
+Authors: []

@@ -17,6 +17,8 @@ source "$config_file"
 : "${GAMBIT_BUILD_DIR:?Set GAMBIT_BUILD_DIR in $config_file}"
 
 GLEAN_BIN="${GLEAN_BIN:-glean}"
+CLANG_INDEX_BIN="${CLANG_INDEX_BIN:-clang-index}"
+CLANG_DERIVE_BIN="${CLANG_DERIVE_BIN:-clang-derive}"
 GLEAN_DB_ROOT="${GLEAN_DB_ROOT:-$repo_root/.glean/db}"
 GLEAN_DB_NAME="${GLEAN_DB_NAME:-cbs}"
 GLEAN_DB_INSTANCE="${GLEAN_DB_INSTANCE:-0}"
@@ -27,11 +29,20 @@ if ! command -v "$GLEAN_BIN" >/dev/null 2>&1; then
 Glean was not found on PATH.
 
 The open-source Glean build is tested on Linux. In a Linux environment install
-the CLI and C++ indexer first, for example:
+  the CLI and C++ indexer first, for example:
 
   cabal install glean
-  cabal install glean-clang
+
+Build the C++ indexer from the Glean source tree with:
+
+  make glean-clang
 EOF
+  exit 127
+fi
+
+if ! command -v "$CLANG_INDEX_BIN" >/dev/null 2>&1 || ! command -v "$CLANG_DERIVE_BIN" >/dev/null 2>&1; then
+  echo "clang-index/clang-derive were not found on PATH." >&2
+  echo "Build them from the Glean source tree with: make glean-clang" >&2
   exit 127
 fi
 
@@ -64,6 +75,8 @@ echo "Indexing $GAMBIT_SOURCE_DIR"
   "$GLEAN_BIN" --db-root "$GLEAN_DB_ROOT" index cpp-cmake \
     --db "$db_ref" \
     --cdb-dir "$GAMBIT_BUILD_DIR" \
+    --indexer "$CLANG_INDEX_BIN" \
+    --deriver "$CLANG_DERIVE_BIN" \
     . \
     -j"$GLEAN_JOBS"
 )

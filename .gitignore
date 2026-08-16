@@ -11,7 +11,12 @@ site/assets/*.json
 _sources/
 _build/
 
-# OS/editor files.
+# OS/editor and generated files.
 .DS_Store
 .idea/
 .vscode/
+__pycache__/
+*.pyc
+
+# Local GitHub build logs.
+github/
