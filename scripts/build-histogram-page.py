@@ -177,6 +177,35 @@ def analyse_consumer(root: Path, path: str) -> dict:
     gated = len(find_all(src, r"Histogram1D::check_histogram\(\)"))
     fills = len(find_all(src, r"FILL_HISTOGRAM_"))
 
+    # The same three stages on both sides, quoted from source: where the
+    # histogram is booked, where it is filled, where it is committed.
+    def stage(pattern: str, before: int, after: int) -> dict:
+        spot = next((i for i in find_all(src, pattern) if not src[i].lstrip().startswith("//")), None)
+        if spot is None:
+            return {"line": None, "code": ""}
+        lo, hi = max(1, spot + 1 - before), min(len(src), spot + 1 + after)
+        return {"line": spot + 1, "code": quote(src, lo, hi)}
+
+    book_pat = (r"DEFINE_HISTOGRAM_SR_1D\(" if sr_defs else
+                r"DEFINE_HISTOGRAM_1D_UNIFORM\(|DEFINE_HISTOGRAM_1D\(")
+
+    # The return type is sometimes on the previous line, so anchor on the name
+    # and its empty argument list rather than on a full signature.
+    body_open = next((i for i in find_all(src, r"collect_results\s*\(\s*\)")
+                      if i + 1 < len(src) and src[i + 1].strip().startswith("{")), None)
+    if body_open is not None:
+        close = next((j for j in range(body_open, len(src))
+                      if src[j].strip() in ("}", "};")), body_open + 9)
+        commit = {"line": body_open + 1, "code": quote(src, body_open + 1, close + 1)}
+    else:
+        commit = {"line": None, "code": ""}
+
+    example = {
+        "book": stage(book_pat, 4 if sr_defs else 2, 2 if sr_defs else 2),
+        "fill": stage(r"FILL_HISTOGRAM_1D\(", 1, 1),
+        "commit": commit,
+    }
+
     hist_srs = sum(d["nbins"] for d in sr_defs if any(c["hist"] == d["hist"] for c in commit_srs))
     return {
         "path": path,
@@ -187,6 +216,7 @@ def analyse_consumer(root: Path, path: str) -> dict:
         "commit_srs": commit_srs,
         "counting_srs": counting_srs,
         "retired_manual": retired_manual,
+        "example": example,
         "gates": gated,
         "fills": fills,
         "srs_without_flag": len(counting_srs),
@@ -542,8 +572,38 @@ __CSS__
     <p class="diagram-note">The pairing is deliberate: <code>DEFINE_HISTOGRAM_1D</code> and <code>DEFINE_HISTOGRAM_SR_1D</code> differ only by the three data arrays, and <code>COMMIT_HISTOGRAMS</code> and <code>COMMIT_HISTOGRAM_SRS</code> are separate calls. An analysis that wants plots but not extra signal regions commits the first and not the second &mdash; the two decisions never get accidentally coupled at the analysis level. <strong>They are coupled at the flag level instead</strong>, which is the next section.</p>
   </section>
 
+  <section id="example">
+    <p class="kicker">04 &#183; worked example</p>
+    <h2>The same three stages, side by side</h2>
+    <p class="source">Both analyses book, fill and commit. Quoted from source &mdash; the only difference is in the first and third.</p>
+    <div class="example-grid">
+      <div class="example-col">
+        <p class="example-h"><span class="tag-plain">plain histogram</span> __PLAIN_NAME__</p>
+        <p class="example-note"><strong>Book</strong> &mdash; bin count, range, axis label. Nothing else.</p>
+        <pre class="unit-hunks">__PLAIN_BOOK__</pre>
+        <p class="example-note"><strong>Fill</strong> &mdash; identical on both sides.</p>
+        <pre class="unit-hunks">__PLAIN_FILL__</pre>
+        <p class="example-note"><strong>Commit</strong> &mdash; <code>COMMIT_HISTOGRAMS</code> only. The signal regions above it are cut-and-count and the histogram does not touch them.</p>
+        <pre class="unit-hunks">__PLAIN_COMMIT__</pre>
+        <p class="example-note">Result: __PLAIN_SRS__ signal regions with the flag on or off, plus two histograms in the JSON for whoever wants to look at the shape.</p>
+      </div>
+      <div class="example-col">
+        <p class="example-h"><span class="tag-sr">signal-region histogram</span> __SR_NAME__</p>
+        <p class="example-note"><strong>Book</strong> &mdash; the same call plus three arrays read off the paper: observed, background, background error, one entry per bin.</p>
+        <pre class="unit-hunks">__SR_BOOK__</pre>
+        <p class="example-note"><strong>Fill</strong> &mdash; identical to the left.</p>
+        <pre class="unit-hunks">__SR_FILL__</pre>
+        <p class="example-note"><strong>Commit</strong> &mdash; one extra line. <code>COMMIT_HISTOGRAM_SRS</code> is what promotes the bins.</p>
+        <pre class="unit-hunks">__SR_COMMIT__</pre>
+        <p class="example-note">Result: __SR_SRS_OFF__ signal region with the flag off, __SR_SRS_ON__ with it on &mdash; <code>SR</code> plus <code>m_VLB_bin0</code> &hellip; <code>m_VLB_bin__SR_LAST_BIN__</code>.</p>
+      </div>
+    </div>
+    <p class="diagram-note">Line for line, the difference is <strong>three arrays at booking and one macro at commit</strong>. Everything between them &mdash; the fill, the event loop, the reset &mdash; is the same code. That is what makes the two modes cheap to hold in one class, and it is also why the distinction is easy to miss when reading an analysis quickly: a histogram that silently adds seven signal regions looks almost exactly like one that adds none.</p>
+    <p class="diagram-note">The three arrays are the real content. <code>mVLB_obs</code>, <code>mVLB_bkg</code> and <code>mVLB_bkg_err</code> are the published numbers, and <code>validate_signal_region_data()</code> insists there be exactly one of each per bin &mdash; so a bin-edge edit that forgets to update the arrays throws instead of quietly producing a shorter set of regions.</p>
+  </section>
+
   <section id="consumers">
-    <p class="kicker">04 &#183; who uses which</p>
+    <p class="kicker">05 &#183; who uses which</p>
     <h2>Two analyses take the signal regions, one does not</h2>
     <p class="source">All three are new on this branch.</p>
     <div class="mapping-table"><table>
@@ -555,7 +615,7 @@ __CSS__
   </section>
 
   <section id="flag">
-    <p class="kicker">05 &#183; the flag</p>
+    <p class="kicker">06 &#183; the flag</p>
     <h2>A diagnostic switch that moves the likelihood</h2>
     <p class="source">One YAML key, read once, set globally.</p>
     <details class="unit-diff" open><summary>solo.cpp:__SWITCH_LINE__</summary><pre class="unit-hunks">__SWITCH__</pre></details>
@@ -564,7 +624,7 @@ __CSS__
   </section>
 
   <section id="roundtrip">
-    <p class="kicker">06 &#183; the round trip</p>
+    <p class="kicker">07 &#183; the round trip</p>
     <h2>Out to JSON, back through the batch merge</h2>
     <p class="source">Histograms are not write-only: batch mode reads them back and accumulates them.</p>
     <div class="grid-2">
@@ -588,7 +648,7 @@ __CSS__
   </section>
 
   <section id="files">
-    <p class="kicker">07 &#183; the footprint</p>
+    <p class="kicker">08 &#183; the footprint</p>
     <h2>Where it landed</h2>
     <div class="mapping-table"><table>
       <thead><tr><th style="width:22%">File</th><th style="width:12%">State</th><th>Role</th><th style="width:14%">Lines</th></tr></thead>
@@ -598,7 +658,7 @@ __CSS__
   </section>
 
   <section>
-    <p class="kicker">08 &#183; boundary</p>
+    <p class="kicker">09 &#183; boundary</p>
     <h2>What this page does not tell you</h2>
     <div class="note">Everything above is read from source text. No analysis was compiled, no histogram was filled, and no likelihood was evaluated &mdash; so this page shows how a bin becomes a signal region, not whether the resulting per-bin limits reproduce the published ones. The observed and background arrays are quoted as they appear in the source; whether they match the paper's tables is a validation question this page cannot answer, and <code>ATLAS_EXOT_2021_35</code> is in any case marked unvalidated in its own source.</div>
   </section>
@@ -659,6 +719,11 @@ def render_html(data: dict) -> str:
         retired_note = ("No analysis retains a hand-written per-bin signal-region block, so the "
                         "before-and-after comparison is not visible in the current source.")
 
+    # The worked example pairs the smallest plain user with the smallest
+    # signal-region user, so the two columns stay comparable in length.
+    plain_ex = min(plain_analyses, key=lambda c: len(c["plain_defs"]))
+    sr_ex = min(sr_analyses, key=lambda c: sum(d["nbins"] for d in c["sr_defs"]))
+
     # Collect the template's own tokens first: macro bodies legitimately contain
     # __VA_ARGS__, so a blanket scan of the finished page would flag content.
     expected = set(re.findall(r"__[A-Z_]+__", TEMPLATE))
@@ -685,6 +750,18 @@ def render_html(data: dict) -> str:
         "__CONSUMER_ROWS__": consumer_rows(data),
         "__CONSUMER_NOTE__": consumer_note,
         "__RETIRED_NOTE__": retired_note,
+        "__PLAIN_NAME__": esc(plain_ex["name"]),
+        "__PLAIN_BOOK__": esc(plain_ex["example"]["book"]["code"]),
+        "__PLAIN_FILL__": esc(plain_ex["example"]["fill"]["code"]),
+        "__PLAIN_COMMIT__": esc(plain_ex["example"]["commit"]["code"]),
+        "__PLAIN_SRS__": str(plain_ex["srs_without_flag"]),
+        "__SR_NAME__": esc(sr_ex["name"]),
+        "__SR_BOOK__": esc(sr_ex["example"]["book"]["code"]),
+        "__SR_FILL__": esc(sr_ex["example"]["fill"]["code"]),
+        "__SR_COMMIT__": esc(sr_ex["example"]["commit"]["code"]),
+        "__SR_SRS_OFF__": str(sr_ex["srs_without_flag"]),
+        "__SR_SRS_ON__": str(sr_ex["srs_with_flag"]),
+        "__SR_LAST_BIN__": str(max(0, sum(d["nbins"] for d in sr_ex["sr_defs"]) - 1)),
         "__SWITCH_LINE__": str(data["switch"]["read"]["line"]),
         "__SWITCH__": esc(data["excerpts"]["switch"]),
         "__FLAG_SENTENCE__": flag_sentence,

@@ -81,6 +81,15 @@
     .ln { color:var(--soft); font-family:var(--font-mono); font-size:9px; display:block; margin-top:3px; }
     .delta { color:var(--accent); font-family:var(--font-mono); font-size:10px; }
     .grid-2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); gap:16px; align-items:start; }
+    .example-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin-top:6px; }
+    .example-col { background:#fff; border:1px solid var(--rule); border-radius:8px; padding:14px 16px; }
+    .example-h { align-items:center; display:flex; flex-wrap:wrap; gap:8px; font:600 13px var(--font-mono); color:var(--ink); margin:0 0 10px; }
+    .tag-plain,.tag-sr { border:1px solid currentColor; border-radius:3px; font:8px var(--font-mono);
+      letter-spacing:.9px; padding:2px 6px; text-transform:uppercase; }
+    .tag-plain { color:var(--green); background:var(--green-tint); }
+    .tag-sr { color:var(--accent); background:var(--accent-tint); }
+    .example-note { color:var(--muted); font-size:11.5px; line-height:1.55; margin:11px 0 5px; }
+    .example-col .unit-hunks { border:1px solid var(--rule); border-radius:5px; font-size:10px; padding:9px 11px; }
     .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
     .mapping-table table { min-width:900px; }
     .grid-2 .mapping-table table { min-width:0; }
@@ -93,7 +102,7 @@
     .status { font-size:9px; font-weight:600; letter-spacing:.04em; }
     .status.added-in-right { color:var(--green); } .status.unchanged { color:#b55c2d; }
     footer { border-top:1px solid var(--rule); color:var(--soft); font-size:10px; margin-top:32px; padding-top:14px; }
-    @media (max-width:900px) { .grid-2 { grid-template-columns:1fr; } .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } .claim-grid { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .grid-2 { grid-template-columns:1fr; } .example-grid { grid-template-columns:1fr; } .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } .claim-grid { grid-template-columns:1fr; } }
     @media (max-width:560px) { h1 { font-size:44px; } }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -252,8 +261,66 @@
     <p class="diagram-note">The pairing is deliberate: <code>DEFINE_HISTOGRAM_1D</code> and <code>DEFINE_HISTOGRAM_SR_1D</code> differ only by the three data arrays, and <code>COMMIT_HISTOGRAMS</code> and <code>COMMIT_HISTOGRAM_SRS</code> are separate calls. An analysis that wants plots but not extra signal regions commits the first and not the second &mdash; the two decisions never get accidentally coupled at the analysis level. <strong>They are coupled at the flag level instead</strong>, which is the next section.</p>
   </section>
 
+  <section id="example">
+    <p class="kicker">04 &#183; worked example</p>
+    <h2>The same three stages, side by side</h2>
+    <p class="source">Both analyses book, fill and commit. Quoted from source &mdash; the only difference is in the first and third.</p>
+    <div class="example-grid">
+      <div class="example-col">
+        <p class="example-h"><span class="tag-plain">plain histogram</span> ATLAS_EXOT_2021_35</p>
+        <p class="example-note"><strong>Book</strong> &mdash; bin count, range, axis label. Nothing else.</p>
+        <pre class="unit-hunks">  116                  if (Histogram1D::check_histogram())
+  117                  {
+  118                      DEFINE_HISTOGRAM_1D_UNIFORM(&quot;mVLQlep_sr1&quot;, 10, 0., 2000., &quot;m_{VLQ}^{lep} [GeV]&quot;)
+  119                      DEFINE_HISTOGRAM_1D_UNIFORM(&quot;mVLQlep_sr2&quot;, 10, 0., 2000., &quot;m_{VLQ}^{lep} [GeV]&quot;)
+  120                  }</pre>
+        <p class="example-note"><strong>Fill</strong> &mdash; identical on both sides.</p>
+        <pre class="unit-hunks">  263  
+  264                      if (sr1) FILL_HISTOGRAM_1D(&quot;mVLQlep_sr1&quot;, p4VLQlep.m())
+  265                      if (sr2) FILL_HISTOGRAM_1D(&quot;mVLQlep_sr2&quot;, p4VLQlep.m())</pre>
+        <p class="example-note"><strong>Commit</strong> &mdash; <code>COMMIT_HISTOGRAMS</code> only. The signal regions above it are cut-and-count and the histogram does not touch them.</p>
+        <pre class="unit-hunks">  273              collect_results()
+  274              {
+  275                  COMMIT_SIGNAL_REGION(&quot;SR1&quot;, 156, 150, 10)
+  276                  COMMIT_SIGNAL_REGION(&quot;SR2&quot;, 186, 192, 12)
+  277  
+  278                  if (Histogram1D::check_histogram()) COMMIT_HISTOGRAMS;
+  279                  return;
+  280              }</pre>
+        <p class="example-note">Result: 2 signal regions with the flag on or off, plus two histograms in the JSON for whoever wants to look at the shape.</p>
+      </div>
+      <div class="example-col">
+        <p class="example-h"><span class="tag-sr">signal-region histogram</span> ATLAS_EXOT_2019_04</p>
+        <p class="example-note"><strong>Book</strong> &mdash; the same call plus three arrays read off the paper: observed, background, background error, one entry per bin.</p>
+        <pre class="unit-hunks">   53            const std::vector&lt;double&gt; mVLB_bins = {900, 1050, 1150, 1250, 1400, 1600, 1900, 2300};
+   54            const std::vector&lt;double&gt; mVLB_obs = {41.0, 62, 54., 67., 24., 13., 4.};
+   55            const std::vector&lt;double&gt; mVLB_bkg = {45.5, 61.2, 47.9, 51.0, 28.5, 14.8, 7.4};
+   56            const std::vector&lt;double&gt; mVLB_bkg_err = {4.6, 5.6, 5.4, 6.2, 4.3, 2.8, 2.0};
+   57            DEFINE_HISTOGRAM_SR_1D(&quot;m_VLB&quot;, mVLB_bins, mVLB_obs, mVLB_bkg, mVLB_bkg_err, &quot;$m_{\\rm VLB}$ [GeV]&quot;)
+   58          }
+   59          set_analysis_name(&quot;ATLAS_EXOT_2019_04&quot;);</pre>
+        <p class="example-note"><strong>Fill</strong> &mdash; identical to the left.</p>
+        <pre class="unit-hunks">  310  
+  311          FILL_HISTOGRAM_1D(&quot;m_VLB&quot;, best.mB)
+  312  </pre>
+        <p class="example-note"><strong>Commit</strong> &mdash; one extra line. <code>COMMIT_HISTOGRAM_SRS</code> is what promotes the bins.</p>
+        <pre class="unit-hunks">  316        virtual void collect_results()
+  317        {
+  318          COMMIT_SIGNAL_REGION(&quot;SR&quot;, 262, 260, 17)
+  319          if (Histogram1D::check_histogram())
+  320          {
+  321            COMMIT_HISTOGRAMS;
+  322            COMMIT_HISTOGRAM_SRS(&quot;m_VLB&quot;);
+  323          }</pre>
+        <p class="example-note">Result: 1 signal region with the flag off, 8 with it on &mdash; <code>SR</code> plus <code>m_VLB_bin0</code> &hellip; <code>m_VLB_bin6</code>.</p>
+      </div>
+    </div>
+    <p class="diagram-note">Line for line, the difference is <strong>three arrays at booking and one macro at commit</strong>. Everything between them &mdash; the fill, the event loop, the reset &mdash; is the same code. That is what makes the two modes cheap to hold in one class, and it is also why the distinction is easy to miss when reading an analysis quickly: a histogram that silently adds seven signal regions looks almost exactly like one that adds none.</p>
+    <p class="diagram-note">The three arrays are the real content. <code>mVLB_obs</code>, <code>mVLB_bkg</code> and <code>mVLB_bkg_err</code> are the published numbers, and <code>validate_signal_region_data()</code> insists there be exactly one of each per bin &mdash; so a bin-edge edit that forgets to update the arrays throws instead of quietly producing a shorter set of regions.</p>
+  </section>
+
   <section id="consumers">
-    <p class="kicker">04 &#183; who uses which</p>
+    <p class="kicker">05 &#183; who uses which</p>
     <h2>Two analyses take the signal regions, one does not</h2>
     <p class="source">All three are new on this branch.</p>
     <div class="mapping-table"><table>
@@ -267,7 +334,7 @@
   </section>
 
   <section id="flag">
-    <p class="kicker">05 &#183; the flag</p>
+    <p class="kicker">06 &#183; the flag</p>
     <h2>A diagnostic switch that moves the likelihood</h2>
     <p class="source">One YAML key, read once, set globally.</p>
     <details class="unit-diff" open><summary>solo.cpp:179</summary><pre class="unit-hunks">  178      // Runtime histogram switch for CBS.
@@ -278,7 +345,7 @@
   </section>
 
   <section id="roundtrip">
-    <p class="kicker">06 &#183; the round trip</p>
+    <p class="kicker">07 &#183; the round trip</p>
     <h2>Out to JSON, back through the batch merge</h2>
     <p class="source">Histograms are not write-only: batch mode reads them back and accumulates them.</p>
     <div class="grid-2">
@@ -333,7 +400,7 @@
   </section>
 
   <section id="files">
-    <p class="kicker">07 &#183; the footprint</p>
+    <p class="kicker">08 &#183; the footprint</p>
     <h2>Where it landed</h2>
     <div class="mapping-table"><table>
       <thead><tr><th style="width:22%">File</th><th style="width:12%">State</th><th>Role</th><th style="width:14%">Lines</th></tr></thead>
@@ -351,7 +418,7 @@
   </section>
 
   <section>
-    <p class="kicker">08 &#183; boundary</p>
+    <p class="kicker">09 &#183; boundary</p>
     <h2>What this page does not tell you</h2>
     <div class="note">Everything above is read from source text. No analysis was compiled, no histogram was filled, and no likelihood was evaluated &mdash; so this page shows how a bin becomes a signal region, not whether the resulting per-bin limits reproduce the published ones. The observed and background arrays are quoted as they appear in the source; whether they match the paper's tables is a validation question this page cannot answer, and <code>ATLAS_EXOT_2021_35</code> is in any case marked unvalidated in its own source.</div>
   </section>

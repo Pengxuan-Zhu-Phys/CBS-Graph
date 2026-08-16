@@ -397,6 +397,20 @@
         318
       ],
       "retired_manual": [],
+      "example": {
+        "book": {
+          "line": 57,
+          "code": "   53            const std::vector<double> mVLB_bins = {900, 1050, 1150, 1250, 1400, 1600, 1900, 2300};\n   54            const std::vector<double> mVLB_obs = {41.0, 62, 54., 67., 24., 13., 4.};\n   55            const std::vector<double> mVLB_bkg = {45.5, 61.2, 47.9, 51.0, 28.5, 14.8, 7.4};\n   56            const std::vector<double> mVLB_bkg_err = {4.6, 5.6, 5.4, 6.2, 4.3, 2.8, 2.0};\n   57            DEFINE_HISTOGRAM_SR_1D(\"m_VLB\", mVLB_bins, mVLB_obs, mVLB_bkg, mVLB_bkg_err, \"$m_{\\\\rm VLB}$ [GeV]\")\n   58          }\n   59          set_analysis_name(\"ATLAS_EXOT_2019_04\");"
+        },
+        "fill": {
+          "line": 311,
+          "code": "  310  \n  311          FILL_HISTOGRAM_1D(\"m_VLB\", best.mB)\n  312  "
+        },
+        "commit": {
+          "line": 316,
+          "code": "  316        virtual void collect_results()\n  317        {\n  318          COMMIT_SIGNAL_REGION(\"SR\", 262, 260, 17)\n  319          if (Histogram1D::check_histogram())\n  320          {\n  321            COMMIT_HISTOGRAMS;\n  322            COMMIT_HISTOGRAM_SRS(\"m_VLB\");\n  323          }"
+        }
+      },
       "gates": 3,
       "fills": 1,
       "srs_without_flag": 1,
@@ -514,6 +528,20 @@
         327,
         328
       ],
+      "example": {
+        "book": {
+          "line": 88,
+          "code": "   84            const std::vector<double> mJJ_bkg = {106.54, 101.55, 79.52, 60.08, 39.80, 22.82, 21.97, 16.16,\n   85                                                 11.58, 7.33, 6.21, 3.90, 3.38, 2.55, 1.65, 1.29};\n   86            const std::vector<double> mJJ_bkg_err = {6.72, 6.06, 4.78, 4.27, 4.02, 3.33, 2.58, 1.70,\n   87                                                     1.65, 0.92, 0.89, 0.61, 0.64, 0.58, 0.41, 0.18};\n   88            DEFINE_HISTOGRAM_SR_1D(\"m_JJ\", mJJ_bins, mJJ_obs, mJJ_bkg, mJJ_bkg_err, \"$m_{JJ}$ [GeV]\")\n   89          }\n   90  "
+        },
+        "fill": {
+          "line": 296,
+          "code": "  295            _counters.at(\"SR\").add_event(event);\n  296            FILL_HISTOGRAM_1D(\"m_JJ\", mHt)\n  297          }"
+        },
+        "commit": {
+          "line": 310,
+          "code": "  310        virtual void collect_results()\n  311        {\n  312          // Legacy binned mJJ data: observed, expected background, background uncertainty.\n  313          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_1p0_1p1\"), 100., {106.54, 6.72}));\n  314          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_1p1_1p2\"), 97. , {101.55, 6.06}));\n  315          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_1p2_1p3\"), 77. , {79.52 , 4.78}));\n  316          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_1p3_1p4\"), 58. , {60.08 , 4.27}));\n  317          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_1p4_1p5\"), 29. , {39.80 , 4.02}));\n  318          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_1p5_1p6\"), 29. , {22.82 , 3.33}));\n  319          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_1p6_1p7\"), 21. , {21.97 , 2.58}));\n  320          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_1p7_1p8\"), 12. , {16.16 , 1.70}));\n  321          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_1p8_1p9\"), 15. , {11.58 , 1.65}));\n  322          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_1p9_2p0\"), 10. , {7.33  , 0.92}));\n  323          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_2p0_2p1\"), 7.  , {6.21  , 0.89}));\n  324          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_2p1_2p2\"), 5.  , {3.90  , 0.61}));\n  325          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_2p2_2p3\"), 3.  , {3.38  , 0.64}));\n  326          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_2p3_2p4\"), 1.  , {2.55  , 0.58}));\n  327          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_2p4_2p5\"), 0.  , {1.65  , 0.41}));\n  328          // add_result(SignalRegionData(_counters.at(\"SR_bin_mJJ_2p5_3p1\"), 1.2 , {1.29  , 0.18}));\n  329  \n  330          add_result(SignalRegionData(_counters.at(\"SR\"), 471., {494., 22.}));\n  331  \n  332          if (Histogram1D::check_histogram())\n  333          {\n  334            COMMIT_HISTOGRAMS;\n  335            COMMIT_HISTOGRAM_SRS(\"m_JJ\");\n  336          }"
+        }
+      },
       "gates": 3,
       "fills": 1,
       "srs_without_flag": 1,
@@ -552,6 +580,20 @@
         276
       ],
       "retired_manual": [],
+      "example": {
+        "book": {
+          "line": 118,
+          "code": "  116                  if (Histogram1D::check_histogram())\n  117                  {\n  118                      DEFINE_HISTOGRAM_1D_UNIFORM(\"mVLQlep_sr1\", 10, 0., 2000., \"m_{VLQ}^{lep} [GeV]\")\n  119                      DEFINE_HISTOGRAM_1D_UNIFORM(\"mVLQlep_sr2\", 10, 0., 2000., \"m_{VLQ}^{lep} [GeV]\")\n  120                  }"
+        },
+        "fill": {
+          "line": 264,
+          "code": "  263  \n  264                      if (sr1) FILL_HISTOGRAM_1D(\"mVLQlep_sr1\", p4VLQlep.m())\n  265                      if (sr2) FILL_HISTOGRAM_1D(\"mVLQlep_sr2\", p4VLQlep.m())"
+        },
+        "commit": {
+          "line": 273,
+          "code": "  273              collect_results()\n  274              {\n  275                  COMMIT_SIGNAL_REGION(\"SR1\", 156, 150, 10)\n  276                  COMMIT_SIGNAL_REGION(\"SR2\", 186, 192, 12)\n  277  \n  278                  if (Histogram1D::check_histogram()) COMMIT_HISTOGRAMS;\n  279                  return;\n  280              }"
+        }
+      },
       "gates": 3,
       "fills": 2,
       "srs_without_flag": 2,
