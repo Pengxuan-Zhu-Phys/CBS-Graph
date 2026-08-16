@@ -120,6 +120,20 @@ svg{display:block;max-width:100%;height:auto}
 .foot{margin-top:auto;padding-top:20px;font-family:var(--font-mono);font-size:10px;
   color:var(--soft);line-height:1.7;border-top:1px solid var(--rule)}
 
+/* ---------- companion-page hand-off ---------- */
+.deep{margin-top:14px;padding:14px 16px;border:1px solid rgba(74,111,165,.35);
+  border-radius:9px;background:var(--blue-bg)}
+.deep .lbl{display:block;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--soft);margin-bottom:8px}
+.deep p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.62}
+.deep p a{color:var(--blue);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(74,111,165,.45)}
+.deep .units{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.deep .units a{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;
+  border:1px solid rgba(74,111,165,.3);border-radius:6px;background:var(--card);
+  color:var(--ink);font-size:12px;text-decoration:none}
+.deep .units a:hover{background:#e2ecf9;border-color:var(--blue)}
+.deep .units b{font-family:var(--font-mono);font-size:10.5px;font-weight:500;color:var(--blue)}
+
 /* ---------- print ---------- */
 @media print{
   .nav{display:none}
@@ -456,6 +470,21 @@ svg{display:block;max-width:100%;height:auto}
       <div class="card blue"><h3>Sampling advice</h3>
         <p>Batch runs report effective event counts and how many more events each process needs to
         hit a target fractional uncertainty.</p></div>
+    </div>
+    <div class="deep">
+      <span class="lbl">Line-level companion page</span>
+      <p>This slide is the module view. <a href="cbs-solo-comparison.html">solo.cpp · focused source
+      comparison ↗</a> opens the entrypoint alone and splits its own <span class="mono">+291 / −139</span>
+      into six numbered changes, each carrying its real diff hunks — 7 of the 11 hunks map to a number,
+      the remaining 4 stay visible in the full diff at the foot of that page.</p>
+      <div class="units">
+        <a href="cbs-solo-comparison.html#unit-1"><b>1</b> CLI boundary</a>
+        <a href="cbs-solo-comparison.html#unit-2"><b>2</b> Input contract</a>
+        <a href="cbs-solo-comparison.html#unit-3"><b>3</b> Batch execution</a>
+        <a href="cbs-solo-comparison.html#unit-4"><b>4</b> Output contract</a>
+        <a href="cbs-solo-comparison.html#unit-5"><b>5</b> Likelihood selector</a>
+        <a href="cbs-solo-comparison.html#unit-6"><b>6</b> Cutflow / histogram switches</a>
+      </div>
     </div>
   </div>
 </section>
