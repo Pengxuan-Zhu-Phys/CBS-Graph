@@ -1,0 +1,880 @@
+{
+  "commits": [
+    {
+      "author": "Pengxuan Zhu",
+      "date": "2026-06-09",
+      "sha": "bb641a5d1e",
+      "subject": "ColliderBit: fix warning-flagged bugs, migrate YODA histos, tidy build"
+    },
+    {
+      "author": "Pengxuan Zhu",
+      "date": "2026-06-07",
+      "sha": "f28c5f9e9a",
+      "subject": "update cmake for ColliderBit"
+    },
+    {
+      "author": "Pengxuan Zhu",
+      "date": "2026-06-04",
+      "sha": "3357776475",
+      "subject": "update cmake for ColliderBit"
+    },
+    {
+      "author": "Pengxuan Zhu",
+      "date": "2026-06-02",
+      "sha": "de5e879b74",
+      "subject": "Add histogram system and extend CMS/ATLAS analyses"
+    },
+    {
+      "author": "Anders Kvellestad",
+      "date": "2026-05-08",
+      "sha": "1caa950358",
+      "subject": "Update some now-deprecated Python cmake variable names."
+    },
+    {
+      "author": "Pengxuan Zhu",
+      "date": "2026-03-29",
+      "sha": "58640d9945",
+      "subject": "Update fjcontrib-1.045 to fjcontrib-1.049"
+    },
+    {
+      "author": "Pengxuan Zhu",
+      "date": "2026-02-16",
+      "sha": "8749e3e8e4",
+      "subject": "Update ColliderBitSolo [add feature]: allowing multiple hepmc file and cross section as input"
+    },
+    {
+      "author": "Pengxuan Zhu",
+      "date": "2025-10-02",
+      "sha": "0948557567",
+      "subject": "Update cmake for MacOS compliation"
+    },
+    {
+      "author": "Pengxuan Zhu",
+      "date": "2025-01-16",
+      "sha": "077176d644",
+      "subject": "Adding VariableR into the fjcontrib cmake"
+    },
+    {
+      "author": "Pengxuan Zhu",
+      "date": "2024-09-02",
+      "sha": "f7640dd41c",
+      "subject": "PX: W-tagging jet implemented into Analysis_ATLAS_13TeV_EXOT_TT_WbWb_36invfb"
+    },
+    {
+      "author": "Pengxuan Zhu",
+      "date": "2024-08-15",
+      "sha": "4691a7a007",
+      "subject": "Pengxuan: Modifying the cmake file to install new version of fjcontrib"
+    },
+    {
+      "author": "Pengxuan Zhu",
+      "date": "2024-08-09",
+      "sha": "e700a90023",
+      "subject": "Finish the first version of Coding, needs further validation after pythia generater avaiable"
+    }
+  ],
+  "consumers": [
+    {
+      "line": 510,
+      "path": "cmake/utilities.cmake",
+      "text": "if (NOT EXCLUDE_FASTJET)"
+    },
+    {
+      "line": 511,
+      "path": "cmake/utilities.cmake",
+      "text": "set(ARG_LIBRARIES ${ARG_LIBRARIES} ${fastjet_LDFLAGS})"
+    },
+    {
+      "line": 512,
+      "path": "cmake/utilities.cmake",
+      "text": "set(ARG_LIBRARIES ${ARG_LIBRARIES} ${fjcontrib_LDFLAGS})"
+    },
+    {
+      "line": 56,
+      "path": "cmake/executables.cmake",
+      "text": "if (NOT EXCLUDE_FJCONTRIB)"
+    },
+    {
+      "line": 57,
+      "path": "cmake/executables.cmake",
+      "text": "set(gambit_XTRA ${gambit_XTRA} ${fjcontrib_LDFLAGS})"
+    },
+    {
+      "line": 59,
+      "path": "cmake/executables.cmake",
+      "text": "if (NOT EXCLUDE_FASTJET)"
+    },
+    {
+      "line": 60,
+      "path": "cmake/executables.cmake",
+      "text": "set(gambit_XTRA ${gambit_XTRA} ${fastjet_LDFLAGS})"
+    },
+    {
+      "line": 2157,
+      "path": "cmake/backends.cmake",
+      "text": "if(EXCLUDE_FASTJET)"
+    }
+  ],
+  "excerpt_coverage": {
+    "covered": 8,
+    "total": 8
+  },
+  "fjns": {
+    "fjcore_flag": {
+      "line": 322,
+      "text": "add_definitions(-DFJCORE)"
+    },
+    "fjcore_lib": {
+      "line": 325,
+      "text": "add_gambit_library(fjcore OPTION OBJECT"
+    },
+    "fjcore_ns": {
+      "line": 323,
+      "text": "add_definitions(-DFJNS=gambit::fjcore)"
+    },
+    "sites": [
+      {
+        "count": 13,
+        "first": 16,
+        "path": "contrib/heputils/include/HEPUtils/FastJet.h"
+      },
+      {
+        "count": 7,
+        "first": 41,
+        "path": "contrib/heputils/include/HEPUtils/Event.h"
+      },
+      {
+        "count": 8,
+        "first": 41,
+        "path": "contrib/heputils/include/HEPUtils/Jet.h"
+      }
+    ],
+    "with_fastjet": {
+      "line": 320,
+      "text": "add_definitions(-DFJNS=fastjet)"
+    }
+  },
+  "gates": {
+    "base_fastjet": {
+      "line": 354,
+      "text": "if(\";${GAMBIT_BITS};\" MATCHES \";ColliderBit;\")"
+    },
+    "base_fjcontrib": {
+      "line": 390,
+      "text": "if(\";${GAMBIT_BITS};\" MATCHES \";ColliderBit;\")"
+    },
+    "head": {
+      "line": 303,
+      "text": "if(EXISTS \"${fastjet_DIR}/include/fastjet/ClusterSequence.hh\")"
+    }
+  },
+  "generated_by": "scripts/build-fastjet-cmake-page.py",
+  "guards": {
+    "guarded": [
+      "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_013.cpp",
+      "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_014.cpp",
+      "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2021_35.cpp"
+    ],
+    "unguarded": [
+      "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_07.cpp",
+      "ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp",
+      "ColliderBit/src/analyses/Analysis_CMS_SUS_19_010.cpp",
+      "ColliderBit/src/analyses/Analysis_CMS_SUS_20_001.cpp",
+      "ColliderBit/src/analyses/Analysis_CMS_SUS_21_002.cpp",
+      "ColliderBit/src/analyses/Analysis_CMS_SUS_21_002_OLD.cpp",
+      "ColliderBit/src/analyses/Analysis_CMS_SUS_21_009.cpp"
+    ]
+  },
+  "links": {
+    "base_fastjet": {
+      "dirs": [
+        "${fastjet_dir}/local/lib"
+      ],
+      "libs": [
+        "fastjet",
+        "fastjettools"
+      ],
+      "line": "set(fastjet_LDFLAGS \"-L${fastjet_dir}/local/lib -lfastjet -lfastjettools\")"
+    },
+    "base_fjcontrib": {
+      "dirs": [
+        "${fastjet_dir}/local/lib"
+      ],
+      "libs": [
+        "RecursiveTools"
+      ],
+      "line": "set(fjcontrib_LDFLAGS \"-L${fastjet_dir}/local/lib -lRecursiveTools\")"
+    },
+    "head_fastjet": {
+      "dirs": [
+        "${fastjet_DIR}/lib"
+      ],
+      "libs": [
+        "fastjettools",
+        "fastjet",
+        "fastjetplugins",
+        "siscone_spherical",
+        "siscone"
+      ],
+      "line": "set(fastjet_LDFLAGS \"-L${fastjet_DIR}/lib\" \"-lfastjettools\" \"-lfastjet\" \"-lfastjetplugins\" \"-lsiscone_spherical\" \"-lsiscone\")"
+    },
+    "head_fjcontrib": {
+      "dirs": [
+        "${fastjet_DIR}/lib"
+      ],
+      "libs": [
+        "fastjetcontribfragile",
+        "RecursiveTools",
+        "EnergyCorrelator",
+        "VariableR"
+      ],
+      "line": "set(fjcontrib_LDFLAGS \"-L${fastjet_DIR}/lib\" \"-lfastjetcontribfragile\" \"-lRecursiveTools\" \"-lEnergyCorrelator\" \"-lVariableR\")"
+    }
+  },
+  "nsubjettiness": {
+    "line": 333,
+    "sources": [
+      {
+        "file": "AxesDefinition.cc",
+        "line": 334
+      },
+      {
+        "file": "MeasureDefinition.cc",
+        "line": 335
+      },
+      {
+        "file": "ExtraRecombiners.cc",
+        "line": 336
+      },
+      {
+        "file": "TauComponents.cc",
+        "line": 337
+      },
+      {
+        "file": "Njettiness.cc",
+        "line": 338
+      },
+      {
+        "file": "Nsubjettiness.cc",
+        "line": 339
+      }
+    ]
+  },
+  "provisioning": {
+    "gitignore": [
+      {
+        "line": 78,
+        "text": "contrib/fastjet-*/"
+      },
+      {
+        "line": 79,
+        "text": "contrib/fjcontrib-*/"
+      }
+    ],
+    "present_libs": [
+      "libEnergyCorrelator.a",
+      "libRecursiveTools.a",
+      "libVariableR.a",
+      "libfastjet.0.dylib",
+      "libfastjet.a",
+      "libfastjet.dylib",
+      "libfastjet.la",
+      "libfastjetcontribfragile.dylib",
+      "libfastjetplugins.0.dylib",
+      "libfastjetplugins.a",
+      "libfastjetplugins.dylib",
+      "libfastjetplugins.la",
+      "libfastjettools.0.dylib",
+      "libfastjettools.a",
+      "libfastjettools.dylib",
+      "libfastjettools.la",
+      "libsiscone.0.dylib",
+      "libsiscone.a",
+      "libsiscone.dylib",
+      "libsiscone.la",
+      "libsiscone_spherical.0.dylib",
+      "libsiscone_spherical.a",
+      "libsiscone_spherical.dylib",
+      "libsiscone_spherical.la"
+    ],
+    "tracked": {
+      "fastjet": 0,
+      "fjcontrib": 0,
+      "fjcore": 7
+    }
+  },
+  "refs": {
+    "baseline": "9c955e3a7",
+    "head": "65aca0890d",
+    "master": "gambit/master"
+  },
+  "region": {
+    "base": {
+      "hi": 427,
+      "lines": [
+        "#contrib/fjcore-3.2.0",
+        "# TODO: Temporarily comment while fastjet is a contrib, as there are class name clashes. HEPUtils can automatically switch to use fastjet if the flag -DFJCORE is not set",
+        "#set(fjcore_INCLUDE_DIR \"${PROJECT_SOURCE_DIR}/contrib/fjcore-3.2.0\")",
+        "#include_directories(\"${fjcore_INCLUDE_DIR}\")",
+        "#add_definitions(-DFJCORE)",
+        "#add_definitions(-DFJNS=gambit::fjcore)",
+        "#add_gambit_library(fjcore OPTION OBJECT",
+        "#                          SOURCES ${PROJECT_SOURCE_DIR}/contrib/fjcore-3.2.0/fjcore.cc",
+        "#                          HEADERS ${PROJECT_SOURCE_DIR}/contrib/fjcore-3.2.0/fjcore.hh)",
+        "#set(GAMBIT_BASIC_COMMON_OBJECTS \"${GAMBIT_BASIC_COMMON_OBJECTS}\" $<TARGET_OBJECTS:fjcore>)",
+        "",
+        "#contrib/fastjet-3.4.2; include only if ColliderBit is in use.",
+        "if(\";${GAMBIT_BITS};\" MATCHES \";ColliderBit;\")",
+        "  message(\"   ColliderBit included, include fastjet too\")",
+        "  set(EXCLUDE_FASTJET FALSE)",
+        "  # Fix currently needed for MacOS due to this not propegating to contrib flags",
+        "  #set(CONTRIB_CXX_FLAGS \"${CONTRIB_CXX_FLAGS} -isysroot${CMAKE_OSX_SYSROOT} ${OSX_MIN}\")",
+        "  #set(CONTRIB_C_FLAGS \"${CONTRIB_C_FLAGS} -isysroot${CMAKE_OSX_SYSROOT} ${OSX_MIN}\")",
+        "  set(fastjet_dl \"http://fastjet.fr/repo/fastjet-3.4.2.tar.gz\")",
+        "  set(fastjet_md5 \"d8aede1539f478547f8be5412ab6869c\")",
+        "  set(fastjet_dir \"${PROJECT_SOURCE_DIR}/contrib/fastjet-3.4.2\")",
+        "  include_directories(\"${fastjet_dir}/local/include\")",
+        "  set(CMAKE_INSTALL_RPATH \"${CMAKE_INSTALL_RPATH};${fastjet_dir}/local/lib\")",
+        "  set(fastjet_LDFLAGS \"-L${fastjet_dir}/local/lib -lfastjet -lfastjettools\")",
+        "  string(REGEX REPLACE \"-Xclang -fopenmp\" \"\" FJ_C_FLAGS \"${CONTRIB_C_FLAGS}\")",
+        "  string(REGEX REPLACE \"-Xclang -fopenmp\" \"\" FJ_CXX_FLAGS \"${CONTRIB_CXX_FLAGS}\")",
+        "  set_compiler_warning(\"no-deprecated-declarations\" FJ_CXX_FLAGS)",
+        "  set_compiler_warning(\"no-deprecated-copy\" FJ_CXX_FLAGS)",
+        "  set(FJ_LINKER_FLAGS \"${CMAKE_SHARED_LINKER_FLAGS} ${NO_FIXUP_CHAINS}\")",
+        "",
+        "  ExternalProject_Add(fastjet",
+        "    DOWNLOAD_COMMAND ${DL_CONTRIB} ${fastjet_dl} ${fastjet_md5} ${fastjet_dir} fastjet 3.4.2",
+        "    SOURCE_DIR ${fastjet_dir}",
+        "    BUILD_IN_SOURCE 1",
+        "    CONFIGURE_COMMAND ./configure FC=${CMAKE_Fortran_COMPILER} FCFLAGS=${BACKEND_Fortran_FLAGS} FFLAGS=${BACKEND_Fortran_FLAGS} CC=${CMAKE_C_COMPILER} CFLAGS=${FJ_C_FLAGS} CXX=${CMAKE_CXX_COMPILER} CXXFLAGS=${FJ_CXX_FLAGS} LIBS=${FJ_LINKER_FLAGS}  --prefix=${fastjet_dir}/local --enable-silent-rules --enable-shared",
+        "    BUILD_COMMAND ${MAKE_PARALLEL} install",
+        "    INSTALL_COMMAND \"\"",
+        "    )",
+        "",
+        "  # Add clean and nuke",
+        "  add_contrib_clean_and_nuke(fastjet ${fastjet_dir} clean)",
+        "",
+        "else()",
+        "  message(\"${BoldCyan} X ColliderBit is not in use: excluding fastjet from GAMBIT configuration.${ColourReset}\")",
+        "  set(EXCLUDE_FASTJET TRUE)",
+        "endif()",
+        "",
+        "#contrib/fjcontrib-1.049; include only if Colliderbit is in use.",
+        "if(\";${GAMBIT_BITS};\" MATCHES \";ColliderBit;\")",
+        "  message(\"   ColliderBit included, include fjcontrib too\")",
+        "  set(EXCLUDE_FJCONTRIB FALSE)",
+        "",
+        "  set(fjcontrib_dl \"http://fastjet.hepforge.org/contrib/downloads/fjcontrib-1.049.tar.gz\")",
+        "  set(fjcontrib_md5 \"bfea8bfd311d958a40e445f76668bd32\")",
+        "  set(fjcontrib_dir \"${PROJECT_SOURCE_DIR}/contrib/fjcontrib-1.049\")",
+        "  include_directories(\"${fjcontrib_dir}/RecursiveTools\")",
+        "  set(CMAKE_INSTALL_RPATH \"${CMAKE_INSTALL_RPATH};${fjcontrib_dir}/local/lib\")",
+        "  set(fjcontrib_LDFLAGS \"-L${fastjet_dir}/local/lib -lRecursiveTools\")",
+        "",
+        "  string(REGEX REPLACE \"-Xclang -fopenmp\" \"\" FJCONTRIB_CXX_FLAGS \"${BACKEND_CXX_FLAGS}\")",
+        "  set_compiler_warning(\"no-deprecated-declarations\" FJCONTRIB_CXX_FLAGS)",
+        "  set_compiler_warning(\"no-unused-parameter\" FJCONTRIB_CXX_FLAGS)",
+        "  set_compiler_warning(\"no-sign-compare\" FJCONTRIB_CXX_FLAGS)",
+        "  set_compiler_warning(\"no-catch-value\" FJCONTRIB_CXX_FLAGS)",
+        "#  set(FJCONTRIB_CXX_FLAGS \"${FJCONTRIB_CXX_FLAGS} -L${fastjet_dir}/local/lib -lfastjet -lfastjettools -Wl,-rpath,${fastjet_dir}/local/lib\")",
+        "",
+        "  ExternalProject_Add(fjcontrib",
+        "    DEPENDS fastjet",
+        "    DOWNLOAD_COMMAND ${DL_CONTRIB} ${fjcontrib_dl} ${fjcontrib_md5} ${fjcontrib_dir} fjcontrib 1.049",
+        "    SOURCE_DIR ${fjcontrib_dir}",
+        "    BUILD_IN_SOURCE 1",
+        "    CONFIGURE_COMMAND ./configure CXX=${CMAKE_CXX_COMPILER} CXXFLAGS=${FJCONTRIB_CXX_FLAGS} --fastjet-config=${fastjet_dir}/fastjet-config --prefix=${fastjet_dir}/local # --only=RecursiveTools",
+        "    BUILD_COMMAND ${MAKE_PARALLEL} CXX=\"${CMAKE_CXX_COMPILER}\" fragile-shared-install",
+        "    INSTALL_COMMAND ${MAKE_INSTALL_PARALLEL}",
+        "  )",
+        "",
+        "",
+        "  # Add clean and nuke",
+        "  add_contrib_clean_and_nuke(fjcontrib ${fjcontrib_dir} clean)",
+        "  set(MODULE_DEPENDENCIES ${MODULE_DEPENDENCIES} fjcontrib)",
+        "",
+        "else()",
+        "  message(\"${BoldCyan} X ColliderBit is not in use: excluding fastjet from GAMBIT configuration.${ColourReset}\")",
+        "  set(EXCLUDE_FJCONTRIB TRUE)",
+        "endif()",
+        ""
+      ],
+      "lo": 342
+    },
+    "head": {
+      "hi": 343,
+      "lines": [
+        "#contrib/fastjet-3.4.2 and fjcontrib",
+        "set(fastjet_DIR \"${PROJECT_SOURCE_DIR}/contrib/fastjet-3.4.2/local\")",
+        "if(EXISTS \"${fastjet_DIR}/include/fastjet/ClusterSequence.hh\")",
+        "  include_directories(\"${fastjet_DIR}/include\")",
+        "  include_directories(\"${fastjet_DIR}/include/fastjet/contrib\")",
+        "  set(fastjet_LDFLAGS \"-L${fastjet_DIR}/lib\" \"-lfastjettools\" \"-lfastjet\" \"-lfastjetplugins\" \"-lsiscone_spherical\" \"-lsiscone\")",
+        "  set(fjcontrib_LDFLAGS \"-L${fastjet_DIR}/lib\" \"-lfastjetcontribfragile\" \"-lRecursiveTools\" \"-lEnergyCorrelator\" \"-lVariableR\")",
+        "  set(CMAKE_INSTALL_RPATH \"${CMAKE_INSTALL_RPATH};${fastjet_DIR}/lib\")",
+        "  set(WITH_FASTJET_CONTRIB TRUE)",
+        "else()",
+        "  set(EXCLUDE_FASTJET TRUE)",
+        "  set(EXCLUDE_FJCONTRIB TRUE)",
+        "  set(WITH_FASTJET_CONTRIB FALSE)",
+        "endif()",
+        "",
+        "#contrib/fjcore-3.2.0",
+        "set(fjcore_INCLUDE_DIR \"${PROJECT_SOURCE_DIR}/contrib/fjcore-3.2.0\")",
+        "include_directories(\"${fjcore_INCLUDE_DIR}\")",
+        "if(WITH_FASTJET_CONTRIB)",
+        "  add_definitions(-DFJNS=fastjet)",
+        "else()",
+        "  add_definitions(-DFJCORE)",
+        "  add_definitions(-DFJNS=gambit::fjcore)",
+        "endif()",
+        "add_gambit_library(fjcore OPTION OBJECT",
+        "                          SOURCES ${PROJECT_SOURCE_DIR}/contrib/fjcore-3.2.0/fjcore.cc",
+        "                          HEADERS ${PROJECT_SOURCE_DIR}/contrib/fjcore-3.2.0/fjcore.hh)",
+        "set(GAMBIT_BASIC_COMMON_OBJECTS \"${GAMBIT_BASIC_COMMON_OBJECTS}\" $<TARGET_OBJECTS:fjcore>)",
+        "add_dependencies(contrib fjcore)",
+        "",
+        "if(WITH_FASTJET_CONTRIB)",
+        "  set(fjcontrib_nsubjettiness_dir \"${PROJECT_SOURCE_DIR}/contrib/fjcontrib-1.049/Nsubjettiness\")",
+        "  add_gambit_library(fjcontrib_nsubjettiness OPTION OBJECT",
+        "                            SOURCES ${fjcontrib_nsubjettiness_dir}/AxesDefinition.cc",
+        "                                    ${fjcontrib_nsubjettiness_dir}/MeasureDefinition.cc",
+        "                                    ${fjcontrib_nsubjettiness_dir}/ExtraRecombiners.cc",
+        "                                    ${fjcontrib_nsubjettiness_dir}/TauComponents.cc",
+        "                                    ${fjcontrib_nsubjettiness_dir}/Njettiness.cc",
+        "                                    ${fjcontrib_nsubjettiness_dir}/Nsubjettiness.cc)",
+        "  set(GAMBIT_BASIC_COMMON_OBJECTS \"${GAMBIT_BASIC_COMMON_OBJECTS}\" $<TARGET_OBJECTS:fjcontrib_nsubjettiness>)",
+        "  add_dependencies(contrib fjcontrib_nsubjettiness)",
+        "endif()",
+        ""
+      ],
+      "lo": 301
+    },
+    "master": {
+      "hi": 311,
+      "lines": [
+        "#contrib/fjcore-3.2.0",
+        "set(fjcore_INCLUDE_DIR \"${PROJECT_SOURCE_DIR}/contrib/fjcore-3.2.0\")",
+        "include_directories(\"${fjcore_INCLUDE_DIR}\")",
+        "add_definitions(-DFJCORE)",
+        "add_definitions(-DFJNS=gambit::fjcore)",
+        "add_gambit_library(fjcore OPTION OBJECT",
+        "                          SOURCES ${PROJECT_SOURCE_DIR}/contrib/fjcore-3.2.0/fjcore.cc",
+        "                          HEADERS ${PROJECT_SOURCE_DIR}/contrib/fjcore-3.2.0/fjcore.hh)",
+        "set(GAMBIT_BASIC_COMMON_OBJECTS \"${GAMBIT_BASIC_COMMON_OBJECTS}\" $<TARGET_OBJECTS:fjcore>)",
+        "add_dependencies(contrib fjcore)",
+        ""
+      ],
+      "lo": 301
+    }
+  },
+  "symbols": {
+    "EnergyCorrelator": {
+      "files": [
+        "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_013.cpp",
+        "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_014.cpp",
+        "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2021_35.cpp"
+      ],
+      "includes": [
+        "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_014.cpp:36:#include \"fastjet/contrib/EnergyCorrelator.hh\"",
+        "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2021_35.cpp:32:#include \"fastjet/contrib/EnergyCorrelator.hh\""
+      ]
+    },
+    "Nsubjettiness": {
+      "files": [
+        "ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp"
+      ],
+      "includes": [
+        "ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp:38:#include \"fastjet/contrib/Nsubjettiness.hh\""
+      ]
+    },
+    "SoftDrop": {
+      "files": [
+        "ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp",
+        "ColliderBit/src/analyses/Analysis_CMS_SUS_19_010.cpp",
+        "ColliderBit/src/analyses/Analysis_CMS_SUS_20_001.cpp",
+        "ColliderBit/src/analyses/Analysis_CMS_SUS_21_002.cpp",
+        "ColliderBit/src/analyses/Analysis_CMS_SUS_21_002_OLD.cpp",
+        "ColliderBit/src/analyses/Analysis_CMS_SUS_21_009.cpp"
+      ],
+      "includes": [
+        "ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp:36:#include \"SoftDrop.hh\"",
+        "ColliderBit/src/analyses/Analysis_CMS_SUS_19_010.cpp:18:#include \"SoftDrop.hh\"",
+        "ColliderBit/src/analyses/Analysis_CMS_SUS_20_001.cpp:22:#include \"SoftDrop.hh\"",
+        "ColliderBit/src/analyses/Analysis_CMS_SUS_21_002.cpp:20:#include \"SoftDrop.hh\"",
+        "ColliderBit/src/analyses/Analysis_CMS_SUS_21_002_OLD.cpp:17:#include \"SoftDrop.hh\"",
+        "ColliderBit/src/analyses/Analysis_CMS_SUS_21_009.cpp:45:#include \"SoftDrop.hh\""
+      ]
+    },
+    "VariableR": {
+      "files": [
+        "ColliderBit/include/gambit/ColliderBit/Utils.hpp",
+        "ColliderBit/include/gambit/ColliderBit/colliders/Pythia8/Py8EventConversions.hpp",
+        "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_07.cpp"
+      ],
+      "includes": [
+        "ColliderBit/include/gambit/ColliderBit/colliders/Pythia8/Py8EventConversions.hpp:27:#include \"fastjet/contrib/VariableR.hh\"",
+        "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_07.cpp:16:#include \"fastjet/contrib/VariableR.hh\""
+      ]
+    }
+  },
+  "units": [
+    {
+      "after_lines": [
+        {
+          "line": 303,
+          "text": "if(EXISTS \"${fastjet_DIR}/include/fastjet/ClusterSequence.hh\")"
+        }
+      ],
+      "before_lines": [
+        {
+          "line": 354,
+          "text": "if(\";${GAMBIT_BITS};\" MATCHES \";ColliderBit;\")"
+        },
+        {
+          "line": 390,
+          "text": "if(\";${GAMBIT_BITS};\" MATCHES \";ColliderBit;\")"
+        }
+      ],
+      "evidence": "Both conditions read from source: baseline <code>contrib.cmake:354</code>, current <code>contrib.cmake:303</code>.",
+      "id": 1,
+      "impact": "Configuration now depends on the state of the working tree, not only on the cache variables. The same <code>cmake</code> command produces a different build on a machine that has not provisioned FastJet.",
+      "kind": "replaced",
+      "new": "if(EXISTS \"${fastjet_DIR}/include/fastjet/ClusterSequence.hh\") \u2014 a probe: \"a built FastJet is actually here\"",
+      "old": "if(\";${GAMBIT_BITS};\" MATCHES \";ColliderBit;\") \u2014 a declaration: \"ColliderBit is in the build, so FastJet is wanted\"",
+      "target": "cmake/contrib.cmake",
+      "title": "The gate",
+      "tokens": [
+        "EXISTS",
+        "ClusterSequence.hh",
+        "MATCHES \";ColliderBit;\""
+      ],
+      "why": "The old gate asked what the user requested. It could not tell a requested FastJet from a present one, which is the question that matters once CMake stops building FastJet itself."
+    },
+    {
+      "after_lines": [],
+      "before_lines": [
+        {
+          "line": 360,
+          "text": "  set(fastjet_dl \"http://fastjet.fr/repo/fastjet-3.4.2.tar.gz\")"
+        },
+        {
+          "line": 372,
+          "text": "  ExternalProject_Add(fastjet"
+        },
+        {
+          "line": 373,
+          "text": "    DOWNLOAD_COMMAND ${DL_CONTRIB} ${fastjet_dl} ${fastjet_md5} ${fastjet_dir} fastjet 3.4.2"
+        },
+        {
+          "line": 376,
+          "text": "    CONFIGURE_COMMAND ./configure FC=${CMAKE_Fortran_COMPILER} FCFLAGS=${BACKEND_Fortran_FLAGS} FFLAGS=${BACKEND_Fortran_FLAGS} CC=${CMAKE_C_COMPILER} CFLAGS=${FJ_C_FLAGS} CXX=${CMAKE_CXX_COMPILER} CXXFLAGS=${FJ_CXX_FLAGS} LIBS=${FJ_LINKER_FLAGS}  --prefix=${fastjet_dir}/local --enable-silent-rules --enable-shared"
+        },
+        {
+          "line": 382,
+          "text": "  add_contrib_clean_and_nuke(fastjet ${fastjet_dir} clean)"
+        },
+        {
+          "line": 394,
+          "text": "  set(fjcontrib_dl \"http://fastjet.hepforge.org/contrib/downloads/fjcontrib-1.049.tar.gz\")"
+        },
+        {
+          "line": 408,
+          "text": "  ExternalProject_Add(fjcontrib"
+        },
+        {
+          "line": 410,
+          "text": "    DOWNLOAD_COMMAND ${DL_CONTRIB} ${fjcontrib_dl} ${fjcontrib_md5} ${fjcontrib_dir} fjcontrib 1.049"
+        },
+        {
+          "line": 413,
+          "text": "    CONFIGURE_COMMAND ./configure CXX=${CMAKE_CXX_COMPILER} CXXFLAGS=${FJCONTRIB_CXX_FLAGS} --fastjet-config=${fastjet_dir}/fastjet-config --prefix=${fastjet_dir}/local # --only=RecursiveTools"
+        },
+        {
+          "line": 420,
+          "text": "  add_contrib_clean_and_nuke(fjcontrib ${fjcontrib_dir} clean)"
+        }
+      ],
+      "evidence": "The removed blocks are visible in the region diff below.",
+      "id": 2,
+      "impact": "Fastest possible reconfigure, and the FastJet build can be tuned once by hand. The cost is that provisioning moved out of the build system without moving into anything else in this repository \u2014 see section 06.",
+      "kind": "removed",
+      "new": "Both blocks are gone. Nothing in CMake obtains FastJet any more.",
+      "old": "Two <code>ExternalProject_Add</code> blocks fetched the tarballs (<code>fastjet.fr</code>, <code>fastjet.hepforge.org</code>), verified MD5s, ran <code>./configure --enable-shared</code> and <code>fragile-shared-install</code>, and registered clean/nuke targets.",
+      "target": "ExternalProject_Add(fastjet) / (fjcontrib)",
+      "title": "Download and build",
+      "tokens": [
+        "ExternalProject_Add",
+        "DOWNLOAD_COMMAND",
+        "fastjet_dl",
+        "fjcontrib_dl",
+        "add_contrib_clean_and_nuke",
+        "CONFIGURE_COMMAND"
+      ],
+      "why": "Rebuilding FastJet on every fresh configure is slow, needs network, and the in-tree build had repeatedly needed compiler-flag patches (<code>-Xclang -fopenmp</code> stripping, four warning suppressions)."
+    },
+    {
+      "after_lines": [
+        {
+          "line": 306,
+          "text": "  set(fastjet_LDFLAGS \"-L${fastjet_DIR}/lib\" \"-lfastjettools\" \"-lfastjet\" \"-lfastjetplugins\" \"-lsiscone_spherical\" \"-lsiscone\")"
+        }
+      ],
+      "before_lines": [
+        {
+          "line": 365,
+          "text": "  set(fastjet_LDFLAGS \"-L${fastjet_dir}/local/lib -lfastjet -lfastjettools\")"
+        }
+      ],
+      "evidence": "<code>set(fastjet_LDFLAGS &quot;-L${fastjet_DIR}/lib&quot; &quot;-lfastjettools&quot; &quot;-lfastjet&quot; &quot;-lfastjetplugins&quot; &quot;-lsiscone_spherical&quot; &quot;-lsiscone&quot;)</code>",
+      "id": 3,
+      "impact": "3 additional libraries. Note the order differs between the two consumption sites \u2014 see section 05.",
+      "kind": "expanded",
+      "new": "-lfastjettools -lfastjet -lfastjetplugins -lsiscone_spherical -lsiscone",
+      "old": "-lfastjet -lfastjettools",
+      "target": "fastjet_LDFLAGS",
+      "title": "FastJet link surface",
+      "tokens": [
+        "fastjet_LDFLAGS",
+        "lfastjetplugins",
+        "lsiscone"
+      ],
+      "why": "VariableR is a FastJet <em>plugin</em>, so it needs <code>fastjetplugins</code>; the plugin set in turn pulls in both SISCone libraries. Neither was linked before because nothing used a plugin."
+    },
+    {
+      "after_lines": [
+        {
+          "line": 307,
+          "text": "  set(fjcontrib_LDFLAGS \"-L${fastjet_DIR}/lib\" \"-lfastjetcontribfragile\" \"-lRecursiveTools\" \"-lEnergyCorrelator\" \"-lVariableR\")"
+        }
+      ],
+      "before_lines": [
+        {
+          "line": 399,
+          "text": "  set(fjcontrib_LDFLAGS \"-L${fastjet_dir}/local/lib -lRecursiveTools\")"
+        }
+      ],
+      "evidence": "<code>set(fjcontrib_LDFLAGS &quot;-L${fastjet_DIR}/lib&quot; &quot;-lfastjetcontribfragile&quot; &quot;-lRecursiveTools&quot; &quot;-lEnergyCorrelator&quot; &quot;-lVariableR&quot;)</code>",
+      "id": 4,
+      "impact": "Adds the two algorithm libraries plus the combined <code>fastjetcontribfragile</code> shared object. The three named algorithm libraries are static archives on this machine while <code>fastjetcontribfragile</code> is shared, so they are not interchangeable at link time.",
+      "kind": "expanded",
+      "new": "-lfastjetcontribfragile -lRecursiveTools -lEnergyCorrelator -lVariableR",
+      "old": "-lRecursiveTools",
+      "target": "fjcontrib_LDFLAGS",
+      "title": "fjcontrib link surface",
+      "tokens": [
+        "fjcontrib_LDFLAGS",
+        "lVariableR",
+        "lEnergyCorrelator",
+        "lfastjetcontribfragile"
+      ],
+      "why": "The branch added analyses that use variable-R jets and energy correlators, neither of which lives in RecursiveTools."
+    },
+    {
+      "after_lines": [
+        {
+          "line": 317,
+          "text": "set(fjcore_INCLUDE_DIR \"${PROJECT_SOURCE_DIR}/contrib/fjcore-3.2.0\")"
+        },
+        {
+          "line": 318,
+          "text": "include_directories(\"${fjcore_INCLUDE_DIR}\")"
+        },
+        {
+          "line": 320,
+          "text": "  add_definitions(-DFJNS=fastjet)"
+        },
+        {
+          "line": 322,
+          "text": "  add_definitions(-DFJCORE)"
+        },
+        {
+          "line": 323,
+          "text": "  add_definitions(-DFJNS=gambit::fjcore)"
+        },
+        {
+          "line": 325,
+          "text": "add_gambit_library(fjcore OPTION OBJECT"
+        }
+      ],
+      "before_lines": [
+        {
+          "line": 343,
+          "text": "# TODO: Temporarily comment while fastjet is a contrib, as there are class name clashes. HEPUtils can automatically switch to use fastjet if the flag -DFJCORE is not set"
+        },
+        {
+          "line": 344,
+          "text": "#set(fjcore_INCLUDE_DIR \"${PROJECT_SOURCE_DIR}/contrib/fjcore-3.2.0\")"
+        },
+        {
+          "line": 345,
+          "text": "#include_directories(\"${fjcore_INCLUDE_DIR}\")"
+        },
+        {
+          "line": 346,
+          "text": "#add_definitions(-DFJCORE)"
+        },
+        {
+          "line": 347,
+          "text": "#add_definitions(-DFJNS=gambit::fjcore)"
+        },
+        {
+          "line": 348,
+          "text": "#add_gambit_library(fjcore OPTION OBJECT"
+        }
+      ],
+      "evidence": "<code>contrib.cmake:320</code> and <code>:323</code>; the macro is consumed by HEPUtils.",
+      "id": 5,
+      "impact": "GAMBIT keeps configuring and building without FastJet. This is a build-system fallback, not an analysis-level one \u2014 section 06 has the limits.",
+      "kind": "revived",
+      "new": "fjcore is compiled unconditionally, and the preprocessor picks the namespace: <code>-DFJNS=fastjet</code> when FastJet was found, <code>-DFJCORE -DFJNS=gambit::fjcore</code> when it was not.",
+      "old": "The whole fjcore block was commented out, under a TODO citing class-name clashes with FastJet. The branch had exactly one jet backend.",
+      "target": "FJNS / FJCORE",
+      "title": "fjcore as fallback",
+      "tokens": [
+        "FJNS",
+        "FJCORE",
+        "fjcore_INCLUDE_DIR",
+        "add_gambit_library(fjcore"
+      ],
+      "why": "It restores upstream <code>master</code>'s behaviour as the floor. master has no FastJet in <code>contrib.cmake</code> at all and always uses fjcore; the source branch had replaced that rather than layered on it."
+    },
+    {
+      "after_lines": [
+        {
+          "line": 332,
+          "text": "  set(fjcontrib_nsubjettiness_dir \"${PROJECT_SOURCE_DIR}/contrib/fjcontrib-1.049/Nsubjettiness\")"
+        },
+        {
+          "line": 333,
+          "text": "  add_gambit_library(fjcontrib_nsubjettiness OPTION OBJECT"
+        },
+        {
+          "line": 334,
+          "text": "                            SOURCES ${fjcontrib_nsubjettiness_dir}/AxesDefinition.cc"
+        },
+        {
+          "line": 335,
+          "text": "                                    ${fjcontrib_nsubjettiness_dir}/MeasureDefinition.cc"
+        },
+        {
+          "line": 336,
+          "text": "                                    ${fjcontrib_nsubjettiness_dir}/ExtraRecombiners.cc"
+        },
+        {
+          "line": 337,
+          "text": "                                    ${fjcontrib_nsubjettiness_dir}/TauComponents.cc"
+        },
+        {
+          "line": 338,
+          "text": "                                    ${fjcontrib_nsubjettiness_dir}/Njettiness.cc"
+        },
+        {
+          "line": 339,
+          "text": "                                    ${fjcontrib_nsubjettiness_dir}/Nsubjettiness.cc)"
+        },
+        {
+          "line": 340,
+          "text": "  set(GAMBIT_BASIC_COMMON_OBJECTS \"${GAMBIT_BASIC_COMMON_OBJECTS}\" $<TARGET_OBJECTS:fjcontrib_nsubjettiness>)"
+        },
+        {
+          "line": 341,
+          "text": "  add_dependencies(contrib fjcontrib_nsubjettiness)"
+        }
+      ],
+      "before_lines": [],
+      "evidence": "<code>contrib.cmake:333</code>",
+      "id": 6,
+      "impact": "It is the one fjcontrib component whose compiler flags come from GAMBIT rather than from fjcontrib's own configure, and the only one that needs the unpacked fjcontrib source tree \u2014 not just the installed libraries \u2014 to be present.",
+      "kind": "added",
+      "new": "6 fjcontrib source files are compiled into a GAMBIT object library and folded into <code>GAMBIT_BASIC_COMMON_OBJECTS</code>.",
+      "old": "Not present. Nsubjettiness was neither built nor linked.",
+      "target": "add_gambit_library(fjcontrib_nsubjettiness)",
+      "title": "Nsubjettiness compiled in-tree",
+      "tokens": [
+        "fjcontrib_nsubjettiness",
+        "Njettiness",
+        "AxesDefinition"
+      ],
+      "why": "Unlike VariableR and EnergyCorrelator, Nsubjettiness is taken as source rather than as a library."
+    },
+    {
+      "after_lines": [
+        {
+          "line": 304,
+          "text": "  include_directories(\"${fastjet_DIR}/include\")"
+        },
+        {
+          "line": 305,
+          "text": "  include_directories(\"${fastjet_DIR}/include/fastjet/contrib\")"
+        },
+        {
+          "line": 318,
+          "text": "include_directories(\"${fjcore_INCLUDE_DIR}\")"
+        }
+      ],
+      "before_lines": [
+        {
+          "line": 345,
+          "text": "#include_directories(\"${fjcore_INCLUDE_DIR}\")"
+        },
+        {
+          "line": 363,
+          "text": "  include_directories(\"${fastjet_dir}/local/include\")"
+        },
+        {
+          "line": 397,
+          "text": "  include_directories(\"${fjcontrib_dir}/RecursiveTools\")"
+        }
+      ],
+      "evidence": "Both spellings appear in the analysis include list in section 04.",
+      "id": 7,
+      "impact": "A line that looks redundant is load-bearing. Removing the second <code>include_directories</code> breaks every bare-name include.",
+      "kind": "added",
+      "new": "Both <code>${fastjet_DIR}/include</code> and <code>${fastjet_DIR}/include/fastjet/contrib</code> are added.",
+      "old": "Only <code>${fjcontrib_dir}/RecursiveTools</code> was added.",
+      "target": "include_directories",
+      "title": "Contrib headers on the include path",
+      "tokens": [
+        "include_directories",
+        "include/fastjet/contrib"
+      ],
+      "why": "The analyses are inconsistent about how they include contrib headers: some write <code>#include \"fastjet/contrib/Nsubjettiness.hh\"</code>, others write a bare <code>#include \"SoftDrop.hh\"</code>. Adding both roots makes each spelling resolve."
+    },
+    {
+      "after_lines": [
+        {
+          "line": 306,
+          "text": "  set(fastjet_LDFLAGS \"-L${fastjet_DIR}/lib\" \"-lfastjettools\" \"-lfastjet\" \"-lfastjetplugins\" \"-lsiscone_spherical\" \"-lsiscone\")"
+        },
+        {
+          "line": 307,
+          "text": "  set(fjcontrib_LDFLAGS \"-L${fastjet_DIR}/lib\" \"-lfastjetcontribfragile\" \"-lRecursiveTools\" \"-lEnergyCorrelator\" \"-lVariableR\")"
+        }
+      ],
+      "before_lines": [
+        {
+          "line": 365,
+          "text": "  set(fastjet_LDFLAGS \"-L${fastjet_dir}/local/lib -lfastjet -lfastjettools\")"
+        },
+        {
+          "line": 406,
+          "text": "#  set(FJCONTRIB_CXX_FLAGS \"${FJCONTRIB_CXX_FLAGS} -L${fastjet_dir}/local/lib -lfastjet -lfastjettools -Wl,-rpath,${fastjet_dir}/local/lib\")"
+        }
+      ],
+      "evidence": "Commit <code>bb641a5d1e</code> in the history table below.",
+      "id": 8,
+      "impact": "Applied consistently to <code>gambit_preload</code>, RestFrames, HepMC, YODA and FastJet, so it is a house rule now rather than a FastJet-specific fix. Cosmetic in effect, but it is the reason those unrelated one-line changes appear in the same diff.",
+      "kind": "replaced",
+      "new": "Separate elements: <code>set(fastjet_LDFLAGS \"-L${dir}\" \"-lfastjet\" ...)</code>.",
+      "old": "One string: <code>set(fastjet_LDFLAGS \"-L${dir} -lfastjet -lfastjettools\")</code>.",
+      "target": "quoting, across every contrib",
+      "title": "LDFLAGS as list elements",
+      "tokens": [
+        "\"-L${fastjet_DIR}/lib\"",
+        "-L${fastjet_dir}/local/lib -lfastjet"
+      ],
+      "why": "CMake treats a single string as one item, so the same flags could be appended more than once without CMake recognising the duplicate. The commit that made the change says so directly: <em>\"split LDFLAGS into list elements to kill duplicate-library warnings\"</em>."
+    }
+  ]
+}

@@ -141,6 +141,26 @@ python3 scripts/build-json-output-page.py \
 - `dependences/CBS_JSON_OUTPUT.md`：文本摘要；
 - `site/cbs-json-output.html`：GitHub Pages 页面。
 
+### FastJet / fjcontrib 构建集成
+
+这一页是**三方对比**，不是两方：上游 `master` 只有 fjcore，`private-SUSYRun2` 用下载编译的 FastJet 把它替换掉，本分支两个都留、在 configure 时选。只跟 SUSYRun2 比的话，"恢复 fjcore"会看起来像新功能，其实是回到 master 的行为。
+
+```bash
+python3 scripts/build-fastjet-cmake-page.py \
+  --gambit-root ~/Gambit-Workshop/gambit
+```
+
+生成：
+
+- `dependences/cbs-fastjet-cmake.html`：8 个编号改动，每个带两侧真实源码摘录；
+- `dependences/cbs-fastjet-cmake.json`：link flag、gate 条件、消费点、符号用量、提交历史；
+- `dependences/CBS_FASTJET_CMAKE.md`：文本摘要；
+- `site/cbs-fastjet-cmake.html`：镜像页面。
+
+该区块是**重写**而不是逐行修改，所以 unified diff 会塌成一个 hunk、分不开任何东西；因此编号卡片展开的是两侧源码摘录，完整 region diff 仍放在页面最后一节。
+
+页面点名了一个要对合作者讲清楚的事：CMake 不再下载 FastJet，而 `.gitignore` 里 `contrib/fastjet-*/`、`contrib/fjcontrib-*/` 的规则还在，两者都是 0 个文件入库。**新 clone 上探测失败，`else()` 分支不打印任何东西**，构建静默退回 fjcore，第一个可见症状是 Rivet 宣布自己被排除。
+
 ## 变更台账（汇报用 slide）
 
 `compare-cbs-branches.py` 把两个 worktree 当成普通文件树来 diff，因此**无法识别重命名**：75 个改名的分析会被报成"左边删除 75 个 + 右边新增 75 个"，凭空放大约 150 个文件的改动量。
