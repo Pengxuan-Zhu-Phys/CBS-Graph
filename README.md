@@ -79,6 +79,29 @@ cmake -S "$GAMBIT_SOURCE_DIR" -B "$GAMBIT_BUILD_DIR" \
 
 该命令只在本地生成被忽略的 `.glean/` 内容，不会上传源码或 Glean 数据库。
 
+## macOS 分支比较图
+
+如果只需要比较两个 CBS worktree，不必安装 Glean。`scripts/compare-cbs-branches.py` 使用 Git 快照、局部 `#include`、分析注册宏、CMake 源文件引用和可识别的 C++ 函数调用生成静态关系图，适合直接在 macOS 上运行。
+
+例如比较 ColliderBit Solo development 和 SUSYRun2：
+
+```bash
+python3 scripts/compare-cbs-branches.py \
+  --baseline /Users/P.Zhu/Gambit-Workshop/gambit \
+  --comparison /Users/P.Zhu/Gambit-Workshop/worktree/SUSYRun2 \
+  --baseline-label ColliderBit_solo_development \
+  --comparison-label SUSYRun2
+```
+
+默认生成：
+
+- `dependences/cbs-branch-comparison.json`：完整机器可读图和差异数据；
+- `dependences/cbs-branch-comparison.html`：源码目录中的对比页面；
+- `dependences/CBS_BRANCH_COMPARISON.md`：变更摘要；
+- `site/cbs-branch-comparison.html`：可直接交给 GitHub Pages 的自包含页面。
+
+图是静态源码证据，不是运行时 trace，也不是完整 C++ AST；CBS 的运行时 functor 图仍应使用 GAMBIT 运行生成的 `.gv` 文件。
+
 ## 生成 GitHub Pages 页面
 
 先使用目标 CBS 配置运行 GAMBIT，使其生成 `GAMBIT_active_functor_graph.gv`，再渲染两层图：
