@@ -751,9 +751,109 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 10 · boundaries ============ -->
+<!-- ============ 10 · dependencies ============ -->
 <section class="slide">
-  <p class="eyebrow">10 · completion boundary</p>
+  <p class="eyebrow">10 · dependencies</p>
+  <h2>Which packages moved, and who moved them</h2>
+  <p class="lede">Four places record a backend version — <b>cmake</b>, the <b>frontend header</b>, the
+  <b>BOSS wrapper tree</b>, the <b>patch directory</b>. Across the three branches they mostly agree.
+  On one backend they do not.</p>
+  <div class="body">
+    <table>
+      <thead><tr>
+        <th>Package</th>
+        <th style="width:132px">gambit/master</th>
+        <th style="width:132px">private-SUSYRun2</th>
+        <th style="width:150px">CBS HEAD</th>
+        <th>What actually changed</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td class="name">Rivet</td>
+          <td><code>3.1.5</code></td><td><code>4.1.0</code></td>
+          <td><code>4.1.0</code></td>
+          <td>The one real version bump. BOSS wrappers regenerated —
+          <span class="mono">14 files, +1,045 / −803</span> against master, <b>0 against the
+          merge-base</b>: done on SUSYRun2, inherited here untouched.</td>
+        </tr>
+        <tr>
+          <td class="name">Contur</td>
+          <td><code>2.1.1</code></td><td><code>3.0.0</code></td>
+          <td><span class="tag red">2.1.1 · 3.0.0</span></td>
+          <td><b>cmake and the frontend disagree.</b> See the box below — this is the one
+          finding on this slide that needs an action, not a description.</td>
+        </tr>
+        <tr>
+          <td class="name">Pythia</td>
+          <td><code>8.312</code></td><td><code>8.312</code></td>
+          <td><code>8.312</code></td>
+          <td>Version unchanged on all three. The <em>patch and frontend</em> moved
+          (<span class="mono">+115 / −42</span> vs master, 0 vs merge-base — SUSYRun2's work);
+          the BOSS wrappers moved <span class="mono">+14 / −14</span> vs <em>both</em>, which is ours.</td>
+        </tr>
+        <tr>
+          <td class="name">FastJet<br>fjcontrib</td>
+          <td><code>3.3.2</code> / <code>1.041</code></td>
+          <td><code>3.4.0</code> / <code>1.049</code></td>
+          <td><span class="tag gray">not declared</span></td>
+          <td>Removed from <code>backends.cmake</code> entirely. <code>contrib.cmake</code> now
+          <em>probes</em> for a pre-built 3.4.2 / 1.049 instead of downloading one — the machine
+          provides it, not the repo.</td>
+        </tr>
+        <tr>
+          <td class="name">ATLAS_FullLikes</td>
+          <td><code>1.0</code></td><td><code>1.0</code></td><td><code>1.0</code></td>
+          <td>Unchanged from SUSYRun2 — <span class="mono">+1 / −1</span> against master. Listed
+          because the changelog implies more than the diff shows.</td>
+        </tr>
+        <tr>
+          <td class="name">nlohmann/json</td>
+          <td><span class="tag gray">absent</span></td><td><span class="tag gray">absent</span></td>
+          <td><code>3.11.3</code></td>
+          <td>Vendored single-header, <span class="mono">+25.5k lines</span> — ours, and the largest
+          line-count item in the ledger. Name it so it is not mistaken for physics code.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note red" style="margin-top:16px">
+      <b>Contur will not build at HEAD.</b>
+      <code>backends.cmake:2185</code> declares <code>set(ver "2.1.1")</code> and points the patch
+      step at <code>patches/contur/2.1.1/patch_contur_2.1.1.dif</code> — <b>a file not in the
+      tree</b>. The only patch dir is <code>3.0.0/</code>; the frontend is
+      <code>Contur_3_0_0.hpp</code>. <code>git log -L</code> puts it on <code>3d9ebcb490 "Fixing
+      very minor merge conflicts"</code> — the merge took master's side of this block while the
+      frontend and patch tree kept SUSYRun2's. All three branches are self-consistent; only HEAD is
+      split. SUSYRun2's deliberate no-patch note and its <code>pathos, joblib</code> module
+      requirements were lost in the same resolution.
+    </div>
+
+    <div class="grid g2" style="margin-top:14px">
+      <div class="note blue">
+        <b>Inherited from SUSYRun2.</b> Rivet wrappers and frontend, Contur frontend, the Pythia
+        patch/frontend refresh, ATLAS_FullLikes, and the DecayBit off-shell-W chargino refactor.
+        All six are non-zero against master and <b>exactly zero</b> against the merge-base — that
+        is the test, not a judgement.
+      </div>
+      <div class="note">
+        <b>Ours.</b> Build wiring (<span class="mono">+306 / −63</span> vs the merge-base), the
+        <code>contrib.cmake</code> FastJet rework, <code>gambit_backend_interfaces.yaml</code> (new),
+        vendored <code>json.hpp</code>, Pythia BOSS wrapper edits, <span class="mono">+15</span>
+        gitignore rules. <code>standalone_facilitator.py</code> is <em>not</em> new — it existed on
+        master; we changed one line and wired it into cmake.
+      </div>
+    </div>
+  </div>
+  <p class="foot">
+    Extracted by <code>scripts/build-package-matrix.py</code> from four independent declaration
+    sources · data <code>dependences/cbs-package-matrix.json</code> ·
+    nothing was built or run
+  </p>
+</section>
+
+<!-- ============ 11 · boundaries ============ -->
+<section class="slide">
+  <p class="eyebrow">11 · completion boundary</p>
   <h2>What is not finished</h2>
   <p class="lede">Registered in the framework is not the same as reproducing the published analysis.
   Three things should be said plainly rather than discovered later.</p>
@@ -799,9 +899,9 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 11 · next ============ -->
+<!-- ============ 12 · next ============ -->
 <section class="slide">
-  <p class="eyebrow">11 · next</p>
+  <p class="eyebrow">12 · next</p>
   <h2>Where this goes</h2>
   <div class="body">
     <div class="grid g2">
@@ -843,7 +943,7 @@ svg{display:block;max-width:100%;height:auto}
       <div class="stat"><div class="n">10</div><div class="k">files · runner</div><div class="s">No upstream equivalent</div></div>
       <div class="stat"><div class="n">14</div><div class="k">files · jet pipeline</div><div class="s">No upstream equivalent</div></div>
       <div class="stat"><div class="n">226</div><div class="k">commits authored</div><div class="s">of 606 on the branch</div></div>
-      <div class="stat"><div class="n">2</div><div class="k">open caveats</div><div class="s">Stated on slide 10</div></div>
+      <div class="stat"><div class="n">2</div><div class="k">open caveats</div><div class="s">Stated on slide 11</div></div>
     </div>
   </div>
   <p class="foot">
@@ -858,7 +958,7 @@ svg{display:block;max-width:100%;height:auto}
 <nav class="nav">
   <button id="prev" aria-label="Previous slide">←</button>
   <button id="next" aria-label="Next slide">→</button>
-  <span class="counter mono" id="counter">1 / 11</span>
+  <span class="counter mono" id="counter">1 / 12</span>
   <span class="mono" id="title">CBS change ledger</span>
   <span class="dots" id="dots"></span>
 </nav>

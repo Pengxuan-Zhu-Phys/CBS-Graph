@@ -196,9 +196,29 @@ python3 scripts/build-change-ledger.py \
 生成：
 
 - `dependences/cbs-change-ledger.json`：逐文件的改动量、提交数、作者列表和归属分类（`own` / `mixed` / `upstream`）；
-- `dependences/cbs-change-ledger.html`：11 页自包含 slide，内联 SVG 流程图，不依赖任何 CDN；按 `P` 展开全部页面以便打印成 PDF。
+- `dependences/cbs-change-ledger.html`：12 页自包含 slide，内联 SVG 流程图，不依赖任何 CDN；按 `P` 展开全部页面以便打印成 PDF。
 
 基线是 `private-SUSYRun2` 与开发分支的共同祖先，而不是 `gambit/master`——因为要回答的问题是"相对合作者手上的源分支我改了什么"。`gambit/master` 已完全合入，分支落后 0 个提交。
+
+### 依赖矩阵（slide 10）
+
+哪些程序包相对 `gambit/master` 和 `private-SUSYRun2` 有更新：
+
+```bash
+python3 scripts/build-package-matrix.py \
+  --gambit-root ~/Gambit-Workshop/gambit
+```
+
+生成 `dependences/cbs-package-matrix.json`。脚本**分别读四个声明源**，因为它们可能互相矛盾：`cmake/backends.cmake`（实际下载哪个版本）、frontend 头文件名（GAMBIT 声称能对话的版本）、`backend_types/<name>_<ver>/`（BOSS 生成的封装树）、`Backends/patches/<name>/<ver>/`（构建必须存在的补丁目录）。
+
+归属判定不靠人工判断：一个路径**相对 master 非零、相对 merge-base 恰好为零**，就说明这活是 SUSYRun2 干的、我们原封不动继承。
+
+结论：
+
+- **Rivet 3.1.5 → 4.1.0** 是唯一一次真正的版本升级，BOSS 封装重新生成（14 文件 +1,045/−803），继承自 SUSYRun2。
+- **Pythia 8.312 三边一致**——版本没动，动的是 patch 和 frontend（SUSYRun2 的），以及 BOSS 封装（相对两边都是 +14/−14，这是我们的）。
+- **FastJet / fjcontrib 从 `backends.cmake` 里整个删掉**，改由 `contrib.cmake` 探测预装的 3.4.2 / 1.049。
+- **Contur 在 HEAD 是坏的**：`backends.cmake:2185` 写 `2.1.1` 并指向一个**树里不存在**的补丁文件，而 frontend 是 `Contur_3_0_0.hpp`、patch 目录只有 `3.0.0/`。`git log -L` 定位到 `3d9ebcb490 "Fixing very minor merge conflicts"`——合并时这一块取了 master 的一侧，frontend 和 patch 树留在 SUSYRun2 一侧。master、merge-base、SUSYRun2 tip 三边各自都自洽，只有 HEAD 是劈开的。
 
 台账只反映**代码变化**，不反映**物理结果变化**：过程中没有重新编译或运行 CBS。
 

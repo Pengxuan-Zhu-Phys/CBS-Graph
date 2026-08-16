@@ -636,16 +636,31 @@ def esc(text) -> str:
 
 
 def pipeline_svg(data: dict) -> str:
-    width, height = 1240, 340
+    width = 1240
     stages = [
         ("YAML", "jet_collections:", "algorithm / rho / Rmin / Rmax", "detail-data", [UTILS]),
         ("PARSE", "read_jet_collection_\n  settings_from_options", "typed struct + validation", "detail-primary", [UTILS]),
         ("CLUSTER", "VariableRPlugin", "AKTLIKE, one CS per key", "detail-focal", [CONVERSIONS]),
         ("TAG", "effectiveR", "b / c / tau by jet radius", "detail-focal", [CONVERSIONS]),
         ("STORE", "HEPUtils::Event", "named jets + cluster seqs", "detail-primary", [EVENT_H]),
-        ("DETECTOR", "BuckFast", "VR keys skipped", "detail-optional", [BUCKFAST_CPP]),
+        ("DETECTOR", "BuckFast", "skips VR collections by name", "detail-optional", [BUCKFAST_CPP]),
         ("ANALYSIS", 'event->jets(key)', "EXOT 2019-04 / 2019-07", "detail-primary", []),
     ]
+    box_w, gap, box_y = 160, 16, 60
+
+    # Size every box to the tallest content rather than assuming one title line:
+    # the PARSE stage wraps onto two, which used to push its sub-text through the
+    # bottom border.  One shared height keeps the row aligned.
+    def content_bottom(title: str, sub: str) -> int:
+        title_lines = len(title.split("\n"))
+        offset = 106 + title_lines * 15 + 6
+        return offset + max(0, len(wrap(sub, 20)) - 1) * 13 + 5
+
+    box_h = max(content_bottom(t, s) for _k, t, s, _c, _f in stages) - box_y
+    mid_y = box_y + box_h // 2
+    zone_y = box_y + box_h + 28
+    height = zone_y + 120
+
     out = [
         f'<svg viewBox="0 0 {width} {height}" role="img" aria-labelledby="vr-title vr-desc">',
         '<title id="vr-title">The variable-R jet pipeline</title>',
@@ -655,10 +670,11 @@ def pipeline_svg(data: dict) -> str:
         '<defs><marker id="vr-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
         'markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4f5d75"/></marker></defs>',
     ]
-    box_w, gap = 160, 16
+
     for index, (kind, title, sub, cls, _files) in enumerate(stages):
         x = 20 + index * (box_w + gap)
-        out.append(f'<g class="node {cls}"><rect x="{x}" y="60" width="{box_w}" height="96" rx="8"/>')
+        out.append(f'<g class="node {cls}"><rect x="{x}" y="{box_y}" width="{box_w}" '
+                   f'height="{box_h}" rx="8"/>')
         out.append(f'<text class="kind" x="{x + 14}" y="84">{esc(kind)}</text>')
         for line_index, chunk in enumerate(title.split("\n")):
             out.append(f'<text class="title" x="{x + 14}" y="{106 + line_index * 15}" '
@@ -668,17 +684,18 @@ def pipeline_svg(data: dict) -> str:
             out.append(f'<text class="body" x="{x + 14}" y="{offset + line_index * 13}">{esc(chunk)}</text>')
         out.append("</g>")
         if index < len(stages) - 1:
-            out.append(f'<path class="detail-edge" d="M{x + box_w} 108 H{x + box_w + gap - 5}" '
+            out.append(f'<path class="detail-edge" d="M{x + box_w} {mid_y} H{x + box_w + gap - 5}" '
                        'marker-end="url(#vr-arrow)"/>')
 
-    out.append(f'<rect class="zone" x="20" y="184" width="{width - 40}" height="60" rx="7"/>')
-    out.append('<text class="zone-label" x="38" y="206">DEPENDS ON</text>')
-    out.append('<text class="body" x="38" y="226" fill="#4f5d75">'
+    out.append(f'<rect class="zone" x="20" y="{zone_y}" width="{width - 40}" height="60" rx="7"/>')
+    out.append(f'<text class="zone-label" x="38" y="{zone_y + 22}">DEPENDS ON</text>')
+    out.append(f'<text class="body" x="38" y="{zone_y + 42}" fill="#4f5d75">'
                'fjcontrib VariableRPlugin &#8594; FastJet plugin machinery &#8594; -lfastjetplugins, '
                '-lsiscone, -lsiscone_spherical &#8212; none of which the source branch linked</text>')
-    out.append('<text class="legend-label" x="20" y="272">'
-               'dashed = the stage that deliberately does nothing for VR collections</text>')
-    out.append('<text class="legend-label" x="20" y="292">'
+    out.append(f'<text class="legend-label" x="20" y="{zone_y + 88}">'
+               'dashed = the stage that deliberately does nothing for VR collections: BuckFast holds a '
+               'list of collection names and skips them, so a VR collection is never smeared</text>')
+    out.append(f'<text class="legend-label" x="20" y="{zone_y + 108}">'
                'the parton-level and LHEF readers are not on this line at all: both skip VR, '
                'because neither has tracks to cluster</text>')
     out.append("</svg>")

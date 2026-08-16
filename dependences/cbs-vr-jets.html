@@ -118,63 +118,64 @@
     <h2>One collection, seven stages</h2>
     <p class="source">A VR collection is declared once in YAML and then has to survive parsing, clustering, tagging, storage, the detector model and the analysis API. Each stage needed something.</p>
     <div class="diagram-shell">
-      <svg viewBox="0 0 1240 340" role="img" aria-labelledby="vr-title vr-desc">
+      <svg viewBox="0 0 1240 308" role="img" aria-labelledby="vr-title vr-desc">
 <title id="vr-title">The variable-R jet pipeline</title>
 <desc id="vr-desc">A VR collection is declared in YAML, parsed into a typed struct, clustered through the fjcontrib VariableRPlugin, tagged using its own effective radius, stored by name on the event, skipped by detector smearing, and read by analyses.</desc>
 <defs><marker id="vr-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4f5d75"/></marker></defs>
-<g class="node detail-data"><rect x="20" y="60" width="160" height="96" rx="8"/>
+<g class="node detail-data"><rect x="20" y="60" width="160" height="100" rx="8"/>
 <text class="kind" x="34" y="84">YAML</text>
 <text class="title" x="34" y="106" style="font-size:10.5px">jet_collections:</text>
 <text class="body" x="34" y="127">algorithm / rho /</text>
 <text class="body" x="34" y="140">Rmin / Rmax</text>
 </g>
-<path class="detail-edge" d="M180 108 H191" marker-end="url(#vr-arrow)"/>
-<g class="node detail-primary"><rect x="196" y="60" width="160" height="96" rx="8"/>
+<path class="detail-edge" d="M180 110 H191" marker-end="url(#vr-arrow)"/>
+<g class="node detail-primary"><rect x="196" y="60" width="160" height="100" rx="8"/>
 <text class="kind" x="210" y="84">PARSE</text>
 <text class="title" x="210" y="106" style="font-size:10.5px">read_jet_collection_</text>
 <text class="title" x="210" y="121" style="font-size:10.5px">  settings_from_options</text>
 <text class="body" x="210" y="142">typed struct +</text>
 <text class="body" x="210" y="155">validation</text>
 </g>
-<path class="detail-edge" d="M356 108 H367" marker-end="url(#vr-arrow)"/>
-<g class="node detail-focal"><rect x="372" y="60" width="160" height="96" rx="8"/>
+<path class="detail-edge" d="M356 110 H367" marker-end="url(#vr-arrow)"/>
+<g class="node detail-focal"><rect x="372" y="60" width="160" height="100" rx="8"/>
 <text class="kind" x="386" y="84">CLUSTER</text>
 <text class="title" x="386" y="106" style="font-size:10.5px">VariableRPlugin</text>
 <text class="body" x="386" y="127">AKTLIKE, one CS per</text>
 <text class="body" x="386" y="140">key</text>
 </g>
-<path class="detail-edge" d="M532 108 H543" marker-end="url(#vr-arrow)"/>
-<g class="node detail-focal"><rect x="548" y="60" width="160" height="96" rx="8"/>
+<path class="detail-edge" d="M532 110 H543" marker-end="url(#vr-arrow)"/>
+<g class="node detail-focal"><rect x="548" y="60" width="160" height="100" rx="8"/>
 <text class="kind" x="562" y="84">TAG</text>
 <text class="title" x="562" y="106" style="font-size:10.5px">effectiveR</text>
 <text class="body" x="562" y="127">b / c / tau by jet</text>
 <text class="body" x="562" y="140">radius</text>
 </g>
-<path class="detail-edge" d="M708 108 H719" marker-end="url(#vr-arrow)"/>
-<g class="node detail-primary"><rect x="724" y="60" width="160" height="96" rx="8"/>
+<path class="detail-edge" d="M708 110 H719" marker-end="url(#vr-arrow)"/>
+<g class="node detail-primary"><rect x="724" y="60" width="160" height="100" rx="8"/>
 <text class="kind" x="738" y="84">STORE</text>
 <text class="title" x="738" y="106" style="font-size:10.5px">HEPUtils::Event</text>
 <text class="body" x="738" y="127">named jets + cluster</text>
 <text class="body" x="738" y="140">seqs</text>
 </g>
-<path class="detail-edge" d="M884 108 H895" marker-end="url(#vr-arrow)"/>
-<g class="node detail-optional"><rect x="900" y="60" width="160" height="96" rx="8"/>
+<path class="detail-edge" d="M884 110 H895" marker-end="url(#vr-arrow)"/>
+<g class="node detail-optional"><rect x="900" y="60" width="160" height="100" rx="8"/>
 <text class="kind" x="914" y="84">DETECTOR</text>
 <text class="title" x="914" y="106" style="font-size:10.5px">BuckFast</text>
-<text class="body" x="914" y="127">VR keys skipped</text>
+<text class="body" x="914" y="127">skips VR collections</text>
+<text class="body" x="914" y="140">by name</text>
 </g>
-<path class="detail-edge" d="M1060 108 H1071" marker-end="url(#vr-arrow)"/>
-<g class="node detail-primary"><rect x="1076" y="60" width="160" height="96" rx="8"/>
+<path class="detail-edge" d="M1060 110 H1071" marker-end="url(#vr-arrow)"/>
+<g class="node detail-primary"><rect x="1076" y="60" width="160" height="100" rx="8"/>
 <text class="kind" x="1090" y="84">ANALYSIS</text>
 <text class="title" x="1090" y="106" style="font-size:10.5px">event-&gt;jets(key)</text>
 <text class="body" x="1090" y="127">EXOT 2019-04 /</text>
 <text class="body" x="1090" y="140">2019-07</text>
 </g>
-<rect class="zone" x="20" y="184" width="1200" height="60" rx="7"/>
-<text class="zone-label" x="38" y="206">DEPENDS ON</text>
-<text class="body" x="38" y="226" fill="#4f5d75">fjcontrib VariableRPlugin &#8594; FastJet plugin machinery &#8594; -lfastjetplugins, -lsiscone, -lsiscone_spherical &#8212; none of which the source branch linked</text>
-<text class="legend-label" x="20" y="272">dashed = the stage that deliberately does nothing for VR collections</text>
-<text class="legend-label" x="20" y="292">the parton-level and LHEF readers are not on this line at all: both skip VR, because neither has tracks to cluster</text>
+<rect class="zone" x="20" y="188" width="1200" height="60" rx="7"/>
+<text class="zone-label" x="38" y="210">DEPENDS ON</text>
+<text class="body" x="38" y="230" fill="#4f5d75">fjcontrib VariableRPlugin &#8594; FastJet plugin machinery &#8594; -lfastjetplugins, -lsiscone, -lsiscone_spherical &#8212; none of which the source branch linked</text>
+<text class="legend-label" x="20" y="276">dashed = the stage that deliberately does nothing for VR collections: BuckFast holds a list of collection names and skips them, so a VR collection is never smeared</text>
+<text class="legend-label" x="20" y="296">the parton-level and LHEF readers are not on this line at all: both skip VR, because neither has tracks to cluster</text>
 </svg>
     </div>
     <div class="mapping-table" style="margin-top:16px"><table>
