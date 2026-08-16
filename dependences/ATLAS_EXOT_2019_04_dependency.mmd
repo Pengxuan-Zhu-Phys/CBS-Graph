@@ -1,0 +1,27 @@
+flowchart TD
+    %% Generated from dependency graph
+    analysis_run["Analysis_ATLAS_EXOT_2019_04::run()<br/>analysis_method · target"]
+    baseline_objects["BASELINE_* / SIGNAL_* objects<br/>object_selection · analysis"]
+    sort_objects["sortByPt()<br/>call · analysis"]
+    large_r_trimming["Large-R trimming and selection<br/>analysis_stage · analysis"]
+    generate_btags_map["generateBTagsMap()<br/>call · analysis"]
+    vr_reff["VR_Reff()<br/>member_call · analysis"]
+    h2t2b_vlb_candidate["H2T2B / VLB candidate selection<br/>analysis_stage · analysis"]
+    m_vlb_histogram["m_VLB histogram<br/>histogram_fill · analysis"]
+    sr_counter["SR counter: add_event()<br/>counter · analysis"]
+    analysis_collect_results["collect_results(): commit SR + histogram outputs<br/>analysis_hook · analysis"]
+    analysis_commit_macros["SR counter + m_VLB histogram-backed SR<br/>result_commit · analysis"]
+    analysis_specific_reset["analysis_specific_reset()<br/>analysis_hook · analysis"]
+    analysis_run -->|build event objects| baseline_objects
+    analysis_run -->|sort jets and leptons| sort_objects
+    baseline_objects -->|large-R jets → trimming| large_r_trimming
+    analysis_run -->|build b-tag maps| generate_btags_map
+    analysis_run -->|variable-R radius| vr_reff
+    large_r_trimming -->|trimmed large-R candidate| h2t2b_vlb_candidate
+    generate_btags_map -->|b-tagged jets → candidate| h2t2b_vlb_candidate
+    vr_reff -->|VR track-jet input| h2t2b_vlb_candidate
+    h2t2b_vlb_candidate -->|candidate mass → histogram| m_vlb_histogram
+    h2t2b_vlb_candidate -->|increment SR counter| sr_counter
+    analysis_run -->|result collection hook| analysis_collect_results
+    analysis_collect_results -->|commit SR and histograms| analysis_commit_macros
+    analysis_run -->|analysis reset hook| analysis_specific_reset

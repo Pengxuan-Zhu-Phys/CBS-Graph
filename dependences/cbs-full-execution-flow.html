@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ColliderBit Solo · CBS full execution flow</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --paper: #f5f5f5; --ink: #2d3142; --muted: #4f5d75; --soft: #7a8399;
+      --accent: #eb6c36; --accent-soft: rgba(235,108,54,.09);
+      --rule: rgba(45,49,66,.13); --node: #fbfaf8;
+      --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+    }
+    body { background: var(--paper); color: var(--ink); min-height: 100vh; padding: 36px; font-family: var(--font-sans); }
+    .frame { width: min(1540px, 100%); margin: 0 auto; }
+    .eyebrow, .kicker, .legend, .source, .meta { font-family: var(--font-mono); }
+    .eyebrow { color: var(--muted); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 10px; }
+    h1 { font-size: clamp(30px, 4vw, 48px); font-weight: 650; letter-spacing: -.04em; line-height: 1.05; margin-bottom: 12px; }
+    .intro { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 1120px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px 22px; color: var(--muted); font-size: 10px; margin: 20px 0 26px; }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .swatch { width: 22px; height: 10px; border: 1px solid var(--ink); border-radius: 3px; display: inline-block; background: var(--node); }
+    .swatch.function { border-color: #4a6fa5; background: #eef3fb; }
+    .swatch.variable { border-color: #4f8a69; background: #eef8f1; }
+    .swatch.type { border-color: #7a64a6; background: #f4effb; }
+    .swatch.stage { border-color: #7a8399; background: #f1f2f4; }
+    .swatch.output { border-color: var(--accent); background: var(--accent-soft); }
+    .swatch.optional { border-color: var(--muted); border-style: dashed; background: rgba(79,93,117,.04); }
+    .swatch.final { border-color: var(--muted); background: rgba(45,49,66,.08); }
+    .line-swatch { width: 22px; border-top: 1.4px solid var(--muted); display: inline-block; }
+    .line-swatch.dash { border-top-style: dashed; }
+    .change-legend { border-top: 1px solid var(--rule); padding-top: 14px; margin-top: -8px; }
+    .change-heading { color: var(--ink); font-weight: 650; letter-spacing: .08em; }
+    .change-key { min-width: 30px; padding: 2px 5px; border: 1px solid currentColor; border-radius: 3px; font-weight: 650; text-align: center; }
+    .change-key.added { color: #2f8f6b; background: #e7f5ee; }
+    .change-key.modified { color: #b55c2d; background: #fff0e8; }
+    .change-key.partial { color: #735ca6; background: #f1ecfa; }
+    .change-key.reused { color: #697386; background: #eef0f3; }
+    .change-key.optional { color: #697386; background: #f1f2f4; border-style: dashed; }
+    .change-notes { margin-top: 34px; }
+    .change-notes-intro { color: var(--muted); font-size: 13px; line-height: 1.6; max-width: 1180px; margin-bottom: 16px; }
+    .summary-entry { display: flex; align-items: center; gap: 12px; border: 1px solid rgba(181,92,45,.34); border-left: 4px solid #b55c2d; border-radius: 8px; background: #fff8f3; padding: 12px 16px; margin: 0 0 16px; color: var(--ink); }
+    .summary-entry strong { font-size: 13px; }
+    .summary-entry code { color: var(--muted); }
+    .change-grid { display: grid; grid-template-columns: 1.12fr 1fr; gap: 12px 16px; align-items: start; }
+    .change-item { border: 1px solid var(--rule); border-radius: 8px; background: rgba(255,255,255,.28); }
+    .change-item[open] { background: #fff; }
+    .change-item summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px 14px; color: var(--ink); font-size: 13px; font-weight: 650; }
+    .change-item summary::-webkit-details-marker { display: none; }
+    .change-item summary::after { content: '+'; margin-left: auto; color: var(--soft); font-family: var(--font-mono); font-size: 16px; font-weight: 400; }
+    .change-item[open] summary::after { content: '−'; }
+    .change-chip { min-width: 34px; padding: 2px 5px; border: 1px solid currentColor; border-radius: 3px; font-family: var(--font-mono); font-size: 9px; letter-spacing: .04em; text-align: center; }
+    .change-chip.added { color: #2f8f6b; background: #e7f5ee; }
+    .change-chip.modified { color: #b55c2d; background: #fff0e8; }
+    .change-chip.partial { color: #735ca6; background: #f1ecfa; }
+    .change-chip.optional { color: #697386; background: #f1f2f4; border-style: dashed; }
+    .change-detail { padding: 0 14px 14px 58px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .change-detail p { margin-bottom: 7px; }
+    .change-detail ul { margin: 0 0 8px 16px; }
+    .change-detail li { margin: 3px 0; }
+    .change-evidence { color: var(--soft); font-family: var(--font-mono); font-size: 10px; }
+    .dossier-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 3px; color: #b55c2d; font-family: var(--font-mono); font-size: 10px; text-decoration: none; border-bottom: 1px solid rgba(181,92,45,.35); }
+    .dossier-link:hover, .dossier-link:focus-visible { color: #8f431f; border-bottom-color: currentColor; }
+    .mini-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 12px; padding: 10px 12px; border: 1px solid rgba(45,49,66,.10); border-radius: 6px; background: #f8f8f6; }
+    .mini-flow-label { width: 100%; color: var(--soft); font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
+    .flow-step { display: inline-flex; align-items: center; min-height: 28px; padding: 6px 8px; border: 1px solid #697386; border-radius: 5px; color: var(--ink); background: #fff; font-family: var(--font-mono); font-size: 10px; line-height: 1.25; }
+    .flow-step.fn { border-color: #4a6fa5; background: #eef3fb; }
+    .flow-step.data { border-color: #4f8a69; background: #eef8f1; }
+    .flow-step.stage { border-color: #7a8399; background: #f1f2f4; }
+    .flow-step.output { border-color: #b55c2d; background: #fff0e8; }
+    .flow-step.branch { border-style: dashed; }
+    .flow-arrow { color: var(--muted); font-family: var(--font-mono); font-size: 14px; }
+    svg .change-dot { stroke: var(--paper); stroke-width: 1.2; }
+    svg .change-dot.added { fill: #2f8f6b; }
+    svg .change-dot.modified { fill: #b55c2d; }
+    svg .change-dot.partial { fill: #735ca6; }
+    svg .change-dot.reused { fill: #697386; }
+    svg .change-dot.optional { fill: var(--paper); stroke: #697386; stroke-dasharray: 2 1; }
+    svg .node .change-dot { display: none; }
+    section { border-top: 1px solid var(--rule); padding-top: 20px; margin-top: 25px; }
+    .kicker { color: var(--soft); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 7px; }
+    h2 { font-size: 27px; font-weight: 600; letter-spacing: -.025em; margin-bottom: 5px; }
+    .source { color: var(--soft); font-size: 10px; line-height: 1.5; margin-bottom: 14px; }
+    svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .note { color: var(--muted); font-size: 13px; line-height: 1.6; margin-top: 13px; max-width: 1160px; }
+    .meta { border-top: 1px solid var(--rule); margin-top: 30px; padding-top: 17px; color: var(--muted); font-size: 10px; line-height: 1.65; }
+    code { font-family: var(--font-mono); font-size: .92em; }
+
+    svg .zone { fill: rgba(45,49,66,.025); stroke: rgba(45,49,66,.13); stroke-width: 1; }
+    svg .zone-label { fill: var(--soft); font-family: var(--font-mono); font-size: 12px; letter-spacing: 2px; }
+    svg .edge { fill: none; stroke: var(--muted); stroke-width: 1.5; marker-end: url(#overview-arrow); }
+    svg .edge.loop { stroke-dasharray: 7 5; }
+    svg .edge.optional { stroke-dasharray: 6 5; }
+    svg .edge-label { fill: var(--muted); font-family: var(--font-mono); font-size: 10px; }
+    svg .node rect { fill: var(--node); stroke: var(--ink); stroke-width: 1.2; }
+    svg .node.accent rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.6; }
+    svg .node.optional rect { fill: rgba(79,93,117,.035); stroke: var(--muted); stroke-dasharray: 6 4; }
+    svg .node.final rect { fill: rgba(45,49,66,.08); stroke: var(--muted); }
+    svg .node .kind { fill: var(--muted); font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px; }
+    svg .node.accent .kind { fill: var(--accent); }
+    svg .node .title { fill: var(--ink); font-size: 15px; font-weight: 650; }
+    svg .node .body { fill: var(--muted); font-family: var(--font-mono); font-size: 10px; }
+    svg .node .line { fill: var(--soft); font-family: var(--font-mono); font-size: 9px; }
+    svg .node.fn rect { fill: #eef3fb; stroke: #4a6fa5; }
+    svg .node.var rect { fill: #eef8f1; stroke: #4f8a69; }
+    svg .node.type rect { fill: #f4effb; stroke: #7a64a6; }
+    svg .node.stage rect { fill: #f1f2f4; stroke: #7a8399; }
+    svg .node.output rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.6; }
+    svg .node.optional.fn rect { fill: #eef3fb; stroke: #4a6fa5; stroke-dasharray: 6 4; }
+    svg .node.optional.var rect { fill: #eef8f1; stroke: #4f8a69; stroke-dasharray: 6 4; }
+    svg .node.fn .kind { fill: #4a6fa5; }
+    svg .node.var .kind { fill: #4f8a69; }
+    svg .node.type .kind { fill: #7a64a6; }
+    svg .node.stage .kind { fill: #697386; }
+    svg .node.output .kind { fill: var(--accent); }
+    svg .node.fn .title, svg .node.fn .body { font-family: var(--font-mono); }
+    svg .node.fn .title { font-size: 14px; font-weight: 600; }
+    svg .node.var .body { color: #3d7456; }
+    svg .node.type .title { font-family: var(--font-mono); font-style: italic; }
+    svg .callout { fill: var(--accent); font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px; }
+    @media (max-width: 800px) { body { padding: 22px; } .legend { gap: 10px 14px; } h2 { font-size: 23px; } .change-grid { grid-template-columns: 1fr; } .change-detail { padding-left: 14px; } .summary-entry { align-items: flex-start; } }
+  </style>
+</head>
+<body>
+  <main class="frame">
+    <p class="eyebrow">ColliderBit Solo · static source map · CBS</p>
+    <h1>From process startup to final likelihood output</h1>
+    <p class="intro">A source-evidence view of the main CBS execution path. The first diagram shows the end-to-end backbone; the second expands the repeated event-loop body. Functions are paired with the variables they create, consume or return, so the graph describes both control flow and data flow.</p>
+    <div class="legend" aria-label="Diagram legend">
+      <span><i class="swatch function"></i>ƒ function / functor</span>
+      <span><i class="swatch variable"></i>variable / data state</span>
+      <span><i class="swatch type"></i>type / container</span>
+      <span><i class="swatch stage"></i>lifecycle / control stage</span>
+      <span><i class="swatch output"></i>output / result</span>
+      <span><i class="swatch optional"></i>optional branch</span>
+      <span><i class="line-swatch"></i>execution or data flow</span>
+      <span><i class="line-swatch dash"></i>loop / optional relation</span>
+    </div>
+    <div class="legend change-legend" aria-label="Change coverage legend">
+      <span class="change-heading">CHANGE COVERAGE</span>
+      <span><b class="change-key added">ADD</b> CBS 新增</span>
+      <span><b class="change-key modified">MOD</b> CBS 修改 / 扩展</span>
+      <span><b class="change-key partial">PART</b> 部分覆盖或共享接口</span>
+      <span><b class="change-key reused">REUSE</b> 复用的公共流程</span>
+      <span><b class="change-key optional">OPT</b> 可选或非主路径</span>
+    </div>
+    <p class="note">节点右上角的圆点标记相对于 Gambit 公共基线的修改状态；它标记的是“修改覆盖范围”，不是运行时状态。</p>
+
+    <section>
+      <p class="kicker">01 · end-to-end backbone</p>
+      <h2>The CBS main chain</h2>
+      <p class="source">ColliderBit/examples/solo.cpp:71–587 · the loop body is compressed into the highlighted event-loop stage</p>
+      <svg viewBox="0 0 1600 1320" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="overview-title overview-desc">
+        <title id="overview-title">ColliderBit Solo CBS full execution flow</title>
+        <desc id="overview-desc">The graph starts at main, parses the command line and prepared input, configures runtime options and functor dependencies, runs the event loop through HepMC conversion, detector smearing and analysis dispatch, collects analysis results, computes likelihoods and emits screen and JSON output.</desc>
+        <defs>
+          <marker id="overview-arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#4f5d75"/></marker>
+        </defs>
+        <rect width="1600" height="1320" fill="#f5f5f5"/>
+        <rect class="zone" x="30" y="24" width="1540" height="152" rx="12"/>
+        <rect class="zone" x="30" y="204" width="1540" height="168" rx="12"/>
+        <rect class="zone" x="30" y="402" width="1540" height="286" rx="12"/>
+        <rect class="zone" x="30" y="720" width="1540" height="168" rx="12"/>
+        <rect class="zone" x="30" y="920" width="1540" height="360" rx="12"/>
+        <text class="zone-label" x="54" y="48">STARTUP &amp; INPUT</text>
+        <text class="zone-label" x="54" y="228">CONFIGURATION &amp; FUNCTOR GRAPH</text>
+        <text class="zone-label" x="54" y="426">REPEATED EVENT LOOP</text>
+        <text class="zone-label" x="54" y="744">POST-LOOP ANALYSIS AGGREGATION</text>
+        <text class="zone-label" x="54" y="944">LIKELIHOOD &amp; OUTPUT</text>
+
+        <g>
+          <path class="edge" d="M270 102 H300"/>
+          <path class="edge" d="M540 102 H570"/>
+          <path class="edge" d="M890 102 H930"/>
+          <path class="edge" d="M1230 102 H1290"/>
+          <path class="edge" d="M170 314 V354 H580 V402"/>
+          <path class="edge" d="M530 314 V354 H580"/>
+          <path class="edge" d="M890 314 V354 H580"/>
+          <path class="edge" d="M1260 314 V354 H580"/>
+          <path class="edge" d="M710 314 V402"/>
+          <path class="edge" d="M1010 314 V354 H710 V402"/>
+          <path class="edge" d="M580 514 H610"/>
+          <path class="edge" d="M870 514 H900"/>
+          <path class="edge" d="M1160 514 H1190"/>
+          <path class="edge" d="M1450 586 V630 H140 V720"/>
+          <path class="edge loop" d="M1300 606 C1300 660 1050 680 760 680 C480 680 430 626 430 596"/>
+          <path class="edge" d="M260 812 H470"/>
+          <path class="edge" d="M730 812 H800"/>
+          <path class="edge" d="M1060 812 H1130"/>
+          <path class="edge" d="M280 1012 H500"/>
+          <path class="edge optional" d="M580 1000 H700"/>
+          <path class="edge" d="M800 1012 H850"/>
+          <path class="edge" d="M1120 1012 H1170"/>
+          <path class="edge" d="M1360 1092 V1160 H900 V1190"/>
+          <path class="edge" d="M1290 1140 V1190 H900"/>
+          <path class="edge optional" d="M1090 246 C1160 210 1250 210 1330 246"/>
+        </g>
+        <text class="edge-label" x="1310" y="650">next event</text>
+        <text class="edge-label" x="1230" y="235">processes[]</text>
+        <text class="edge-label" x="612" y="696">COLLIDER_FINALIZE after event loop</text>
+
+        <g class="node fn change-modified" transform="translate(50 62)">
+          <title>Change status: MODIFIED — CBS standalone process entry</title><circle class="change-dot modified" cx="204" cy="14" r="6"/>
+          <rect width="220" height="80" rx="8"/><text class="kind" x="14" y="19">ƒ FUNCTION · ENTRYPOINT</text><text class="title" x="14" y="46">main(argc, argv)</text><text class="body" x="14" y="64">CBS process entry</text><text class="line" x="14" y="75">solo.cpp:71</text>
+        </g>
+        <g class="node fn change-added" transform="translate(300 62)">
+          <title>Change status: ADD — CBS command-line parser</title><circle class="change-dot added" cx="224" cy="14" r="6"/>
+          <rect width="240" height="80" rx="8"/><text class="kind" x="14" y="19">ƒ FUNCTION · INPUT</text><text class="title" x="14" y="44">parse_command_line()</text><text class="body" x="14" y="62">command_line_status · filename</text><text class="line" x="14" y="74">solo.cpp:75</text>
+        </g>
+        <g class="node fn change-added" transform="translate(570 52)">
+          <title>Change status: ADD — prepared CBS input</title><circle class="change-dot added" cx="304" cy="14" r="6"/>
+          <rect width="320" height="116" rx="8"/><text class="kind" x="14" y="20">ƒ FUNCTION · INPUT PREPARATION</text><text class="title" x="14" y="44">parse_and_prepare_input</text><text class="title" x="14" y="59">(filename_in)</text><text class="body" x="14" y="78">PreparedInput → infile · analyses[]</text><text class="body" x="14" y="94">hepmc_filenames[] · cross sections</text><text class="line" x="14" y="110">solo.cpp:133</text>
+        </g>
+        <g class="node var change-modified" transform="translate(930 52)">
+          <title>Change status: MODIFIED — CBS runtime settings</title><circle class="change-dot modified" cx="284" cy="14" r="6"/>
+          <rect width="300" height="100" rx="8"/><text class="kind" x="14" y="20">VAR / CONFIG · RUNTIME SETTINGS</text><text class="title" x="14" y="45">Read and validate options</text><text class="body" x="14" y="64">debug · use_FullLikes · cutflow/hist</text><text class="body" x="14" y="80">jet_pt_min · Rivet/Contur flags</text><text class="line" x="14" y="94">solo.cpp:143–237</text>
+        </g>
+        <g class="node type var change-added" transform="translate(1290 52)">
+          <title>Change status: ADD — CBS output configuration</title><circle class="change-dot added" cx="244" cy="14" r="6"/>
+          <rect width="260" height="100" rx="8"/><text class="kind" x="14" y="20">TYPE + VAR · OUTPUT CONFIG</text><text class="title" x="14" y="45">OutputConfig</text><text class="body" x="14" y="64">screen_output · write_file</text><text class="body" x="14" y="80">output_file</text><text class="line" x="14" y="94">solo.cpp:239–246</text>
+        </g>
+
+        <g class="node fn change-modified" transform="translate(50 246)">
+          <title>Change status: MODIFIED — CBS functor selection</title><circle class="change-dot modified" cx="224" cy="14" r="6"/>
+          <rect width="240" height="120" rx="8"/><text class="kind" x="14" y="20">ƒ FUNCTOR · DISPATCH</text><text class="title" x="14" y="44">Select functors</text><text class="body" x="14" y="64">calcLogLikes = regular / FullLikes</text><text class="body" x="14" y="80">getEvent</text><text class="body" x="14" y="96">convertEvent</text><text class="body" x="14" y="112">CollectAnalyses</text>
+        </g>
+        <g class="node var change-modified" transform="translate(410 246)">
+          <title>Change status: MODIFIED — CBS loop policy</title><circle class="change-dot modified" cx="224" cy="14" r="6"/>
+          <rect width="240" height="100" rx="8"/><text class="kind" x="14" y="20">VAR / CONFIG · LOOP OPTIONS</text><text class="title" x="14" y="44">Configure CBS policy</text><text class="body" x="14" y="64">analyses[] · min/max_nEvents</text><text class="body" x="14" y="80">run_convergence_checks=false</text><text class="line" x="14" y="94">solo.cpp:380–392</text>
+        </g>
+        <g class="node fn change-modified" transform="translate(770 246)">
+          <title>Change status: MODIFIED — manual GAMBIT functor wiring</title><circle class="change-dot modified" cx="224" cy="14" r="6"/>
+          <rect width="240" height="120" rx="8"/><text class="kind" x="14" y="20">ƒ DEPENDENCY GRAPH</text><text class="title" x="14" y="44">Resolve functor graph</text><text class="body" x="14" y="64">resolveDependency</text><text class="body" x="14" y="80">resolveBackendReq</text><text class="body" x="14" y="96">resolveLoopManager</text><text class="body" x="14" y="112">nested_functions[]</text>
+        </g>
+        <g class="node fn optional change-added" transform="translate(1130 246)">
+          <title>Change status: ADD — optional batch and multi-process path</title><circle class="change-dot added" cx="244" cy="14" r="6"/>
+          <rect width="260" height="120" rx="8"/><text class="kind" x="14" y="20">ƒ FUNCTION · OPTIONAL BATCH</text><text class="title" x="14" y="43">SoloBatch::run_and_</text><text class="title" x="14" y="58">merge()</text><text class="body" x="14" y="76">only when processes[] is present</text><text class="body" x="14" y="92">merged sampling advice / outputs</text><text class="line" x="14" y="108">solo.cpp:248–343</text>
+        </g>
+
+        <g class="node fn change-modified" transform="translate(50 454)">
+          <title>Change status: MODIFIED — CBS loop-manager integration</title><circle class="change-dot modified" cx="264" cy="14" r="6"/>
+          <rect width="280" height="120" rx="8"/><text class="kind" x="14" y="20">ƒ FUNCTOR · LOOP MANAGER</text><text class="title" x="14" y="46">operateLHCLoop()</text><text class="body" x="14" y="66">MCLoopInfo · collider_names=[CBS]</text><text class="body" x="14" y="82">event_count · iteration · stop flags</text><text class="line" x="14" y="105">solo.cpp:545 · eventloop.cpp:101</text>
+        </g>
+        <g class="node fn change-added" transform="translate(360 454)">
+          <title>Change status: ADD — external HepMC event reader</title><circle class="change-dot added" cx="244" cy="14" r="6"/>
+          <rect width="260" height="120" rx="8"/><text class="kind" x="14" y="20">ƒ FUNCTOR · EVENT READER</text><text class="title" x="14" y="46">getHepMCEvent</text><text class="body" x="14" y="66">HepMC3::GenEvent</text><text class="body" x="14" y="82">hepmc_filename → event record</text><text class="line" x="14" y="105">getHepMCEvent.cpp:194</text>
+        </g>
+        <g class="node fn change-modified" transform="translate(650 454)">
+          <title>Change status: MODIFIED — HepMC to HEPUtils conversion and jet inputs</title><circle class="change-dot modified" cx="244" cy="14" r="6"/>
+          <rect width="260" height="120" rx="8"/><text class="kind" x="14" y="20">ƒ FUNCTOR · EVENT CONVERSION</text><text class="title" x="14" y="43">convertHepMCEvent_</text><text class="title" x="14" y="58">HEPUtils</text><text class="body" x="14" y="76">HardScatteringEvent</text><text class="body" x="14" y="92">→ HEPUtils::Event · jets · MET</text><text class="line" x="14" y="110">getHepMCEvent.cpp:221</text>
+        </g>
+        <g class="node fn change-modified" transform="translate(940 454)">
+          <title>Change status: MODIFIED — ATLAS, CMS and identity detector branches</title><circle class="change-dot modified" cx="244" cy="14" r="6"/>
+          <rect width="260" height="120" rx="8"/><text class="kind" x="14" y="20">ƒ FUNCTOR · DETECTOR BRANCH</text><text class="title" x="14" y="46">smear / copy event</text><text class="body" x="14" y="66">smearEventATLAS</text><text class="body" x="14" y="82">smearEventCMS</text><text class="body" x="14" y="98">copyEvent</text><text class="line" x="14" y="114">smearEvent.cpp:46–71</text>
+        </g>
+        <g class="node fn change-modified" transform="translate(1230 454)">
+          <title>Change status: MODIFIED — analysis dispatch and registrations</title><circle class="change-dot modified" cx="284" cy="14" r="6"/>
+          <rect width="300" height="132" rx="8"/><text class="kind" x="14" y="20">ƒ FUNCTOR · ANALYSIS DISPATCH</text><text class="title" x="14" y="43">AnalysisContainer::</text><text class="title" x="14" y="58">analyze()</text><text class="body" x="14" y="76">runATLASAnalyses</text><text class="body" x="14" y="92">runCMSAnalyses</text><text class="body" x="14" y="108">runIdentityAnalyses</text><text class="line" x="14" y="124">runAnalyses.cpp:131–148</text>
+        </g>
+
+        <g class="node var change-modified" transform="translate(50 744)">
+          <title>Change status: MODIFIED — cutflow, histogram and signal-region accumulation</title><circle class="change-dot modified" cx="284" cy="14" r="6"/>
+          <rect width="300" height="100" rx="8"/><text class="kind" x="14" y="20">VAR / STATE · PER-EVENT</text><text class="title" x="14" y="44">Analysis::run(e)</text><text class="body" x="14" y="64">cutflows · histograms · SR counters</text><text class="body" x="14" y="80">_needs_collection = true</text><text class="line" x="14" y="94">Analysis.cpp:58–63</text>
+        </g>
+        <g class="node stage change-modified" transform="translate(470 744)">
+          <title>Change status: MODIFIED — CBS finalization hook</title><circle class="change-dot modified" cx="244" cy="14" r="6"/>
+          <rect width="260" height="100" rx="8"/><text class="kind" x="14" y="20">STAGE · LIFECYCLE</text><text class="title" x="14" y="44">COLLIDER_FINALIZE</text><text class="body" x="14" y="64">get_results_ptr(warning)</text><text class="body" x="14" y="80">analysis collect_results() hook</text><text class="line" x="14" y="94">runAnalyses.cpp:93–113</text>
+        </g>
+        <g class="node fn change-modified" transform="translate(800 744)">
+          <title>Change status: MODIFIED — analysis result aggregation and validation</title><circle class="change-dot modified" cx="244" cy="14" r="6"/>
+          <rect width="260" height="100" rx="8"/><text class="kind" x="14" y="20">ƒ FUNCTOR · AGGREGATION</text><text class="title" x="14" y="44">CollectAnalyses()</text><text class="body" x="14" y="64">AnalysisDataPointers result</text><text class="body" x="14" y="80">merge ATLAS + CMS + Identity</text><text class="line" x="14" y="94">eventloop.cpp:452–514</text>
+        </g>
+        <g class="node fn change-partial" transform="translate(1130 744)">
+          <title>Change status: PARTIAL — shared likelihood interface; batch recomputation is not expanded here</title><circle class="change-dot partial" cx="284" cy="14" r="6"/>
+          <rect width="300" height="100" rx="8"/><text class="kind" x="14" y="20">ƒ FUNCTION · LIKELIHOOD INPUTS</text><text class="title" x="14" y="44">xsec · n_mc · estimator</text><text class="body" x="14" y="64">calc_LHC_LogLikes()</text><text class="body" x="14" y="80">map_str_AnalysisLogLikes</text><text class="line" x="14" y="94">LHC_likelihoods.cpp:1373–1403</text>
+        </g>
+
+        <g class="node fn change-reused" transform="translate(50 962)">
+          <title>Change status: REUSED — shared combined likelihood calculation</title><circle class="change-dot reused" cx="214" cy="14" r="6"/>
+          <rect width="230" height="100" rx="8"/><text class="kind" x="14" y="20">ƒ FUNCTION · LIKELIHOOD</text><text class="title" x="14" y="45">Combined loglike</text><text class="body" x="14" y="65">calc_combined_LHC_LogLike()</text><text class="body" x="14" y="81">sum selected analysis terms</text><text class="line" x="14" y="94">LHC_likelihoods.cpp:1526</text>
+        </g>
+        <g class="node fn optional change-optional" transform="translate(320 962)">
+          <title>Change status: OPTIONAL — Rivet and Contur integration branch</title><circle class="change-dot optional" cx="244" cy="14" r="6"/>
+          <rect width="260" height="100" rx="8"/><text class="kind" x="14" y="20">ƒ FUNCTOR · OPTIONAL RIVET / CONTUR</text><text class="title" x="14" y="45">Contur likelihood</text><text class="body" x="14" y="65">contur_total_loglike</text><text class="body" x="14" y="81">pool_loglikes · pool_info</text><text class="line" x="14" y="94">solo.cpp:551–569</text>
+        </g>
+        <g class="node var change-modified" transform="translate(620 962)">
+          <title>Change status: MODIFIED — CBS final result views</title><circle class="change-dot modified" cx="244" cy="14" r="6"/>
+          <rect width="260" height="100" rx="8"/><text class="kind" x="14" y="20">VAR / RESULT · FINAL VALUES</text><text class="title" x="14" y="45">Assemble result views</text><text class="body" x="14" y="65">n_events · loglike</text><text class="body" x="14" y="81">analysis_results · analysis_loglikes</text><text class="line" x="14" y="94">solo.cpp:558–572</text>
+        </g>
+        <g class="node fn change-added" transform="translate(920 962)">
+          <title>Change status: ADD — CBS screen and JSON output API</title><circle class="change-dot added" cx="244" cy="14" r="6"/>
+          <rect width="260" height="120" rx="8"/><text class="kind" x="14" y="20">ƒ FUNCTION · OUTPUT API</text><text class="title" x="14" y="43">SoloOutput::emit_</text><text class="title" x="14" y="58">outputs()</text><text class="body" x="14" y="76">print_screen_summary()</text><text class="body" x="14" y="92">write_json_to_file()</text><text class="line" x="14" y="108">solo_output.cpp:376–405</text>
+        </g>
+        <g class="node output final change-added" transform="translate(1220 962)">
+          <title>Change status: ADD — CBS output payload and schema</title><circle class="change-dot added" cx="284" cy="14" r="6"/>
+          <rect width="300" height="140" rx="8"/><text class="kind" x="14" y="20">OUTPUT · FINAL PAYLOAD</text><text class="title" x="14" y="45">Screen + CBS_output.json</text><text class="body" x="14" y="65">summary · analyses · SRs</text><text class="body" x="14" y="81">cutflows · histograms · terms</text><text class="body" x="14" y="97">enabled_variants · optional Contur</text><text class="line" x="14" y="119">solo_output.cpp:406–685</text>
+        </g>
+        <g class="node type final change-reused" transform="translate(770 1160)">
+          <title>Change status: REUSED — normal process exit</title><circle class="change-dot reused" cx="244" cy="14" r="6"/>
+          <rect width="260" height="80" rx="8"/><text class="kind" x="14" y="20">TYPE + VAR · PROCESS EXIT</text><text class="title" x="14" y="47">return 0</text><text class="body" x="14" y="65">CBS complete · solo.cpp:587</text>
+        </g>
+        <g class="change-markers" aria-label="Change coverage markers">
+          <circle class="change-dot modified" cx="254" cy="76" r="6"><title>MOD: CBS standalone process entry</title></circle>
+          <circle class="change-dot added" cx="524" cy="76" r="6"><title>ADD: CBS command-line parser</title></circle>
+          <circle class="change-dot added" cx="874" cy="66" r="6"><title>ADD: prepared CBS input</title></circle>
+          <circle class="change-dot modified" cx="1214" cy="66" r="6"><title>MOD: CBS runtime settings</title></circle>
+          <circle class="change-dot added" cx="1534" cy="66" r="6"><title>ADD: CBS output configuration</title></circle>
+          <circle class="change-dot modified" cx="274" cy="260" r="6"><title>MOD: CBS functor selection</title></circle>
+          <circle class="change-dot modified" cx="634" cy="260" r="6"><title>MOD: CBS loop policy</title></circle>
+          <circle class="change-dot modified" cx="994" cy="260" r="6"><title>MOD: manual GAMBIT functor wiring</title></circle>
+          <circle class="change-dot added" cx="1374" cy="260" r="6"><title>ADD: optional batch and multi-process path</title></circle>
+          <circle class="change-dot modified" cx="314" cy="468" r="6"><title>MOD: CBS loop-manager integration</title></circle>
+          <circle class="change-dot added" cx="604" cy="468" r="6"><title>ADD: external HepMC event reader</title></circle>
+          <circle class="change-dot modified" cx="894" cy="468" r="6"><title>MOD: HepMC to HEPUtils conversion</title></circle>
+          <circle class="change-dot modified" cx="1184" cy="468" r="6"><title>MOD: detector event branches</title></circle>
+          <circle class="change-dot modified" cx="1514" cy="468" r="6"><title>MOD: analysis dispatch</title></circle>
+          <circle class="change-dot modified" cx="334" cy="758" r="6"><title>MOD: cutflow, histogram and SR accumulation</title></circle>
+          <circle class="change-dot modified" cx="714" cy="758" r="6"><title>MOD: CBS finalization hook</title></circle>
+          <circle class="change-dot modified" cx="1044" cy="758" r="6"><title>MOD: analysis result aggregation</title></circle>
+          <circle class="change-dot partial" cx="1414" cy="758" r="6"><title>PART: shared likelihood interface</title></circle>
+          <circle class="change-dot reused" cx="264" cy="976" r="6"><title>REUSE: shared combined likelihood</title></circle>
+          <circle class="change-dot optional" cx="564" cy="976" r="6"><title>OPT: Rivet and Contur branch</title></circle>
+          <circle class="change-dot modified" cx="864" cy="976" r="6"><title>MOD: CBS final result views</title></circle>
+          <circle class="change-dot added" cx="1164" cy="976" r="6"><title>ADD: CBS output API</title></circle>
+          <circle class="change-dot added" cx="1504" cy="976" r="6"><title>ADD: CBS output payload and schema</title></circle>
+          <circle class="change-dot reused" cx="1014" cy="1174" r="6"><title>REUSE: normal process exit</title></circle>
+        </g>
+        <text class="callout" x="80" y="876">EVENT LOOP REPEATS THE HIGHLIGHTED PATH UNTIL END_OF_EVENT_FILE OR EVENT LIMIT</text>
+      </svg>
+      <p class="note">读图重点：`operateLHCLoop` 不是只调用一次分析；它在每次事件上重复读取、转换、探测器处理和分析累积。只有到 `COLLIDER_FINALIZE`，各分析的 `collect_results()` 才把累计状态提交为 `AnalysisData`，随后才进入 likelihood 和输出阶段。</p>
+    </section>
+
+    <section>
+      <p class="kicker">02 · event-loop detail</p>
+      <h2>What happens inside one CBS run?</h2>
+      <p class="source">ColliderBit/src/ColliderBit_eventloop.cpp:229–432 · ColliderBit/src/runAnalyses.cpp:64–148 · CBS disables convergence-based early stop</p>
+      <svg viewBox="0 0 1600 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="loop-title loop-desc">
+        <title id="loop-title">CBS event loop detail</title>
+        <desc id="loop-desc">The event loop initializes the collider, calculates the cross section, starts subprocesses, repeatedly increments event_count and executes event iterations, then ends subprocesses and finalizes analysis results.</desc>
+        <defs>
+          <marker id="loop-arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#4f5d75"/></marker>
+        </defs>
+        <rect width="1600" height="760" fill="#f5f5f5"/>
+        <rect class="zone" x="30" y="24" width="1540" height="142" rx="12"/>
+        <rect class="zone" x="30" y="194" width="1540" height="310" rx="12"/>
+        <rect class="zone" x="30" y="532" width="1540" height="194" rx="12"/>
+        <text class="zone-label" x="54" y="48">LOOP INITIALIZATION</text>
+        <text class="zone-label" x="54" y="218">PARALLEL EVENT PROCESSING</text>
+        <text class="zone-label" x="54" y="556">LOOP FINALIZATION</text>
+
+        <g>
+          <path class="edge" d="M260 100 H300"/>
+          <path class="edge" d="M540 100 H580"/>
+          <path class="edge" d="M820 100 H860"/>
+          <path class="edge" d="M1100 100 H1140"/>
+          <path class="edge" d="M1380 100 V246 H1340"/>
+          <path class="edge" d="M1130 286 H1070"/>
+          <path class="edge" d="M830 286 H770"/>
+          <path class="edge" d="M530 286 H470"/>
+          <path class="edge" d="M230 286 H170 V406 H210"/>
+          <path class="edge" d="M470 446 H530"/>
+          <path class="edge" d="M770 446 H830"/>
+          <path class="edge" d="M1070 446 H1130"/>
+          <path class="edge loop" d="M1260 496 C1260 520 930 520 650 520 C360 520 300 480 300 446"/>
+          <path class="edge optional" d="M1070 620 H1130"/>
+          <path class="edge" d="M1370 620 H1430"/>
+        </g>
+        <text class="edge-label" x="890" y="516">next event / event_count++</text>
+        <text class="edge-label" x="1078" y="612">CBS: convergence checks off</text>
+
+        <g class="node stage change-reused" transform="translate(50 62)">
+          <title>Change status: REUSED — shared loop execution stage</title><circle class="change-dot reused" cx="194" cy="14" r="6"/>
+          <rect width="210" height="76" rx="8"/><text class="kind" x="14" y="19">STAGE · BASE_INIT</text><text class="title" x="14" y="45">Loop::executeIteration</text><text class="body" x="14" y="63">reset analysis result vectors</text>
+        </g>
+        <g class="node var change-modified" transform="translate(300 62)">
+          <title>Change status: MODIFIED — CBS loop configuration</title><circle class="change-dot modified" cx="224" cy="14" r="6"/>
+          <rect width="240" height="76" rx="8"/><text class="kind" x="14" y="19">VAR / CONFIG · COLLIDER_INIT</text><text class="title" x="14" y="45">Configure MCLoopInfo</text><text class="body" x="14" y="63">analyses · desired_nEvents · flags</text>
+        </g>
+        <g class="node fn change-modified" transform="translate(580 62)">
+          <title>Change status: MODIFIED — cross-section integration</title><circle class="change-dot modified" cx="224" cy="14" r="6"/>
+          <rect width="240" height="76" rx="8"/><text class="kind" x="14" y="19">ƒ FUNCTOR · XSEC_CALCULATION</text><text class="title" x="14" y="45">Get cross section</text><text class="body" x="14" y="63">InitialTotalCrossSection</text>
+        </g>
+        <g class="node stage change-modified" transform="translate(860 62)">
+          <title>Change status: MODIFIED — CBS event worker setup</title><circle class="change-dot modified" cx="224" cy="14" r="6"/>
+          <rect width="240" height="76" rx="8"/><text class="kind" x="14" y="19">STAGE · START_SUBPROCESS</text><text class="title" x="14" y="45">Prepare event workers</text><text class="body" x="14" y="63">parallel loop begins</text>
+        </g>
+        <g class="node stage change-modified" transform="translate(1140 62)">
+          <title>Change status: MODIFIED — CBS event-loop stop policy</title><circle class="change-dot modified" cx="224" cy="14" r="6"/>
+          <rect width="240" height="76" rx="8"/><text class="kind" x="14" y="19">STAGE · MAIN EVENT LOOP</text><text class="title" x="14" y="45">while (stop conditions)</text><text class="body" x="14" y="63">event_count · end_of_event_file</text>
+        </g>
+
+        <g class="node var change-reused" transform="translate(1130 246)">
+          <title>Change status: REUSED — event reservation state</title><circle class="change-dot reused" cx="224" cy="14" r="6"/>
+          <rect width="240" height="80" rx="8"/><text class="kind" x="14" y="19">VAR · 1 · RESERVE EVENT</text><text class="title" x="14" y="45">current_event_count++</text><text class="body" x="14" y="63">thread_my_iteration</text>
+        </g>
+        <g class="node fn change-added" transform="translate(830 246)">
+          <title>Change status: ADD — CBS getEvent functor</title><circle class="change-dot added" cx="224" cy="14" r="6"/>
+          <rect width="240" height="80" rx="8"/><text class="kind" x="14" y="19">ƒ FUNCTOR · 2 · READ</text><text class="title" x="14" y="45">getEvent()</text><text class="body" x="14" y="63">HepMC3 event record</text>
+        </g>
+        <g class="node fn change-modified" transform="translate(530 246)">
+          <title>Change status: MODIFIED — event conversion path</title><circle class="change-dot modified" cx="224" cy="14" r="6"/>
+          <rect width="240" height="80" rx="8"/><text class="kind" x="14" y="19">ƒ FUNCTOR · 3 · CONVERT</text><text class="title" x="14" y="45">convertEvent()</text><text class="body" x="14" y="63">HEPUtils::Event</text>
+        </g>
+        <g class="node fn change-modified" transform="translate(230 246)">
+          <title>Change status: MODIFIED — detector or identity event branch</title><circle class="change-dot modified" cx="224" cy="14" r="6"/>
+          <rect width="240" height="80" rx="8"/><text class="kind" x="14" y="19">ƒ FUNCTOR · 4 · DETECTOR</text><text class="title" x="14" y="45">smear / copy</text><text class="body" x="14" y="63">SmearedEvent / CopiedEvent</text>
+        </g>
+        <g class="node fn change-modified" transform="translate(210 406)">
+          <title>Change status: MODIFIED — per-analysis dispatch</title><circle class="change-dot modified" cx="244" cy="14" r="6"/>
+          <rect width="260" height="80" rx="8"/><text class="kind" x="14" y="19">ƒ FUNCTION · 5 · ANALYZE</text><text class="title" x="14" y="45">Container.analyze()</text><text class="body" x="14" y="63">Analysis::run(e) for each analysis</text>
+        </g>
+        <g class="node var change-modified" transform="translate(530 406)">
+          <title>Change status: MODIFIED — cutflow, histogram and SR accumulation</title><circle class="change-dot modified" cx="224" cy="14" r="6"/>
+          <rect width="240" height="80" rx="8"/><text class="kind" x="14" y="19">VAR / STATE · 6 · ACCUMULATE</text><text class="title" x="14" y="45">cutflows · histograms</text><text class="body" x="14" y="63">SR counters / _needs_collection</text>
+        </g>
+        <g class="node stage change-modified" transform="translate(830 406)">
+          <title>Change status: MODIFIED — CBS stop and failure handling</title><circle class="change-dot modified" cx="224" cy="14" r="6"/>
+          <rect width="240" height="80" rx="8"/><text class="kind" x="14" y="19">STAGE · 7 · CHECK LIMITS</text><text class="title" x="14" y="45">end / max failures?</text><text class="body" x="14" y="63">piped errors · stop flags</text>
+        </g>
+        <g class="node stage change-reused" transform="translate(1130 406)">
+          <title>Change status: REUSED — shared subprocess finalization</title><circle class="change-dot reused" cx="244" cy="14" r="6"/>
+          <rect width="260" height="90" rx="8"/><text class="kind" x="14" y="19">STAGE · 8 · LOOP EXIT</text><text class="title" x="14" y="45">END_SUBPROCESS</text><text class="body" x="14" y="64">parallel work complete</text><text class="line" x="14" y="80">eventloop.cpp:403–410</text>
+        </g>
+        <g class="node stage optional change-optional" transform="translate(830 578)">
+          <title>Change status: OPTIONAL — convergence collection disabled by CBS policy</title><circle class="change-dot optional" cx="224" cy="14" r="6"/>
+          <rect width="240" height="80" rx="8"/><text class="kind" x="14" y="19">STAGE · OPTIONAL</text><text class="title" x="14" y="42">COLLECT_CONVERGENCE_</text><text class="title" x="14" y="57">DATA</text><text class="body" x="14" y="72">CBS policy sets this false</text>
+        </g>
+        <g class="node stage change-modified" transform="translate(1130 578)">
+          <title>Change status: MODIFIED — CBS result collection hook</title><circle class="change-dot modified" cx="224" cy="14" r="6"/>
+          <rect width="240" height="80" rx="8"/><text class="kind" x="14" y="19">STAGE · COLLIDER_FINALIZE</text><text class="title" x="14" y="45">get_results_ptr()</text><text class="body" x="14" y="63">collect_results() per analysis</text>
+        </g>
+        <g class="node type final change-partial" transform="translate(1430 578)">
+          <title>Change status: PARTIAL — shared loop state; CBS-specific merge details are elsewhere</title><circle class="change-dot partial" cx="104" cy="14" r="6"/>
+          <rect width="120" height="80" rx="8"/><text class="kind" x="14" y="19">TYPE + VAR</text><text class="title" x="14" y="45">MCLoopInfo</text><text class="body" x="14" y="63">event_count</text>
+        </g>
+        <g class="change-markers" aria-label="Change coverage markers">
+          <circle class="change-dot reused" cx="244" cy="76" r="6"><title>REUSE: shared loop execution stage</title></circle>
+          <circle class="change-dot modified" cx="524" cy="76" r="6"><title>MOD: CBS loop configuration</title></circle>
+          <circle class="change-dot modified" cx="804" cy="76" r="6"><title>MOD: cross-section integration</title></circle>
+          <circle class="change-dot modified" cx="1084" cy="76" r="6"><title>MOD: CBS event worker setup</title></circle>
+          <circle class="change-dot modified" cx="1364" cy="76" r="6"><title>MOD: CBS event-loop stop policy</title></circle>
+          <circle class="change-dot reused" cx="1354" cy="260" r="6"><title>REUSE: event reservation state</title></circle>
+          <circle class="change-dot added" cx="1054" cy="260" r="6"><title>ADD: CBS getEvent functor</title></circle>
+          <circle class="change-dot modified" cx="754" cy="260" r="6"><title>MOD: event conversion path</title></circle>
+          <circle class="change-dot modified" cx="454" cy="260" r="6"><title>MOD: detector or identity event branch</title></circle>
+          <circle class="change-dot modified" cx="454" cy="420" r="6"><title>MOD: per-analysis dispatch</title></circle>
+          <circle class="change-dot modified" cx="754" cy="420" r="6"><title>MOD: cutflow, histogram and SR accumulation</title></circle>
+          <circle class="change-dot modified" cx="1054" cy="420" r="6"><title>MOD: CBS stop and failure handling</title></circle>
+          <circle class="change-dot reused" cx="1374" cy="420" r="6"><title>REUSE: shared subprocess finalization</title></circle>
+          <circle class="change-dot optional" cx="1054" cy="592" r="6"><title>OPT: convergence collection disabled by CBS policy</title></circle>
+          <circle class="change-dot modified" cx="1354" cy="592" r="6"><title>MOD: CBS result collection hook</title></circle>
+          <circle class="change-dot partial" cx="1534" cy="592" r="6"><title>PART: shared loop state</title></circle>
+        </g>
+        <text class="callout" x="60" y="704">THE INNER CHAIN IS REPEATED FOR EACH SUCCESSFUL EVENT; ANALYSIS RESULTS ARE COMMITTED ONLY AT COLLIDER_FINALIZE</text>
+      </svg>
+      <p class="note">CBS 在 <code>solo.cpp</code> 中把 <code>run_convergence_checks</code> 固定为 <code>false</code>，因此这张图把 convergence 节点标为可选/关闭状态；实际停止主要由事件文件结束、事件数上限、失败事件和 loop 的全局停止标志决定。</p>
+    </section>
+
+    <section class="change-notes" id="change-notes">
+      <p class="kicker">03 · change notes by block</p>
+      <h2>What changed in each marked block?</h2>
+      <p class="change-notes-intro">这些摘要把图中的修改标记连接到具体源码行为。默认展开 <code>main</code> 作为示例；其余 block 可以逐项展开。这里描述的是相对于 Gambit 公共基线的 CBS 工程修改，不是运行时 profiling。</p>
+      <div class="summary-entry" aria-label="Change summary module entry">
+        <span class="change-key modified">ENTRY</span>
+        <div><strong>Change summary module</strong> <span>→ block summary → subflow → source evidence</span><br><code>先用总图定位修改，再展开对应 block 的局部执行路径</code></div>
+      </div>
+      <div class="change-grid">
+        <details class="change-item" id="change-cbs-main" open>
+          <summary><span class="change-chip modified">MOD</span><span><code>main(argc, argv)</code> · CBS 独立入口</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="main subflow: CLI to initialization to input to dependency wiring to run to output"><span class="mini-flow-label">SUBFLOW · MAIN ORCHESTRATION</span><span class="flow-step fn">argv / CLI</span><span class="flow-arrow">→</span><span class="flow-step fn">init backends + logs</span><span class="flow-arrow">→</span><span class="flow-step data">PreparedInput</span><span class="flow-arrow">→</span><span class="flow-step fn">resolve functors</span><span class="flow-arrow">→</span><span class="flow-step stage">single / batch run</span><span class="flow-arrow">→</span><span class="flow-step output">emit outputs</span></div><p>把原本依赖完整 GAMBIT 配置的启动过程收拢成一个可独立运行的 CBS 进程编排入口。</p><ul><li>解析 CLI 状态并初始化 Nulike、可选 FullLikes/Rivet/Contur、日志、随机数和启动 banner。</li><li>读取统一的 <code>PreparedInput</code>，选择 regular/FullLikes likelihood，并设置 cutflow、histogram、jet 和 likelihood 选项。</li><li>手动连接 functor/loop-manager 依赖，分流单文件与 batch，最后统一调用屏幕/JSON 输出和异常处理。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo.cpp:71–587；开发总结 §5.1。</p><a class="dossier-link" href="main-change-tree.html">打开 main 的原子级修改树 ↗</a></div>
+        </details>
+
+        <details class="change-item" id="change-cli-input">
+          <summary><span class="change-chip added">ADD</span><span><code>parse_command_line()</code> · 命令行输入</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="command line parser subflow"><span class="mini-flow-label">SUBFLOW · CLI VALIDATION</span><span class="flow-step data">argv</span><span class="flow-arrow">→</span><span class="flow-step fn">getopt_long</span><span class="flow-arrow">→</span><span class="flow-step branch">help / error</span><span class="flow-arrow">→</span><span class="flow-step data">one YAML path</span><span class="flow-arrow">→</span><span class="flow-step output">CommandLineStatus</span></div><p>新增轻量的 CBS CLI 层，把输入错误提前到框架初始化之前。</p><ul><li>支持 <code>-h/--help</code>。</li><li>拒绝未知参数、缺失 YAML、多个 YAML，并返回明确的 help/error 状态。</li><li>显式重置 <code>getopt</code> 状态，便于子进程和重复调用。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo_cli.cpp:21–80；ef4107bcf1。</p></div>
+        </details>
+
+        <details class="change-item" id="change-prepared-input">
+          <summary><span class="change-chip added">ADD</span><span><code>parse_and_prepare_input()</code> · 配置预处理</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="prepared input subflow"><span class="mini-flow-label">SUBFLOW · INPUT PREPARATION</span><span class="flow-step fn">Load YAML</span><span class="flow-arrow">→</span><span class="flow-step fn">apply defaults</span><span class="flow-arrow">→</span><span class="flow-step data">analyses + settings</span><span class="flow-arrow">→</span><span class="flow-step branch">event_file / processes</span><span class="flow-arrow">→</span><span class="flow-step data">validate xsec + files</span><span class="flow-arrow">→</span><span class="flow-step output">PreparedInput</span></div><p>把 YAML、analysis 列表、event files 和 cross section 转换成后续运行统一使用的 <code>PreparedInput</code>。</p><ul><li>补默认 settings，并检查 <code>analyses</code> 和 <code>settings</code> 是否存在。</li><li>明确区分 legacy <code>event_file</code> 与多 process <code>processes</code> 模式。</li><li>解析 fb/pb 截面、文件列表和不确定度，并检查文件存在性和输入互斥关系。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo_input.cpp:311–435。</p></div>
+        </details>
+
+        <details class="change-item" id="change-runtime-config">
+          <summary><span class="change-chip modified">MOD</span><span>Runtime settings · 运行时配置</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="runtime settings subflow"><span class="mini-flow-label">SUBFLOW · SETTINGS DISPATCH</span><span class="flow-step data">YAML settings</span><span class="flow-arrow">→</span><span class="flow-step branch">regular / FullLikes</span><span class="flow-arrow">→</span><span class="flow-step data">cutflow + histogram flags</span><span class="flow-arrow">→</span><span class="flow-step data">jet collections</span><span class="flow-arrow">→</span><span class="flow-step fn">event / likelihood options</span></div><p>把原本分散在框架配置中的控制项集中映射到 CBS 运行时。</p><ul><li>增加 regular/FullLikes、likelihood 选项、Rivet/Contur 选项的选择。</li><li>增加统一的 <code>check_cutflow</code> 和 <code>check_histogram</code> 运行时开关。</li><li>把 <code>jet_pt_min</code>、固定/Variable-R jet collections 传入事件转换链。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo.cpp:143–237；开发总结 §5.1–§5.2。</p></div>
+        </details>
+
+        <details class="change-item" id="change-output-config">
+          <summary><span class="change-chip added">ADD</span><span><code>OutputConfig</code> · 输出策略</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="output configuration subflow"><span class="mini-flow-label">SUBFLOW · OUTPUT POLICY</span><span class="flow-step data">settings.output</span><span class="flow-arrow">→</span><span class="flow-step fn">OutputConfig</span><span class="flow-arrow">→</span><span class="flow-step fn">validate path</span><span class="flow-arrow">→</span><span class="flow-step branch">screen / file</span></div><p>新增统一输出配置，允许同一次 CBS 运行独立控制屏幕摘要和 JSON 文件。</p><ul><li>支持 <code>screen_output</code>、<code>write_file</code> 和输出路径。</li><li>在输出前检查路径是否有效，并由输出模块创建父目录。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo.cpp:239–246；ColliderBit/examples/solo_output.cpp:39–64。</p></div>
+        </details>
+
+        <details class="change-item" id="change-functor-selection">
+          <summary><span class="change-chip modified">MOD</span><span>Select functors · Functor 选择</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="functor selection subflow"><span class="mini-flow-label">SUBFLOW · FUNCTOR SELECTION</span><span class="flow-step data">PreparedInput + settings</span><span class="flow-arrow">→</span><span class="flow-step branch">regular / FullLikes</span><span class="flow-arrow">→</span><span class="flow-step fn">getEvent + converter</span><span class="flow-arrow">→</span><span class="flow-step fn">CollectAnalyses</span><span class="flow-arrow">→</span><span class="flow-step data">set options</span></div><p>把 standalone 输入和 CBS 设置映射到实际执行所需的 GAMBIT functor。</p><ul><li>在 regular likelihood 与 FullLikes 之间选择 <code>calcLogLikes</code>。</li><li>固定使用 CBS 的 HepMC reader、HEPUtils converter 和 <code>CollectAnalyses</code>。</li><li>把 cutflow、printer 和 likelihood 参数传给对应 functor。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo.cpp:359–432。</p></div>
+        </details>
+
+        <details class="change-item" id="change-dependency-resolution">
+          <summary><span class="change-chip modified">MOD</span><span>Resolve functor graph · 依赖连接</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="dependency resolution subflow"><span class="mini-flow-label">SUBFLOW · DEPENDENCY WIRING</span><span class="flow-step fn">functor handles</span><span class="flow-arrow">→</span><span class="flow-step fn">resolveDependency</span><span class="flow-arrow">→</span><span class="flow-step fn">resolveBackendReq</span><span class="flow-arrow">→</span><span class="flow-step fn">resolveLoopManager</span><span class="flow-arrow">→</span><span class="flow-step stage">nested_functions[]</span></div><p>新增 standalone 场景下的显式依赖 wiring，使 CBS 不依赖完整 GAMBIT scan 来组装调用关系。</p><ul><li>调用 <code>resolveDependency</code> 连接 event、detector、analysis、collection 和 likelihood。</li><li>按配置连接 Nulike/FullLikes backend requirements。</li><li>连接 loop manager，并将 Rivet/Contur 等 nested functions 加入 nested list。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo.cpp:448–535。</p></div>
+        </details>
+
+        <details class="change-item" id="change-loop-config">
+          <summary><span class="change-chip modified">MOD</span><span>Configure CBS policy · Loop 配置</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="CBS loop configuration subflow"><span class="mini-flow-label">SUBFLOW · CBS LOOP POLICY</span><span class="flow-step data">YAML settings</span><span class="flow-arrow">→</span><span class="flow-step data">analyses + event limits</span><span class="flow-arrow">→</span><span class="flow-step stage">convergence = false</span><span class="flow-arrow">→</span><span class="flow-step fn">use_colliders=[CBS]</span><span class="flow-arrow">→</span><span class="flow-step fn">operateLHCLoop</span></div><p>为外部 HepMC 文件定义 CBS 专用的事件循环策略。</p><ul><li>传入 analyses、事件上下限和 <code>use_colliders=[CBS]</code>。</li><li>把 <code>run_convergence_checks</code> 固定为 <code>false</code>，保证处理用户提供的完整 event file。</li><li>把文件名、jet collections 和 cross section 传到 reader/converter/xsec functor。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo.cpp:380–407。</p></div>
+        </details>
+
+        <details class="change-item" id="change-process-batch">
+          <summary><span class="change-chip added">ADD</span><span><code>SoloBatch::run_and_merge()</code> · Batch 分支</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="batch subflow"><span class="mini-flow-label">SUBFLOW · BATCH MERGE</span><span class="flow-step data">processes[]</span><span class="flow-arrow">→</span><span class="flow-step fn">validate xsec + files</span><span class="flow-arrow">→</span><span class="flow-step branch">per-file subprocesses</span><span class="flow-arrow">→</span><span class="flow-step data">weighted merge</span><span class="flow-arrow">→</span><span class="flow-step fn">recompute likelihood</span><span class="flow-arrow">→</span><span class="flow-step output">sampling advice</span></div><p>把 CBS 从单个 event-file runner 扩展成多文件、多 process 的 batch runner。</p><ul><li>每个物理文件作为子任务运行，并保留所属 process 的完整截面。</li><li>同一 process 内按事件数加权，跨 process 合并 signal、MC 误差和 histogram/cutflow 结构。</li><li>合并后重新计算总 likelihood，而不是直接相加 per-file loglike；同时生成 <code>sampling_advice</code>。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo.cpp:248–343；开发总结 §5.4；03d5a9e959、3599c668e1。</p></div>
+        </details>
+
+        <details class="change-item" id="change-operate-loop">
+          <summary><span class="change-chip modified">MOD</span><span><code>operateLHCLoop()</code> · CBS Loop 集成</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="operate loop subflow"><span class="mini-flow-label">SUBFLOW · LOOP LIFECYCLE</span><span class="flow-step fn">CBS options</span><span class="flow-arrow">→</span><span class="flow-step fn">reset_and_calculate</span><span class="flow-arrow">→</span><span class="flow-step stage">event iterations</span><span class="flow-arrow">→</span><span class="flow-step stage">COLLIDER_FINALIZE</span><span class="flow-arrow">→</span><span class="flow-step data">event_count + results</span></div><p>把 standalone CBS 配置接入 GAMBIT 的公共 loop lifecycle，并把事件数和 finalize 结果带回 CBS。</p><ul><li>使用 CBS collider 名称和 <code>MCLoopInfo</code> 保存 iteration/event_count。</li><li>循环结束后读取 <code>event_count.at("CBS")</code>，进入结果收集和 likelihood。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo.cpp:545–559；ColliderBit/src/ColliderBit_eventloop.cpp:101。</p></div>
+        </details>
+
+        <details class="change-item" id="change-event-reader">
+          <summary><span class="change-chip added">ADD</span><span><code>getHepMCEvent</code> · HepMC 读取</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="HepMC reader subflow"><span class="mini-flow-label">SUBFLOW · HEPMC READER</span><span class="flow-step data">hepmc_filename</span><span class="flow-arrow">→</span><span class="flow-step fn">read_event</span><span class="flow-arrow">→</span><span class="flow-step branch">event / EOF</span><span class="flow-arrow">→</span><span class="flow-step stage">report_end + halt</span><span class="flow-arrow">→</span><span class="flow-step data">GenEvent</span></div><p>新增面向外部 HepMC 文件的事件读取路径，并把 EOF 变成 loop 的正常停止条件。</p><ul><li>从 YAML 取得文件名，在 OpenMP critical 区域读取下一个 event。</li><li>检测空 event/文件结束，调用 <code>report_end_of_event_file()</code> 和 <code>halt()</code>。</li><li>保留 event weight，并将读取结果交给统一转换器。</li></ul><p class="change-evidence">证据：ColliderBit/src/getHepMCEvent.cpp:160–219。</p></div>
+        </details>
+
+        <details class="change-item" id="change-event-convert">
+          <summary><span class="change-chip modified">MOD</span><span><code>convertHepMCEvent_HEPUtils</code> · 事件转换</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="event conversion subflow"><span class="mini-flow-label">SUBFLOW · EVENT CONVERSION</span><span class="flow-step data">GenEvent + weight</span><span class="flow-arrow">→</span><span class="flow-step data">jet settings</span><span class="flow-arrow">→</span><span class="flow-step fn">convertParticleEvent</span><span class="flow-arrow">→</span><span class="flow-step data">HEPUtils::Event</span><span class="flow-arrow">→</span><span class="flow-step output">jets + MET</span></div><p>扩展 HepMC 到 HEPUtils 的转换，使 standalone CBS 使用与原有 ColliderBit 一致的对象和 jet 语义。</p><ul><li>读取 jet pT threshold、普通 jet collections、tau collection 和 Variable-R 配置。</li><li>保留 event weight，调用统一 <code>convertParticleEvent</code> 生成 HEPUtils event。</li><li>处理 special loop iterations，避免在没有真实 event 时解引用空依赖。</li></ul><p class="change-evidence">证据：ColliderBit/src/getHepMCEvent.cpp:193–242；开发总结 §5.6。</p></div>
+        </details>
+
+        <details class="change-item" id="change-detector-dispatch">
+          <summary><span class="change-chip modified">MOD</span><span>Detector/event branch · 探测器分支</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="detector dispatch subflow"><span class="mini-flow-label">SUBFLOW · DETECTOR BRANCH</span><span class="flow-step data">HardScatteringEvent</span><span class="flow-arrow">→</span><span class="flow-step fn">clone</span><span class="flow-arrow">→</span><span class="flow-step branch">ATLAS smear / CMS smear / Identity copy</span><span class="flow-arrow">→</span><span class="flow-step data">SmearedEvent</span></div><p>统一 ATLAS、CMS 和 Identity 三类事件分支，保证不同分析收到一致的 HEPUtils event 接口。</p><ul><li>先 clone hard-scattering event。</li><li>ATLAS/CMS 分支调用对应 detector simulation；Identity 分支直接复制。</li><li>通过宏生成对应的 <code>smearEventATLAS</code>、<code>smearEventCMS</code> 和 <code>copyEvent</code>。</li></ul><p class="change-evidence">证据：ColliderBit/src/smearEvent.cpp:46–71。</p></div>
+        </details>
+
+        <details class="change-item" id="change-analysis-dispatch">
+          <summary><span class="change-chip modified">MOD</span><span>Analysis dispatch · 分析执行</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="analysis dispatch subflow"><span class="mini-flow-label">SUBFLOW · ANALYSIS DISPATCH</span><span class="flow-step data">SmearedEvent</span><span class="flow-arrow">→</span><span class="flow-step fn">AnalysisContainer</span><span class="flow-arrow">→</span><span class="flow-step branch">ATLAS / CMS / Identity</span><span class="flow-arrow">→</span><span class="flow-step fn">Analysis::run(e)</span><span class="flow-arrow">→</span><span class="flow-step data">per-analysis state</span></div><p>把 CBS 选择的分析集合分发到 ATLAS、CMS 和 Identity 的 AnalysisContainer。</p><ul><li>每个成功事件调用当前 collider 的全部分析。</li><li>保留公共的 <code>Analysis::run(e)</code> 生命周期，新增/扩展分析只需注册并在 YAML 选择。</li><li>让多个分析共享相同的 event conversion、detector branch 和结果收集接口。</li></ul><p class="change-evidence">证据：ColliderBit/src/runAnalyses.cpp:129–148；ColliderBit/src/analyses/AnalysisContainer.cpp:455–474。</p></div>
+        </details>
+
+        <details class="change-item" id="change-event-accumulation">
+          <summary><span class="change-chip modified">MOD</span><span>Per-event analysis state · 事件累积</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="event accumulation subflow"><span class="mini-flow-label">SUBFLOW · PER-EVENT ACCUMULATION</span><span class="flow-step data">event</span><span class="flow-arrow">→</span><span class="flow-step fn">Analysis::run</span><span class="flow-arrow">→</span><span class="flow-step data">cutflow + histogram fill</span><span class="flow-arrow">→</span><span class="flow-step data">SR counters</span><span class="flow-arrow">→</span><span class="flow-step stage">_needs_collection</span></div><p>把 cutflow、histogram 和 signal-region counters 统一纳入每个分析的事件累积状态。</p><ul><li><code>Analysis::analyze</code> 标记 <code>_needs_collection</code> 并执行具体分析的 <code>run(e)</code>。</li><li>Histogram 支持 weighted fill、sumw2、under/overflow、scale/combine 和 histogram-backed SR。</li><li>cutflow 通过运行时开关和编译期 CUTFLOW 能力控制。</li></ul><p class="change-evidence">证据：ColliderBit/src/analyses/Analysis.cpp:54–63；开发总结 §5.2、§5.5。</p></div>
+        </details>
+
+        <details class="change-item" id="change-loop-finalize">
+          <summary><span class="change-chip modified">MOD</span><span><code>COLLIDER_FINALIZE</code> · 结果提交</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="loop finalization subflow"><span class="mini-flow-label">SUBFLOW · RESULT COMMIT</span><span class="flow-step stage">COLLIDER_FINALIZE</span><span class="flow-arrow">→</span><span class="flow-step fn">get_results_ptr</span><span class="flow-arrow">→</span><span class="flow-step fn">collect_results</span><span class="flow-arrow">→</span><span class="flow-step branch">warning / consistency checks</span><span class="flow-arrow">→</span><span class="flow-step data">AnalysisData</span></div><p>明确分析结果只在 loop finalize 阶段提交，避免在事件处理中提前读取不完整结果。</p><ul><li>遍历当前 collider 的 analyses map。</li><li>调用 <code>get_results_ptr(warning)</code>，触发各分析的 <code>collect_results()</code>。</li><li>检查 luminosity、scale 和运行警告，再把 <code>AnalysisData</code> 交给聚合阶段。</li></ul><p class="change-evidence">证据：ColliderBit/src/runAnalyses.cpp:93–113；ColliderBit/src/analyses/Analysis.cpp:96–134。</p></div>
+        </details>
+
+        <details class="change-item" id="change-collect-analyses">
+          <summary><span class="change-chip modified">MOD</span><span><code>CollectAnalyses()</code> · 结果聚合</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="collect analyses subflow"><span class="mini-flow-label">SUBFLOW · ANALYSIS AGGREGATION</span><span class="flow-step data">ATLAS results</span><span class="flow-arrow">+</span><span class="flow-step data">CMS results</span><span class="flow-arrow">+</span><span class="flow-step data">Identity results</span><span class="flow-arrow">→</span><span class="flow-step fn">validate SRs</span><span class="flow-arrow">→</span><span class="flow-step output">AnalysisDataPointers</span></div><p>新增统一的 ATLAS/CMS/Identity 结果汇总和 cutflow 检查入口。</p><ul><li>清空并合并三个 analysis result vectors。</li><li>首次收集时校验每个分析至少有一个 signal region。</li><li>按 CBS 的 <code>check_cutflow</code> 和 normalization 选项输出 cutflow。</li></ul><p class="change-evidence">证据：ColliderBit/src/ColliderBit_eventloop.cpp:451–514；开发总结 §5.2。</p></div>
+        </details>
+
+        <details class="change-item" id="change-calc-loglikes">
+          <summary><span class="change-chip partial">PART</span><span><code>calc_LHC_LogLikes()</code> · Likelihood 输入</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="likelihood subflow"><span class="mini-flow-label">SUBFLOW · LIKELIHOOD EVALUATION</span><span class="flow-step data">AnalysisData + xsec + n_mc</span><span class="flow-arrow">→</span><span class="flow-step branch">regular / FullLikes</span><span class="flow-arrow">→</span><span class="flow-step fn">covariance / marginalisation</span><span class="flow-arrow">→</span><span class="flow-step data">SR loglikes</span><span class="flow-arrow">→</span><span class="flow-step output">per-analysis map</span></div><p>当前总图只展开了 CBS 进入公共 likelihood 接口的部分；具体 covariance、FullLikes 和 batch 重算逻辑仍属于下一级细节图。</p><ul><li>接收 AnalysisData、cross section、MC event count 和 estimator。</li><li>支持 regular/FullLikes、covariance、marginalisation 和 alternative likelihood terms。</li><li>batch 合并完成后重新调用该层，而不是合并 per-file loglike。</li></ul><p class="change-evidence">证据：ColliderBit/src/LHC_likelihoods.cpp:1373–1410；开发总结 §5.3–§5.4。</p></div>
+        </details>
+
+        <details class="change-item" id="change-contur-branch">
+          <summary><span class="change-chip optional">OPT</span><span>Rivet / Contur · 可选分支</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="Contur subflow"><span class="mini-flow-label">SUBFLOW · OPTIONAL CONTUR PATH</span><span class="flow-step branch">withRivet / withContur</span><span class="flow-arrow">→</span><span class="flow-step fn">init nested functors</span><span class="flow-arrow">→</span><span class="flow-step fn">Rivet measurements</span><span class="flow-arrow">→</span><span class="flow-step data">pool loglikes</span><span class="flow-arrow">→</span><span class="flow-step output">optional output</span></div><p>这是 CBS 保留的可选后端路径，不是主 CBS 输出链的必需修改。</p><ul><li>运行时根据 <code>withRivet</code>/<code>withContur</code> 初始化并接入 nested functions。</li><li>输出 Contur total loglike、pool loglikes 和 dominant measurement。</li><li>process batch 模式明确禁止同时使用 Rivet/Contur settings。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo.cpp:434–445、551–568。</p></div>
+        </details>
+
+        <details class="change-item" id="change-final-values">
+          <summary><span class="change-chip modified">MOD</span><span>Final values · 最终结果视图</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="final values subflow"><span class="mini-flow-label">SUBFLOW · FINAL RESULT VIEWS</span><span class="flow-step data">event_count</span><span class="flow-arrow">+</span><span class="flow-step data">analysis_results</span><span class="flow-arrow">+</span><span class="flow-step data">analysis_loglikes</span><span class="flow-arrow">+</span><span class="flow-step branch">Contur pools</span><span class="flow-arrow">→</span><span class="flow-step output">final values</span></div><p>把 loop、analysis 和 likelihood 的结果组织成输出模块可以消费的统一参数。</p><ul><li>收集 CBS event count、combined loglike、analysis results 和 per-analysis loglikes。</li><li>在启用 Contur 时同时收集 total 和 per-pool 信息。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo.cpp:558–572。</p></div>
+        </details>
+
+        <details class="change-item" id="change-emit-outputs">
+          <summary><span class="change-chip added">ADD</span><span><code>SoloOutput::emit_outputs()</code> · 输出 API</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="emit outputs subflow"><span class="mini-flow-label">SUBFLOW · OUTPUT API</span><span class="flow-step data">final values</span><span class="flow-arrow">→</span><span class="flow-step fn">emit_outputs</span><span class="flow-arrow">→</span><span class="flow-step branch">screen summary</span><span class="flow-arrow">+</span><span class="flow-step branch">JSON writer</span><span class="flow-arrow">→</span><span class="flow-step output">published result</span></div><p>新增统一的屏幕摘要和文件输出 API，解除 CBS 结果对内部 C++ 对象生命周期的依赖。</p><ul><li>按 <code>OutputConfig</code> 决定是否打印屏幕摘要。</li><li>按配置写出 JSON，并承接 batch 的 sampling advice。</li><li>统一处理 analysis、likelihood、Contur 和 SR 结果。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo_output.cpp:376–405；开发总结 §5.3。</p></div>
+        </details>
+
+        <details class="change-item" id="change-output-payload">
+          <summary><span class="change-chip added">ADD</span><span><code>CBS_output.json</code> · 结果 schema</span></summary>
+          <div class="change-detail"><div class="mini-flow" role="img" aria-label="JSON output payload subflow"><span class="mini-flow-label">SUBFLOW · JSON PAYLOAD</span><span class="flow-step data">AnalysisData</span><span class="flow-arrow">→</span><span class="flow-step fn">schema_version</span><span class="flow-arrow">→</span><span class="flow-step data">analyses + SRs</span><span class="flow-arrow">→</span><span class="flow-step data">cutflows + histograms</span><span class="flow-arrow">→</span><span class="flow-step data">terms + variants</span><span class="flow-arrow">→</span><span class="flow-step output">CBS_output.json</span></div><p>新增稳定的 <code>cbs-solo-loglike-v1</code> 输出契约。</p><ul><li>输出 run summary、analysis metadata、signal regions、cutflows 和 histograms。</li><li>输出 <code>n_sig_MC</code>、MC/statistical error、scaled signal、likelihood terms、variants 和 predefined sets。</li><li>batch 时额外输出 sampling advice；启用 Contur 时输出 pools 和 total loglike。</li></ul><p class="change-evidence">证据：ColliderBit/examples/solo_output.cpp:406–685；开发总结 §5.3、§5.5。</p></div>
+        </details>
+      </div>
+    </section>
+
+    <div class="meta"><strong>Evidence and scope.</strong> The companion source files are <code>CBS_full_execution_dependency.json</code> and <code>CBS_full_execution_dependency.mmd</code>. This is a static, source-assisted graph: no CBS rebuild, runtime instrumentation or event-file execution was used. The edges labelled “runtime dependency” describe GAMBIT functor/loop-manager wiring that is established through <code>resolveDependency</code>, <code>resolveLoopManager</code> and <code>setNestedList</code>, rather than ordinary direct C++ calls. The change notes are source/history summaries; they do not claim a compiled runtime trace.</div>
+  </main>
+</body>
+</html>

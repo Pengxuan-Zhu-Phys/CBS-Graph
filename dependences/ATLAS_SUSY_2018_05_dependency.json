@@ -1,0 +1,54 @@
+{
+  "scope": {
+    "analysis": "ATLAS_SUSY_2018_05",
+    "source": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp",
+    "scope_note": "Analysis-local dependency graph with the event-object, MET-significance and signal-region stages condensed for readability."
+  },
+  "extraction": {
+    "mode": "clang-ast-assisted-static",
+    "runtime_instrumentation": false,
+    "cbs_compilation": false,
+    "ast_confirmed_members": ["Analysis_ATLAS_SUSY_2018_05::run", "Analysis_ATLAS_SUSY_2018_05::collect_results", "Analysis_ATLAS_SUSY_2018_05::analysis_specific_reset"],
+    "ast_confirmed_calls": ["applyEfficiency", "removeOverlap", "calcMETSignificance", "sort", "random_bool"],
+    "limitations": [
+      "The many LOG_CUT/FILL_SIGNAL_REGION branches are represented as one signal-region stage.",
+      "The graph records static source evidence, not event-level branch frequencies."
+    ]
+  },
+  "nodes": [
+    {"id":"analysis_run","kind":"analysis_method","label":"Analysis_ATLAS_SUSY_2018_05::run()","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":99,"status":"target"},
+    {"id":"baseline_leptons","kind":"object_selection","label":"Baseline e / μ / γ objects","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":115,"status":"analysis"},
+    {"id":"baseline_jets","kind":"jet_collection","label":"Baseline antikt_R04 jets","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":139,"status":"analysis"},
+    {"id":"efficiencies","kind":"detector_efficiency","label":"ATLAS lepton efficiencies","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":121,"status":"analysis"},
+    {"id":"overlap_removal","kind":"call","label":"removeOverlap()","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":164,"status":"analysis"},
+    {"id":"signal_objects","kind":"object_selection","label":"Signal leptons / jets / b-jets","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":177,"status":"analysis"},
+    {"id":"sort_objects","kind":"call","label":"sort() by pT","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":227,"status":"analysis"},
+    {"id":"preselection","kind":"cutflow","label":"2-lepton + jet preselection","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":256,"status":"analysis"},
+    {"id":"met_significance","kind":"call","label":"calcMETSignificance()","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":295,"status":"analysis"},
+    {"id":"mt2","kind":"call","label":"mt2_bisect::mt2::get_mt2()","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":328,"status":"analysis"},
+    {"id":"signal_regions","kind":"branch","label":"SRHigh / SRInt / SRLow / SROffShell","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":363,"status":"analysis"},
+    {"id":"fill_counters","kind":"counter","label":"LOG_CUT / FILL_SIGNAL_REGION","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":366,"status":"analysis"},
+    {"id":"analysis_collect_results","kind":"analysis_hook","label":"collect_results(): commit 13 SRs + cutflows","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":581,"status":"analysis"},
+    {"id":"analysis_commit_macros","kind":"result_commit","label":"13 COMMIT_SIGNAL_REGION + COMMIT_CUTFLOWS","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":583,"status":"analysis"},
+    {"id":"analysis_specific_reset","kind":"analysis_hook","label":"analysis_specific_reset()","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":601,"status":"analysis"}
+  ],
+  "edges": [
+    {"source":"analysis_run","target":"baseline_leptons","kind":"semantic","label":"build baseline particles","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":115}]},
+    {"source":"analysis_run","target":"baseline_jets","kind":"semantic","label":"build antikt_R04 jets","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":139}]},
+    {"source":"baseline_leptons","target":"efficiencies","kind":"call","label":"applyEfficiency","confidence":"high","evidence":[{"method":"clang_ast","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":123}]},
+    {"source":"baseline_jets","target":"overlap_removal","kind":"call","label":"jet-lepton cleaning","confidence":"high","evidence":[{"method":"clang_ast","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":168}]},
+    {"source":"baseline_leptons","target":"overlap_removal","kind":"call","label":"lepton-lepton cleaning","confidence":"high","evidence":[{"method":"clang_ast","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":166}]},
+    {"source":"efficiencies","target":"signal_objects","kind":"semantic","label":"loose / medium signal IDs","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":185}]},
+    {"source":"overlap_removal","target":"signal_objects","kind":"dataflow","label":"cleaned objects -> signal objects","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":177}]},
+    {"source":"signal_objects","target":"sort_objects","kind":"call","label":"sort pT ordered objects","confidence":"high","evidence":[{"method":"clang_ast","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":227}]},
+    {"source":"sort_objects","target":"preselection","kind":"dataflow","label":"ordered objects -> cuts","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":232}]},
+    {"source":"preselection","target":"met_significance","kind":"call","label":"MET significance branch","confidence":"high","evidence":[{"method":"clang_ast","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":295}]},
+    {"source":"preselection","target":"mt2","kind":"call","label":"compute mT2","confidence":"high","evidence":[{"method":"clang_ast","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":328}]},
+    {"source":"met_significance","target":"signal_regions","kind":"dataflow","label":"metsig thresholds","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":363}]},
+    {"source":"mt2","target":"signal_regions","kind":"dataflow","label":"mT2 thresholds","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":355}]},
+    {"source":"signal_regions","target":"fill_counters","kind":"semantic","label":"LOG_CUT / fill signal regions","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":366}]},
+    {"source":"analysis_run","target":"analysis_collect_results","kind":"lifecycle","label":"result collection hook","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":581}]},
+    {"source":"analysis_collect_results","target":"analysis_commit_macros","kind":"semantic","label":"commit SRs and cutflows","confidence":"high","evidence":[{"method":"source","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":583}]},
+    {"source":"analysis_run","target":"analysis_specific_reset","kind":"lifecycle","label":"analysis reset hook","confidence":"high","evidence":[{"method":"clang_ast","file":"ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp","line":601}]}
+  ]
+}

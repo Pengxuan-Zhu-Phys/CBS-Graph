@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CBS main() · atomic change tree</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --paper: #f5f5f5; --ink: #2d3142; --muted: #4f5d75; --soft: #7a8399;
+      --rule: rgba(45,49,66,.13); --node: #fbfaf8;
+      --blue: #4a6fa5; --blue-bg: #eef3fb;
+      --green: #4f8a69; --green-bg: #eef8f1;
+      --purple: #735ca6; --purple-bg: #f1ecfa;
+      --orange: #b55c2d; --orange-bg: #fff0e8;
+      --gray: #697386; --gray-bg: #f1f2f4;
+      --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+    }
+    body { background: var(--paper); color: var(--ink); min-height: 100vh; padding: 36px; font-family: var(--font-sans); }
+    .frame { width: min(1600px, 100%); margin: 0 auto; }
+    .eyebrow, .kicker, .source, .meta, .evidence, .tag, .legend { font-family: var(--font-mono); }
+    .eyebrow { color: var(--muted); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 10px; }
+    h1 { font-size: clamp(30px, 4vw, 48px); font-weight: 650; letter-spacing: -.04em; line-height: 1.05; margin-bottom: 12px; }
+    .intro { color: var(--muted); font-size: 14px; line-height: 1.65; max-width: 1220px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin: 20px 0 26px; }
+    .toolbar a { color: var(--blue); text-decoration: none; border-bottom: 1px solid rgba(74,111,165,.35); font-family: var(--font-mono); font-size: 10px; }
+    .toolbar a:hover { border-bottom-color: var(--blue); }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px 18px; color: var(--muted); font-size: 10px; margin: 18px 0 28px; }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .chip { min-width: 34px; padding: 3px 6px; border: 1px solid currentColor; border-radius: 3px; text-align: center; font-weight: 650; }
+    .chip.add { color: var(--green); background: var(--green-bg); }
+    .chip.mod { color: var(--orange); background: var(--orange-bg); }
+    .chip.part { color: var(--purple); background: var(--purple-bg); }
+    .chip.reuse { color: var(--gray); background: var(--gray-bg); }
+    .swatch { width: 20px; height: 10px; border: 1px solid currentColor; border-radius: 3px; display: inline-block; }
+    .swatch.fn { color: var(--blue); background: var(--blue-bg); }
+    .swatch.data { color: var(--green); background: var(--green-bg); }
+    .swatch.stage { color: var(--gray); background: var(--gray-bg); }
+    .swatch.output { color: var(--orange); background: var(--orange-bg); }
+    section { border-top: 1px solid var(--rule); padding-top: 20px; margin-top: 30px; }
+    .kicker { color: var(--soft); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 7px; }
+    h2 { font-size: 27px; font-weight: 600; letter-spacing: -.025em; margin-bottom: 5px; }
+    h3 { font-size: 18px; font-weight: 650; letter-spacing: -.015em; }
+    .source { color: var(--soft); font-size: 10px; line-height: 1.5; margin-bottom: 14px; }
+    svg { display: block; width: 100%; height: auto; overflow: visible; }
+    svg .tree-edge { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+    svg .tree-node rect { fill: #fff; stroke: var(--ink); stroke-width: 1.2; }
+    svg .tree-node.root rect { fill: var(--orange-bg); stroke: var(--orange); stroke-width: 1.6; }
+    svg .tree-node.branch rect { fill: #fff; stroke: var(--blue); }
+    svg .tree-node .kind { fill: var(--soft); font: 10px var(--font-mono); letter-spacing: 1.2px; }
+    svg .tree-node .title { fill: var(--ink); font-size: 15px; font-weight: 650; }
+    svg .tree-node .body { fill: var(--muted); font: 10px var(--font-mono); }
+    svg .tree-node.root .kind { fill: var(--orange); }
+    svg .tree-node.branch .kind { fill: var(--blue); }
+    .tree-note { color: var(--muted); font-size: 13px; line-height: 1.6; margin-top: 12px; }
+    .entry-box { display: flex; gap: 12px; align-items: flex-start; border: 1px solid rgba(181,92,45,.34); border-left: 4px solid var(--orange); border-radius: 8px; background: #fff8f3; padding: 14px 16px; margin-top: 20px; }
+    .entry-box p { color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .comparison-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; margin: 16px 0; }
+    .comparison-meta article { border: 1px solid var(--rule); border-radius: 8px; background: #fff; padding: 14px 16px; }
+    .comparison-meta h3 { font-size: 14px; margin-bottom: 7px; }
+    .comparison-meta p { color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .comparison-meta .prototype { border-left: 4px solid var(--purple); }
+    .comparison-meta .current { border-left: 4px solid var(--blue); }
+    .comparison-meta code { overflow-wrap: anywhere; }
+    .comparison-scroll { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: #fff; }
+    .comparison-table { width: 100%; min-width: 1080px; border-collapse: collapse; font-size: 12px; line-height: 1.5; }
+    .comparison-table th, .comparison-table td { vertical-align: top; text-align: left; padding: 11px 13px; border-bottom: 1px solid var(--rule); }
+    .comparison-table th { color: var(--soft); background: #f8f8f6; font: 9px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
+    .comparison-table tr:last-child td { border-bottom: 0; }
+    .comparison-table td:first-child { width: 16%; color: var(--ink); font-weight: 650; }
+    .comparison-table td:nth-child(2) { width: 26%; background: rgba(115,92,166,.035); }
+    .comparison-table td:nth-child(3) { width: 28%; background: rgba(74,111,165,.035); }
+    .comparison-table td:nth-child(4) { width: 30%; color: var(--muted); }
+    .comparison-table code { overflow-wrap: anywhere; }
+    .comparison-footnote { color: var(--soft); font: 10px/1.55 var(--font-mono); margin-top: 10px; }
+    .branch-section { margin-top: 34px; }
+    .branch-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+    .branch-head .branch-index { color: var(--soft); font: 10px var(--font-mono); letter-spacing: .12em; }
+    .branch-intro { color: var(--muted); font-size: 13px; line-height: 1.6; max-width: 1160px; margin-bottom: 14px; }
+    .atomic-grid { display: grid; grid-template-columns: 1.08fr 1fr; gap: 12px 16px; align-items: start; }
+    .atomic-card { border: 1px solid var(--rule); border-radius: 8px; background: rgba(255,255,255,.30); }
+    .atomic-card[open] { background: #fff; }
+    .atomic-card summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--ink); font-size: 13px; font-weight: 650; }
+    .atomic-card summary::-webkit-details-marker { display: none; }
+    .atomic-card summary::after { content: '+'; margin-left: auto; color: var(--soft); font: 16px var(--font-mono); font-weight: 400; }
+    .atomic-card[open] summary::after { content: '−'; }
+    .atomic-body { padding: 0 16px 16px 62px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .atomic-body p { margin-bottom: 8px; }
+    .atomic-body ul { margin: 0 0 8px 16px; }
+    .atomic-body li { margin: 3px 0; }
+    .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 12px; padding: 10px 12px; border: 1px solid rgba(45,49,66,.10); border-radius: 6px; background: #f8f8f6; }
+    .flow-label { width: 100%; color: var(--soft); font: 9px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
+    .flow-step { display: inline-flex; align-items: center; min-height: 28px; max-width: 240px; padding: 6px 8px; border: 1px solid var(--gray); border-radius: 5px; color: var(--ink); background: #fff; font: 10px/1.25 var(--font-mono); }
+    .flow-step.fn { border-color: var(--blue); background: var(--blue-bg); }
+    .flow-step.data { border-color: var(--green); background: var(--green-bg); }
+    .flow-step.stage { border-color: var(--gray); background: var(--gray-bg); }
+    .flow-step.output { border-color: var(--orange); background: var(--orange-bg); }
+    .flow-step.branch { border-style: dashed; }
+    .flow-arrow { color: var(--muted); font: 14px var(--font-mono); }
+    .atomic-fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+    .field { border-top: 1px solid var(--rule); padding-top: 7px; }
+    .field strong { display: block; color: var(--soft); font: 9px var(--font-mono); letter-spacing: .12em; margin-bottom: 4px; text-transform: uppercase; }
+    .field span { display: block; }
+    .evidence { color: var(--soft); font-size: 10px; line-height: 1.55; }
+    .evidence a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted rgba(74,111,165,.45); }
+    .evidence a:hover { border-bottom-style: solid; }
+    .commit { display: inline-block; margin: 3px 4px 0 0; padding: 2px 5px; border: 1px solid rgba(79,93,117,.22); border-radius: 3px; color: var(--muted); background: #f1f2f4; font: 9px var(--font-mono); }
+    .file-map { display: grid; grid-template-columns: 1.1fr 1fr; gap: 12px 16px; }
+    .file-map article { border: 1px solid var(--rule); border-radius: 8px; background: #fff; padding: 14px 16px; }
+    .file-map h3 { font-size: 14px; margin-bottom: 7px; }
+    .file-map p, .file-map li { color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .file-map ul { margin-left: 16px; }
+    .meta { border-top: 1px solid var(--rule); margin-top: 34px; padding-top: 17px; color: var(--muted); font-size: 10px; line-height: 1.65; }
+    code { font-family: var(--font-mono); font-size: .92em; }
+    @media (max-width: 900px) { body { padding: 22px; } .atomic-grid, .file-map { grid-template-columns: 1fr; } .atomic-fields { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="frame">
+    <p class="eyebrow">ColliderBit Solo · change dossier · main()</p>
+    <h1>Atomic change tree for the CBS entrypoint</h1>
+    <p class="intro">This page isolates the <code>main(argc, argv)</code> block from the CBS overview and expands it into a source-backed change tree. It now compares the original one-file prototype in <code>worktree/SUSYRun2</code> with the current CBS framework, then records the smallest useful code blocks, their responsibilities, and the commits that introduced or extended them.</p>
+    <div class="toolbar"><a href="cbs-full-execution-flow.html">← Back to CBS full execution flow</a><span class="commit">prototype baseline compared</span><span class="commit">static source/history map</span><span class="commit">no rebuild · no runtime trace</span></div>
+    <div class="legend" aria-label="Main change dossier legend">
+      <span><b class="chip add">ADD</b> CBS 新增</span>
+      <span><b class="chip mod">MOD</b> CBS 修改/扩展</span>
+      <span><b class="chip part">PART</b> 共享或部分覆盖</span>
+      <span><b class="chip reuse">REUSE</b> 复用公共逻辑</span>
+      <span><i class="swatch fn"></i> function / functor</span>
+      <span><i class="swatch data"></i> data / configuration</span>
+      <span><i class="swatch stage"></i> lifecycle / branch</span>
+      <span><i class="swatch output"></i> output / result</span>
+    </div>
+
+    <section id="prototype-comparison">
+      <p class="kicker">00 · prototype → current framework</p>
+      <h2>原型分支和当前 CBS 框架的对照</h2>
+      <p class="branch-intro">这里的“Baseline”不再泛指公共框架，而是明确指向本地 <code>worktree/SUSYRun2</code> 中的原型分支。对照以两个版本的 <code>solo.cpp</code> 为主，并把当前新增的 helper 文件列为独立的结构变化。</p>
+      <div class="comparison-meta">
+        <article class="prototype"><h3>Prototype · SUSYRun2</h3><p><code>worktree/SUSYRun2</code><br>branch <code>private-SUSYRun2</code> · commit <code>5989e2d27a</code><br><a class="evidence" href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp:59–446 ↗</a></p></article>
+        <article class="current"><h3>Current · CBS development</h3><p><code>GambitBSM/gambit</code><br>branch <code>ColliderBit_solo_development</code> · commit <code>65aca0890d</code><br><a class="evidence" href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp:71–598 ↗</a></p></article>
+      </div>
+      <div class="comparison-scroll">
+        <table class="comparison-table">
+          <thead><tr><th>main surface</th><th>原型 SUSYRun2</th><th>当前 CBS framework</th><th>对 main 修改树的解释</th></tr></thead>
+          <tbody>
+            <tr><td>进程入口 / CLI</td><td><code>main</code> 直接检查 <code>argc &lt; 2</code>，读取 <code>argv[1]</code>，并在函数内输出 usage。</td><td>调用 <code>SoloCLI::parse_command_line()</code>，通过 <code>CommandLineStatus</code> 区分 help、error 和 run。</td><td>原子块从“参数读取”变成“CLI helper + 状态分支”；对应 Startup 分支前两个 block。</td></tr>
+            <tr><td>配置 / 输入</td><td><code>YAML::LoadFile</code>、analysis/settings 提取、<code>event_file</code> 和 HepMC 后缀检查都集中在 <code>main</code>。</td><td>由 <code>SoloInput::parse_and_prepare_input()</code> 生成 <code>PreparedInput</code>，统一处理 defaults、文件模式、截面和文件存在性。</td><td>新增文件边界，main 只消费规范化数据；对应 Input 分支的 handoff 和 input preparation。</td></tr>
+            <tr><td>运行模式</td><td>单个 <code>event_file</code> 运行，没有 <code>processes</code> 分支。</td><td>增加 <code>PreparedInput.processes</code>、<code>SoloBatch::run_and_merge()</code> 和 sampling advice。</td><td>新增 batch 早分流，避免把多文件合并逻辑混入 single-file event loop。</td></tr>
+            <tr><td>Likelihood / backend</td><td>入口路径固定使用 <code>calc_LHC_LogLikes_full</code>，并把 FullLikes 当作必需 backend。</td><td>根据 <code>use_FullLikes</code> 选择 regular 或 FullLikes；只在启用时解析 FullLikes backend 依赖。</td><td>main 从固定 functor 改成运行时策略选择；对应 likelihood selector、option propagation 和 dependency wiring。</td></tr>
+            <tr><td>Loop / diagnostics</td><td><code>max_nEvents = 1000000000</code>，且 <code>print_cutflows</code> 固定为 true。</td><td>使用 <code>INT_MAX</code>、关闭 convergence checks，并增加 <code>check_cutflow</code>/<code>check_histogram</code> runtime policy。</td><td>把 CBS 的“处理到输入结束”和诊断开关显式化；对应 Runtime policy 和 loop policy。</td></tr>
+            <tr><td>结果 / 输出</td><td>main 内部拼接 <code>stringstream</code>，直接打印 analysis/SR/likelihood summary。</td><td>组装统一结果参数，调用 <code>SoloOutput::emit_outputs()</code>，可输出 screen summary 和 <code>cbs-solo-loglike-v1</code> JSON。</td><td>输出从一次性终端文本变成可复用 API + machine-readable contract；对应 Result assembly、Output API 和 JSON payload。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="comparison-footnote">静态比较命令：<code>git diff --no-index worktree/SUSYRun2/ColliderBit/examples/solo.cpp gambit/ColliderBit/examples/solo.cpp</code> · 当前 <code>solo.cpp</code> 相比原型增加了约 152 行，并把多个职责拆到四个新增 helper 模块：<code>solo_cli</code>、<code>solo_input</code>、<code>solo_batch</code>、<code>solo_output</code>。</p>
+    </section>
+
+    <section>
+      <p class="kicker">01 · tree overview</p>
+      <h2>main() → four change families</h2>
+      <p class="source">Comparison anchors: prototype solo.cpp:59–446 → current ColliderBit/examples/solo.cpp:71–598 · the tree is an explanation of the change surface, not a direct-call graph.</p>
+      <svg viewBox="0 0 1540 304" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="main-change-tree-title main-change-tree-desc">
+        <title id="main-change-tree-title">CBS main atomic change tree</title>
+        <desc id="main-change-tree-desc">A tree showing the CBS main function branching into startup and validation, input and runtime policy, execution and dependency wiring, and finalization and output change families.</desc>
+        <rect width="1540" height="304" fill="#f5f5f5"/>
+        <g>
+          <path class="tree-edge" d="M770 100 V124 Q770 132 762 132 H228 Q220 132 220 140 V164"/>
+          <path class="tree-edge" d="M770 100 V124 Q770 132 778 132 H572 Q580 132 580 140 V164"/>
+          <path class="tree-edge" d="M770 100 V124 Q770 132 938 132 Q946 132 946 140 V164"/>
+          <path class="tree-edge" d="M770 100 V124 Q770 132 1292 132 Q1300 132 1300 140 V164"/>
+        </g>
+        <g class="tree-node root" transform="translate(610 24)">
+          <rect width="320" height="76" rx="8"/>
+          <text class="kind" x="16" y="20">MODIFIED · ROOT ENTRYPOINT</text>
+          <text class="title" x="16" y="46">main(argc, argv)</text>
+          <text class="body" x="16" y="64">prototype monolith → current orchestration</text>
+        </g>
+        <g class="tree-node branch" transform="translate(80 164)">
+          <rect width="280" height="76" rx="8"/>
+          <text class="kind" x="16" y="20">01 · STARTUP</text>
+          <text class="title" x="16" y="46">CLI + bootstrap</text>
+          <text class="body" x="16" y="64">solo.cpp · solo_cli.cpp</text>
+        </g>
+        <g class="tree-node branch" transform="translate(440 164)">
+          <rect width="280" height="76" rx="8"/>
+          <text class="kind" x="16" y="20">02 · INPUT</text>
+          <text class="title" x="16" y="46">Input + runtime policy</text>
+          <text class="body" x="16" y="64">solo_input.cpp · settings</text>
+        </g>
+        <g class="tree-node branch" transform="translate(800 164)">
+          <rect width="280" height="76" rx="8"/>
+          <text class="kind" x="16" y="20">03 · EXECUTION</text>
+          <text class="title" x="16" y="46">Modes + dependency wiring</text>
+          <text class="body" x="16" y="64">batch · loop · functors</text>
+        </g>
+        <g class="tree-node branch" transform="translate(1160 164)">
+          <rect width="280" height="76" rx="8"/>
+          <text class="kind" x="16" y="20">04 · OUTPUT</text>
+          <text class="title" x="16" y="46">Results + publication</text>
+          <text class="body" x="16" y="64">solo_output.cpp · JSON</text>
+        </g>
+        <text x="770" y="286" fill="#7a8399" font-family="SF Mono, monospace" font-size="10" text-anchor="middle" letter-spacing="1.2">EXPAND A BRANCH BELOW TO SEE FILE → FUNCTION → CODE-BLOCK → CHANGE → EVIDENCE</text>
+      </svg>
+      <div class="entry-box"><b class="chip mod">ENTRY</b><p><strong>How to read this page:</strong> the root is the current <code>main</code> orchestration function; each branch groups the files and code blocks it coordinates. Every atomic card now reads as <code>prototype responsibility → current CBS change → effect</code>, with source evidence for both sides where useful.</p></div>
+    </section>
+
+    <section class="branch-section" id="startup-validation">
+      <div class="branch-head"><span class="branch-index">01</span><h2>Startup &amp; validation</h2></div>
+      <p class="branch-intro">The first branch turns a bare process invocation into a predictable CBS entry: validate the CLI, initialize the required runtime services, and keep subprocess output readable.</p>
+      <div class="atomic-grid">
+        <details class="atomic-card" open>
+          <summary><span class="chip mod">MOD</span><span><code>main</code> CLI handoff · solo.cpp:71–87</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="main CLI handoff flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">argc / argv</span><span class="flow-arrow">→</span><span class="flow-step fn">CommandLineOptions</span><span class="flow-arrow">→</span><span class="flow-step fn">parse_command_line</span><span class="flow-arrow">→</span><span class="flow-step branch">help / error / run</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype <code>main</code> checked <code>argc &lt; 2</code> and consumed <code>argv[1]</code> directly.</span></div><div class="field"><strong>CBS change</strong><span>main delegates parsing to a typed CBS CLI helper and branches on an explicit status.</span></div><div class="field"><strong>Effect</strong><span>invalid invocation exits before backend and event-loop setup.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:63–69 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:71–87 · Commit <span class="commit">ef4107bcf1</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip add">ADD</span><span><code>SoloCLI::parse_command_line</code> · solo_cli.cpp:21–80</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="command line parser flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">argv</span><span class="flow-arrow">→</span><span class="flow-step fn">getopt_long</span><span class="flow-arrow">→</span><span class="flow-step branch">help / malformed / missing</span><span class="flow-arrow">→</span><span class="flow-step output">CommandLineStatus</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype had no separate CLI module; argument validation was embedded in <code>main</code>.</span></div><div class="field"><strong>CBS change</strong><span>Adds help, exactly-one-YAML validation, unknown-option rejection, and getopt reset.</span></div><div class="field"><strong>Effect</strong><span>the caller can distinguish help, error, and run without parsing strings itself.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:63–69 → current <a href="../sources/current/ColliderBit/examples/solo_cli.cpp">solo_cli.cpp</a>:21–80 · Commit <span class="commit">ef4107bcf1</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip add">ADD</span><span>Environment flag helper · solo.cpp:88–99</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="environment flag flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">CBS_SUPPRESS_BANNER</span><span class="flow-arrow">→</span><span class="flow-step fn">env_flag_enabled</span><span class="flow-arrow">→</span><span class="flow-step branch">true / false</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype printed the startup banner unconditionally, so child runs repeated it.</span></div><div class="field"><strong>CBS change</strong><span>accepts common true spellings from the environment.</span></div><div class="field"><strong>Effect</strong><span>parent/child CBS output stays readable in batch runs.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:83–91 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:88–126 · Commit <span class="commit">79ad4187b7</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip mod">MOD</span><span>Backend bootstrap + availability checks · solo.cpp:101–112</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="backend bootstrap flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step fn">Nulike init</span><span class="flow-arrow">→</span><span class="flow-step fn">works[] check</span><span class="flow-arrow">→</span><span class="flow-step branch">FullLikes / Rivet / Contur optional</span><span class="flow-arrow">→</span><span class="flow-step stage">continue</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype checked required Nulike/FullLikes and optional Rivet/Contur before entering the run.</span></div><div class="field"><strong>CBS change</strong><span>the CBS entry explicitly initializes/checks required and optional services before work starts.</span></div><div class="field"><strong>Effect</strong><span>missing backend failures are reported at the entry boundary.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:71–81 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:101–112, 151–158 · Commits <span class="commit">de5e879b74b</span> <span class="commit">768ab74d09</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip mod">MOD</span><span>Startup banner policy · solo.cpp:114–126</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="startup banner flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">suppress_startup_banner</span><span class="flow-arrow">→</span><span class="flow-step branch">suppressed</span><span class="flow-arrow">/</span><span class="flow-step output">print CBS banner once</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype startup text was part of the standalone run path with no subprocess guard.</span></div><div class="field"><strong>CBS change</strong><span>the banner is now conditional on an environment flag.</span></div><div class="field"><strong>Effect</strong><span>interactive runs remain branded; batch children stay quiet.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:83–91 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:114–126 · Commit <span class="commit">79ad4187b7</span></p></div>
+        </details>
+      </div>
+    </section>
+
+    <section class="branch-section" id="input-policy">
+      <div class="branch-head"><span class="branch-index">02</span><h2>Input &amp; runtime policy</h2></div>
+      <p class="branch-intro">This branch is where main stops being a thin executable wrapper: it receives a normalized input object, translates YAML into CBS policy, and decides which optional result capabilities are active.</p>
+      <div class="atomic-grid">
+        <details class="atomic-card">
+          <summary><span class="chip add">ADD</span><span><code>PreparedInput</code> handoff · solo.cpp:128–138</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="prepared input handoff flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">filename_in</span><span class="flow-arrow">→</span><span class="flow-step fn">parse_and_prepare_input</span><span class="flow-arrow">→</span><span class="flow-step data">PreparedInput</span><span class="flow-arrow">→</span><span class="flow-step data">infile + analyses + settings</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype <code>main</code> loaded YAML and extracted raw settings itself.</span></div><div class="field"><strong>CBS change</strong><span>main consumes a single normalized object from the input module.</span></div><div class="field"><strong>Effect</strong><span>single-file and process-mode validation is centralized.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:93–184 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:128–138 · Commit <span class="commit">8749e3e8e4</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip add">ADD</span><span><code>SoloInput::parse_and_prepare_input</code> · solo_input.cpp:311–435</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="input preparation flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step fn">Load YAML</span><span class="flow-arrow">→</span><span class="flow-step fn">apply defaults</span><span class="flow-arrow">→</span><span class="flow-step branch">event_file / processes</span><span class="flow-arrow">→</span><span class="flow-step fn">validate files + xsec</span><span class="flow-arrow">→</span><span class="flow-step output">PreparedInput</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype accepted one <code>event_file</code>; no normalized input object or process-mode validation existed.</span></div><div class="field"><strong>CBS change</strong><span>adds YAML loading, defaults, mode exclusivity, cross-section parsing, and file checks.</span></div><div class="field"><strong>Effect</strong><span>main receives validated event sources and analysis settings.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:96–128 → current <a href="../sources/current/ColliderBit/examples/solo_input.cpp">solo_input.cpp</a>:311–435 · Commit <span class="commit">8749e3e8e4</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip mod">MOD</span><span>Likelihood selector · solo.cpp:151–158</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="likelihood selector flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">use_FullLikes</span><span class="flow-arrow">→</span><span class="flow-step branch">calc_LHC_LogLikes_full</span><span class="flow-arrow">/</span><span class="flow-step fn">calc_LHC_LogLikes</span><span class="flow-arrow">→</span><span class="flow-step data">calcLogLikes pointer</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype hard-wired <code>calc_LHC_LogLikes_full</code> and required ATLAS FullLikes.</span></div><div class="field"><strong>CBS change</strong><span>runtime configuration selects the regular or FullLikes implementation.</span></div><div class="field"><strong>Effect</strong><span>the rest of main can use one common functor handle.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:239–262, 278–293 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:151–158 · Commit <span class="commit">de5e879b74b</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip mod">MOD</span><span>Cutflow + histogram policy · solo.cpp:160–181</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="cutflow and histogram policy flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">YAML flags</span><span class="flow-arrow">→</span><span class="flow-step branch">CUTFLOW compiled?</span><span class="flow-arrow">→</span><span class="flow-step fn">set_check_cutflow</span><span class="flow-arrow">+</span><span class="flow-step fn">set_check_histogram</span><span class="flow-arrow">→</span><span class="flow-step data">event bookkeeping</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype set <code>print_cutflows</code> to true unconditionally and had no runtime histogram switch.</span></div><div class="field"><strong>CBS change</strong><span>adds runtime switches while preserving the CUTFLOW compile gate and warning.</span></div><div class="field"><strong>Effect</strong><span>diagnostics are explicit and batch-safe without changing physics output semantics.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:186–192 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:160–181 · Commits <span class="commit">3599c668e1</span> <span class="commit">de5e879b74b</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip mod">MOD</span><span>Jet and optional-backend settings · solo.cpp:183–246</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="runtime options flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">settings</span><span class="flow-arrow">→</span><span class="flow-step data">jet_pt_min + collections</span><span class="flow-arrow">→</span><span class="flow-step branch">Rivet / Contur</span><span class="flow-arrow">→</span><span class="flow-step output">OutputConfig</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype kept runtime settings in <code>main</code> but had no normalized <code>OutputConfig</code> contract.</span></div><div class="field"><strong>CBS change</strong><span>main extracts jet collections, optional backend settings, screen output, and file output.</span></div><div class="field"><strong>Effect</strong><span>downstream functors receive a consistent runtime policy.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:117–184, 264–275 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:183–246 · Commits <span class="commit">de5e879b74b</span> <span class="commit">061b425740</span></p></div>
+        </details>
+      </div>
+    </section>
+
+    <section class="branch-section" id="execution-wiring">
+      <div class="branch-head"><span class="branch-index">03</span><h2>Execution modes &amp; dependency wiring</h2></div>
+      <p class="branch-intro">This branch contains the largest architectural change in main: the same entrypoint can run one event-file path or delegate a process list to batch, then manually assemble the functor graph and loop lifecycle.</p>
+      <div class="atomic-grid">
+        <details class="atomic-card">
+          <summary><span class="chip add">ADD</span><span>Process-mode branch · solo.cpp:248–344</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="process mode branch flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">PreparedInput.processes</span><span class="flow-arrow">→</span><span class="flow-step fn">run_and_merge</span><span class="flow-arrow">→</span><span class="flow-step data">MergedRunResult</span><span class="flow-arrow">→</span><span class="flow-step fn">build_sampling_advice</span><span class="flow-arrow">→</span><span class="flow-step output">emit_outputs</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype had one <code>event_file</code> execution path and no batch subprocess/merge branch.</span></div><div class="field"><strong>CBS change</strong><span>main branches early into process-mode batch and returns after merged output.</span></div><div class="field"><strong>Effect</strong><span>batch-specific merge logic stays out of the single-file path.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:186–380 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:248–344 · <a href="../sources/current/ColliderBit/examples/solo_batch.cpp">solo_batch.cpp</a> · Commit <span class="commit">8749e3e8e4</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip mod">MOD</span><span>CBS loop policy · solo.cpp:380–392</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="CBS loop policy flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">infile.settings</span><span class="flow-arrow">→</span><span class="flow-step data">CBS node + analyses</span><span class="flow-arrow">→</span><span class="flow-step stage">convergence = false</span><span class="flow-arrow">→</span><span class="flow-step fn">operateLHCLoop</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype used <code>max_nEvents = 1000000000</code> without an explicit CBS convergence policy.</span></div><div class="field"><strong>CBS change</strong><span>forces full event-file processing and binds the loop to the CBS collider.</span></div><div class="field"><strong>Effect</strong><span>EOF/event limits, not convergence, define normal completion.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:207–213 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:380–392 · Commit <span class="commit">92fbd960f8</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip mod">MOD</span><span>Option propagation · solo.cpp:394–432</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="option propagation flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">PreparedInput</span><span class="flow-arrow">→</span><span class="flow-step fn">getEvent / convertEvent</span><span class="flow-arrow">→</span><span class="flow-step data">jet + xsec options</span><span class="flow-arrow">→</span><span class="flow-step fn">calcLogLikes</span><span class="flow-arrow">→</span><span class="flow-step data">likelihood policy</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype passed raw event and cross-section settings directly, with the fixed FullLikes route.</span></div><div class="field"><strong>CBS change</strong><span>main explicitly passes file names, jet collections, cross sections, and user likelihood options.</span></div><div class="field"><strong>Effect</strong><span>the standalone run is reproducible from one YAML input.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:215–262 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:394–432 · Commits <span class="commit">8749e3e8e4</span> <span class="commit">de5e879b74b</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip mod">MOD</span><span>Dependency resolution · solo.cpp:448–535</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="dependency wiring flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step fn">functor handles</span><span class="flow-arrow">→</span><span class="flow-step fn">resolveDependency</span><span class="flow-arrow">→</span><span class="flow-step fn">resolveBackendReq</span><span class="flow-arrow">→</span><span class="flow-step fn">resolveLoopManager</span><span class="flow-arrow">→</span><span class="flow-step stage">setNestedList</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype resolved the core graph, but it was tied to one FullLikes functor and one event-file path.</span></div><div class="field"><strong>CBS change</strong><span>main explicitly connects event, detector, analysis, likelihood, backend, and loop dependencies.</span></div><div class="field"><strong>Effect</strong><span>the independent runner can call the same modular components without a full scan.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:278–360 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:448–535 · Commits <span class="commit">768ab74d09</span> <span class="commit">de5e879b74b</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip mod">MOD</span><span>Execution sequence · solo.cpp:545–555</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="execution sequence flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step fn">operateLHCLoop</span><span class="flow-arrow">→</span><span class="flow-step fn">CollectAnalyses</span><span class="flow-arrow">→</span><span class="flow-step fn">calcLogLikes</span><span class="flow-arrow">→</span><span class="flow-step fn">combined loglike</span><span class="flow-arrow">→</span><span class="flow-step output">result values</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype already ran this broad sequence, but with fixed FullLikes and inline output handling.</span></div><div class="field"><strong>CBS change</strong><span>main orders the loop, collection, likelihood, and optional Contur calls explicitly.</span></div><div class="field"><strong>Effect</strong><span>the execution backbone is visible and auditable from one function.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:352–380 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:545–555 · Commit <span class="commit">768ab74d09</span></p></div>
+        </details>
+      </div>
+    </section>
+
+    <section class="branch-section" id="result-output">
+      <div class="branch-head"><span class="branch-index">04</span><h2>Result assembly &amp; output</h2></div>
+      <p class="branch-intro">The final branch turns internal CBS results into a stable handoff: event counts and likelihoods are assembled, then the output module publishes a screen summary and/or JSON payload.</p>
+      <div class="atomic-grid">
+        <details class="atomic-card">
+          <summary><span class="chip add">ADD</span><span>Result assembly · solo.cpp:558–572</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="result assembly flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">event_count</span><span class="flow-arrow">+</span><span class="flow-step data">analysis_results</span><span class="flow-arrow">+</span><span class="flow-step data">analysis_loglikes</span><span class="flow-arrow">+</span><span class="flow-step branch">Contur pools</span><span class="flow-arrow">→</span><span class="flow-step output">output arguments</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype kept result extraction and the presentation summary together in <code>main</code>.</span></div><div class="field"><strong>CBS change</strong><span>main creates an explicit output handoff containing counts, analyses, likelihoods, and optional pools.</span></div><div class="field"><strong>Effect</strong><span>screen and file consumers receive the same final values.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:381–427 → current <a href="../sources/current/ColliderBit/examples/solo.cpp">solo.cpp</a>:558–572 · Commit <span class="commit">061b425740</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip add">ADD</span><span><code>SoloOutput::emit_outputs</code> · solo_output.cpp:376–405</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="output API flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">output arguments</span><span class="flow-arrow">→</span><span class="flow-step fn">emit_outputs</span><span class="flow-arrow">→</span><span class="flow-step branch">print summary</span><span class="flow-arrow">+</span><span class="flow-step fn">write JSON</span><span class="flow-arrow">→</span><span class="flow-step output">published result</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype had no reusable output API; it printed one inline <code>stringstream</code> summary.</span></div><div class="field"><strong>CBS change</strong><span>adds one function that applies OutputConfig and routes to screen/file writers.</span></div><div class="field"><strong>Effect</strong><span>output behavior is reusable by both single-file and batch paths.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:381–427 → current <a href="../sources/current/ColliderBit/examples/solo_output.cpp">solo_output.cpp</a>:376–405 · Commit <span class="commit">061b425740</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip add">ADD</span><span>JSON payload construction · solo_output.cpp:406–685</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="JSON payload construction flow"><span class="flow-label">CODE-BLOCK FLOW</span><span class="flow-step data">AnalysisData</span><span class="flow-arrow">→</span><span class="flow-step fn">schema_version</span><span class="flow-arrow">→</span><span class="flow-step data">analyses + SRs</span><span class="flow-arrow">→</span><span class="flow-step data">cutflows + histograms</span><span class="flow-arrow">→</span><span class="flow-step data">terms + variants</span><span class="flow-arrow">→</span><span class="flow-step output">CBS_output.json</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>Prototype exposed results as terminal text only; no stable JSON schema existed.</span></div><div class="field"><strong>CBS change</strong><span>defines <code>cbs-solo-loglike-v1</code> and serializes analysis, SR, histogram, likelihood, and sampling fields.</span></div><div class="field"><strong>Effect</strong><span>the result is auditable, machine-readable, and reusable for plotting.</span></div></div><p class="evidence">Source: prototype <a href="../sources/prototype/ColliderBit/examples/solo.cpp">solo.cpp</a>:381–427 → current <a href="../sources/current/ColliderBit/examples/solo_output.cpp">solo_output.cpp</a>:406–685 · Commits <span class="commit">061b425740</span> <span class="commit">9a1262ed95</span></p></div>
+        </details>
+        <details class="atomic-card">
+          <summary><span class="chip reuse">REUSE</span><span>Normal exit + exception guard · solo.cpp:586–603</span></summary>
+          <div class="atomic-body"><div class="flow" role="img" aria-label="exit guard flow"><span class="flow-label">CONTEXT FLOW</span><span class="flow-step output">emit_outputs returns</span><span class="flow-arrow">→</span><span class="flow-step stage">return 0</span><span class="flow-arrow">/</span><span class="flow-step branch">catch exception</span><span class="flow-arrow">→</span><span class="flow-step output">error status</span></div><div class="atomic-fields"><div class="field"><strong>Baseline</strong><span>shared standalone exception and exit handling.</span></div><div class="field"><strong>CBS change</strong><span>kept as the final guard around the expanded CBS orchestration.</span></div><div class="field"><strong>Effect</strong><span>context only; this is not counted as a new CBS feature.</span></div></div><p class="evidence">Source: <a href="../sources/current/ColliderBit/examples/solo.cpp">ColliderBit/examples/solo.cpp</a>:586–603 · Shared framework context</p></div>
+        </details>
+      </div>
+    </section>
+
+    <section>
+      <p class="kicker">05 · file map</p>
+      <h2>Files touched by the main change surface</h2>
+      <p class="source">This map separates the orchestration file from the helpers it delegates to. The source links are relative to the Gambit repository root, so the page can travel with the repository.</p>
+      <div class="file-map">
+        <article><h3><a href="../sources/current/ColliderBit/examples/solo.cpp">ColliderBit/examples/solo.cpp</a></h3><ul><li>main entry, runtime settings, single/batch split</li><li>functor dependency wiring and loop options</li><li>event execution, result assembly and final output call</li></ul></article>
+        <article><h3><a href="../sources/current/ColliderBit/examples/solo_cli.cpp">ColliderBit/examples/solo_cli.cpp</a></h3><ul><li>help and command-line validation</li><li>typed <code>CommandLineStatus</code> handoff</li></ul></article>
+        <article><h3><a href="../sources/current/ColliderBit/examples/solo_input.cpp">ColliderBit/examples/solo_input.cpp</a></h3><ul><li>YAML loading and default settings</li><li>event_file/processes mode and cross-section validation</li></ul></article>
+        <article><h3><a href="../sources/current/ColliderBit/examples/solo_batch.cpp">ColliderBit/examples/solo_batch.cpp</a></h3><ul><li>per-file execution and weighted result merge</li><li>likelihood recomputation and sampling advice</li></ul></article>
+        <article><h3><a href="../sources/current/ColliderBit/examples/solo_output.cpp">ColliderBit/examples/solo_output.cpp</a></h3><ul><li>screen summary and JSON output API</li><li><code>cbs-solo-loglike-v1</code> payload construction</li></ul></article>
+        <article><h3>Supporting runtime modules</h3><ul><li><code>ColliderBit_eventloop.cpp</code> · loop lifecycle</li><li><code>getHepMCEvent.cpp</code> · event input/conversion</li><li><code>LHC_likelihoods.cpp</code> · likelihood consumers</li></ul></article>
+      </div>
+    </section>
+
+    <section>
+      <p class="kicker">06 · commit trail</p>
+      <h2>How to verify the tree against history</h2>
+      <p class="source">The page uses these commits as evidence anchors; it does not claim that every current line was introduced by one commit.</p>
+      <div class="file-map">
+        <article><h3>Entry and input surface</h3><p><span class="commit">768ab74d09</span> CBS core infrastructure · <span class="commit">8749e3e8e4</span> multi-file/process input · <span class="commit">ef4107bcf1</span> command-line parser.</p></article>
+        <article><h3>Runtime and output surface</h3><p><span class="commit">061b425740</span> JSON output · <span class="commit">9a1262ed95</span> output refinement · <span class="commit">79ad4187b7</span> banner suppression.</p></article>
+        <article><h3>Policy and diagnostics</h3><p><span class="commit">92fbd960f8</span> CBS release policy · <span class="commit">3599c668e1</span> cutflow/OpenMP aggregation · <span class="commit">de5e879b74b</span> histogram/FullLikes integration.</p></article>
+        <article><h3>Useful commands</h3><p><code>git show &lt;commit&gt; -- ColliderBit/examples/solo.cpp</code><br><code>git blame -L 71,587 -- ColliderBit/examples/solo.cpp</code></p></article>
+      </div>
+    </section>
+
+    <div class="meta"><strong>Scope.</strong> This is a static, source-assisted atomic change dossier for <code>main</code>. It records source locations, historical commits, and the call/data handoffs visible in the current CBS code. It does not compile CBS, instrument runtime execution, or claim that unchanged shared ColliderBit code is a new CBS modification.</div>
+  </main>
+</body>
+</html>

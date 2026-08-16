@@ -1,0 +1,3024 @@
+{
+  "generated": "2026-06-21",
+  "generator": "P.Zhu/docs/analyses/harvest_analyses.py",
+  "n_source_files": 91,
+  "n_registered_analysis_names": 136,
+  "orphan_registrations": [],
+  "analyses": [
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_8TeV_1LEPbb_20invfb.cpp",
+      "stem": "ATLAS_8TeV_1LEPbb_20invfb",
+      "classes": [
+        "ATLAS_8TeV_1LEPbb_20invfb"
+      ],
+      "registered_names": [
+        "ATLAS_8TeV_1LEPbb_20invfb"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_8TeV_1LEPbb_20invfb"
+      ],
+      "luminosity_invfb": "20.3",
+      "n_signal_regions": 2,
+      "n_committed_results": 2,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "ATLAS lepton + 2 b-jet search at 8 TeV with 20/fb",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R1.5",
+        "Lumi_ifb": "20.3",
+        "Ecm_TeV": "8.0"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2013_037.cpp",
+      "stem": "ATLAS_CONF_2013_037",
+      "classes": [
+        "ATLAS_CONF_2013_037"
+      ],
+      "registered_names": [
+        "ATLAS_CONF_2013_037"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_CONF_2013_037"
+      ],
+      "luminosity_invfb": "20.7",
+      "n_signal_regions": 8,
+      "n_committed_results": 6,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2016_078.cpp",
+      "stem": "ATLAS_CONF_2016_078",
+      "classes": [
+        "ATLAS_CONF_2016_078"
+      ],
+      "registered_names": [
+        "ATLAS_CONF_2016_078"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_CONF_2016_078"
+      ],
+      "luminosity_invfb": "13.3",
+      "n_signal_regions": 13,
+      "n_committed_results": 13,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "ATLAS 0-lepton jet+MET recursive-jigsaw SUSY analysis, with 13/fb of data",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "13.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_0LEP_13invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2017_039.cpp",
+      "stem": "ATLAS_CONF_2017_039",
+      "classes": [
+        "ATLAS_CONF_2017_039"
+      ],
+      "registered_names": [
+        "ATLAS_CONF_2017_039"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_CONF_2017_039"
+      ],
+      "luminosity_invfb": "36.1",
+      "n_signal_regions": 20,
+      "n_committed_results": 20,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": false,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS 2/3-lepton SUSY search at 13 TeV with 36/fb",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "36.1",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_MultiLEP_confnote_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2018_019.cpp",
+      "stem": "ATLAS_CONF_2018_019",
+      "classes": [
+        "ATLAS_CONF_2018_019"
+      ],
+      "registered_names": [
+        "ATLAS_CONF_2018_019"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_CONF_2018_019"
+      ],
+      "luminosity_invfb": "79.8",
+      "n_signal_regions": 1,
+      "n_committed_results": 1,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS ZH->photon+gravitino search at 13 TeV with 80/fb",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "79.8",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_ZGammaGrav_CONFNOTE_80invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2018_042.cpp",
+      "stem": "ATLAS_CONF_2018_042",
+      "classes": [
+        "ATLAS_CONF_2018_042",
+        "ATLAS_CONF_2018_042_chargino_inclusive",
+        "ATLAS_CONF_2018_042_chargino_binned"
+      ],
+      "registered_names": [
+        "ATLAS_CONF_2018_042",
+        "ATLAS_CONF_2018_042_chargino_inclusive",
+        "ATLAS_CONF_2018_042_chargino_binned"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_CONF_2018_042",
+        "ATLAS_CONF_2018_042_chargino_inclusive",
+        "ATLAS_CONF_2018_042_chargino_binned"
+      ],
+      "luminosity_invfb": "80.5",
+      "n_signal_regions": 16,
+      "n_committed_results": 64,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS 2-lepton + MET chargino pair-production search at 13 TeV with 80/fb",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "80.5",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_2OSLEP_chargino_80invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_CONF_2019_008.cpp",
+      "stem": "ATLAS_CONF_2019_008",
+      "classes": [
+        "ATLAS_CONF_2019_008",
+        "ATLAS_CONF_2019_008_chargino_inclusive",
+        "ATLAS_CONF_2019_008_chargino_binned"
+      ],
+      "registered_names": [
+        "ATLAS_CONF_2019_008",
+        "ATLAS_CONF_2019_008_chargino_inclusive",
+        "ATLAS_CONF_2019_008_chargino_binned"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_CONF_2019_008",
+        "ATLAS_CONF_2019_008_chargino_inclusive",
+        "ATLAS_CONF_2019_008_chargino_binned"
+      ],
+      "luminosity_invfb": "139",
+      "n_signal_regions": 16,
+      "n_committed_results": 68,
+      "covariance": false,
+      "fulllikes_bkgjson": true,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS 2-lepton + MET chargino and slepton search at 13 TeV with 139/fb",
+        "InspireID": "1750597",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_2OSLEP_chargino_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_013.cpp",
+      "stem": "ATLAS_EXOT_2016_013",
+      "classes": [
+        "ATLAS_EXOT_2016_013"
+      ],
+      "registered_names": [
+        "ATLAS_EXOT_2016_013"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_EXOT_2016_013"
+      ],
+      "luminosity_invfb": "36.1",
+      "n_signal_regions": 10,
+      "n_committed_results": 10,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "FastJet reclustering",
+        "Histograms",
+        "Large-R jets"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_014.cpp",
+      "stem": "ATLAS_EXOT_2016_014",
+      "classes": [
+        "ATLAS_EXOT_2016_014"
+      ],
+      "registered_names": [
+        "ATLAS_EXOT_2016_014"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_EXOT_2016_014"
+      ],
+      "luminosity_invfb": "36.1",
+      "n_signal_regions": 1,
+      "n_committed_results": 1,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "FastJet reclustering",
+        "Large-R jets"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2016_017.cpp",
+      "stem": "ATLAS_EXOT_2016_017",
+      "classes": [
+        "ATLAS_EXOT_2016_017"
+      ],
+      "registered_names": [
+        "ATLAS_EXOT_2016_017"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_EXOT_2016_017"
+      ],
+      "luminosity_invfb": "36.1",
+      "n_signal_regions": 1,
+      "n_committed_results": 1,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "FastJet reclustering"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2018_06.cpp",
+      "stem": "ATLAS_EXOT_2018_06",
+      "classes": [
+        "ATLAS_EXOT_2018_06"
+      ],
+      "registered_names": [
+        "ATLAS_EXOT_2018_06"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_EXOT_2018_06"
+      ],
+      "luminosity_invfb": "139.0",
+      "n_signal_regions": 13,
+      "n_committed_results": 13,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "ATLAS monojet + MET search at 13 TeV with 139/fb",
+        "InspireID": "1847779",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_MONOJET_139infb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+      "stem": "ATLAS_EXOT_2019_04",
+      "classes": [
+        "ATLAS_EXOT_2019_04"
+      ],
+      "registered_names": [
+        "ATLAS_EXOT_2019_04"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_EXOT_2019_04"
+      ],
+      "luminosity_invfb": "139.0",
+      "n_signal_regions": 1,
+      "n_committed_results": 1,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "FastJet reclustering",
+        "Histogram-backed SRs",
+        "Histograms",
+        "Large-R jets"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_07.cpp",
+      "stem": "ATLAS_EXOT_2019_07",
+      "classes": [
+        "ATLAS_EXOT_2019_07"
+      ],
+      "registered_names": [
+        "ATLAS_EXOT_2019_07"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_EXOT_2019_07"
+      ],
+      "luminosity_invfb": "140.",
+      "n_signal_regions": 1,
+      "n_committed_results": 17,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "FastJet reclustering",
+        "Large-R jets"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2021_35.cpp",
+      "stem": "ATLAS_EXOT_2021_35",
+      "classes": [
+        "ATLAS_EXOT_2021_035"
+      ],
+      "registered_names": [
+        "ATLAS_EXOT_2021_035"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_EXOT_2021_035"
+      ],
+      "luminosity_invfb": "140.0",
+      "n_signal_regions": 2,
+      "n_committed_results": 2,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "FastJet reclustering",
+        "Histograms",
+        "Large-R jets"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2012_04.cpp",
+      "stem": "ATLAS_SUSY_2012_04",
+      "classes": [
+        "ATLAS_SUSY_2012_04"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2012_04"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2012_04"
+      ],
+      "luminosity_invfb": "4.7",
+      "n_signal_regions": 3,
+      "n_committed_results": 3,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": false,
+      "techniques": [],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2012_10.cpp",
+      "stem": "ATLAS_SUSY_2012_10",
+      "classes": [
+        "ATLAS_SUSY_2012_10"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2012_10"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2012_10"
+      ],
+      "luminosity_invfb": "4.7",
+      "n_signal_regions": 3,
+      "n_committed_results": 3,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_02.cpp",
+      "stem": "ATLAS_SUSY_2013_02",
+      "classes": [
+        "ATLAS_SUSY_2013_02"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2013_02"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2013_02"
+      ],
+      "luminosity_invfb": "20.3",
+      "n_signal_regions": 14,
+      "n_committed_results": 14,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_05.cpp",
+      "stem": "ATLAS_SUSY_2013_05",
+      "classes": [
+        "ATLAS_SUSY_2013_05"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2013_05"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2013_05"
+      ],
+      "luminosity_invfb": "20.1",
+      "n_signal_regions": 13,
+      "n_committed_results": 6,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_11.cpp",
+      "stem": "ATLAS_SUSY_2013_11",
+      "classes": [
+        "ATLAS_SUSY_2013_11"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2013_11"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2013_11"
+      ],
+      "luminosity_invfb": "20.3",
+      "n_signal_regions": 13,
+      "n_committed_results": 14,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_12.cpp",
+      "stem": "ATLAS_SUSY_2013_12",
+      "classes": [
+        "ATLAS_SUSY_2013_12"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2013_12"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2013_12"
+      ],
+      "luminosity_invfb": "20.3",
+      "n_signal_regions": 25,
+      "n_committed_results": 24,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_16.cpp",
+      "stem": "ATLAS_SUSY_2013_16",
+      "classes": [
+        "ATLAS_SUSY_2013_16"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2013_16"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2013_16"
+      ],
+      "luminosity_invfb": "20.1",
+      "n_signal_regions": 7,
+      "n_committed_results": 7,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2013_19.cpp",
+      "stem": "ATLAS_SUSY_2013_19",
+      "classes": [
+        "ATLAS_SUSY_2013_19"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2013_19"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2013_19"
+      ],
+      "luminosity_invfb": "20.3",
+      "n_signal_regions": 9,
+      "n_committed_results": 4,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_06.cpp",
+      "stem": "ATLAS_SUSY_2016_06",
+      "classes": [
+        "ATLAS_SUSY_2016_06"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2016_06"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES_WITH_ROOT",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2016_06"
+      ],
+      "luminosity_invfb": "36.",
+      "n_signal_regions": 13,
+      "n_committed_results": 13,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "BDT/MVA",
+        "FastJet reclustering",
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS 1-lepton + jets + MET top-squark pair search at 13 TeV using 36/fb",
+        "InspireID": "1639856",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "36.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_1LEPStop_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_07.cpp",
+      "stem": "ATLAS_SUSY_2016_07",
+      "classes": [
+        "ATLAS_SUSY_2016_07"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2016_07"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2016_07"
+      ],
+      "luminosity_invfb": "36.1",
+      "n_signal_regions": 22,
+      "n_committed_results": 22,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "ATLAS 0-lepton jet+MET SUSY analysis, with 36/fb of data",
+        "InspireID": "1641270",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "36.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_0LEP_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_15.cpp",
+      "stem": "ATLAS_SUSY_2016_15",
+      "classes": [
+        "ATLAS_SUSY_2016_15"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2016_15"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2016_15"
+      ],
+      "luminosity_invfb": "36.",
+      "n_signal_regions": 14,
+      "n_committed_results": 14,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2",
+        "RestFrames (RJR)"
+      ],
+      "info": {
+        "Summary": "ATLAS jets+MET top-squark search at 13 TeV with 36/fb",
+        "InspireID": "1623207",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "36.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_0LEPStop_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_21.cpp",
+      "stem": "ATLAS_SUSY_2016_21",
+      "classes": [
+        "ATLAS_SUSY_2016_21"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2016_21"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2016_21"
+      ],
+      "luminosity_invfb": "36.1",
+      "n_signal_regions": 4,
+      "n_committed_results": 4,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS >=4-lepton SUSY search at 13 TeV with 36/fb",
+        "InspireID": "1667045",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "36.1",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_4LEP_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_24.cpp",
+      "stem": "ATLAS_SUSY_2016_24",
+      "classes": [
+        "ATLAS_SUSY_2016_24",
+        "ATLAS_SUSY_2016_24_2Lep0Jets",
+        "ATLAS_SUSY_2016_24_2LepPlusJets",
+        "ATLAS_SUSY_2016_24_3Lep"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2016_24",
+        "ATLAS_SUSY_2016_24_2Lep0Jets",
+        "ATLAS_SUSY_2016_24_2LepPlusJets",
+        "ATLAS_SUSY_2016_24_3Lep"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2016_24",
+        "ATLAS_SUSY_2016_24_2Lep0Jets",
+        "ATLAS_SUSY_2016_24_2LepPlusJets",
+        "ATLAS_SUSY_2016_24_3Lep"
+      ],
+      "luminosity_invfb": "36.1",
+      "n_signal_regions": 20,
+      "n_committed_results": 40,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": false,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS 2/3-lepton SUSY search at 13 TeV with 36/fb",
+        "InspireID": "1658902",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "36.1",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_MultiLEP_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_27.cpp",
+      "stem": "ATLAS_SUSY_2016_27",
+      "classes": [
+        "ATLAS_SUSY_2016_27",
+        "ATLAS_SUSY_2016_27_1Photon",
+        "ATLAS_SUSY_2016_27_2Photon"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2016_27",
+        "ATLAS_SUSY_2016_27_1Photon",
+        "ATLAS_SUSY_2016_27_2Photon"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2016_27",
+        "ATLAS_SUSY_2016_27_1Photon",
+        "ATLAS_SUSY_2016_27_2Photon"
+      ],
+      "luminosity_invfb": "36.1",
+      "n_signal_regions": 7,
+      "n_committed_results": 14,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS photonic GMSB search at 13 TeV with 36/fb",
+        "InspireID": "1654357",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "36.1",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_PhotonGGM_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2016_28.cpp",
+      "stem": "ATLAS_SUSY_2016_28",
+      "classes": [
+        "ATLAS_SUSY_2016_28"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2016_28"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2016_28"
+      ],
+      "luminosity_invfb": "36.1",
+      "n_signal_regions": 9,
+      "n_committed_results": 9,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "Lester MT2",
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS SUSY search with b-tagged jets and MET at 13 TeV with 36.1/fb",
+        "InspireID": "1620694",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "36.1",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_2bMET_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_01.cpp",
+      "stem": "ATLAS_SUSY_2017_01",
+      "classes": [
+        "ATLAS_SUSY_2017_01"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2017_01"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2017_01"
+      ],
+      "luminosity_invfb": "36.1",
+      "n_signal_regions": 15,
+      "n_committed_results": 15,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS 2-lepton top-squark pair search at 13 TeV with 36.1/fb",
+        "InspireID": "1615470",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "36.1",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_2LEPStop_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_02.cpp",
+      "stem": "ATLAS_SUSY_2017_02",
+      "classes": [
+        "ATLAS_SUSY_2017_02",
+        "ATLAS_SUSY_2017_02_discoverySR"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2017_02",
+        "ATLAS_SUSY_2017_02_discoverySR"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2017_02",
+        "ATLAS_SUSY_2017_02_discoverySR"
+      ],
+      "luminosity_invfb": "24.3",
+      "n_signal_regions": 48,
+      "n_committed_results": 48,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "ATLAS >=3 b-jet low-mass higgsino pair-production search at 13 TeV with 24/fb",
+        "InspireID": "1677389",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "24.3",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_3b_24invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_02_36invfb.cpp",
+      "stem": "ATLAS_SUSY_2017_02_36invfb",
+      "classes": [
+        "ATLAS_SUSY_2017_02_36invfb",
+        "ATLAS_SUSY_2017_02_discoverySR_36invfb"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2017_02_36invfb",
+        "ATLAS_SUSY_2017_02_discoverySR_36invfb"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2017_02_36invfb",
+        "ATLAS_SUSY_2017_02_discoverySR_36invfb"
+      ],
+      "luminosity_invfb": "36.1",
+      "n_signal_regions": 8,
+      "n_committed_results": 8,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": false,
+      "techniques": [],
+      "info": {
+        "Summary": "ATLAS >=3 b-jet high-mass higgsino pair-production search at 13 TeV with 24/fb",
+        "InspireID": "1677389",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "36.1",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_3b_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2017_03_RJR.cpp",
+      "stem": "ATLAS_SUSY_2017_03_RJR",
+      "classes": [
+        "ATLAS_SUSY_2017_03_RJR_Lowmass",
+        "ATLAS_SUSY_2017_03_RJR_2L2J",
+        "ATLAS_SUSY_2017_03_RJR_3L"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2017_03_RJR_Lowmass",
+        "ATLAS_SUSY_2017_03_RJR_2L2J",
+        "ATLAS_SUSY_2017_03_RJR_3L"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES_WITH_ROOT_RESTFRAMES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2017_03_RJR_Lowmass",
+        "ATLAS_SUSY_2017_03_RJR_2L2J",
+        "ATLAS_SUSY_2017_03_RJR_3L"
+      ],
+      "luminosity_invfb": "36.",
+      "n_signal_regions": 8,
+      "n_committed_results": 16,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "Large-R jets",
+        "MT2",
+        "RestFrames (RJR)"
+      ],
+      "info": {
+        "Summary": "ATLAS 2/3-lepton recursive-jigsaw search at 13 TeV with 36/fb",
+        "InspireID": "1676551",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "36.1",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_RJ3L_lowmass_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_02.cpp",
+      "stem": "ATLAS_SUSY_2018_02",
+      "classes": [
+        "ATLAS_SUSY_2018_02"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_02"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_02"
+      ],
+      "luminosity_invfb": "139.",
+      "n_signal_regions": 8,
+      "n_committed_results": 8,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS >4-lepton SUSY search at 13 TeV with 139/fb",
+        "InspireID": "1852821",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_4LEP_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05.cpp",
+      "stem": "ATLAS_SUSY_2018_05",
+      "classes": [
+        "ATLAS_SUSY_2018_05"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_05"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_05"
+      ],
+      "luminosity_invfb": "139",
+      "n_signal_regions": 13,
+      "n_committed_results": 13,
+      "covariance": false,
+      "fulllikes_bkgjson": true,
+      "cutflows": true,
+      "techniques": [
+        "MET significance",
+        "MT2"
+      ],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_2LEPJETS_EW_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_05_RJR.cpp",
+      "stem": "ATLAS_SUSY_2018_05_RJR",
+      "classes": [
+        "ATLAS_SUSY_2018_05_RJR"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_05_RJR"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES_WITH_ROOT_RESTFRAMES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_05_RJR"
+      ],
+      "luminosity_invfb": "139",
+      "n_signal_regions": 4,
+      "n_committed_results": 2,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "Large-R jets",
+        "MT2",
+        "RestFrames (RJR)"
+      ],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_2LEPJETS_RJR_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_06.cpp",
+      "stem": "ATLAS_SUSY_2018_06",
+      "classes": [
+        "ATLAS_SUSY_2018_06"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_06"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_06"
+      ],
+      "luminosity_invfb": "139.",
+      "n_signal_regions": 2,
+      "n_committed_results": 2,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_3LEP_eRJR_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_07.cpp",
+      "stem": "ATLAS_SUSY_2018_07",
+      "classes": [
+        "ATLAS_SUSY_2018_07"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_07"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_07"
+      ],
+      "luminosity_invfb": "139.0",
+      "n_signal_regions": 8,
+      "n_committed_results": 9,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": false,
+      "techniques": [
+        "FastJet reclustering",
+        "MET significance",
+        "MT2",
+        "Topness",
+        "Variable-R jets"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_08.cpp",
+      "stem": "ATLAS_SUSY_2018_08",
+      "classes": [
+        "ATLAS_SUSY_2018_08",
+        "ATLAS_SUSY_2018_08_inclusive",
+        "ATLAS_SUSY_2018_08_exclusive"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_08",
+        "ATLAS_SUSY_2018_08_inclusive",
+        "ATLAS_SUSY_2018_08_exclusive"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_08",
+        "ATLAS_SUSY_2018_08_inclusive",
+        "ATLAS_SUSY_2018_08_exclusive"
+      ],
+      "luminosity_invfb": "139.",
+      "n_signal_regions": 19,
+      "n_committed_results": 38,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS search for two opposite-charge leptons, jets and MET at 13 TeV with 139/fb",
+        "InspireID": "1844425",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_2LEPStop_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_09.cpp",
+      "stem": "ATLAS_SUSY_2018_09",
+      "classes": [
+        "ATLAS_SUSY_2018_09"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_09"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_09"
+      ],
+      "luminosity_invfb": "139.0",
+      "n_signal_regions": 5,
+      "n_committed_results": 5,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "ATLAS same-sign lepton + jets squark/gluino search at 13 TeV with 139/fb",
+        "InspireID": "1754675",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_MultiLEP_strong_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_11.cpp",
+      "stem": "ATLAS_SUSY_2018_11",
+      "classes": [
+        "ATLAS_SUSY_2018_11"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_11"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_11"
+      ],
+      "luminosity_invfb": "139.",
+      "n_signal_regions": 3,
+      "n_committed_results": 3,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS photons, jets + MET search at 13 TeV with 139/fb",
+        "InspireID": "2094882",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "36.1",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_PhotonGGM_1Photon_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_12.cpp",
+      "stem": "ATLAS_SUSY_2018_12",
+      "classes": [
+        "ATLAS_SUSY_2018_12"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_12"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_12"
+      ],
+      "luminosity_invfb": "139.",
+      "n_signal_regions": 0,
+      "n_committed_results": 9,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "FastJet reclustering",
+        "Large-R jets",
+        "MET significance",
+        "MT2"
+      ],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_0LEPStop_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_12_RJR.cpp",
+      "stem": "ATLAS_SUSY_2018_12_RJR",
+      "classes": [
+        "ATLAS_SUSY_2018_12_RJR"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_12_RJR"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES_WITH_ROOT_RESTFRAMES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_12_RJR"
+      ],
+      "luminosity_invfb": "139",
+      "n_signal_regions": 5,
+      "n_committed_results": 5,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MET significance",
+        "MT2",
+        "RestFrames (RJR)"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_16.cpp",
+      "stem": "ATLAS_SUSY_2018_16",
+      "classes": [
+        "ATLAS_SUSY_2018_16",
+        "ATLAS_SUSY_2018_16_exclusive",
+        "ATLAS_SUSY_2018_16_combined"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_16",
+        "ATLAS_SUSY_2018_16_exclusive",
+        "ATLAS_SUSY_2018_16_combined"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES_WITH_ROOT_RESTFRAMES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_16",
+        "ATLAS_SUSY_2018_16_exclusive",
+        "ATLAS_SUSY_2018_16_combined"
+      ],
+      "luminosity_invfb": "139",
+      "n_signal_regions": 0,
+      "n_committed_results": 276,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2",
+        "RestFrames (RJR)"
+      ],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_2LEPsoft_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_21.cpp",
+      "stem": "ATLAS_SUSY_2018_21",
+      "classes": [
+        "ATLAS_SUSY_2018_21"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_21"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_21"
+      ],
+      "luminosity_invfb": "139",
+      "n_signal_regions": 4,
+      "n_committed_results": 6,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS top-squark search in events with a Higgs or Z boson at 13 TeV with 139/fb",
+        "InspireID": "1800411",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_2OSLEP_Z_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_21_StopZH.cpp",
+      "stem": "ATLAS_SUSY_2018_21_StopZH",
+      "classes": [
+        "ATLAS_SUSY_2018_21_StopZH"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_21_StopZH"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_21_StopZH"
+      ],
+      "luminosity_invfb": "139",
+      "n_signal_regions": 6,
+      "n_committed_results": 6,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MET significance",
+        "MT2"
+      ],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_1OR3LEP_StopHZ_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_22.cpp",
+      "stem": "ATLAS_SUSY_2018_22",
+      "classes": [
+        "ATLAS_SUSY_2018_22"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_22"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_22"
+      ],
+      "luminosity_invfb": "139.0",
+      "n_signal_regions": 10,
+      "n_committed_results": 10,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "0-lepton jet+MET SUSY analysis, with 139/fb of data",
+        "InspireID": "1827025",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_0LEP_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_30.cpp",
+      "stem": "ATLAS_SUSY_2018_30",
+      "classes": [
+        "ATLAS_SUSY_2018_30"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_30"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES_WITH_ONNX",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_30"
+      ],
+      "luminosity_invfb": "139.",
+      "n_signal_regions": 22,
+      "n_committed_results": 22,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "FastJet reclustering",
+        "ONNX neural net"
+      ],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_3b_NN_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_41.cpp",
+      "stem": "ATLAS_SUSY_2018_41",
+      "classes": [
+        "ATLAS_SUSY_2018_41"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2018_41"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2018_41"
+      ],
+      "luminosity_invfb": "139.",
+      "n_signal_regions": 12,
+      "n_committed_results": 12,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "Large-R jets",
+        "Lester MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS search for charginos and neutralinos with two boosted hadronically decaying bosons and MET at 13 TeV with 139/fb",
+        "InspireID": "1906174",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_2BoostedBosons_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_02.cpp",
+      "stem": "ATLAS_SUSY_2019_02",
+      "classes": [
+        "ATLAS_SUSY_2019_02"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2019_02"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES_WITH_ROOT",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2019_02"
+      ],
+      "luminosity_invfb": "139.0",
+      "n_signal_regions": 58,
+      "n_committed_results": 19,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": false,
+      "techniques": [
+        "BDT/MVA",
+        "FastJet reclustering",
+        "Lester MT2",
+        "MET significance",
+        "MT2"
+      ],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_2LEP0JET_EW_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_08.cpp",
+      "stem": "ATLAS_SUSY_2019_08",
+      "classes": [
+        "ATLAS_SUSY_2019_08"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2019_08"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2019_08"
+      ],
+      "luminosity_invfb": "139.",
+      "n_signal_regions": 14,
+      "n_committed_results": 14,
+      "covariance": false,
+      "fulllikes_bkgjson": true,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "ATLAS 1-lepton + MET + H->bb electroweakino search, at 13 TeV with 139/fb",
+        "InspireID": "1755298",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_1Lep2b_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_09.cpp",
+      "stem": "ATLAS_SUSY_2019_09",
+      "classes": [
+        "ATLAS_SUSY_2019_09"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2019_09"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2019_09"
+      ],
+      "luminosity_invfb": "139.",
+      "n_signal_regions": 41,
+      "n_committed_results": 41,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "ATLAS 3-lepton + MET chargino-neutralino pair search at 13 TeV with 139/fb",
+        "InspireID": "1866951",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_3LEP_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_18.cpp",
+      "stem": "ATLAS_SUSY_2019_18",
+      "classes": [
+        "ATLAS_SUSY_2019_18"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2019_18"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2019_18"
+      ],
+      "luminosity_invfb": "139",
+      "n_signal_regions": 4,
+      "n_committed_results": 4,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_bTaus_StopStau_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2019_22.cpp",
+      "stem": "ATLAS_SUSY_2019_22",
+      "classes": [
+        "ATLAS_SUSY_2019_22"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2019_22"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2019_22"
+      ],
+      "luminosity_invfb": "139",
+      "n_signal_regions": 26,
+      "n_committed_results": 19,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MET significance",
+        "MT2"
+      ],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_2OR3LEP_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2020_16.cpp",
+      "stem": "ATLAS_SUSY_2020_16",
+      "classes": [
+        "ATLAS_SUSY_2020_16",
+        "ATLAS_SUSY_2020_16_allyears",
+        "ATLAS_SUSY_2020_16_discoverySR"
+      ],
+      "registered_names": [
+        "ATLAS_SUSY_2020_16",
+        "ATLAS_SUSY_2020_16_allyears",
+        "ATLAS_SUSY_2020_16_discoverySR"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "ATLAS_SUSY_2020_16",
+        "ATLAS_SUSY_2020_16_allyears",
+        "ATLAS_SUSY_2020_16_discoverySR"
+      ],
+      "luminosity_invfb": "139.",
+      "n_signal_regions": 2,
+      "n_committed_results": 354,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "BDT/MVA"
+      ],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "ATLAS-R2",
+        "Lumi_ifb": "139.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "ATLAS_13TeV_4b_139invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_Baselines.cpp",
+      "stem": "Baselines",
+      "classes": [
+        "Baselines"
+      ],
+      "registered_names": [
+        "Baselines"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "Baselines"
+      ],
+      "luminosity_invfb": "139.0",
+      "n_signal_regions": 0,
+      "n_committed_results": 1,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": false,
+      "techniques": [],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_B2G_13_004.cpp",
+      "stem": "CMS_B2G_13_004",
+      "classes": [
+        "CMS_B2G_13_004"
+      ],
+      "registered_names": [
+        "CMS_B2G_13_004"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_B2G_13_004"
+      ],
+      "luminosity_invfb": "19.7",
+      "n_signal_regions": 1,
+      "n_committed_results": 1,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_B2G_14_004.cpp",
+      "stem": "CMS_B2G_14_004",
+      "classes": [
+        "CMS_B2G_14_004"
+      ],
+      "registered_names": [
+        "CMS_B2G_14_004"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_B2G_14_004"
+      ],
+      "luminosity_invfb": "19.7",
+      "n_signal_regions": 1,
+      "n_committed_results": 1,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_B2G_18_003.cpp",
+      "stem": "CMS_B2G_18_003",
+      "classes": [
+        "CMS_B2G_18_003"
+      ],
+      "registered_names": [
+        "CMS_B2G_18_003"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_B2G_18_003"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 8,
+      "n_committed_results": 8,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "FastJet reclustering",
+        "Histogram-backed SRs",
+        "Histograms",
+        "N-subjettiness"
+      ],
+      "info": {
+        "Summary": "CMS electroweak vector-like T quark search in fully hadronic final states at 13 TeV with 35.9/fb",
+        "InspireID": "1753679",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_EXO_12_048.cpp",
+      "stem": "CMS_EXO_12_048",
+      "classes": [
+        "CMS_EXO_12_048"
+      ],
+      "registered_names": [
+        "CMS_EXO_12_048"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_EXO_12_048"
+      ],
+      "luminosity_invfb": "19.7",
+      "n_signal_regions": 7,
+      "n_committed_results": 7,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_EXO_16_048.cpp",
+      "stem": "CMS_EXO_16_048",
+      "classes": [
+        "CMS_EXO_16_048"
+      ],
+      "registered_names": [
+        "CMS_EXO_16_048"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_EXO_16_048"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 1,
+      "n_committed_results": 22,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "CMS W/Z-monojet + MET search at 13 TeV with 36/fb",
+        "InspireID": "1641762",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_MONOJET_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_13_006.cpp",
+      "stem": "CMS_SUS_13_006",
+      "classes": [
+        "CMS_SUS_13_006",
+        "CMS_SUS_13_006_3Lep",
+        "CMS_SUS_13_006_4Lep"
+      ],
+      "registered_names": [
+        "CMS_SUS_13_006",
+        "CMS_SUS_13_006_3Lep",
+        "CMS_SUS_13_006_4Lep"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_13_006",
+        "CMS_SUS_13_006_3Lep",
+        "CMS_SUS_13_006_4Lep"
+      ],
+      "luminosity_invfb": "19.5",
+      "n_signal_regions": 120,
+      "n_committed_results": 121,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": false,
+      "techniques": [],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_014.cpp",
+      "stem": "CMS_SUS_16_014",
+      "classes": [
+        "CMS_SUS_16_014"
+      ],
+      "registered_names": [
+        "CMS_SUS_16_014"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_16_014"
+      ],
+      "luminosity_invfb": "12.9",
+      "n_signal_regions": 12,
+      "n_committed_results": 12,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "CMS 0-lepton jet+MET SUSY analysis at 13 TeV with 13/fb",
+        "InspireID": "1479641",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "12.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_0LEP_13invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_033.cpp",
+      "stem": "CMS_SUS_16_033",
+      "classes": [
+        "CMS_SUS_16_033"
+      ],
+      "registered_names": [
+        "CMS_SUS_16_033"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_16_033"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 12,
+      "n_committed_results": 12,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "CMS 0-lepton jet+MET SUSY analysis at 13 TeV with 36/fb",
+        "InspireID": "1594909",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_0LEP_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_034.cpp",
+      "stem": "CMS_SUS_16_034",
+      "classes": [
+        "CMS_SUS_16_034"
+      ],
+      "registered_names": [
+        "CMS_SUS_16_034"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_16_034"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 9,
+      "n_committed_results": 7,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "CMS 2-leptons + jets + MET search at 13 TeV with 36/fb",
+        "InspireID": "1625745",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_2OSLEP_confnote_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_034_EW.cpp",
+      "stem": "CMS_SUS_16_034_EW",
+      "classes": [
+        "CMS_SUS_16_034_EW",
+        "CMS_SUS_16_034_EW_nocovar"
+      ],
+      "registered_names": [
+        "CMS_SUS_16_034_EW",
+        "CMS_SUS_16_034_EW_nocovar"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_16_034_EW",
+        "CMS_SUS_16_034_EW_nocovar"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 7,
+      "n_committed_results": 14,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_035.cpp",
+      "stem": "CMS_SUS_16_035",
+      "classes": [
+        "CMS_SUS_16_035",
+        "CMS_SUS_16_035_inclusive",
+        "CMS_SUS_16_035_exclusive"
+      ],
+      "registered_names": [
+        "CMS_SUS_16_035",
+        "CMS_SUS_16_035_inclusive",
+        "CMS_SUS_16_035_exclusive"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_16_035",
+        "CMS_SUS_16_035_inclusive",
+        "CMS_SUS_16_035_exclusive"
+      ],
+      "luminosity_invfb": "36",
+      "n_signal_regions": 130,
+      "n_committed_results": 130,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "CMS 2-SS-lepton + jets + MET search at 13 TeV with 36/fb",
+        "InspireID": "1594731",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_2SSLEP_Stop_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_039.cpp",
+      "stem": "CMS_SUS_16_039",
+      "classes": [
+        "CMS_SUS_16_039",
+        "CMS_SUS_16_039_2SSLep",
+        "CMS_SUS_16_039_3Lep"
+      ],
+      "registered_names": [
+        "CMS_SUS_16_039",
+        "CMS_SUS_16_039_2SSLep",
+        "CMS_SUS_16_039_3Lep"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_16_039_200_100",
+        "CMS_SUS_16_039_2SSLep",
+        "CMS_SUS_16_039_3Lep"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 8,
+      "n_committed_results": 16,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "CMS 2-SS-lepton / >=3-lepton (<=2 hadronic tau) search at 13 TeV with 35.9/fb",
+        "InspireID": "1624165",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_MultiLEP_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_039_Full.cpp",
+      "stem": "CMS_SUS_16_039_Full",
+      "classes": [
+        "CMS_SUS_16_039_Full",
+        "CMS_SUS_16_039_Full_2SSLep",
+        "CMS_SUS_16_039_Full_3Lep",
+        "CMS_SUS_16_039_Full_3Lep_rebinned"
+      ],
+      "registered_names": [
+        "CMS_SUS_16_039_Full",
+        "CMS_SUS_16_039_Full_2SSLep",
+        "CMS_SUS_16_039_Full_3Lep",
+        "CMS_SUS_16_039_Full_3Lep_rebinned"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_16_039_Full",
+        "CMS_SUS_16_039_Full_2SSLep",
+        "CMS_SUS_16_039_Full_3Lep",
+        "CMS_SUS_16_039_Full_3Lep_rebinned"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 132,
+      "n_committed_results": 264,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "CMS >=2-SS-lepton / >=3 lepton (incl <=2 hadronic tau) search at 13 TeV with 36/fb",
+        "InspireID": "1624165",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_MultiLEP_Full_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_043.cpp",
+      "stem": "CMS_SUS_16_043",
+      "classes": [
+        "CMS_SUS_16_043"
+      ],
+      "registered_names": [
+        "CMS_SUS_16_043"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_16_043"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 2,
+      "n_committed_results": 2,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "CMS 1-lepton + 2 b-jet + MET search for charginos and neutralinos in WH events at 13 TeV with 36/fb",
+        "InspireID": "1608161",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_1LEPbb_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_046.cpp",
+      "stem": "CMS_SUS_16_046",
+      "classes": [
+        "CMS_SUS_16_046"
+      ],
+      "registered_names": [
+        "CMS_SUS_16_046"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_16_046"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 4,
+      "n_committed_results": 4,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "CMS >=1 photon + MET GMSB search at 13 TeV with 36/fb",
+        "InspireID": "1637580",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_Photon_GMSB_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_048.cpp",
+      "stem": "CMS_SUS_16_048",
+      "classes": [
+        "CMS_SUS_16_048",
+        "CMS_SUS_16_048_stop",
+        "CMS_SUS_16_048_nocovar",
+        "CMS_SUS_16_048_stop_nocovar"
+      ],
+      "registered_names": [
+        "CMS_SUS_16_048",
+        "CMS_SUS_16_048_stop",
+        "CMS_SUS_16_048_nocovar",
+        "CMS_SUS_16_048_stop_nocovar"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_16_048",
+        "CMS_SUS_16_048_stop",
+        "CMS_SUS_16_048_nocovar",
+        "CMS_SUS_16_048_stop_nocovar"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 21,
+      "n_committed_results": 42,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "CMS low-pT lepton + MET SUSY search at 13 TeV with 36/fb",
+        "InspireID": "1518834",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_2LEPsoft_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_16_051.cpp",
+      "stem": "CMS_SUS_16_051",
+      "classes": [
+        "CMS_SUS_16_051"
+      ],
+      "registered_names": [
+        "CMS_SUS_16_051"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_16_051"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 37,
+      "n_committed_results": 37,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "Topness"
+      ],
+      "info": {
+        "Summary": "CMS 1-lepton + MET top-squark search at 13 TeV with 36/fb",
+        "InspireID": "1605128",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_1LEPStop_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_001.cpp",
+      "stem": "CMS_SUS_17_001",
+      "classes": [
+        "CMS_SUS_17_001"
+      ],
+      "registered_names": [
+        "CMS_SUS_17_001"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_17_001"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 42,
+      "n_committed_results": 26,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "CMS 2-lepton heavy top-squark search at 13 TeV with 36/fb",
+        "InspireID": "1634253",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_2LEPStop_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_010.cpp",
+      "stem": "CMS_SUS_17_010",
+      "classes": [
+        "CMS_SUS_17_010",
+        "CMS_SUS_17_010_chargino",
+        "CMS_SUS_17_010_stop"
+      ],
+      "registered_names": [
+        "CMS_SUS_17_010",
+        "CMS_SUS_17_010_chargino",
+        "CMS_SUS_17_010_stop"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "Analysis_CMS_SUS_17_010",
+        "CMS_SUS_17_010_chargino",
+        "CMS_SUS_17_010_stop"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 154,
+      "n_committed_results": 308,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "CMS 2-lepton + MET chargino/top-squark search at 13 TeV with 36/fb",
+        "InspireID": "1683312",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_2OSLEP_chargino_stop_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_011.cpp",
+      "stem": "CMS_SUS_17_011",
+      "classes": [
+        "CMS_SUS_17_011"
+      ],
+      "registered_names": [
+        "CMS_SUS_17_011"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_17_011"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 6,
+      "n_committed_results": 6,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "CMS photon + MET SUSY search at 13 TeV with 36/fb",
+        "InspireID": "1725476",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_2Photon_GMSB_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_17_012.cpp",
+      "stem": "CMS_SUS_17_012",
+      "classes": [
+        "CMS_SUS_17_012",
+        "CMS_SUS_17_012_emu_combined"
+      ],
+      "registered_names": [
+        "CMS_SUS_17_012",
+        "CMS_SUS_17_012_emu_combined"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_17_012",
+        "CMS_SUS_17_012_emu_combined"
+      ],
+      "luminosity_invfb": "35.9",
+      "n_signal_regions": 36,
+      "n_committed_results": 54,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "CMS photon + lepton + MET SUSY search at 13 TeV with 36/fb",
+        "InspireID": "1708516",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "35.9",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_1Photon1Lepton_36invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_18_004.cpp",
+      "stem": "CMS_SUS_18_004",
+      "classes": [
+        "CMS_SUS_18_004",
+        "CMS_SUS_18_004_ewino",
+        "CMS_SUS_18_004_stop"
+      ],
+      "registered_names": [
+        "CMS_SUS_18_004",
+        "CMS_SUS_18_004_ewino",
+        "CMS_SUS_18_004_stop"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_18_004",
+        "CMS_SUS_18_004_ewino",
+        "CMS_SUS_18_004_stop"
+      ],
+      "luminosity_invfb": "137.",
+      "n_signal_regions": 52,
+      "n_committed_results": 111,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "137.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_2LEPsoft_137invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_006.cpp",
+      "stem": "CMS_SUS_19_006",
+      "classes": [
+        "CMS_SUS_19_006"
+      ],
+      "registered_names": [
+        "CMS_SUS_19_006"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_19_006"
+      ],
+      "luminosity_invfb": "137.0",
+      "n_signal_regions": 12,
+      "n_committed_results": 12,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "CMS 0-lepton jet+MET SUSY analysis at 13 TeV with 137/fb",
+        "InspireID": "1749379",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "137.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_0LEP_137invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_008.cpp",
+      "stem": "CMS_SUS_19_008",
+      "classes": [
+        "CMS_SUS_19_008"
+      ],
+      "registered_names": [
+        "CMS_SUS_19_008"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_19_008"
+      ],
+      "luminosity_invfb": "137",
+      "n_signal_regions": 185,
+      "n_committed_results": 185,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "CMS 2-SS-lepton + jets or >=3-lepton + jets search at 13 TeV with 137/fb",
+        "InspireID": "1777617",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "137.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_2SSLEP_Stop_137invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_010.cpp",
+      "stem": "CMS_SUS_19_010",
+      "classes": [
+        "CMS_SUS_19_010"
+      ],
+      "registered_names": [
+        "CMS_SUS_19_010"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_19_010"
+      ],
+      "luminosity_invfb": "137",
+      "n_signal_regions": 184,
+      "n_committed_results": 183,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "Large-R jets",
+        "MT2"
+      ],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "137.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_0LEPStop_137invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_19_012.cpp",
+      "stem": "CMS_SUS_19_012",
+      "classes": [
+        "CMS_SUS_19_012",
+        "CMS_SUS_19_012_2Lep",
+        "CMS_SUS_19_012_3Lep",
+        "CMS_SUS_19_012_3LEPTau",
+        "CMS_SUS_19_012_4LEP",
+        "CMS_SUS_19_012_4LEPTau"
+      ],
+      "registered_names": [
+        "CMS_SUS_19_012",
+        "CMS_SUS_19_012_2Lep",
+        "CMS_SUS_19_012_3Lep",
+        "CMS_SUS_19_012_3LEPTau",
+        "CMS_SUS_19_012_4LEP",
+        "CMS_SUS_19_012_4LEPTau"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_19_012",
+        "CMS_SUS_19_012_2Lep",
+        "CMS_SUS_19_012_3Lep",
+        "CMS_SUS_19_012_3LEPTau",
+        "CMS_SUS_19_012_4LEP",
+        "CMS_SUS_19_012_4LEPTau"
+      ],
+      "luminosity_invfb": "137.0",
+      "n_signal_regions": 12,
+      "n_committed_results": 300,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "CMS 3/4-lepton (<=2 hadronic tau / 2-SS-lepton) search at 13 TeV with 137/fb",
+        "InspireID": "1872976",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "137.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_MultiLEP_137invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_20_001.cpp",
+      "stem": "CMS_SUS_20_001",
+      "classes": [
+        "CMS_SUS_20_001",
+        "CMS_SUS_20_001_strong_production",
+        "CMS_SUS_20_001_EW_production",
+        "CMS_SUS_20_001_Slepton"
+      ],
+      "registered_names": [
+        "CMS_SUS_20_001",
+        "CMS_SUS_20_001_strong_production",
+        "CMS_SUS_20_001_EW_production",
+        "CMS_SUS_20_001_Slepton"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_20_001",
+        "CMS_SUS_20_001_strong_production",
+        "CMS_SUS_20_001_EW_production",
+        "CMS_SUS_20_001_Slepton"
+      ],
+      "luminosity_invfb": "137.",
+      "n_signal_regions": 59,
+      "n_committed_results": 110,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": false,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "CMS 2-lepton + MET SUSY search at 13 TeV with 137/fb",
+        "InspireID": "1836850",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "137.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_2OSLEP_137invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_20_003.cpp",
+      "stem": "CMS_SUS_20_003",
+      "classes": [
+        "CMS_SUS_20_003"
+      ],
+      "registered_names": [
+        "CMS_SUS_20_003"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_20_003"
+      ],
+      "luminosity_invfb": "137.0",
+      "n_signal_regions": 0,
+      "n_committed_results": 13,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "FastJet reclustering"
+      ],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_20_004.cpp",
+      "stem": "CMS_SUS_20_004",
+      "classes": [
+        "CMS_SUS_20_004"
+      ],
+      "registered_names": [
+        "CMS_SUS_20_004"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_20_004"
+      ],
+      "luminosity_invfb": "137",
+      "n_signal_regions": 0,
+      "n_committed_results": 22,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "137.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_2Higgs_4b_neutralino_137invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_21_002.cpp",
+      "stem": "CMS_SUS_21_002",
+      "classes": [
+        "CMS_SUS_21_002"
+      ],
+      "registered_names": [
+        "CMS_SUS_21_002"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_21_002"
+      ],
+      "luminosity_invfb": "137.0",
+      "n_signal_regions": 0,
+      "n_committed_results": 35,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "137.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_0LEP_chargino_VV_VH_137invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_21_002_OLD.cpp",
+      "stem": "CMS_SUS_21_002_OLD",
+      "classes": [
+        "CMS_SUS_21_002_OLD"
+      ],
+      "registered_names": [
+        "CMS_SUS_21_002_OLD"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_21_002_OLD"
+      ],
+      "luminosity_invfb": "137.0",
+      "n_signal_regions": 0,
+      "n_committed_results": 35,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_CMS_SUS_21_009.cpp",
+      "stem": "CMS_SUS_21_009",
+      "classes": [
+        "CMS_SUS_21_009"
+      ],
+      "registered_names": [
+        "CMS_SUS_21_009"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "CMS_SUS_21_009"
+      ],
+      "luminosity_invfb": "137.0",
+      "n_signal_regions": 45,
+      "n_committed_results": 37,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [
+        "MT2"
+      ],
+      "info": {
+        "Summary": "TBD",
+        "InspireID": "-1",
+        "ExptRun": "CMS-R2",
+        "Lumi_ifb": "137.0",
+        "Ecm_TeV": "13.0",
+        "OldName": "CMS_13TeV_Photon_GMSB_137invfb"
+      },
+      "has_info_file": true
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_Covariance.cpp",
+      "stem": "Covariance",
+      "classes": [
+        "Covariance"
+      ],
+      "registered_names": [
+        "Covariance"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "Covariance"
+      ],
+      "luminosity_invfb": "30.",
+      "n_signal_regions": 2,
+      "n_committed_results": 3,
+      "covariance": true,
+      "fulllikes_bkgjson": false,
+      "cutflows": false,
+      "techniques": [],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_Dummy.cpp",
+      "stem": "Dummy",
+      "classes": [
+        "Dummy"
+      ],
+      "registered_names": [
+        "Dummy"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "CMS",
+      "analysis_names": [
+        "Dummy"
+      ],
+      "luminosity_invfb": "137.0",
+      "n_signal_regions": 7,
+      "n_committed_results": 2,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": true,
+      "techniques": [],
+      "info": {},
+      "has_info_file": false
+    },
+    {
+      "file": "ColliderBit/src/analyses/Analysis_Minimum.cpp",
+      "stem": "Minimum",
+      "classes": [
+        "Minimum"
+      ],
+      "registered_names": [
+        "Minimum"
+      ],
+      "unregistered_factories": [],
+      "registration_group": "MAP_ANALYSES",
+      "detector": "ATLAS",
+      "analysis_names": [
+        "Minimum"
+      ],
+      "luminosity_invfb": "20.3",
+      "n_signal_regions": 2,
+      "n_committed_results": 2,
+      "covariance": false,
+      "fulllikes_bkgjson": false,
+      "cutflows": false,
+      "techniques": [],
+      "info": {},
+      "has_info_file": false
+    }
+  ]
+}

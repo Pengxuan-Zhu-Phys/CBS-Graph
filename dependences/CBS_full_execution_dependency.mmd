@@ -1,0 +1,61 @@
+flowchart LR
+    %% Generated from CBS full execution flow
+    cbs_main["main(argc, argv)<br/>CBS process entry"]
+    cli_input["parse_command_line()<br/>command_line_status · filename"]
+    prepared_input["parse_and_prepare_input(filename_in)<br/>PreparedInput: infile · analyses[] · hepmc_filenames[]"]
+    runtime_config["Read runtime settings<br/>debug · use_FullLikes · check_cutflow · check_histogram<br/>jet_pt_min · jet_collections · withRivet/withContur"]
+    output_config["OutputConfig<br/>screen_output · write_file · output_file"]
+    functor_selection["Select functors and options<br/>calcLogLikes = regular / FullLikes<br/>getEvent<br/>convertEvent<br/>CollectAnalyses"]
+    dependency_resolution["Resolve functor graph<br/>resolveDependency<br/>resolveBackendReq<br/>resolveLoopManager<br/>nested_functions[]"]
+    loop_config["Configure operateLHCLoop<br/>CBS: analyses[] · min/max_nEvents<br/>run_convergence_checks=false · use_colliders=[CBS]"]
+    operate_loop["operateLHCLoop.reset_and_calculate()<br/>MCLoopInfo: collider_names · event_count · iteration"]
+    event_reader["getHepMCEvent<br/>HepMC3::GenEvent → event record<br/>hepmc_filename"]
+    event_convert["convertHepMCEvent_HEPUtils<br/>HardScatteringEvent → HEPUtils::Event<br/>jet_pt_min · jet collections"]
+    detector_dispatch["Detector/event branch<br/>smearEventATLAS<br/>smearEventCMS<br/>copyEvent<br/>SmearedEvent = clone + detector.processEvent"]
+    analysis_dispatch["Analysis dispatch<br/>AnalysisContainer::analyze(SmearedEvent)<br/>runATLASAnalyses<br/>runCMSAnalyses<br/>runIdentityAnalyses"]
+    event_accumulation["Per-event analysis state<br/>cutflows · histograms · signal-region counters<br/>Analysis::run(e) marks _needs_collection"]
+    loop_finalize["COLLIDER_FINALIZE<br/>Analysis::get_results_ptr(warning)<br/>collect_results() commits AnalysisData"]
+    collect_analyses["CollectAnalyses(AnalysisDataPointers&amp;)<br/>merge ATLAS + CMS + Identity result vectors<br/>validate SRs · optional cutflows"]
+    calc_loglikes["calc_LHC_LogLikes<br/>AnalysisDataPointers · xsec · n_mc · estimator<br/>map_str_AnalysisLogLikes"]
+    combined_loglike["calc_combined_LHC_LogLike<br/>loop analysis loglikes → combined loglike"]
+    contur_branch["Optional Rivet / Contur<br/>Contur_LHC_measurements_LogLike<br/>contur_total_loglike · pool maps"]
+    final_values["Assemble final values<br/>n_events · loglike<br/>analysis_results · analysis_loglikes"]
+    emit_outputs["SoloOutput::emit_outputs(...)<br/>print_screen_summary() if enabled<br/>write JSON if write_file"]
+    output_payload["Screen + CBS_output.json<br/>summary · analyses · signal_regions<br/>cutflows · histograms · terms · variants"]
+    return_zero["return 0<br/>CBS complete"]
+    process_batch["Optional processes[] branch<br/>SoloBatch::run_and_merge() → emit_outputs()"]
+    cbs_main -->|startup| cli_input
+    cli_input -->|filename_in| prepared_input
+    prepared_input -->|infile · analyses · settings| runtime_config
+    runtime_config -->|settings parsed| output_config
+    runtime_config -->|flags and options| functor_selection
+    runtime_config -->|optional backend choices| dependency_resolution
+    functor_selection -->|selected functor pointers| dependency_resolution
+    prepared_input -->|analyses[] · infile[settings]| loop_config
+    runtime_config -->|debug / loop policy| loop_config
+    dependency_resolution -.->|nested functors attached| loop_config
+    loop_config -->|reset_and_calculate| operate_loop
+    prepared_input -->|hepmc_filenames.front()| event_reader
+    runtime_config -->|jet_pt_min · collections| event_convert
+    operate_loop -.->|per-event iteration| event_reader
+    event_reader -->|event record| event_convert
+    event_convert -->|HardScatteringEvent / HEPUtils::Event| detector_dispatch
+    detector_dispatch -.->|SmearedEvent / CopiedEvent| analysis_dispatch
+    analysis_dispatch -->|Container.analyze(event)| event_accumulation
+    event_accumulation -->|next event until end/limit| operate_loop
+    operate_loop -->|COLLIDER_FINALIZE| loop_finalize
+    loop_finalize -->|AnalysisData pointers| collect_analyses
+    collect_analyses -->|AllAnalysisNumbers| calc_loglikes
+    calc_loglikes -->|LHC_LogLikes map| combined_loglike
+    combined_loglike -->|loglike| final_values
+    collect_analyses -->|analysis_results| final_values
+    calc_loglikes -->|analysis_loglikes| final_values
+    operate_loop -->|event_count.at(CBS)| final_values
+    runtime_config -->|withRivet + withContur| contur_branch
+    contur_branch -->|contur_total_loglike + pools| final_values
+    final_values -->|emit_outputs(args)| emit_outputs
+    output_config -->|OutputConfig| emit_outputs
+    emit_outputs -->|screen / file branches| output_payload
+    output_payload -->|done| return_zero
+    prepared_input -->|processes[] present| process_batch
+    process_batch -->|merged output| emit_outputs
