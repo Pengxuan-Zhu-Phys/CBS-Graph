@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The analysis naming migration</title>
+  <style>
+    :root { --paper:#f5f5f5; --paper-2:#ececec; --ink:#2d3142; --muted:#4f5d75; --soft:#7a8399; --rule:rgba(45,49,66,.12); --accent:#eb6c36; --accent-tint:rgba(235,108,54,.08); --green:#4f8a69; --green-tint:#eef8f1; --red:#93513f; --red-tint:#f3e9e5; --font-sans:'Geist',system-ui,sans-serif; --font-mono:'Geist Mono',ui-monospace,monospace; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:14px/1.55 var(--font-sans); }
+    .frame { max-width:1520px; margin:0 auto; padding:42px 42px 64px; }
+    .eyebrow,.kicker,.meta,.source,.status,th,footer { font-family:var(--font-mono); }
+    .eyebrow { color:var(--muted); font-size:10px; letter-spacing:.16em; text-transform:uppercase; margin:0 0 12px; }
+    h1 { font-family:'Instrument Serif',Georgia,serif; font-size:clamp(42px,5vw,72px); font-weight:400; letter-spacing:-.04em; line-height:.98; margin:0 0 14px; }
+    h2 { font-size:28px; font-weight:600; letter-spacing:-.03em; line-height:1.08; margin:0 0 8px; }
+    p { color:var(--muted); }
+    .intro { max-width:1080px; font-size:15px; line-height:1.65; margin:0 0 18px; }
+    .meta { display:flex; flex-wrap:wrap; gap:8px 18px; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:12px 0; color:var(--muted); font-size:10px; }
+    .meta strong { color:var(--accent); font-weight:600; }
+    .note { border-left:3px solid var(--accent); color:var(--muted); font-size:11px; line-height:1.6; margin:18px 0; max-width:1160px; padding:8px 12px; }
+    .backlink { align-items:baseline; background:#fff; border:1px solid var(--rule); border-left:3px solid var(--accent);
+      border-radius:0 6px 6px 0; color:var(--muted); display:flex; flex-wrap:wrap; font-size:12.5px; gap:4px 12px;
+      line-height:1.6; margin:18px 0 0; max-width:1160px; padding:11px 14px; }
+    .backlink .lbl { color:var(--soft); font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; }
+    .backlink span:last-child { flex:1 1 420px; }
+    .backlink a { border-bottom:1px solid rgba(235,108,54,.42); color:var(--accent); font-weight:600; text-decoration:none; }
+    .backlink a:hover { background:var(--accent-tint); }
+    .summary-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin:22px 0 32px; }
+    .card { background:#fff; border:1px solid var(--rule); border-radius:6px; padding:14px 16px; }
+    .card.accent { border-color:rgba(235,108,54,.45); background:var(--accent-tint); }
+    .card .n { color:var(--ink); display:block; font-size:26px; font-weight:600; letter-spacing:-.04em; line-height:1; margin-bottom:8px; }
+    .card .label { color:var(--soft); font-family:var(--font-mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; }
+    section { border-top:1px solid var(--rule); margin-top:28px; padding:24px 0 0; }
+    .kicker { color:var(--soft); font-size:9px; letter-spacing:.16em; margin:0 0 8px; text-transform:uppercase; }
+    .source { color:var(--soft); font-size:10px; line-height:1.55; margin:0 0 14px; }
+    .diagram-shell { overflow-x:auto; background:#fff; border:1px solid var(--rule); border-radius:8px; padding:8px; }
+    svg { display:block; min-width:1080px; width:100%; height:auto; }
+    svg .zone { fill:rgba(45,49,66,.025); stroke:rgba(45,49,66,.13); stroke-width:1; }
+    svg .zone-label { fill:var(--soft); font:500 10px var(--font-mono); letter-spacing:1.6px; }
+    svg .node .kind { fill:var(--soft); font:500 9px var(--font-mono); letter-spacing:1.2px; }
+    svg .node .title { fill:var(--ink); font:600 12px var(--font-mono); }
+    svg .node .body { fill:var(--muted); font:9px var(--font-mono); }
+    svg .legend-label { fill:var(--soft); font:9px var(--font-mono); letter-spacing:.6px; }
+    svg .detail-edge { fill:none; stroke:var(--muted); stroke-width:1.4; }
+    svg .node.detail-primary rect { fill:#fff; stroke:var(--soft); stroke-width:1.2; }
+    svg .node.detail-data rect { fill:rgba(79,93,117,.08); stroke:var(--soft); stroke-width:1.2; }
+    svg .node.detail-optional rect { fill:#fff; stroke:var(--soft); stroke-width:1.2; stroke-dasharray:5 4; }
+    svg .node.detail-focal rect { fill:var(--accent-tint); stroke:var(--accent); stroke-width:1.6; }
+    svg .node.detail-focal .kind { fill:var(--accent); }
+    .unit-list { display:grid; gap:14px; margin-top:18px; }
+    .unit { border:1px solid var(--rule); border-radius:8px; background:#fff; padding:16px 18px; scroll-margin-top:20px; }
+    .unit:target { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-tint); }
+    .unit-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+    .unit-num { display:grid; place-items:center; width:26px; height:26px; border-radius:50%;
+      border:1.2px solid var(--ink); font:600 13px var(--font-mono); }
+    .unit-title { font-size:16px; font-weight:600; letter-spacing:-.01em; }
+    .unit-kind { padding:2px 7px; border-radius:3px; border:1px solid currentColor;
+      font:8px var(--font-mono); letter-spacing:.9px; text-transform:uppercase;
+      color:#4f8a69; background:var(--green-tint); }
+    .unit-delta { margin-left:auto; font:11px var(--font-mono); color:var(--soft); }
+    .unit-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px 24px; margin:0; }
+    .unit-grid > div { display:flex; gap:10px; border-bottom:1px solid var(--rule); padding-bottom:8px; }
+    .unit-grid dt { flex:0 0 46px; margin:2px 0 0; color:var(--soft);
+      font:9px var(--font-mono); letter-spacing:1px; text-transform:uppercase; }
+    .unit-grid dd { margin:0; color:var(--muted); font-size:12.5px; line-height:1.6; }
+    .unit-diff { margin-top:11px; border:1px solid var(--rule); border-radius:6px; background:#fff; }
+    .unit-diff summary { cursor:pointer; padding:9px 13px; color:var(--accent);
+      font:11px var(--font-mono); letter-spacing:.4px; list-style:none; }
+    .unit-diff summary::-webkit-details-marker { display:none; }
+    .unit-diff summary::before { content:"\25b8 "; display:inline-block; width:14px; }
+    .unit-diff[open] summary::before { content:"\25be "; }
+    .unit-diff[open] summary { border-bottom:1px solid var(--rule); }
+    .unit-diff summary:hover { background:rgba(235,108,54,.05); }
+    .unit-hunks { margin:0; padding:12px 14px; overflow-x:auto; font:11px/1.7 var(--font-mono);
+      background:#fff; border:0; color:var(--ink); white-space:pre; }
+    .diagram-note { color:var(--muted); font-size:12px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
+    .claim-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:18px; }
+    .claim { background:#fff; border:1px solid var(--rule); border-left:3px solid var(--accent); border-radius:0 6px 6px 0; padding:13px 16px; }
+    .claim-h { color:var(--ink); font-size:13px; font-weight:600; letter-spacing:-.01em; margin:0 0 6px; }
+    .claim p:last-child { font-size:12px; line-height:1.62; margin:0; }
+    .ln { color:var(--soft); font-family:var(--font-mono); font-size:9px; display:block; margin-top:3px; }
+    .delta { color:var(--accent); font-family:var(--font-mono); font-size:10px; }
+    .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
+    .mapping-table table { min-width:900px; }
+    table { border-collapse:collapse; font-size:11px; width:100%; }
+    th,td { border-bottom:1px solid var(--rule); padding:8px 9px; text-align:left; vertical-align:top; }
+    th { background:#ececec; color:var(--muted); font-size:9px; letter-spacing:.08em; text-transform:uppercase; }
+    td code { color:var(--ink); font-family:var(--font-mono); font-size:10px; word-break:break-word; }
+    td.num { text-align:right; font-family:var(--font-mono); white-space:nowrap; }
+    .add { color:var(--green); } .del { color:var(--red); }
+    .status { font-size:9px; font-weight:600; letter-spacing:.04em; }
+    .status.added-in-right { color:var(--green); } .status.unchanged { color:#b55c2d; }
+    footer { border-top:1px solid var(--rule); color:var(--soft); font-size:10px; margin-top:32px; padding-top:14px; }
+    @media (max-width:900px) { .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } .claim-grid { grid-template-columns:1fr; } }
+    @media (max-width:560px) { h1 { font-size:44px; } }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<main class="frame">
+  <p class="eyebrow">ColliderBit &#183; analysis layer</p>
+  <h1>The naming migration</h1>
+  <p class="intro">Every analysis moved from a name describing what it looked at to the report number of the paper it reproduces. The deck quotes the file count. This page carries the other number &mdash; the one a YAML actually depends on &mdash; the full old-to-new table, the files that absorbed several analyses each, and the two analyses whose source says plainly why they did not move.</p>
+  <div class="meta"><span><strong>BASELINE</strong> 9c955e3a78</span><span><strong>HEAD</strong> 65aca0890d</span><span><strong>SOURCE</strong> provenance comments + DEFINE_ANALYSIS_FACTORY</span><span><strong>STATIC EVIDENCE</strong> no build / no events processed</span></div>
+  <p class="backlink"><span class="lbl">context</span><span>This page expands <a href="cbs-change-ledger.html#8">slide 8 of the CBS change-ledger deck &#8599;</a>, which summarises the migration in one card. Everything below is read from the worktree at generation time.</span></p>
+
+  <div class="summary-grid" aria-label="Summary">
+    <div class="card"><span class="n">75</span><span class="label">git-detected renames</span></div>
+    <div class="card"><span class="n">80</span><span class="label">documented moves</span></div>
+    <div class="card"><span class="n">18</span><span class="label">consolidations</span></div>
+    <div class="card accent"><span class="n">123</span><span class="label">names retired</span></div>
+    <div class="card"><span class="n">132</span><span class="label">names introduced</span></div>
+    <div class="card accent"><span class="n">1</span><span class="label">physics name kept</span></div>
+  </div>
+  <div class="note">Two counts describe this migration and they are not the same. <strong>Files</strong> are what <code>git diff -M</code> reports. <strong>Registered names</strong> are what <code>DEFINE_ANALYSIS_FACTORY</code> emits and what a YAML selects by &mdash; a single file can register several. The second number is larger, and it is the one that describes what breaks.</div>
+
+  <section id="levels">
+    <p class="kicker">01 &#183; two levels</p>
+    <h2>The file count understates it</h2>
+    <p class="source">Both numbers are correct; they measure different things.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:34%">Level</th><th style="width:12%">Baseline</th><th style="width:12%">Head</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Files git calls renames</strong></td><td class="num">&#8212;</td><td class="num">75</td>
+            <td>Detected by content similarity. Misses a move when the file was also rewritten, or when several files folded into one.</td></tr>
+        <tr><td><strong>Files with a provenance block</strong></td><td class="num">&#8212;</td><td class="num">80</td>
+            <td>The migration wrote <code>// Renamed from:</code> into each file. This is the migration's own record, and it is more complete than git's.</td></tr>
+        <tr><td><strong>Registered analysis names</strong></td><td class="num">128</td><td class="num">137</td>
+            <td>What <code>DEFINE_ANALYSIS_FACTORY</code> emits &mdash; the string a YAML writes. <strong>123 retired, 132 introduced, 5 survived.</strong></td></tr>
+      </tbody>
+    </table></div>
+    <p class="diagram-note">The gap is the consolidations. 18 files each absorb more than one old analysis file &mdash; 56 old files in total &mdash; and a fold-in is not a rename, so git reports the survivor as modified and the others as deleted. That is why the deck's 75 and this page's 80 disagree, and neither is wrong.</p>
+  </section>
+
+  <section id="scheme">
+    <p class="kicker">02 &#183; the scheme</p>
+    <h2>From what it looked at, to how it is cited</h2>
+    <p class="source">Both schemes pack four fields into the name. They pack different ones.</p>
+    <div class="diagram-shell"><svg viewBox="0 0 1240 250" role="img" aria-labelledby="sch-t sch-d">
+<title id="sch-t">The old and new analysis naming schemes</title>
+<desc id="sch-d">The old name encoded experiment, beam energy, final state and integrated luminosity. The new one encodes experiment, report type, year and report number, which is how the paper is cited.</desc>
+<text class="zone-label" x="20" y="32">BEFORE — what the analysis looked at</text>
+<g class="node detail-data"><rect x="20" y="46" width="118" height="62" rx="7"/>
+<text class="title" x="32" y="72" style="font-size:12px">ATLAS</text>
+<text class="body" x="32" y="92">experiment</text>
+</g>
+<text class="body" x="143" y="82" style="font-size:13px">_</text>
+<g class="node detail-data"><rect x="156" y="46" width="118" height="62" rx="7"/>
+<text class="title" x="168" y="72" style="font-size:12px">13TeV</text>
+<text class="body" x="168" y="92">beam energy</text>
+</g>
+<text class="body" x="279" y="82" style="font-size:13px">_</text>
+<g class="node detail-data"><rect x="292" y="46" width="118" height="62" rx="7"/>
+<text class="title" x="304" y="72" style="font-size:12px">0LEP</text>
+<text class="body" x="304" y="92">final state</text>
+</g>
+<text class="body" x="415" y="82" style="font-size:13px">_</text>
+<g class="node detail-data"><rect x="428" y="46" width="118" height="62" rx="7"/>
+<text class="title" x="440" y="72" style="font-size:12px">36invfb</text>
+<text class="body" x="440" y="92">luminosity</text>
+</g>
+<text class="legend-label" x="572" y="82">ATLAS_13TeV_0LEP_36invfb</text>
+<text class="zone-label" x="20" y="146">AFTER — how the paper is cited</text>
+<g class="node detail-focal"><rect x="20" y="160" width="118" height="62" rx="7"/>
+<text class="title" x="32" y="186" style="font-size:12px">ATLAS</text>
+<text class="body" x="32" y="206">experiment</text>
+</g>
+<text class="body" x="143" y="196" style="font-size:13px">_</text>
+<g class="node detail-focal"><rect x="156" y="160" width="118" height="62" rx="7"/>
+<text class="title" x="168" y="186" style="font-size:12px">SUSY</text>
+<text class="body" x="168" y="206">report type</text>
+</g>
+<text class="body" x="279" y="196" style="font-size:13px">_</text>
+<g class="node detail-focal"><rect x="292" y="160" width="118" height="62" rx="7"/>
+<text class="title" x="304" y="186" style="font-size:12px">2016</text>
+<text class="body" x="304" y="206">year</text>
+</g>
+<text class="body" x="415" y="196" style="font-size:13px">_</text>
+<g class="node detail-focal"><rect x="428" y="160" width="118" height="62" rx="7"/>
+<text class="title" x="440" y="186" style="font-size:12px">07</text>
+<text class="body" x="440" y="206">report number</text>
+</g>
+<text class="legend-label" x="572" y="196">ATLAS_SUSY_2016_07</text>
+<path class="detail-edge" d="M600 120 V150" marker-end="url(#rn-arrow)"/>
+<defs><marker id="rn-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4f5d75"/></marker></defs>
+</svg></div>
+    <div class="mapping-table" style="margin-top:16px"><table>
+      <thead><tr><th style="width:14%">Report type</th><th style="width:10%">Files</th><th style="width:10%">Share</th><th>What it is</th></tr></thead>
+      <tbody><tr><td><code>SUSY</code></td><td class="num">41</td><td class="num">51%</td><td>ATLAS supersymmetry paper</td></tr>
+<tr><td><code>SUS</code></td><td class="num">27</td><td class="num">34%</td><td>CMS supersymmetry paper</td></tr>
+<tr><td><code>CONF</code></td><td class="num">6</td><td class="num">8%</td><td>ATLAS conference note &mdash; preliminary, not a journal paper</td></tr>
+<tr><td><code>B2G</code></td><td class="num">2</td><td class="num">2%</td><td>CMS beyond-two-generations paper</td></tr>
+<tr><td><code>EXO</code></td><td class="num">2</td><td class="num">2%</td><td>CMS exotics paper</td></tr>
+<tr><td><code>unparsed</code></td><td class="num">1</td><td class="num">1%</td><td>does not fit the scheme (see below)</td></tr>
+<tr><td><code>EXOT</code></td><td class="num">1</td><td class="num">1%</td><td>ATLAS exotics paper</td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">The new name is unambiguous in a way the old one was not: <code>ATLAS_13TeV_0LEP_36invfb</code> describes a search, but several papers match that description, whereas <code>ATLAS_SUSY_2016_07</code> resolves to exactly one. The cost is that it no longer says what the analysis selects &mdash; you have to look it up. <strong>The <code>CONF</code> and <code>PAS</code> entries are worth noticing:</strong> those are preliminary notes rather than journal papers, and a report number does not change that.</p>
+  </section>
+
+  <section id="table">
+    <p class="kicker">03 &#183; the full map</p>
+    <h2>Every move, old to new</h2>
+    <p class="source">Read from the <code>// Renamed from:</code> block in each file. <em>Defines</em> is how many analysis names that one file registers &mdash; more than one means the sub-region analyses live there too.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:24%">New name</th><th style="width:34%">Renamed from</th><th style="width:9%">Shape</th><th style="width:8%">Defines</th><th style="width:14%">Git similarity</th></tr></thead>
+      <tbody><tr data-kind="other" data-shape="1:1"><td><code>ATLAS_8TeV_1LEPbb_20invfb</code><br><span class="delta">:D unrenamed, can not find original exp report</span></td><td><code>ATLAS_8TeV_1LEPbb_20invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status unchanged">not a git rename</span></td></tr>
+<tr data-kind="CONF" data-shape="1:1"><td><code>ATLAS_CONF_2013_037</code></td><td><code>ATLAS_8TeV_1LEPStop_20invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">87%</span></td></tr>
+<tr data-kind="CONF" data-shape="1:1"><td><code>ATLAS_CONF_2016_078</code></td><td><code>ATLAS_13TeV_0LEP_13invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">75%</span></td></tr>
+<tr data-kind="CONF" data-shape="1:1"><td><code>ATLAS_CONF_2017_039</code></td><td><code>ATLAS_13TeV_MultiLEP_confnote_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">93%</span></td></tr>
+<tr data-kind="CONF" data-shape="1:1"><td><code>ATLAS_CONF_2018_019</code></td><td><code>ATLAS_13TeV_ZGammaGrav_CONFNOTE_80invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">78%</span></td></tr>
+<tr data-kind="CONF" data-shape="3:1"><td><code>ATLAS_CONF_2018_042</code></td><td><code>ATLAS_13TeV_2OSLEP_chargino_80invfb</code><br><code>ATLAS_13TeV_2OSLEP_chargino_inclusive_80invfb</code><br><code>ATLAS_13TeV_2OSLEP_chargino_binned_80invfb</code></td><td><span class="status unchanged">3:1</span></td><td class="num">3</td><td><span class="status added-in-right">91%</span></td></tr>
+<tr data-kind="CONF" data-shape="3:1"><td><code>ATLAS_CONF_2019_008</code></td><td><code>ATLAS_13TeV_2OSLEP_chargino_139invfb</code><br><code>ATLAS_13TeV_2OSLEP_chargino_inclusive_139invfb</code><br><code>ATLAS_13TeV_2OSLEP_chargino_binned_139invfb</code></td><td><span class="status unchanged">3:1</span></td><td class="num">3</td><td><span class="status added-in-right">91%</span></td></tr>
+<tr data-kind="EXOT" data-shape="1:1"><td><code>ATLAS_EXOT_2018_06</code></td><td><code>ATLAS_13TeV_MONOJET_139infb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">94%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2012_04</code></td><td><code>ATLAS_7TeV_2LEPStop_4_7invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">94%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2012_10</code></td><td><code>ATLAS_7TeV_1OR2LEPStop_4_7invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">88%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2013_02</code></td><td><code>ATLAS_8TeV_0LEP_20invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">87%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2013_05</code></td><td><code>ATLAS_8TeV_2bStop_20invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">87%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2013_11</code></td><td><code>ATLAS_8TeV_2LEPEW_20invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">86%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2013_12</code></td><td><code>ATLAS_8TeV_3LEPEW_20invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">91%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2013_16</code></td><td><code>ATLAS_8TeV_0LEPStop_20invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">93%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2013_19</code></td><td><code>ATLAS_8TeV_2LEPStop_20invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">88%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2016_06</code></td><td><code>ATLAS_13TeV_1LEPStop_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">90%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2016_07</code></td><td><code>ATLAS_13TeV_0LEP_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">69%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2016_15</code></td><td><code>ATLAS_13TeV_0LEPStop_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">81%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2016_21</code></td><td><code>ATLAS_13TeV_4LEP_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">86%</span></td></tr>
+<tr data-kind="SUSY" data-shape="4:1"><td><code>ATLAS_SUSY_2016_24</code></td><td><code>ATLAS_13TeV_MultiLEP_36invfb</code><br><code>ATLAS_13TeV_MultiLEP_2Lep0Jets_36invfb</code><br><code>ATLAS_13TeV_MultiLEP_2LepPlusJets_36invfb</code><br><code>ATLAS_13TeV_MultiLEP_3Lep_36invfb</code></td><td><span class="status unchanged">4:1</span></td><td class="num">4</td><td><span class="status added-in-right">91%</span></td></tr>
+<tr data-kind="SUSY" data-shape="3:1"><td><code>ATLAS_SUSY_2016_27</code></td><td><code>ATLAS_13TeV_PhotonGGM_36invfb</code><br><code>ATLAS_13TeV_PhotonGGM_1Photon_36invfb</code><br><code>ATLAS_13TeV_PhotonGGM_2Photon_36invfb</code></td><td><span class="status unchanged">3:1</span></td><td class="num">3</td><td><span class="status added-in-right">71%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2016_28</code></td><td><code>ATLAS_13TeV_2bMET_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">89%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2017_01</code></td><td><code>ATLAS_13TeV_2LEPStop_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">86%</span></td></tr>
+<tr data-kind="SUSY" data-shape="2:1"><td><code>ATLAS_SUSY_2017_02</code></td><td><code>ATLAS_13TeV_3b_24invfb</code><br><code>ATLAS_13TeV_3b_discoverySR_24invfb</code></td><td><span class="status unchanged">2:1</span></td><td class="num">2</td><td><span class="status added-in-right">83%</span></td></tr>
+<tr data-kind="SUSY" data-shape="2:1"><td><code>ATLAS_SUSY_2017_02_36invfb</code></td><td><code>ATLAS_13TeV_3b_36invfb</code><br><code>ATLAS_13TeV_3b_discoverySR_36invfb</code></td><td><span class="status unchanged">2:1</span></td><td class="num">2</td><td><span class="status added-in-right">81%</span></td></tr>
+<tr data-kind="SUSY" data-shape="3:1"><td><code>ATLAS_SUSY_2017_03_RJR</code></td><td><code>ATLAS_13TeV_RJ3L_lowmass_36invfb</code><br><code>ATLAS_13TeV_RJ3L_2Lep2Jets_36invfb</code><br><code>ATLAS_13TeV_RJ3L_3Lep_36invfb</code></td><td><span class="status unchanged">3:1</span></td><td class="num">3</td><td><span class="status added-in-right">90%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_02</code></td><td><code>ATLAS_13TeV_4LEP_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">73%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_05</code></td><td><code>ATLAS_13TeV_2LEPJETS_EW_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">98%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_05_RJR</code></td><td><code>ATLAS_13TeV_2LEPJETS_RJR_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">95%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_06</code></td><td><code>ATLAS_13TeV_3LEP_eRJR_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">94%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_07</code><br><span class="delta">Not validated, still in progress</span></td><td><code>ATLAS_13TeV_1LEPStop_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status unchanged">not a git rename</span></td></tr>
+<tr data-kind="SUSY" data-shape="3:1"><td><code>ATLAS_SUSY_2018_08</code></td><td><code>ATLAS_13TeV_2LEPStop_139invfb</code><br><code>ATLAS_13TeV_2LEPStop_inclusive_139invfb</code><br><code>ATLAS_13TeV_2LEPStop_exclusive_139invfb</code></td><td><span class="status unchanged">3:1</span></td><td class="num">3</td><td><span class="status added-in-right">90%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_09</code></td><td><code>ATLAS_13TeV_MultiLEP_strong_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">94%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_11</code></td><td><code>ATLAS_13TeV_PhotonGGM_1Photon_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">89%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_12</code></td><td><code>ATLAS_13TeV_0LEPStop_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">95%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_12_RJR</code></td><td><code>ATLAS_13TeV_0LEPStop_RJR_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status unchanged">not a git rename</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_16</code></td><td><code>ATLAS_13TeV_2LEPsoft_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">3</td><td><span class="status added-in-right">98%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_21</code></td><td><code>ATLAS_13TeV_2OSLEP_Z_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">79%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_21_StopZH</code></td><td><code>ATLAS_13TeV_1OR3LEP_StopHZ_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">65%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_22</code></td><td><code>ATLAS_13TeV_0LEP_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">63%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_30</code></td><td><code>ATLAS_13TeV_3b_NN_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">97%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2018_41</code></td><td><code>ATLAS_13TeV_2BoostedBosons_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status unchanged">not a git rename</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2019_02</code></td><td><code>ATLAS_13TeV_2LEP0JET_EW_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">98%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2019_08</code></td><td><code>ATLAS_13TeV_1Lep2b_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">96%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2019_09</code></td><td><code>ATLAS_13TeV_3LEP_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status unchanged">not a git rename</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2019_18</code></td><td><code>ATLAS_13TeV_bTaus_StopStau_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">97%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2019_22</code></td><td><code>ATLAS_13TeV_2OR3LEP_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">98%</span></td></tr>
+<tr data-kind="SUSY" data-shape="1:1"><td><code>ATLAS_SUSY_2020_16</code></td><td><code>ATLAS_13TeV_4b_139invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">3</td><td><span class="status added-in-right">93%</span></td></tr>
+<tr data-kind="B2G" data-shape="1:1"><td><code>CMS_B2G_13_004</code></td><td><code>CMS_8TeV_2LEPDMTOP_20invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">78%</span></td></tr>
+<tr data-kind="B2G" data-shape="1:1"><td><code>CMS_B2G_14_004</code></td><td><code>CMS_8TeV_1LEPDMTOP_20invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">78%</span></td></tr>
+<tr data-kind="EXO" data-shape="1:1"><td><code>CMS_EXO_12_048</code></td><td><code>CMS_8TeV_MONOJET_20invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">52%</span></td></tr>
+<tr data-kind="EXO" data-shape="1:1"><td><code>CMS_EXO_16_048</code></td><td><code>CMS_13TeV_MONOJET_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">85%</span></td></tr>
+<tr data-kind="SUS" data-shape="3:1"><td><code>CMS_SUS_13_006</code></td><td><code>CMS_8TeV_MultiLEP_20invfb</code><br><code>CMS_8TeV_MultiLEP_3Lep_20invfb</code><br><code>CMS_8TeV_MultiLEP_4Lep_20invfb</code></td><td><span class="status unchanged">3:1</span></td><td class="num">3</td><td><span class="status added-in-right">98%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_16_014</code></td><td><code>CMS_13TeV_0LEP_13invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">86%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_16_033</code></td><td><code>CMS_13TeV_0LEP_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">78%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_16_034</code></td><td><code>CMS_13TeV_2OSLEP_confnote_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">64%</span></td></tr>
+<tr data-kind="SUS" data-shape="2:1"><td><code>CMS_SUS_16_034_EW</code></td><td><code>CMS_13TeV_2OSLEP_36invfb</code><br><code>CMS_13TeV_2OSLEP_36invfb_nocovar</code></td><td><span class="status unchanged">2:1</span></td><td class="num">2</td><td><span class="status added-in-right">75%</span></td></tr>
+<tr data-kind="SUS" data-shape="3:1"><td><code>CMS_SUS_16_035</code></td><td><code>CMS_13TeV_2SSLEP_Stop_36invfb</code><br><code>CMS_13TeV_2SSLEP_Stop_inclusive_36invfb</code><br><code>CMS_13TeV_2SSLEP_Stop_exclusive_36invfb</code></td><td><span class="status unchanged">3:1</span></td><td class="num">3</td><td><span class="status added-in-right">96%</span></td></tr>
+<tr data-kind="SUS" data-shape="3:1"><td><code>CMS_SUS_16_039</code></td><td><code>CMS_13TeV_MultiLEP_36invfb</code><br><code>CMS_13TeV_MultiLEP_2SSLep_36invfb</code><br><code>CMS_13TeV_MultiLEP_3Lep_36invfb</code></td><td><span class="status unchanged">3:1</span></td><td class="num">3</td><td><span class="status unchanged">not a git rename</span></td></tr>
+<tr data-kind="SUS" data-shape="4:1"><td><code>CMS_SUS_16_039_Full</code></td><td><code>CMS_13TeV_MultiLEP_Full_36invfb</code><br><code>CMS_13TeV_MultiLEP_Full_2SSLep_36invfb</code><br><code>CMS_13TeV_MultiLEP_Full_3Lep_36invfb</code><br><code>CMS_13TeV_MultiLEP_Full_3Lep_rebinned_36invfb</code></td><td><span class="status unchanged">4:1</span></td><td class="num">4</td><td><span class="status added-in-right">85%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_16_043</code></td><td><code>CMS_13TeV_1LEPbb_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">60%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_16_046</code></td><td><code>CMS_13TeV_Photon_GMSB_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">86%</span></td></tr>
+<tr data-kind="SUS" data-shape="4:1"><td><code>CMS_SUS_16_048</code></td><td><code>CMS_13TeV_2LEPsoft_36invfb</code><br><code>CMS_13TeV_2LEPsoft_stop_36invfb</code><br><code>CMS_13TeV_2LEPsoft_36invfb_nocovar</code><br><code>CMS_13TeV_2LEPsoft_stop_36invfb_nocovar</code></td><td><span class="status unchanged">4:1</span></td><td class="num">4</td><td><span class="status added-in-right">60%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_16_051</code></td><td><code>CMS_13TeV_1LEPStop_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">90%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_17_001</code></td><td><code>CMS_13TeV_2LEPStop_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">84%</span></td></tr>
+<tr data-kind="SUS" data-shape="3:1"><td><code>CMS_SUS_17_010</code></td><td><code>CMS_13TeV_2OSLEP_chargino_stop_36invfb</code><br><code>CMS_13TeV_2OSLEP_for_chargino_36invfb</code><br><code>CMS_13TeV_2OSLEP_for_stop_36invfb</code></td><td><span class="status unchanged">3:1</span></td><td class="num">3</td><td><span class="status added-in-right">99%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_17_011</code></td><td><code>CMS_13TeV_2Photon_GMSB_36invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">86%</span></td></tr>
+<tr data-kind="SUS" data-shape="2:1"><td><code>CMS_SUS_17_012</code></td><td><code>CMS_13TeV_1Photon1Lepton_36invfb</code><br><code>CMS_13TeV_1Photon1Lepton_emu_combined_36invfb</code></td><td><span class="status unchanged">2:1</span></td><td class="num">2</td><td><span class="status added-in-right">94%</span></td></tr>
+<tr data-kind="SUS" data-shape="3:1"><td><code>CMS_SUS_18_004</code></td><td><code>CMS_13TeV_2LEPsoft_137invfb</code><br><code>CMS_13TeV_2LEPsoft_ewinos_137invfb</code><br><code>CMS_13TeV_2LEPsoft_stop_137invfb</code></td><td><span class="status unchanged">3:1</span></td><td class="num">3</td><td><span class="status added-in-right">98%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_19_006</code></td><td><code>CMS_13TeV_0LEP_137invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">82%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_19_008</code></td><td><code>CMS_13TeV_2SSLEP_Stop_137invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">98%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_19_010</code></td><td><code>CMS_13TeV_0LEPStop_137invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">76%</span></td></tr>
+<tr data-kind="SUS" data-shape="6:1"><td><code>CMS_SUS_19_012</code></td><td><code>CMS_13TeV_MultiLEP_137invfb</code><br><code>CMS_13TeV_MultiLEP_2LEP_137invfb</code><br><code>CMS_13TeV_MultiLEP_3LEP_137invfb</code><br><code>CMS_13TeV_MultiLEP_3LEPTau_137invfb</code><br><code>CMS_13TeV_MultiLEP_4LEP_137invfb</code><br><code>CMS_13TeV_MultiLEP_4LEPTau_137invfb</code></td><td><span class="status unchanged">6:1</span></td><td class="num">6</td><td><span class="status added-in-right">94%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_20_001</code></td><td><code>CMS_13TeV_2OSLEP_137invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">4</td><td><span class="status added-in-right">97%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_20_003</code></td><td><code>CMS_13TeV_1LEPbb_137invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">78%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_20_004</code></td><td><code>CMS_13TeV_2Higgs_4b_neutralino_137invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">78%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_21_002</code></td><td><code>CMS_13TeV_0LEP_chargino_VV_VH_137invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">95%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_21_002_OLD</code></td><td><code>CMS_13TeV_0LEP_chargino_VV_VH_137invfb_OLD</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">94%</span></td></tr>
+<tr data-kind="SUS" data-shape="1:1"><td><code>CMS_SUS_21_009</code></td><td><code>CMS_13TeV_Photon_GMSB_137invfb</code></td><td><span class="status added-in-right">1:1</span></td><td class="num">1</td><td><span class="status added-in-right">90%</span></td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section id="consolidations">
+    <p class="kicker">04 &#183; consolidations</p>
+    <h2>Fewer files, same analyses</h2>
+    <p class="source">These 18 files each absorbed several old ones. The analyses inside were not merged &mdash; each still registers separately.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:22%">File</th><th style="width:10%">Absorbed</th><th style="width:10%">Defines</th><th>Registered analysis names inside</th></tr></thead>
+      <tbody><tr><td><code>CMS_SUS_19_012</code></td><td class="num">6</td><td class="num">6</td><td><code>CMS_SUS_19_012</code> <code>CMS_SUS_19_012_2Lep</code> <code>CMS_SUS_19_012_3LEPTau</code> <code>CMS_SUS_19_012_3Lep</code> <code>CMS_SUS_19_012_4LEP</code> <code>CMS_SUS_19_012_4LEPTau</code> </td></tr>
+<tr><td><code>ATLAS_SUSY_2016_24</code></td><td class="num">4</td><td class="num">4</td><td><code>ATLAS_SUSY_2016_24</code> <code>ATLAS_SUSY_2016_24_2Lep0Jets</code> <code>ATLAS_SUSY_2016_24_2LepPlusJets</code> <code>ATLAS_SUSY_2016_24_3Lep</code> </td></tr>
+<tr><td><code>CMS_SUS_16_039_Full</code></td><td class="num">4</td><td class="num">4</td><td><code>CMS_SUS_16_039_Full</code> <code>CMS_SUS_16_039_Full_2SSLep</code> <code>CMS_SUS_16_039_Full_3Lep</code> <code>CMS_SUS_16_039_Full_3Lep_rebinned</code> </td></tr>
+<tr><td><code>CMS_SUS_16_048</code></td><td class="num">4</td><td class="num">4</td><td><code>CMS_SUS_16_048</code> <code>CMS_SUS_16_048_nocovar</code> <code>CMS_SUS_16_048_stop</code> <code>CMS_SUS_16_048_stop_nocovar</code> </td></tr>
+<tr><td><code>ATLAS_CONF_2018_042</code></td><td class="num">3</td><td class="num">3</td><td><code>ATLAS_CONF_2018_042</code> <code>ATLAS_CONF_2018_042_chargino_binned</code> <code>ATLAS_CONF_2018_042_chargino_inclusive</code> </td></tr>
+<tr><td><code>ATLAS_CONF_2019_008</code></td><td class="num">3</td><td class="num">3</td><td><code>ATLAS_CONF_2019_008</code> <code>ATLAS_CONF_2019_008_chargino_binned</code> <code>ATLAS_CONF_2019_008_chargino_inclusive</code> </td></tr>
+<tr><td><code>ATLAS_SUSY_2016_27</code></td><td class="num">3</td><td class="num">3</td><td><code>ATLAS_SUSY_2016_27</code> <code>ATLAS_SUSY_2016_27_1Photon</code> <code>ATLAS_SUSY_2016_27_2Photon</code> </td></tr>
+<tr><td><code>ATLAS_SUSY_2017_03_RJR</code></td><td class="num">3</td><td class="num">3</td><td><code>ATLAS_SUSY_2017_03_RJR_2L2J</code> <code>ATLAS_SUSY_2017_03_RJR_3L</code> <code>ATLAS_SUSY_2017_03_RJR_Lowmass</code> </td></tr>
+<tr><td><code>ATLAS_SUSY_2018_08</code></td><td class="num">3</td><td class="num">3</td><td><code>ATLAS_SUSY_2018_08</code> <code>ATLAS_SUSY_2018_08_exclusive</code> <code>ATLAS_SUSY_2018_08_inclusive</code> </td></tr>
+<tr><td><code>CMS_SUS_13_006</code></td><td class="num">3</td><td class="num">3</td><td><code>CMS_SUS_13_006</code> <code>CMS_SUS_13_006_3Lep</code> <code>CMS_SUS_13_006_4Lep</code> </td></tr>
+<tr><td><code>CMS_SUS_16_035</code></td><td class="num">3</td><td class="num">3</td><td><code>CMS_SUS_16_035</code> <code>CMS_SUS_16_035_exclusive</code> <code>CMS_SUS_16_035_inclusive</code> </td></tr>
+<tr><td><code>CMS_SUS_16_039</code></td><td class="num">3</td><td class="num">3</td><td><code>CMS_SUS_16_039</code> <code>CMS_SUS_16_039_2SSLep</code> <code>CMS_SUS_16_039_3Lep</code> </td></tr>
+<tr><td><code>CMS_SUS_17_010</code></td><td class="num">3</td><td class="num">3</td><td><code>CMS_SUS_17_010</code> <code>CMS_SUS_17_010_chargino</code> <code>CMS_SUS_17_010_stop</code> </td></tr>
+<tr><td><code>CMS_SUS_18_004</code></td><td class="num">3</td><td class="num">3</td><td><code>CMS_SUS_18_004</code> <code>CMS_SUS_18_004_ewino</code> <code>CMS_SUS_18_004_stop</code> </td></tr>
+<tr><td><code>ATLAS_SUSY_2017_02</code></td><td class="num">2</td><td class="num">2</td><td><code>ATLAS_SUSY_2017_02</code> <code>ATLAS_SUSY_2017_02_discoverySR</code> </td></tr>
+<tr><td><code>ATLAS_SUSY_2017_02_36invfb</code></td><td class="num">2</td><td class="num">2</td><td><code>ATLAS_SUSY_2017_02_36invfb</code> <code>ATLAS_SUSY_2017_02_discoverySR_36invfb</code> </td></tr>
+<tr><td><code>CMS_SUS_16_034_EW</code></td><td class="num">2</td><td class="num">2</td><td><code>CMS_SUS_16_034_EW</code> <code>CMS_SUS_16_034_EW_nocovar</code> </td></tr>
+<tr><td><code>CMS_SUS_17_012</code></td><td class="num">2</td><td class="num">2</td><td><code>CMS_SUS_17_012</code> <code>CMS_SUS_17_012_emu_combined</code> </td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">This is the part most easily misread. When four old files fold into <code>Analysis_CMS_SUS_19_012.cpp</code>, no analysis is lost: the file defines a base class and one subclass per signal-region grouping, each with its own <code>DEFINE_ANALYSIS_FACTORY</code>. What changed is that the sub-region names now derive from the report number too &mdash; <code>CMS_SUS_19_012_3Lep</code> rather than <code>CMS_13TeV_MultiLEP_3LEP_137invfb</code>. So a YAML naming a sub-region breaks in exactly the same way as one naming a parent.</p>
+  </section>
+
+  <section id="stayed">
+    <p class="kicker">05 &#183; what did not move</p>
+    <h2>The exceptions, and the reasons in the source</h2>
+    <p class="source">Names present at both the baseline and head.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:28%">Name</th><th style="width:16%">Kind</th><th>Why it stayed</th></tr></thead>
+      <tbody><tr><td><code>ATLAS_8TeV_1LEPbb_20invfb</code></td><td><span class="status unchanged">physics analysis</span></td><td>:D unrenamed, can not find original exp report</td></tr>
+<tr><td><code>Baselines</code></td><td><span class="status">test / utility</span></td><td>Not a published analysis, so there is no report number to move to.</td></tr>
+<tr><td><code>Covariance</code></td><td><span class="status">test / utility</span></td><td>Not a published analysis, so there is no report number to move to.</td></tr>
+<tr><td><code>Dummy</code></td><td><span class="status">test / utility</span></td><td>Not a published analysis, so there is no report number to move to.</td></tr>
+<tr><td><code>Minimum</code></td><td><span class="status">test / utility</span></td><td>Not a published analysis, so there is no report number to move to.</td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">Exactly one physics analysis kept its descriptive name: <code>ATLAS_8TeV_1LEPbb_20invfb</code>. The reason is written into the file rather than left implicit &mdash; <em>&ldquo;:D unrenamed, can not find original exp report&rdquo;</em>. That is the right way to leave an exception: the next person does not have to guess whether it was missed or deliberate. The remaining survivors are test and utility stubs with no paper behind them.</p>
+  </section>
+
+  <section id="breaks">
+    <p class="kicker">06 &#183; what this breaks</p>
+    <h2>Old names do not resolve any more</h2>
+    <p class="source">A YAML selecting an analysis by name gets a name that no longer exists. There is no alias table in the tree.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:30%">Tracked YAML</th><th style="width:12%">Dead names</th><th>Examples</th></tr></thead>
+      <tbody><tr><td><code>yaml_files/PX_SUSYRun2_stop.yaml</code></td><td class="num">48</td><td><code>ATLAS_13TeV_0LEPStop_139invfb, ATLAS_13TeV_0LEP_139invfb, ATLAS_13TeV_1Lep2b_139invfb, ATLAS_13TeV_1OR3LEP_StopHZ_139invfb</code> &hellip; and 44 more</td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">Only 1 tracked YAML is affected, but it is affected badly: <code>yaml_files/PX_SUSYRun2_stop.yaml</code> names <strong>48 analyses that no longer exist</strong>. It would fail at configure time today. That file is the in-tree evidence of the cost &mdash; every configuration outside this repository that selects analyses by name has the same problem and no warning.</p>
+    <div class="note">This is the decision for the collaboration, not for this branch. Report-number naming is unambiguous and matches how the papers are cited, but 123 retired names means every existing configuration that selects analyses by name has to be rewritten. Whether upstream wants the migration, and whether it should ship with an alias table mapping old names to new for one release, is a group call. The migration itself is complete and self-documenting &mdash; every moved file records where it came from &mdash; which is what makes an alias table cheap to generate later if the group wants one.</div>
+  </section>
+
+  <section>
+    <p class="kicker">07 &#183; boundary</p>
+    <h2>What this page does not tell you</h2>
+    <p class="source">Read from the tree, not from a running build.</p>
+    <div class="note">Names, provenance comments and factory registrations are read from the worktree as text. Nothing was compiled, no analysis was instantiated, and no event was processed &mdash; so this page shows that a name changed, not that the analysis behind it still produces the same yields. The similarity percentages come from <code>git diff -M</code> and describe textual overlap only; a 60% move is not evidence that 40% of the physics changed, and the low-similarity entries are worth opening individually before anyone says otherwise.</div>
+  </section>
+
+  <p class="backlink" style="margin-top:26px"><span class="lbl">back</span><span>Return to <a href="cbs-change-ledger.html#8">slide 8 &#8599;</a>, or to the <a href="cbs-change-ledger.html#1">start of the deck &#8599;</a>.</span></p>
+  <footer>Generated by <code>scripts/build-rename-migration-page.py</code>. Baseline <code>9c955e3a78</code>, head <code>65aca0890d</code>.</footer>
+</main>
+</body>
+</html>

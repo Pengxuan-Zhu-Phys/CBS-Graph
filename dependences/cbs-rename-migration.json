@@ -1,0 +1,2022 @@
+{
+  "generated_by": "scripts/build-rename-migration-page.py",
+  "refs": {
+    "baseline": "9c955e3a78",
+    "head": "65aca0890d"
+  },
+  "registered": {
+    "base": 128,
+    "head": 137,
+    "retired": [
+      "ATLAS_13TeV_0LEPStop_139invfb",
+      "ATLAS_13TeV_0LEPStop_36invfb",
+      "ATLAS_13TeV_0LEP_139invfb",
+      "ATLAS_13TeV_0LEP_13invfb",
+      "ATLAS_13TeV_0LEP_36invfb",
+      "ATLAS_13TeV_1LEPStop_36invfb",
+      "ATLAS_13TeV_1Lep2b_139invfb",
+      "ATLAS_13TeV_1OR3LEP_StopHZ_139invfb",
+      "ATLAS_13TeV_2BoostedBosons_139invfb",
+      "ATLAS_13TeV_2LEP0JET_EW_139invfb",
+      "ATLAS_13TeV_2LEPJETS_EW_139invfb",
+      "ATLAS_13TeV_2LEPJETS_RJR_139invfb",
+      "ATLAS_13TeV_2LEPStop_139invfb",
+      "ATLAS_13TeV_2LEPStop_36invfb",
+      "ATLAS_13TeV_2LEPStop_exclusive_139invfb",
+      "ATLAS_13TeV_2LEPStop_inclusive_139invfb",
+      "ATLAS_13TeV_2LEPsoft_139invfb",
+      "ATLAS_13TeV_2LEPsoft_combined_139invfb",
+      "ATLAS_13TeV_2LEPsoft_exclusive_139invfb",
+      "ATLAS_13TeV_2OR3LEP_139invfb",
+      "ATLAS_13TeV_2OSLEP_Z_139invfb",
+      "ATLAS_13TeV_2OSLEP_chargino_139invfb",
+      "ATLAS_13TeV_2OSLEP_chargino_80invfb",
+      "ATLAS_13TeV_2OSLEP_chargino_binned_139invfb",
+      "ATLAS_13TeV_2OSLEP_chargino_binned_80invfb",
+      "ATLAS_13TeV_2OSLEP_chargino_inclusive_139invfb",
+      "ATLAS_13TeV_2OSLEP_chargino_inclusive_80invfb",
+      "ATLAS_13TeV_2bMET_36invfb",
+      "ATLAS_13TeV_3LEP_139invfb",
+      "ATLAS_13TeV_3LEP_eRJR_139invfb",
+      "ATLAS_13TeV_3b_24invfb",
+      "ATLAS_13TeV_3b_36invfb",
+      "ATLAS_13TeV_3b_NN_139invfb",
+      "ATLAS_13TeV_3b_discoverySR_24invfb",
+      "ATLAS_13TeV_3b_discoverySR_36invfb",
+      "ATLAS_13TeV_4LEP_139invfb",
+      "ATLAS_13TeV_4LEP_36invfb",
+      "ATLAS_13TeV_4b_139invfb",
+      "ATLAS_13TeV_4b_allyears_139invfb",
+      "ATLAS_13TeV_4b_discoverySR_139invfb",
+      "ATLAS_13TeV_EXOT_TT_WbWb_36invfb",
+      "ATLAS_13TeV_MONOJET_139infb",
+      "ATLAS_13TeV_MultiLEP_2Lep0Jets_36invfb",
+      "ATLAS_13TeV_MultiLEP_2LepPlusJets_36invfb",
+      "ATLAS_13TeV_MultiLEP_36invfb",
+      "ATLAS_13TeV_MultiLEP_3Lep_36invfb",
+      "ATLAS_13TeV_MultiLEP_confnote_36invfb",
+      "ATLAS_13TeV_MultiLEP_strong_139invfb",
+      "ATLAS_13TeV_PhotonGGM_1Photon_139invfb",
+      "ATLAS_13TeV_PhotonGGM_1Photon_36invfb",
+      "ATLAS_13TeV_PhotonGGM_2Photon_36invfb",
+      "ATLAS_13TeV_PhotonGGM_36invfb",
+      "ATLAS_13TeV_RJ3L_2Lep2Jets_36invfb",
+      "ATLAS_13TeV_RJ3L_3Lep_36invfb",
+      "ATLAS_13TeV_RJ3L_lowmass_36invfb",
+      "ATLAS_13TeV_ZGammaGrav_CONFNOTE_80invfb",
+      "ATLAS_13TeV_bTaus_StopStau_139invfb",
+      "ATLAS_7TeV_1OR2LEPStop_4_7invfb",
+      "ATLAS_7TeV_2LEPStop_4_7invfb",
+      "ATLAS_8TeV_0LEPStop_20invfb",
+      "ATLAS_8TeV_0LEP_20invfb",
+      "ATLAS_8TeV_1LEPStop_20invfb",
+      "ATLAS_8TeV_2LEPEW_20invfb",
+      "ATLAS_8TeV_2LEPStop_20invfb",
+      "ATLAS_8TeV_2bStop_20invfb",
+      "ATLAS_8TeV_3LEPEW_20invfb",
+      "CMS_13TeV_0LEPStop_137invfb",
+      "CMS_13TeV_0LEP_137invfb",
+      "CMS_13TeV_0LEP_13invfb",
+      "CMS_13TeV_0LEP_36invfb",
+      "CMS_13TeV_0LEP_chargino_VV_VH_137invfb",
+      "CMS_13TeV_0LEP_chargino_VV_VH_137invfb_OLD",
+      "CMS_13TeV_1LEPStop_36invfb",
+      "CMS_13TeV_1LEPbb_137invfb",
+      "CMS_13TeV_1LEPbb_36invfb",
+      "CMS_13TeV_1Photon1Lepton_36invfb",
+      "CMS_13TeV_1Photon1Lepton_emu_combined_36invfb",
+      "CMS_13TeV_2Higgs_4b_neutralino_137invfb",
+      "CMS_13TeV_2LEPStop_36invfb",
+      "CMS_13TeV_2LEPsoft_137invfb",
+      "CMS_13TeV_2LEPsoft_36invfb",
+      "CMS_13TeV_2LEPsoft_36invfb_nocovar",
+      "CMS_13TeV_2LEPsoft_ewinos_137invfb",
+      "CMS_13TeV_2LEPsoft_stop_137invfb",
+      "CMS_13TeV_2LEPsoft_stop_36invfb",
+      "CMS_13TeV_2LEPsoft_stop_36invfb_nocovar",
+      "CMS_13TeV_2OSLEP_137invfb",
+      "CMS_13TeV_2OSLEP_36invfb",
+      "CMS_13TeV_2OSLEP_36invfb_nocovar",
+      "CMS_13TeV_2OSLEP_EW_Production_137invfb",
+      "CMS_13TeV_2OSLEP_Slepton_137invfb",
+      "CMS_13TeV_2OSLEP_Strong_Production_137invfb",
+      "CMS_13TeV_2OSLEP_chargino_stop_36invfb",
+      "CMS_13TeV_2OSLEP_confnote_36invfb",
+      "CMS_13TeV_2OSLEP_for_chargino_36invfb",
+      "CMS_13TeV_2OSLEP_for_stop_36invfb",
+      "CMS_13TeV_2Photon_GMSB_36invfb",
+      "CMS_13TeV_2SSLEP_Stop_137invfb",
+      "CMS_13TeV_2SSLEP_Stop_36invfb",
+      "CMS_13TeV_2SSLEP_Stop_exclusive_36invfb",
+      "CMS_13TeV_2SSLEP_Stop_inclusive_36invfb",
+      "CMS_13TeV_MONOJET_36invfb",
+      "CMS_13TeV_MultiLEP_137invfb",
+      "CMS_13TeV_MultiLEP_2LEP_137invfb",
+      "CMS_13TeV_MultiLEP_2SSLep_36invfb",
+      "CMS_13TeV_MultiLEP_36invfb",
+      "CMS_13TeV_MultiLEP_3LEPTau_137invfb",
+      "CMS_13TeV_MultiLEP_3LEP_137invfb",
+      "CMS_13TeV_MultiLEP_3Lep_36invfb",
+      "CMS_13TeV_MultiLEP_4LEPTau_137invfb",
+      "CMS_13TeV_MultiLEP_4LEP_137invfb",
+      "CMS_13TeV_MultiLEP_Full_2SSLep_36invfb",
+      "CMS_13TeV_MultiLEP_Full_36invfb",
+      "CMS_13TeV_MultiLEP_Full_3Lep_36invfb",
+      "CMS_13TeV_MultiLEP_Full_3Lep_rebinned_36invfb",
+      "CMS_13TeV_Photon_GMSB_137invfb",
+      "CMS_13TeV_Photon_GMSB_36invfb",
+      "CMS_8TeV_1LEPDMTOP_20invfb",
+      "CMS_8TeV_2LEPDMTOP_20invfb",
+      "CMS_8TeV_MONOJET_20invfb",
+      "CMS_8TeV_MultiLEP_20invfb",
+      "CMS_8TeV_MultiLEP_3Lep_20invfb",
+      "CMS_8TeV_MultiLEP_4Lep_20invfb"
+    ],
+    "introduced": [
+      "ATLAS_CONF_2013_037",
+      "ATLAS_CONF_2016_078",
+      "ATLAS_CONF_2017_039",
+      "ATLAS_CONF_2018_019",
+      "ATLAS_CONF_2018_042",
+      "ATLAS_CONF_2018_042_chargino_binned",
+      "ATLAS_CONF_2018_042_chargino_inclusive",
+      "ATLAS_CONF_2019_008",
+      "ATLAS_CONF_2019_008_chargino_binned",
+      "ATLAS_CONF_2019_008_chargino_inclusive",
+      "ATLAS_EXOT_2016_013",
+      "ATLAS_EXOT_2016_014",
+      "ATLAS_EXOT_2016_017",
+      "ATLAS_EXOT_2018_06",
+      "ATLAS_EXOT_2018_60",
+      "ATLAS_EXOT_2019_04",
+      "ATLAS_EXOT_2019_07",
+      "ATLAS_EXOT_2021_035",
+      "ATLAS_SUSY_2012_04",
+      "ATLAS_SUSY_2012_10",
+      "ATLAS_SUSY_2013_02",
+      "ATLAS_SUSY_2013_05",
+      "ATLAS_SUSY_2013_11",
+      "ATLAS_SUSY_2013_12",
+      "ATLAS_SUSY_2013_16",
+      "ATLAS_SUSY_2013_19",
+      "ATLAS_SUSY_2016_06",
+      "ATLAS_SUSY_2016_07",
+      "ATLAS_SUSY_2016_15",
+      "ATLAS_SUSY_2016_21",
+      "ATLAS_SUSY_2016_24",
+      "ATLAS_SUSY_2016_24_2Lep0Jets",
+      "ATLAS_SUSY_2016_24_2LepPlusJets",
+      "ATLAS_SUSY_2016_24_3Lep",
+      "ATLAS_SUSY_2016_27",
+      "ATLAS_SUSY_2016_27_1Photon",
+      "ATLAS_SUSY_2016_27_2Photon",
+      "ATLAS_SUSY_2016_28",
+      "ATLAS_SUSY_2017_01",
+      "ATLAS_SUSY_2017_02",
+      "ATLAS_SUSY_2017_02_36invfb",
+      "ATLAS_SUSY_2017_02_discoverySR",
+      "ATLAS_SUSY_2017_02_discoverySR_36invfb",
+      "ATLAS_SUSY_2017_03_RJR_2L2J",
+      "ATLAS_SUSY_2017_03_RJR_3L",
+      "ATLAS_SUSY_2017_03_RJR_Lowmass",
+      "ATLAS_SUSY_2018_02",
+      "ATLAS_SUSY_2018_05",
+      "ATLAS_SUSY_2018_05_RJR",
+      "ATLAS_SUSY_2018_06",
+      "ATLAS_SUSY_2018_07",
+      "ATLAS_SUSY_2018_08",
+      "ATLAS_SUSY_2018_08_exclusive",
+      "ATLAS_SUSY_2018_08_inclusive",
+      "ATLAS_SUSY_2018_09",
+      "ATLAS_SUSY_2018_11",
+      "ATLAS_SUSY_2018_12",
+      "ATLAS_SUSY_2018_12_RJR",
+      "ATLAS_SUSY_2018_16",
+      "ATLAS_SUSY_2018_16_combined",
+      "ATLAS_SUSY_2018_16_exclusive",
+      "ATLAS_SUSY_2018_21",
+      "ATLAS_SUSY_2018_21_StopZH",
+      "ATLAS_SUSY_2018_22",
+      "ATLAS_SUSY_2018_30",
+      "ATLAS_SUSY_2018_41",
+      "ATLAS_SUSY_2019_02",
+      "ATLAS_SUSY_2019_08",
+      "ATLAS_SUSY_2019_09",
+      "ATLAS_SUSY_2019_18",
+      "ATLAS_SUSY_2019_22",
+      "ATLAS_SUSY_2020_16",
+      "ATLAS_SUSY_2020_16_allyears",
+      "ATLAS_SUSY_2020_16_discoverySR",
+      "CMS_B2G_13_004",
+      "CMS_B2G_14_004",
+      "CMS_B2G_18_003",
+      "CMS_EXO_12_048",
+      "CMS_EXO_16_048",
+      "CMS_SUS_13_006",
+      "CMS_SUS_13_006_3Lep",
+      "CMS_SUS_13_006_4Lep",
+      "CMS_SUS_16_014",
+      "CMS_SUS_16_033",
+      "CMS_SUS_16_034",
+      "CMS_SUS_16_034_EW",
+      "CMS_SUS_16_034_EW_nocovar",
+      "CMS_SUS_16_035",
+      "CMS_SUS_16_035_exclusive",
+      "CMS_SUS_16_035_inclusive",
+      "CMS_SUS_16_039",
+      "CMS_SUS_16_039_2SSLep",
+      "CMS_SUS_16_039_3Lep",
+      "CMS_SUS_16_039_Full",
+      "CMS_SUS_16_039_Full_2SSLep",
+      "CMS_SUS_16_039_Full_3Lep",
+      "CMS_SUS_16_039_Full_3Lep_rebinned",
+      "CMS_SUS_16_043",
+      "CMS_SUS_16_046",
+      "CMS_SUS_16_048",
+      "CMS_SUS_16_048_nocovar",
+      "CMS_SUS_16_048_stop",
+      "CMS_SUS_16_048_stop_nocovar",
+      "CMS_SUS_16_051",
+      "CMS_SUS_17_001",
+      "CMS_SUS_17_010",
+      "CMS_SUS_17_010_chargino",
+      "CMS_SUS_17_010_stop",
+      "CMS_SUS_17_011",
+      "CMS_SUS_17_012",
+      "CMS_SUS_17_012_emu_combined",
+      "CMS_SUS_18_004",
+      "CMS_SUS_18_004_ewino",
+      "CMS_SUS_18_004_stop",
+      "CMS_SUS_19_006",
+      "CMS_SUS_19_008",
+      "CMS_SUS_19_010",
+      "CMS_SUS_19_012",
+      "CMS_SUS_19_012_2Lep",
+      "CMS_SUS_19_012_3LEPTau",
+      "CMS_SUS_19_012_3Lep",
+      "CMS_SUS_19_012_4LEP",
+      "CMS_SUS_19_012_4LEPTau",
+      "CMS_SUS_20_001",
+      "CMS_SUS_20_001_EW_production",
+      "CMS_SUS_20_001_Slepton",
+      "CMS_SUS_20_001_strong_production",
+      "CMS_SUS_20_003",
+      "CMS_SUS_20_004",
+      "CMS_SUS_21_002",
+      "CMS_SUS_21_002_OLD",
+      "CMS_SUS_21_009"
+    ],
+    "survived": [
+      "ATLAS_8TeV_1LEPbb_20invfb",
+      "Baselines",
+      "Covariance",
+      "Dummy",
+      "Minimum"
+    ],
+    "survived_physics": [
+      "ATLAS_8TeV_1LEPbb_20invfb"
+    ],
+    "stubs": [
+      "Baselines",
+      "Covariance",
+      "Dummy",
+      "Minimum"
+    ]
+  },
+  "files": {
+    "documented": 80,
+    "git_renames": 75,
+    "consolidations": 18,
+    "absorbed": 56,
+    "one_to_one": 62
+  },
+  "rows": [
+    {
+      "new": "ATLAS_8TeV_1LEPbb_20invfb",
+      "old": [
+        "ATLAS_8TeV_1LEPbb_20invfb"
+      ],
+      "shape": "1:1",
+      "similarity": null,
+      "git_detected": false,
+      "experiment": null,
+      "kind": null,
+      "year": null,
+      "number": null,
+      "suffix": null,
+      "defines": [
+        "ATLAS_8TeV_1LEPbb_20invfb"
+      ],
+      "notes": [
+        ":D unrenamed, can not find original exp report"
+      ],
+      "line": 21
+    },
+    {
+      "new": "ATLAS_CONF_2013_037",
+      "old": [
+        "ATLAS_8TeV_1LEPStop_20invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 87,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "CONF",
+      "year": "2013",
+      "number": "037",
+      "suffix": null,
+      "defines": [
+        "ATLAS_CONF_2013_037"
+      ],
+      "notes": [],
+      "line": 15
+    },
+    {
+      "new": "ATLAS_CONF_2016_078",
+      "old": [
+        "ATLAS_13TeV_0LEP_13invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 75,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "CONF",
+      "year": "2016",
+      "number": "078",
+      "suffix": null,
+      "defines": [
+        "ATLAS_CONF_2016_078"
+      ],
+      "notes": [],
+      "line": 9
+    },
+    {
+      "new": "ATLAS_CONF_2017_039",
+      "old": [
+        "ATLAS_13TeV_MultiLEP_confnote_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 93,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "CONF",
+      "year": "2017",
+      "number": "039",
+      "suffix": null,
+      "defines": [
+        "ATLAS_CONF_2017_039"
+      ],
+      "notes": [],
+      "line": 22
+    },
+    {
+      "new": "ATLAS_CONF_2018_019",
+      "old": [
+        "ATLAS_13TeV_ZGammaGrav_CONFNOTE_80invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 78,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "CONF",
+      "year": "2018",
+      "number": "019",
+      "suffix": null,
+      "defines": [
+        "ATLAS_CONF_2018_019"
+      ],
+      "notes": [],
+      "line": 7
+    },
+    {
+      "new": "ATLAS_CONF_2018_042",
+      "old": [
+        "ATLAS_13TeV_2OSLEP_chargino_80invfb",
+        "ATLAS_13TeV_2OSLEP_chargino_inclusive_80invfb",
+        "ATLAS_13TeV_2OSLEP_chargino_binned_80invfb"
+      ],
+      "shape": "3:1",
+      "similarity": 91,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "CONF",
+      "year": "2018",
+      "number": "042",
+      "suffix": null,
+      "defines": [
+        "ATLAS_CONF_2018_042",
+        "ATLAS_CONF_2018_042_chargino_binned",
+        "ATLAS_CONF_2018_042_chargino_inclusive"
+      ],
+      "notes": [],
+      "line": 29
+    },
+    {
+      "new": "ATLAS_CONF_2019_008",
+      "old": [
+        "ATLAS_13TeV_2OSLEP_chargino_139invfb",
+        "ATLAS_13TeV_2OSLEP_chargino_inclusive_139invfb",
+        "ATLAS_13TeV_2OSLEP_chargino_binned_139invfb"
+      ],
+      "shape": "3:1",
+      "similarity": 91,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "CONF",
+      "year": "2019",
+      "number": "008",
+      "suffix": null,
+      "defines": [
+        "ATLAS_CONF_2019_008",
+        "ATLAS_CONF_2019_008_chargino_binned",
+        "ATLAS_CONF_2019_008_chargino_inclusive"
+      ],
+      "notes": [],
+      "line": 42
+    },
+    {
+      "new": "ATLAS_EXOT_2018_06",
+      "old": [
+        "ATLAS_13TeV_MONOJET_139infb"
+      ],
+      "shape": "1:1",
+      "similarity": 94,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "EXOT",
+      "year": "2018",
+      "number": "06",
+      "suffix": null,
+      "defines": [
+        "ATLAS_EXOT_2018_06"
+      ],
+      "notes": [],
+      "line": 12
+    },
+    {
+      "new": "ATLAS_SUSY_2012_04",
+      "old": [
+        "ATLAS_7TeV_2LEPStop_4_7invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 94,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2012",
+      "number": "04",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2012_04"
+      ],
+      "notes": [],
+      "line": 13
+    },
+    {
+      "new": "ATLAS_SUSY_2012_10",
+      "old": [
+        "ATLAS_7TeV_1OR2LEPStop_4_7invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 88,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2012",
+      "number": "10",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2012_10"
+      ],
+      "notes": [],
+      "line": 14
+    },
+    {
+      "new": "ATLAS_SUSY_2013_02",
+      "old": [
+        "ATLAS_8TeV_0LEP_20invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 87,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2013",
+      "number": "02",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2013_02"
+      ],
+      "notes": [],
+      "line": 14
+    },
+    {
+      "new": "ATLAS_SUSY_2013_05",
+      "old": [
+        "ATLAS_8TeV_2bStop_20invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 87,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2013",
+      "number": "05",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2013_05"
+      ],
+      "notes": [],
+      "line": 16
+    },
+    {
+      "new": "ATLAS_SUSY_2013_11",
+      "old": [
+        "ATLAS_8TeV_2LEPEW_20invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 86,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2013",
+      "number": "11",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2013_11"
+      ],
+      "notes": [],
+      "line": 14
+    },
+    {
+      "new": "ATLAS_SUSY_2013_12",
+      "old": [
+        "ATLAS_8TeV_3LEPEW_20invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 91,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2013",
+      "number": "12",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2013_12"
+      ],
+      "notes": [],
+      "line": 11
+    },
+    {
+      "new": "ATLAS_SUSY_2013_16",
+      "old": [
+        "ATLAS_8TeV_0LEPStop_20invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 93,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2013",
+      "number": "16",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2013_16"
+      ],
+      "notes": [],
+      "line": 13
+    },
+    {
+      "new": "ATLAS_SUSY_2013_19",
+      "old": [
+        "ATLAS_8TeV_2LEPStop_20invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 88,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2013",
+      "number": "19",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2013_19"
+      ],
+      "notes": [],
+      "line": 15
+    },
+    {
+      "new": "ATLAS_SUSY_2016_06",
+      "old": [
+        "ATLAS_13TeV_1LEPStop_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 90,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2016",
+      "number": "06",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2016_06"
+      ],
+      "notes": [],
+      "line": 21
+    },
+    {
+      "new": "ATLAS_SUSY_2016_07",
+      "old": [
+        "ATLAS_13TeV_0LEP_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 69,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2016",
+      "number": "07",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2016_07"
+      ],
+      "notes": [],
+      "line": 10
+    },
+    {
+      "new": "ATLAS_SUSY_2016_15",
+      "old": [
+        "ATLAS_13TeV_0LEPStop_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 81,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2016",
+      "number": "15",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2016_15"
+      ],
+      "notes": [],
+      "line": 15
+    },
+    {
+      "new": "ATLAS_SUSY_2016_21",
+      "old": [
+        "ATLAS_13TeV_4LEP_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 86,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2016",
+      "number": "21",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2016_21"
+      ],
+      "notes": [],
+      "line": 27
+    },
+    {
+      "new": "ATLAS_SUSY_2016_24",
+      "old": [
+        "ATLAS_13TeV_MultiLEP_36invfb",
+        "ATLAS_13TeV_MultiLEP_2Lep0Jets_36invfb",
+        "ATLAS_13TeV_MultiLEP_2LepPlusJets_36invfb",
+        "ATLAS_13TeV_MultiLEP_3Lep_36invfb"
+      ],
+      "shape": "4:1",
+      "similarity": 91,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2016",
+      "number": "24",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2016_24",
+        "ATLAS_SUSY_2016_24_2Lep0Jets",
+        "ATLAS_SUSY_2016_24_2LepPlusJets",
+        "ATLAS_SUSY_2016_24_3Lep"
+      ],
+      "notes": [],
+      "line": 24
+    },
+    {
+      "new": "ATLAS_SUSY_2016_27",
+      "old": [
+        "ATLAS_13TeV_PhotonGGM_36invfb",
+        "ATLAS_13TeV_PhotonGGM_1Photon_36invfb",
+        "ATLAS_13TeV_PhotonGGM_2Photon_36invfb"
+      ],
+      "shape": "3:1",
+      "similarity": 71,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2016",
+      "number": "27",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2016_27",
+        "ATLAS_SUSY_2016_27_1Photon",
+        "ATLAS_SUSY_2016_27_2Photon"
+      ],
+      "notes": [],
+      "line": 13
+    },
+    {
+      "new": "ATLAS_SUSY_2016_28",
+      "old": [
+        "ATLAS_13TeV_2bMET_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 89,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2016",
+      "number": "28",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2016_28"
+      ],
+      "notes": [],
+      "line": 15
+    },
+    {
+      "new": "ATLAS_SUSY_2017_01",
+      "old": [
+        "ATLAS_13TeV_2LEPStop_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 86,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2017",
+      "number": "01",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2017_01"
+      ],
+      "notes": [],
+      "line": 13
+    },
+    {
+      "new": "ATLAS_SUSY_2017_02",
+      "old": [
+        "ATLAS_13TeV_3b_24invfb",
+        "ATLAS_13TeV_3b_discoverySR_24invfb"
+      ],
+      "shape": "2:1",
+      "similarity": 83,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2017",
+      "number": "02",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2017_02",
+        "ATLAS_SUSY_2017_02_discoverySR"
+      ],
+      "notes": [],
+      "line": 24
+    },
+    {
+      "new": "ATLAS_SUSY_2017_02_36invfb",
+      "old": [
+        "ATLAS_13TeV_3b_36invfb",
+        "ATLAS_13TeV_3b_discoverySR_36invfb"
+      ],
+      "shape": "2:1",
+      "similarity": 81,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2017",
+      "number": "02",
+      "suffix": "36invfb",
+      "defines": [
+        "ATLAS_SUSY_2017_02_36invfb",
+        "ATLAS_SUSY_2017_02_discoverySR_36invfb"
+      ],
+      "notes": [],
+      "line": 21
+    },
+    {
+      "new": "ATLAS_SUSY_2017_03_RJR",
+      "old": [
+        "ATLAS_13TeV_RJ3L_lowmass_36invfb",
+        "ATLAS_13TeV_RJ3L_2Lep2Jets_36invfb",
+        "ATLAS_13TeV_RJ3L_3Lep_36invfb"
+      ],
+      "shape": "3:1",
+      "similarity": 90,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2017",
+      "number": "03",
+      "suffix": "RJR",
+      "defines": [
+        "ATLAS_SUSY_2017_03_RJR_2L2J",
+        "ATLAS_SUSY_2017_03_RJR_3L",
+        "ATLAS_SUSY_2017_03_RJR_Lowmass"
+      ],
+      "notes": [],
+      "line": 22
+    },
+    {
+      "new": "ATLAS_SUSY_2018_02",
+      "old": [
+        "ATLAS_13TeV_4LEP_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 73,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "02",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_02"
+      ],
+      "notes": [],
+      "line": 33
+    },
+    {
+      "new": "ATLAS_SUSY_2018_05",
+      "old": [
+        "ATLAS_13TeV_2LEPJETS_EW_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 98,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "05",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_05"
+      ],
+      "notes": [],
+      "line": 32
+    },
+    {
+      "new": "ATLAS_SUSY_2018_05_RJR",
+      "old": [
+        "ATLAS_13TeV_2LEPJETS_RJR_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 95,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "05",
+      "suffix": "RJR",
+      "defines": [
+        "ATLAS_SUSY_2018_05_RJR"
+      ],
+      "notes": [],
+      "line": 37
+    },
+    {
+      "new": "ATLAS_SUSY_2018_06",
+      "old": [
+        "ATLAS_13TeV_3LEP_eRJR_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 94,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "06",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_06"
+      ],
+      "notes": [],
+      "line": 25
+    },
+    {
+      "new": "ATLAS_SUSY_2018_07",
+      "old": [
+        "ATLAS_13TeV_1LEPStop_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": null,
+      "git_detected": false,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "07",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_07"
+      ],
+      "notes": [
+        "Not validated, still in progress"
+      ],
+      "line": 39
+    },
+    {
+      "new": "ATLAS_SUSY_2018_08",
+      "old": [
+        "ATLAS_13TeV_2LEPStop_139invfb",
+        "ATLAS_13TeV_2LEPStop_inclusive_139invfb",
+        "ATLAS_13TeV_2LEPStop_exclusive_139invfb"
+      ],
+      "shape": "3:1",
+      "similarity": 90,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "08",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_08",
+        "ATLAS_SUSY_2018_08_exclusive",
+        "ATLAS_SUSY_2018_08_inclusive"
+      ],
+      "notes": [],
+      "line": 16
+    },
+    {
+      "new": "ATLAS_SUSY_2018_09",
+      "old": [
+        "ATLAS_13TeV_MultiLEP_strong_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 94,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "09",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_09"
+      ],
+      "notes": [],
+      "line": 16
+    },
+    {
+      "new": "ATLAS_SUSY_2018_11",
+      "old": [
+        "ATLAS_13TeV_PhotonGGM_1Photon_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 89,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "11",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_11"
+      ],
+      "notes": [],
+      "line": 22
+    },
+    {
+      "new": "ATLAS_SUSY_2018_12",
+      "old": [
+        "ATLAS_13TeV_0LEPStop_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 95,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "12",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_12"
+      ],
+      "notes": [],
+      "line": 15
+    },
+    {
+      "new": "ATLAS_SUSY_2018_12_RJR",
+      "old": [
+        "ATLAS_13TeV_0LEPStop_RJR_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": null,
+      "git_detected": false,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "12",
+      "suffix": "RJR",
+      "defines": [
+        "ATLAS_SUSY_2018_12_RJR"
+      ],
+      "notes": [],
+      "line": 35
+    },
+    {
+      "new": "ATLAS_SUSY_2018_16",
+      "old": [
+        "ATLAS_13TeV_2LEPsoft_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 98,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "16",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_16",
+        "ATLAS_SUSY_2018_16_combined",
+        "ATLAS_SUSY_2018_16_exclusive"
+      ],
+      "notes": [],
+      "line": 41
+    },
+    {
+      "new": "ATLAS_SUSY_2018_21",
+      "old": [
+        "ATLAS_13TeV_2OSLEP_Z_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 79,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "21",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_21"
+      ],
+      "notes": [],
+      "line": 35
+    },
+    {
+      "new": "ATLAS_SUSY_2018_21_StopZH",
+      "old": [
+        "ATLAS_13TeV_1OR3LEP_StopHZ_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 65,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "21",
+      "suffix": "StopZH",
+      "defines": [
+        "ATLAS_SUSY_2018_21_StopZH"
+      ],
+      "notes": [],
+      "line": 28
+    },
+    {
+      "new": "ATLAS_SUSY_2018_22",
+      "old": [
+        "ATLAS_13TeV_0LEP_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 63,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "22",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_22"
+      ],
+      "notes": [],
+      "line": 11
+    },
+    {
+      "new": "ATLAS_SUSY_2018_30",
+      "old": [
+        "ATLAS_13TeV_3b_NN_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 97,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "30",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_30"
+      ],
+      "notes": [],
+      "line": 51
+    },
+    {
+      "new": "ATLAS_SUSY_2018_41",
+      "old": [
+        "ATLAS_13TeV_2BoostedBosons_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": null,
+      "git_detected": false,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "41",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_41"
+      ],
+      "notes": [],
+      "line": 52
+    },
+    {
+      "new": "ATLAS_SUSY_2019_02",
+      "old": [
+        "ATLAS_13TeV_2LEP0JET_EW_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 98,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2019",
+      "number": "02",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2019_02"
+      ],
+      "notes": [],
+      "line": 28
+    },
+    {
+      "new": "ATLAS_SUSY_2019_08",
+      "old": [
+        "ATLAS_13TeV_1Lep2b_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 96,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2019",
+      "number": "08",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2019_08"
+      ],
+      "notes": [],
+      "line": 27
+    },
+    {
+      "new": "ATLAS_SUSY_2019_09",
+      "old": [
+        "ATLAS_13TeV_3LEP_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": null,
+      "git_detected": false,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2019",
+      "number": "09",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2019_09"
+      ],
+      "notes": [],
+      "line": 33
+    },
+    {
+      "new": "ATLAS_SUSY_2019_18",
+      "old": [
+        "ATLAS_13TeV_bTaus_StopStau_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 97,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2019",
+      "number": "18",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2019_18"
+      ],
+      "notes": [],
+      "line": 27
+    },
+    {
+      "new": "ATLAS_SUSY_2019_22",
+      "old": [
+        "ATLAS_13TeV_2OR3LEP_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 98,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2019",
+      "number": "22",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2019_22"
+      ],
+      "notes": [],
+      "line": 30
+    },
+    {
+      "new": "ATLAS_SUSY_2020_16",
+      "old": [
+        "ATLAS_13TeV_4b_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 93,
+      "git_detected": true,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2020",
+      "number": "16",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2020_16",
+        "ATLAS_SUSY_2020_16_allyears",
+        "ATLAS_SUSY_2020_16_discoverySR"
+      ],
+      "notes": [],
+      "line": 23
+    },
+    {
+      "new": "CMS_B2G_13_004",
+      "old": [
+        "CMS_8TeV_2LEPDMTOP_20invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 78,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "B2G",
+      "year": "13",
+      "number": "004",
+      "suffix": null,
+      "defines": [
+        "CMS_B2G_13_004"
+      ],
+      "notes": [],
+      "line": 14
+    },
+    {
+      "new": "CMS_B2G_14_004",
+      "old": [
+        "CMS_8TeV_1LEPDMTOP_20invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 78,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "B2G",
+      "year": "14",
+      "number": "004",
+      "suffix": null,
+      "defines": [
+        "CMS_B2G_14_004"
+      ],
+      "notes": [],
+      "line": 10
+    },
+    {
+      "new": "CMS_EXO_12_048",
+      "old": [
+        "CMS_8TeV_MONOJET_20invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 52,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "EXO",
+      "year": "12",
+      "number": "048",
+      "suffix": null,
+      "defines": [
+        "CMS_EXO_12_048"
+      ],
+      "notes": [],
+      "line": 15
+    },
+    {
+      "new": "CMS_EXO_16_048",
+      "old": [
+        "CMS_13TeV_MONOJET_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 85,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "EXO",
+      "year": "16",
+      "number": "048",
+      "suffix": null,
+      "defines": [
+        "CMS_EXO_16_048"
+      ],
+      "notes": [],
+      "line": 9
+    },
+    {
+      "new": "CMS_SUS_13_006",
+      "old": [
+        "CMS_8TeV_MultiLEP_20invfb",
+        "CMS_8TeV_MultiLEP_3Lep_20invfb",
+        "CMS_8TeV_MultiLEP_4Lep_20invfb"
+      ],
+      "shape": "3:1",
+      "similarity": 98,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "13",
+      "number": "006",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_13_006",
+        "CMS_SUS_13_006_3Lep",
+        "CMS_SUS_13_006_4Lep"
+      ],
+      "notes": [],
+      "line": 11
+    },
+    {
+      "new": "CMS_SUS_16_014",
+      "old": [
+        "CMS_13TeV_0LEP_13invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 86,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "16",
+      "number": "014",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_16_014"
+      ],
+      "notes": [],
+      "line": 6
+    },
+    {
+      "new": "CMS_SUS_16_033",
+      "old": [
+        "CMS_13TeV_0LEP_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 78,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "16",
+      "number": "033",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_16_033"
+      ],
+      "notes": [],
+      "line": 6
+    },
+    {
+      "new": "CMS_SUS_16_034",
+      "old": [
+        "CMS_13TeV_2OSLEP_confnote_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 64,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "16",
+      "number": "034",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_16_034"
+      ],
+      "notes": [],
+      "line": 24
+    },
+    {
+      "new": "CMS_SUS_16_034_EW",
+      "old": [
+        "CMS_13TeV_2OSLEP_36invfb",
+        "CMS_13TeV_2OSLEP_36invfb_nocovar"
+      ],
+      "shape": "2:1",
+      "similarity": 75,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "16",
+      "number": "034",
+      "suffix": "EW",
+      "defines": [
+        "CMS_SUS_16_034_EW",
+        "CMS_SUS_16_034_EW_nocovar"
+      ],
+      "notes": [],
+      "line": 25
+    },
+    {
+      "new": "CMS_SUS_16_035",
+      "old": [
+        "CMS_13TeV_2SSLEP_Stop_36invfb",
+        "CMS_13TeV_2SSLEP_Stop_inclusive_36invfb",
+        "CMS_13TeV_2SSLEP_Stop_exclusive_36invfb"
+      ],
+      "shape": "3:1",
+      "similarity": 96,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "16",
+      "number": "035",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_16_035",
+        "CMS_SUS_16_035_exclusive",
+        "CMS_SUS_16_035_inclusive"
+      ],
+      "notes": [],
+      "line": 30
+    },
+    {
+      "new": "CMS_SUS_16_039",
+      "old": [
+        "CMS_13TeV_MultiLEP_36invfb",
+        "CMS_13TeV_MultiLEP_2SSLep_36invfb",
+        "CMS_13TeV_MultiLEP_3Lep_36invfb"
+      ],
+      "shape": "3:1",
+      "similarity": null,
+      "git_detected": false,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "16",
+      "number": "039",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_16_039",
+        "CMS_SUS_16_039_2SSLep",
+        "CMS_SUS_16_039_3Lep"
+      ],
+      "notes": [],
+      "line": 31
+    },
+    {
+      "new": "CMS_SUS_16_039_Full",
+      "old": [
+        "CMS_13TeV_MultiLEP_Full_36invfb",
+        "CMS_13TeV_MultiLEP_Full_2SSLep_36invfb",
+        "CMS_13TeV_MultiLEP_Full_3Lep_36invfb",
+        "CMS_13TeV_MultiLEP_Full_3Lep_rebinned_36invfb"
+      ],
+      "shape": "4:1",
+      "similarity": 85,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "16",
+      "number": "039",
+      "suffix": "Full",
+      "defines": [
+        "CMS_SUS_16_039_Full",
+        "CMS_SUS_16_039_Full_2SSLep",
+        "CMS_SUS_16_039_Full_3Lep",
+        "CMS_SUS_16_039_Full_3Lep_rebinned"
+      ],
+      "notes": [],
+      "line": 33
+    },
+    {
+      "new": "CMS_SUS_16_043",
+      "old": [
+        "CMS_13TeV_1LEPbb_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 60,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "16",
+      "number": "043",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_16_043"
+      ],
+      "notes": [],
+      "line": 13
+    },
+    {
+      "new": "CMS_SUS_16_046",
+      "old": [
+        "CMS_13TeV_Photon_GMSB_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 86,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "16",
+      "number": "046",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_16_046"
+      ],
+      "notes": [],
+      "line": 30
+    },
+    {
+      "new": "CMS_SUS_16_048",
+      "old": [
+        "CMS_13TeV_2LEPsoft_36invfb",
+        "CMS_13TeV_2LEPsoft_stop_36invfb",
+        "CMS_13TeV_2LEPsoft_36invfb_nocovar",
+        "CMS_13TeV_2LEPsoft_stop_36invfb_nocovar"
+      ],
+      "shape": "4:1",
+      "similarity": 60,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "16",
+      "number": "048",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_16_048",
+        "CMS_SUS_16_048_nocovar",
+        "CMS_SUS_16_048_stop",
+        "CMS_SUS_16_048_stop_nocovar"
+      ],
+      "notes": [],
+      "line": 32
+    },
+    {
+      "new": "CMS_SUS_16_051",
+      "old": [
+        "CMS_13TeV_1LEPStop_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 90,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "16",
+      "number": "051",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_16_051"
+      ],
+      "notes": [],
+      "line": 9
+    },
+    {
+      "new": "CMS_SUS_17_001",
+      "old": [
+        "CMS_13TeV_2LEPStop_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 84,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "17",
+      "number": "001",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_17_001"
+      ],
+      "notes": [],
+      "line": 13
+    },
+    {
+      "new": "CMS_SUS_17_010",
+      "old": [
+        "CMS_13TeV_2OSLEP_chargino_stop_36invfb",
+        "CMS_13TeV_2OSLEP_for_chargino_36invfb",
+        "CMS_13TeV_2OSLEP_for_stop_36invfb"
+      ],
+      "shape": "3:1",
+      "similarity": 99,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "17",
+      "number": "010",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_17_010",
+        "CMS_SUS_17_010_chargino",
+        "CMS_SUS_17_010_stop"
+      ],
+      "notes": [],
+      "line": 25
+    },
+    {
+      "new": "CMS_SUS_17_011",
+      "old": [
+        "CMS_13TeV_2Photon_GMSB_36invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 86,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "17",
+      "number": "011",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_17_011"
+      ],
+      "notes": [],
+      "line": 65
+    },
+    {
+      "new": "CMS_SUS_17_012",
+      "old": [
+        "CMS_13TeV_1Photon1Lepton_36invfb",
+        "CMS_13TeV_1Photon1Lepton_emu_combined_36invfb"
+      ],
+      "shape": "2:1",
+      "similarity": 94,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "17",
+      "number": "012",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_17_012",
+        "CMS_SUS_17_012_emu_combined"
+      ],
+      "notes": [],
+      "line": 121
+    },
+    {
+      "new": "CMS_SUS_18_004",
+      "old": [
+        "CMS_13TeV_2LEPsoft_137invfb",
+        "CMS_13TeV_2LEPsoft_ewinos_137invfb",
+        "CMS_13TeV_2LEPsoft_stop_137invfb"
+      ],
+      "shape": "3:1",
+      "similarity": 98,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "18",
+      "number": "004",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_18_004",
+        "CMS_SUS_18_004_ewino",
+        "CMS_SUS_18_004_stop"
+      ],
+      "notes": [],
+      "line": 24
+    },
+    {
+      "new": "CMS_SUS_19_006",
+      "old": [
+        "CMS_13TeV_0LEP_137invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 82,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "19",
+      "number": "006",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_19_006"
+      ],
+      "notes": [],
+      "line": 8
+    },
+    {
+      "new": "CMS_SUS_19_008",
+      "old": [
+        "CMS_13TeV_2SSLEP_Stop_137invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 98,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "19",
+      "number": "008",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_19_008"
+      ],
+      "notes": [],
+      "line": 31
+    },
+    {
+      "new": "CMS_SUS_19_010",
+      "old": [
+        "CMS_13TeV_0LEPStop_137invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 76,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "19",
+      "number": "010",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_19_010"
+      ],
+      "notes": [],
+      "line": 28
+    },
+    {
+      "new": "CMS_SUS_19_012",
+      "old": [
+        "CMS_13TeV_MultiLEP_137invfb",
+        "CMS_13TeV_MultiLEP_2LEP_137invfb",
+        "CMS_13TeV_MultiLEP_3LEP_137invfb",
+        "CMS_13TeV_MultiLEP_3LEPTau_137invfb",
+        "CMS_13TeV_MultiLEP_4LEP_137invfb",
+        "CMS_13TeV_MultiLEP_4LEPTau_137invfb"
+      ],
+      "shape": "6:1",
+      "similarity": 94,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "19",
+      "number": "012",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_19_012",
+        "CMS_SUS_19_012_2Lep",
+        "CMS_SUS_19_012_3LEPTau",
+        "CMS_SUS_19_012_3Lep",
+        "CMS_SUS_19_012_4LEP",
+        "CMS_SUS_19_012_4LEPTau"
+      ],
+      "notes": [],
+      "line": 20
+    },
+    {
+      "new": "CMS_SUS_20_001",
+      "old": [
+        "CMS_13TeV_2OSLEP_137invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 97,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "20",
+      "number": "001",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_20_001",
+        "CMS_SUS_20_001_EW_production",
+        "CMS_SUS_20_001_Slepton",
+        "CMS_SUS_20_001_strong_production"
+      ],
+      "notes": [],
+      "line": 30
+    },
+    {
+      "new": "CMS_SUS_20_003",
+      "old": [
+        "CMS_13TeV_1LEPbb_137invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 78,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "20",
+      "number": "003",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_20_003"
+      ],
+      "notes": [],
+      "line": 9
+    },
+    {
+      "new": "CMS_SUS_20_004",
+      "old": [
+        "CMS_13TeV_2Higgs_4b_neutralino_137invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 78,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "20",
+      "number": "004",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_20_004"
+      ],
+      "notes": [],
+      "line": 40
+    },
+    {
+      "new": "CMS_SUS_21_002",
+      "old": [
+        "CMS_13TeV_0LEP_chargino_VV_VH_137invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 95,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "21",
+      "number": "002",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_21_002"
+      ],
+      "notes": [],
+      "line": 30
+    },
+    {
+      "new": "CMS_SUS_21_002_OLD",
+      "old": [
+        "CMS_13TeV_0LEP_chargino_VV_VH_137invfb_OLD"
+      ],
+      "shape": "1:1",
+      "similarity": 94,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "21",
+      "number": "002",
+      "suffix": "OLD",
+      "defines": [
+        "CMS_SUS_21_002_OLD"
+      ],
+      "notes": [],
+      "line": 26
+    },
+    {
+      "new": "CMS_SUS_21_009",
+      "old": [
+        "CMS_13TeV_Photon_GMSB_137invfb"
+      ],
+      "shape": "1:1",
+      "similarity": 90,
+      "git_detected": true,
+      "experiment": "CMS",
+      "kind": "SUS",
+      "year": "21",
+      "number": "009",
+      "suffix": null,
+      "defines": [
+        "CMS_SUS_21_009"
+      ],
+      "notes": [],
+      "line": 61
+    }
+  ],
+  "by_kind": {
+    "SUSY": 41,
+    "SUS": 27,
+    "CONF": 6,
+    "B2G": 2,
+    "EXO": 2,
+    "unparsed": 1,
+    "EXOT": 1
+  },
+  "unparsed": [
+    "ATLAS_8TeV_1LEPbb_20invfb"
+  ],
+  "notes": [
+    {
+      "new": "ATLAS_8TeV_1LEPbb_20invfb",
+      "old": [
+        "ATLAS_8TeV_1LEPbb_20invfb"
+      ],
+      "shape": "1:1",
+      "similarity": null,
+      "git_detected": false,
+      "experiment": null,
+      "kind": null,
+      "year": null,
+      "number": null,
+      "suffix": null,
+      "defines": [
+        "ATLAS_8TeV_1LEPbb_20invfb"
+      ],
+      "notes": [
+        ":D unrenamed, can not find original exp report"
+      ],
+      "line": 21
+    },
+    {
+      "new": "ATLAS_SUSY_2018_07",
+      "old": [
+        "ATLAS_13TeV_1LEPStop_139invfb"
+      ],
+      "shape": "1:1",
+      "similarity": null,
+      "git_detected": false,
+      "experiment": "ATLAS",
+      "kind": "SUSY",
+      "year": "2018",
+      "number": "07",
+      "suffix": null,
+      "defines": [
+        "ATLAS_SUSY_2018_07"
+      ],
+      "notes": [
+        "Not validated, still in progress"
+      ],
+      "line": 39
+    }
+  ],
+  "yaml_debt": [
+    {
+      "file": "PX_SUSYRun2_stop.yaml",
+      "count": 48,
+      "names": [
+        "ATLAS_13TeV_0LEPStop_139invfb",
+        "ATLAS_13TeV_0LEP_139invfb",
+        "ATLAS_13TeV_1Lep2b_139invfb",
+        "ATLAS_13TeV_1OR3LEP_StopHZ_139invfb",
+        "ATLAS_13TeV_2BoostedBosons_139invfb",
+        "ATLAS_13TeV_2LEP0JET_EW_139invfb",
+        "ATLAS_13TeV_2LEPJETS_EW_139invfb",
+        "ATLAS_13TeV_2LEPJETS_RJR_139invfb",
+        "ATLAS_13TeV_2LEPStop_inclusive_139invfb",
+        "ATLAS_13TeV_2LEPsoft_139invfb",
+        "ATLAS_13TeV_2OR3LEP_139invfb",
+        "ATLAS_13TeV_2OSLEP_Z_139invfb",
+        "ATLAS_13TeV_2OSLEP_chargino_binned_139invfb",
+        "ATLAS_13TeV_2OSLEP_chargino_inclusive_139invfb",
+        "ATLAS_13TeV_2bMET_36invfb",
+        "ATLAS_13TeV_3LEP_139invfb",
+        "ATLAS_13TeV_3LEP_eRJR_139invfb",
+        "ATLAS_13TeV_3b_NN_139invfb",
+        "ATLAS_13TeV_4LEP_139invfb",
+        "ATLAS_13TeV_4b_139invfb",
+        "ATLAS_13TeV_4b_allyears_139invfb",
+        "ATLAS_13TeV_4b_discoverySR_139invfb",
+        "ATLAS_13TeV_MultiLEP_strong_139invfb",
+        "ATLAS_13TeV_PhotonGGM_1Photon_139invfb",
+        "ATLAS_13TeV_PhotonGGM_2Photon_36invfb",
+        "ATLAS_13TeV_ZGammaGrav_CONFNOTE_80invfb",
+        "ATLAS_13TeV_bTaus_StopStau_139invfb",
+        "CMS_13TeV_0LEPStop_137invfb",
+        "CMS_13TeV_0LEP_137invfb",
+        "CMS_13TeV_0LEP_chargino_VV_VH_137invfb",
+        "CMS_13TeV_0LEP_chargino_VV_VH_137invfb_OLD",
+        "CMS_13TeV_1LEPStop_36invfb",
+        "CMS_13TeV_1LEPbb_137invfb",
+        "CMS_13TeV_1Photon1Lepton_emu_combined_36invfb",
+        "CMS_13TeV_2Higgs_4b_neutralino_137invfb",
+        "CMS_13TeV_2LEPStop_36invfb",
+        "CMS_13TeV_2LEPsoft_137invfb",
+        "CMS_13TeV_2OSLEP_EW_Production_137invfb",
+        "CMS_13TeV_2OSLEP_Slepton_137invfb",
+        "CMS_13TeV_2OSLEP_Strong_Production_137invfb",
+        "CMS_13TeV_2OSLEP_for_chargino_36invfb",
+        "CMS_13TeV_2OSLEP_for_stop_36invfb",
+        "CMS_13TeV_2Photon_GMSB_36invfb",
+        "CMS_13TeV_2SSLEP_Stop_137invfb",
+        "CMS_13TeV_MultiLEP_2LEP_137invfb",
+        "CMS_13TeV_MultiLEP_3LEP_137invfb",
+        "CMS_13TeV_MultiLEP_4LEP_137invfb",
+        "CMS_13TeV_Photon_GMSB_137invfb"
+      ]
+    }
+  ],
+  "commits": [
+    "4d9cf2aade PX4Chris: Update comment of rename information",
+    "ccf24b2959 Rename analysis name with Report number",
+    "4012507e2d Rename analysis name",
+    "89d33f9c2d Pengxuan: modifying analysis names, using report number",
+    "f18f1e5cb8 Rename ATLAS-EXOT-2016-014"
+  ],
+  "caveat": "Static read of the worktree. Nothing was built or run."
+}

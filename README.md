@@ -200,6 +200,35 @@ python3 scripts/build-change-ledger.py \
 
 基线是 `private-SUSYRun2` 与开发分支的共同祖先，而不是 `gambit/master`——因为要回答的问题是"相对合作者手上的源分支我改了什么"。`gambit/master` 已完全合入，分支落后 0 个提交。
 
+### 命名迁移（slide 8 + 专页）
+
+分析从"描述看什么"的名字迁移到论文报告号。
+
+```bash
+python3 scripts/build-rename-migration-page.py \
+  --gambit-root ~/Gambit-Workshop/gambit
+```
+
+生成 `dependences/cbs-rename-migration.{html,json}` 和 `CBS_RENAME_MIGRATION.md`。
+
+**关键：文件数低估了这次迁移。** 两个层级的数不一样，而且只有一个是用户会踩到的：
+
+| 层级 | 数 |
+|---|---|
+| git 认定的重命名 | 75 |
+| 带 `// Renamed from:` 记录的文件 | 80 |
+| 其中 1:1 | 62 |
+| 其中合并（N:1） | 18 个文件吸收了 56 个旧文件 |
+| 注册分析名（baseline → head） | 128 → 137 |
+| **退役的名字** | **123** |
+
+**注册名才是 YAML 里写的东西**（`DEFINE_ANALYSIS_FACTORY` 发出来的），一个文件可以注册多个——所以差距在那 18 个合并文件上：合并不是重命名，git 会把幸存者报成 modified、其余报成 deleted。**没有分析丢失**，每个子区域仍然独立注册，只是搬进了报告号文件里。
+
+另外两条：
+
+- `ATLAS_8TeV_1LEPbb_20invfb` 是唯一保留旧名的物理分析，文件里写了原因：`:D unrenamed, can not find original exp report`。留例外就该这么留——下一个人不用猜是漏了还是故意的。
+- `yaml_files/PX_SUSYRun2_stop.yaml` 里还有 **48 个已经不存在的分析名**，今天跑会在 configure 阶段就挂。这是仓库内部的证据，说明仓库外每一份按名字选分析的配置都有同样的问题、而且没有任何警告。
+
 ### 依赖矩阵（slide 10）
 
 哪些程序包相对 `gambit/master` 和 `private-SUSYRun2` 有更新：
