@@ -161,6 +161,26 @@ python3 scripts/build-fastjet-cmake-page.py \
 
 页面点名了一个要对合作者讲清楚的事：CMake 不再下载 FastJet，而 `.gitignore` 里 `contrib/fastjet-*/`、`contrib/fjcontrib-*/` 的规则还在，两者都是 0 个文件入库。**新 clone 上探测失败，`else()` 分支不打印任何东西**，构建静默退回 fjcore，第一个可见症状是 Rivet 宣布自己被排除。
 
+### Variable-R jet 流水线
+
+VR jet 是怎么被穿进 ColliderBit 的：依赖什么、经过哪 7 个文件、每一站填了什么、以及**哪四个地方故意不做**。
+
+```bash
+python3 scripts/build-vrjet-page.py \
+  --gambit-root ~/Gambit-Workshop/gambit
+```
+
+生成 `dependences/cbs-vr-jets.{html,json}`、`CBS_VR_JETS.md` 和 `site/cbs-vr-jets.html`。
+
+一条 VR collection 从 YAML 出发，要活着穿过解析、聚类、味标定、存储、探测器模型和分析 API。7 个文件全是**就地修改**（+334 / −97），没有一个新文件——因为固定 R 的行为每一步都得继续正常工作。
+
+页面里几个值得注意的点：
+
+- **依赖只有一个类**：`fastjet::contrib::VariableRPlugin`。它是 FastJet *plugin*，所以链接面必须先长出 `-lfastjetplugins` 和两个 siscone——这就是[构建那一页](#fastjet--fjcontrib-构建集成)必须先发生的原因。
+- **味标定用的是 jet 自己的有效半径** `effectiveR = min(Rmax, max(Rmin, rho/pT))`，不是固定锥。
+- **四处故意跳过 VR**：parton 级转换、LHEF reader（都没有 track 可聚）、BuckFast 的动量涂抹、以及 BuckFast 清除 |η|>2.5 b-tag 的那一遍。最后一条有后果：VR jet 在任意 η 都保留 b-tag，两个流水线分析自己切了 `abseta() < 2.5` 所以没事，但忘了切的分析会继承本该被探测器模型抹掉的 tag。
+- **一个分析绕过了流水线**：`Analysis_ATLAS_SUSY_2018_07` 在分析体内自建 `VariableRPlugin`，rho/Rmin/Rmax 硬编码，YAML 够不着它，也不在任何 opt-out 名单里（no-smear 按 collection 名匹配，而它那个 collection 没有名字）。
+
 ## 变更台账（汇报用 slide）
 
 `compare-cbs-branches.py` 把两个 worktree 当成普通文件树来 diff，因此**无法识别重命名**：75 个改名的分析会被报成"左边删除 75 个 + 右边新增 75 个"，凭空放大约 150 个文件的改动量。

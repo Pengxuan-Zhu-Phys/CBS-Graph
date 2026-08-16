@@ -729,17 +729,19 @@ svg{display:block;max-width:100%;height:auto}
       </svg>
     </div>
     <div class="deep">
-      <span class="lbl">Line-level companion page</span>
-      <p><code>-lVariableR</code> did not exist before this branch. <a href="cbs-fastjet-cmake.html">FastJet
-      &amp; fjcontrib · the build integration ↗</a> is the three-way story behind it — upstream
-      <span class="mono">master</span> ships fjcore only, SUSYRun2 replaced it with a downloaded
-      FastJet, this branch keeps both and picks at configure time.</p>
+      <span class="lbl">Line-level companion pages</span>
+      <p><a href="cbs-vr-jets.html">Variable-R jets · the pipeline ↗</a> walks the seven files a VR
+      collection passes through — <span class="mono">+334 / −97</span> — what each stage fills in, and
+      the four places VR is deliberately skipped. <a href="cbs-fastjet-cmake.html">FastJet &amp;
+      fjcontrib · the build integration ↗</a> is the half underneath it: <span class="mono">-lVariableR</span>
+      did not exist before this branch.</p>
       <div class="units">
-        <a href="cbs-fastjet-cmake.html#unit-1"><b>1</b> gate → probe</a>
-        <a href="cbs-fastjet-cmake.html#unit-2"><b>2</b> download removed</a>
-        <a href="cbs-fastjet-cmake.html#unit-4"><b>4</b> fjcontrib 1 → 4 libs</a>
-        <a href="cbs-fastjet-cmake.html#unit-5"><b>5</b> fjcore fallback</a>
-        <a href="cbs-fastjet-cmake.html#unit-6"><b>6</b> Nsubjettiness in-tree</a>
+        <a href="cbs-vr-jets.html#unit-1"><b>1</b> YAML schema</a>
+        <a href="cbs-vr-jets.html#unit-3"><b>3</b> VariableRPlugin</a>
+        <a href="cbs-vr-jets.html#unit-4"><b>4</b> tag by effective R</a>
+        <a href="cbs-vr-jets.html#unit-6"><b>6</b> no-smear opt-out</a>
+        <a href="cbs-vr-jets.html#unit-7"><b>7</b> where VR stops</a>
+        <a href="cbs-fastjet-cmake.html">build side ↗</a>
       </div>
     </div>
   </div>

@@ -1,0 +1,374 @@
+{
+  "analyses": [
+    {
+      "added": 353,
+      "collections": [
+        "VRTrackJets",
+        "antikt_R04",
+        "antikt_R10"
+      ],
+      "eta_cut_sites": 1,
+      "lines": 353,
+      "name": "ATLAS_EXOT_2019_04",
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+      "self_clusters": [],
+      "status": "A",
+      "vr_collections": [
+        "VRTrackJets"
+      ]
+    },
+    {
+      "added": 364,
+      "collections": [
+        "VRTrackJets",
+        "antikt_R04",
+        "antikt_R10"
+      ],
+      "eta_cut_sites": 3,
+      "lines": 364,
+      "name": "ATLAS_EXOT_2019_07",
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_07.cpp",
+      "self_clusters": [],
+      "status": "A",
+      "vr_collections": [
+        "VRTrackJets"
+      ]
+    },
+    {
+      "added": 620,
+      "collections": [
+        "antikt_R04"
+      ],
+      "eta_cut_sites": 3,
+      "lines": 620,
+      "name": "ATLAS_SUSY_2018_07",
+      "path": "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_07.cpp",
+      "self_clusters": [
+        {
+          "line": 330,
+          "text": "fastjet::contrib::VariableRPlugin vr_plugin(rho, Rmin, Rmax, fastjet::contrib::VariableRPlugin::AKTLIKE);"
+        }
+      ],
+      "status": "A",
+      "vr_collections": []
+    }
+  ],
+  "clustering": {
+    "add_jet": {
+      "line": 299,
+      "text": "result.add_jet(new HEPUtils::Jet(pj, tags), jetcollection.key);"
+    },
+    "branch": {
+      "line": 220,
+      "text": "if (is_vr_algorithm(jetcollection.algorithm))"
+    },
+    "effective_r": {
+      "line": 236,
+      "text": "const double effectiveR = std::min(Rmax, std::max(Rmin, rho / pj.pt()));"
+    },
+    "emplace": {
+      "line": 230,
+      "text": "std::shared_ptr<const FJNS::ClusterSequence> CSeqBasePtr = result.emplace_clusterseq(jetparticles, vr_jet_def, jetcollection.key);"
+    },
+    "excerpt": "  227            auto* vr_plugin = new fastjet::contrib::VariableRPlugin(rho, Rmin, Rmax, fastjet::contrib::VariableRPlugin::AKTLIKE);\n  228            fastjet::JetDefinition vr_jet_def(vr_plugin);\n  229            vr_jet_def.delete_plugin_when_unused();\n  230            std::shared_ptr<const FJNS::ClusterSequence> CSeqBasePtr = result.emplace_clusterseq(jetparticles, vr_jet_def, jetcollection.key);\n  231            std::vector<fastjet::PseudoJet> pjets = fastjet::sorted_by_pt(CSeqBasePtr->inclusive_jets(pt_min_vr));",
+    "plugin": {
+      "line": 227,
+      "text": "auto* vr_plugin = new fastjet::contrib::VariableRPlugin(rho, Rmin, Rmax, fastjet::contrib::VariableRPlugin::AKTLIKE);"
+    },
+    "tag_excerpt": "  236              const double effectiveR = std::min(Rmax, std::max(Rmin, rho / pj.pt()));",
+    "tags": {
+      "line": 298,
+      "text": "HEPUtils::Jet::TagCounts tags{{5, int(isB)}, {4, int(isC)}, {15, int(isTau)}, {23, int(isZ)}, {24, int(isW)}, {25, int(ish)}};"
+    }
+  },
+  "generated_by": "scripts/build-vrjet-page.py",
+  "numstat": {
+    "ColliderBit/include/gambit/ColliderBit/Utils.hpp": {
+      "added": 95,
+      "removed": 5
+    },
+    "ColliderBit/include/gambit/ColliderBit/colliders/Pythia8/Py8EventConversions.hpp": {
+      "added": 192,
+      "removed": 82
+    },
+    "ColliderBit/include/gambit/ColliderBit/detectors/BuckFast.hpp": {
+      "added": 6,
+      "removed": 0
+    },
+    "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp": {
+      "added": 353,
+      "removed": 0
+    },
+    "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_07.cpp": {
+      "added": 364,
+      "removed": 0
+    },
+    "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_07.cpp": {
+      "added": 620,
+      "removed": 0
+    },
+    "ColliderBit/src/detectors/BuckFast.cpp": {
+      "added": 4,
+      "removed": 0
+    },
+    "ColliderBit/src/getBuckFast.cpp": {
+      "added": 31,
+      "removed": 5
+    },
+    "ColliderBit/src/lhef2heputils.cpp": {
+      "added": 1,
+      "removed": 0
+    },
+    "contrib/heputils/include/HEPUtils/Event.h": {
+      "added": 5,
+      "removed": 5
+    }
+  },
+  "optouts": {
+    "buckfast_excerpt": "   45        {\n   46          for (std::string jetcollection : event.jet_collections())\n   47          {\n   48            if (std::find(jetcollections_no_smear.begin(), jetcollections_no_smear.end(), jetcollection) != jetcollections_no_smear.end()) continue;\n   49            smearJets(event.jets(jetcollection));\n   50          }\n   51        }\n   52  \n   53        // Unset b-tags outside |eta|=2.5\n   54        for (std::string jetcollection : event.jet_collections())\n   55        {\n   56          if (std::find(jetcollections_no_smear.begin(), jetcollections_no_smear.end(), jetcollection) != jetcollections_no_smear.end()) continue;\n   57          for (HEPUtils::Jet* j : event.jets(jetcollection))\n   58          {\n   59            if (j->abseta() > 2.5) j->set_btag(false);\n   60          }",
+    "no_smear_decl": {
+      "line": 49,
+      "text": "std::vector<std::string> jetcollections_no_smear;"
+    },
+    "no_smear_sites": [
+      {
+        "line": 48,
+        "text": "if (std::find(jetcollections_no_smear.begin(), jetcollections_no_smear.end(), jetcollection) != jetcollections_no_smear.end()) continue;"
+      },
+      {
+        "line": 56,
+        "text": "if (std::find(jetcollections_no_smear.begin(), jetcollections_no_smear.end(), jetcollection) != jetcollections_no_smear.end()) continue;"
+      }
+    ],
+    "no_smear_wire": [
+      {
+        "line": 85,
+        "text": "bucky.jetcollections_no_smear = get_vr_jetcollections_no_smear(*runOptions, (*Dep::RunMC).current_collider());"
+      },
+      {
+        "line": 101,
+        "text": "bucky.jetcollections_no_smear = get_vr_jetcollections_no_smear(*runOptions, (*Dep::RunMC).current_collider());"
+      },
+      {
+        "line": 113,
+        "text": "bucky.jetcollections_no_smear = get_vr_jetcollections_no_smear(*runOptions, (*Dep::RunMC).current_collider());"
+      }
+    ],
+    "skips": [
+      {
+        "line": 519,
+        "path": "ColliderBit/include/gambit/ColliderBit/colliders/Pythia8/Py8EventConversions.hpp",
+        "text": "if (is_vr_algorithm(jetcollection.algorithm)) continue;"
+      },
+      {
+        "line": 111,
+        "path": "ColliderBit/src/lhef2heputils.cpp",
+        "text": "if (is_vr_algorithm(jetcollection.algorithm)) continue;"
+      }
+    ]
+  },
+  "refs": {
+    "baseline": "9c955e3a7",
+    "head": "65aca0890d"
+  },
+  "schema": {
+    "fields": [
+      {
+        "default": null,
+        "line": 66,
+        "name": "key",
+        "type": "std::string"
+      },
+      {
+        "default": null,
+        "line": 67,
+        "name": "algorithm",
+        "type": "std::string"
+      },
+      {
+        "default": "0.4",
+        "line": 68,
+        "name": "R",
+        "type": "double"
+      },
+      {
+        "default": "\"E_scheme\"",
+        "line": 69,
+        "name": "recombination_scheme",
+        "type": "std::string"
+      },
+      {
+        "default": "\"Best\"",
+        "line": 70,
+        "name": "strategy",
+        "type": "std::string"
+      },
+      {
+        "default": "30.0",
+        "line": 71,
+        "name": "rho",
+        "type": "double"
+      },
+      {
+        "default": "0.02",
+        "line": 72,
+        "name": "Rmin",
+        "type": "double"
+      },
+      {
+        "default": "0.4",
+        "line": 73,
+        "name": "Rmax",
+        "type": "double"
+      },
+      {
+        "default": "-1.0",
+        "line": 74,
+        "name": "pt_min",
+        "type": "double"
+      }
+    ],
+    "fixed_keys": [
+      {
+        "key": "R",
+        "line": 122
+      },
+      {
+        "key": "recombination_scheme",
+        "line": 123
+      },
+      {
+        "key": "strategy",
+        "line": 124
+      }
+    ],
+    "struct_lines": [
+      64,
+      75
+    ],
+    "validations": [
+      {
+        "line": 96,
+        "message": "Could not find jet_collections option. Please provide this in the YAML file."
+      },
+      {
+        "line": 133,
+        "message": "Please provide the jet_collection_taus setting for jet collections."
+      },
+      {
+        "line": 140,
+        "message": "jet_collection_taus must refer to a non-VariableR jet collection."
+      }
+    ],
+    "vr_keys": [
+      {
+        "key": "rho",
+        "line": 115
+      },
+      {
+        "key": "Rmin",
+        "line": 116
+      },
+      {
+        "key": "Rmax",
+        "line": 117
+      },
+      {
+        "key": "pt_min",
+        "line": 118
+      }
+    ]
+  },
+  "status": {
+    "ColliderBit/include/gambit/ColliderBit/Utils.hpp": "M",
+    "ColliderBit/include/gambit/ColliderBit/colliders/Pythia8/Py8EventConversions.hpp": "M",
+    "ColliderBit/include/gambit/ColliderBit/detectors/BuckFast.hpp": "M",
+    "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp": "A",
+    "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_07.cpp": "A",
+    "ColliderBit/src/analyses/Analysis_ATLAS_SUSY_2018_07.cpp": "A",
+    "ColliderBit/src/detectors/BuckFast.cpp": "M",
+    "ColliderBit/src/getBuckFast.cpp": "M",
+    "ColliderBit/src/lhef2heputils.cpp": "M",
+    "contrib/heputils/include/HEPUtils/Event.h": "M"
+  },
+  "storage": {
+    "diff": "diff --git a/contrib/heputils/include/HEPUtils/Event.h b/contrib/heputils/include/HEPUtils/Event.h\nindex c0ffb9c83c..bc34374dc1 100644\n--- a/contrib/heputils/include/HEPUtils/Event.h\n+++ b/contrib/heputils/include/HEPUtils/Event.h\n@@ -384,5 +384,4 @@ namespace HEPUtils {\n     }\n \n-    \n     /// @brief Set a jet collection\n     ///\n@@ -413,5 +412,4 @@ namespace HEPUtils {\n       _cseqs.erase(key);\n     }\n-    \n \n     /// @brief Add a jet to a jet collection\n@@ -442,5 +440,7 @@ namespace HEPUtils {\n     template <typename CS=FJNS::ClusterSequence>\n     typename std::shared_ptr<const CS> clusterseq(const std::string& key) const {\n-      return std::dynamic_pointer_cast<const CS>(_cseqs.find(key)->second);\n+      auto it = _cseqs.find(key);\n+      if (it == _cseqs.end()) return typename std::shared_ptr<const CS>();\n+      return std::dynamic_pointer_cast<const CS>(it->second);\n     }\n \n@@ -458,5 +458,5 @@ namespace HEPUtils {\n     template <typename CS=FJNS::ClusterSequence>\n     void set_clusterseq(std::shared_ptr<const CS> cseq, const std::string& key) {\n-      if (_cseqs.find(key) != _cseqs.end() && !_cseqs.empty()) {\n+      if (_cseqs.find(key) != _cseqs.end()) {\n \tthrow std::runtime_error(\"Event::set_clusterseq() called for a non-empty jet collection\");\n       }\n@@ -474,5 +474,5 @@ namespace HEPUtils {\n     template <typename CS=FJNS::ClusterSequence>\n     CSeqBasePtr emplace_clusterseq(std::vector<FJNS::PseudoJet>& jetparticles, const FJNS::JetDefinition& jetdef, const std::string& key) {\n-      if (_cseqs.find(key) != _cseqs.end() && !_cseqs.empty()) {\n+      if (_cseqs.find(key) != _cseqs.end()) {\n \tthrow std::runtime_error(\"Event::emplace_clusterseq() called for a non-empty jet collection\");\n       }\n",
+    "excerpt": "  441      typename std::shared_ptr<const CS> clusterseq(const std::string& key) const {\n  442        auto it = _cseqs.find(key);\n  443        if (it == _cseqs.end()) return typename std::shared_ptr<const CS>();\n  444        return std::dynamic_pointer_cast<const CS>(it->second);\n  445      }",
+    "getter": {
+      "line": 441,
+      "text": "typename std::shared_ptr<const CS> clusterseq(const std::string& key) const {"
+    }
+  },
+  "units": [
+    {
+      "code": null,
+      "code_key": "schema",
+      "file": "ColliderBit/include/gambit/ColliderBit/Utils.hpp",
+      "id": 1,
+      "stage": "YAML",
+      "title": "A jet collection became a named, typed thing",
+      "what": "<code>jet_collection_settings</code> carries 9 fields. A fixed-R collection reads <code>R</code>, <code>recombination_scheme</code>, <code>strategy</code>; a variable-R one reads <code>rho</code>, <code>Rmin</code>, <code>Rmax</code>, <code>pt_min</code> instead. The algorithm string decides which branch runs, so the two parameter sets never mix.",
+      "why": "VR jets are not a fixed-R jet with a different number in the R slot. They have no single R at all &mdash; the radius is a function of <code>rho</code> and the jet's own p<sub>T</sub>, clamped between <code>Rmin</code> and <code>Rmax</code>. Reusing the <code>R</code> field would have made a meaningless value mandatory."
+    },
+    {
+      "code": null,
+      "code_key": "validations",
+      "file": "ColliderBit/include/gambit/ColliderBit/Utils.hpp",
+      "id": 2,
+      "stage": "YAML",
+      "title": "The YAML is validated, not trusted",
+      "what": "3 explicit checks. Every VR parameter is read with <code>getValue</code> rather than <code>getValueOrDef</code>, so a missing <code>rho</code> is an error rather than a silent default.",
+      "why": "A VR collection with a wrong radius law produces jets that look plausible and are wrong. The failure has to happen at configure time, before any events are read."
+    },
+    {
+      "code": "  227            auto* vr_plugin = new fastjet::contrib::VariableRPlugin(rho, Rmin, Rmax, fastjet::contrib::VariableRPlugin::AKTLIKE);\n  228            fastjet::JetDefinition vr_jet_def(vr_plugin);\n  229            vr_jet_def.delete_plugin_when_unused();\n  230            std::shared_ptr<const FJNS::ClusterSequence> CSeqBasePtr = result.emplace_clusterseq(jetparticles, vr_jet_def, jetcollection.key);\n  231            std::vector<fastjet::PseudoJet> pjets = fastjet::sorted_by_pt(CSeqBasePtr->inclusive_jets(pt_min_vr));",
+      "code_key": null,
+      "file": "ColliderBit/include/gambit/ColliderBit/colliders/Pythia8/Py8EventConversions.hpp",
+      "id": 3,
+      "stage": "conversion",
+      "title": "Clustering through the fjcontrib plugin",
+      "what": "A <code>VariableRPlugin</code> in <code>AKTLIKE</code> mode is wrapped in a <code>JetDefinition</code> and handed to the event's cluster sequence. <code>delete_plugin_when_unused()</code> hands the plugin's lifetime to FastJet.",
+      "why": "This is the single line that needs the build changes: <code>VariableRPlugin</code> lives in fjcontrib and is a FastJet <em>plugin</em>, which is why the link surface had to grow by <code>fastjetplugins</code> and both SISCone libraries."
+    },
+    {
+      "code": "  236              const double effectiveR = std::min(Rmax, std::max(Rmin, rho / pj.pt()));",
+      "code_key": null,
+      "file": "ColliderBit/include/gambit/ColliderBit/colliders/Pythia8/Py8EventConversions.hpp",
+      "id": 4,
+      "stage": "conversion",
+      "title": "Flavour tagging by the jet's own radius",
+      "what": "b, c and &tau; association uses <code>effectiveR = min(Rmax, max(Rmin, rho / pT))</code> &mdash; the radius that jet actually had &mdash; instead of a fixed cone. W, Z and h association still uses a hard-coded &Delta;R &lt; 1.0, marked <code>@todo Make selectable?</code> in the source.",
+      "why": "Matching a 20 GeV VR jet and a 500 GeV VR jet with the same cone would mis-tag both, in opposite directions. The whole point of a variable radius is that the catchment shrinks with p<sub>T</sub>, and the tagging has to follow it."
+    },
+    {
+      "code": "  441      typename std::shared_ptr<const CS> clusterseq(const std::string& key) const {\n  442        auto it = _cseqs.find(key);\n  443        if (it == _cseqs.end()) return typename std::shared_ptr<const CS>();\n  444        return std::dynamic_pointer_cast<const CS>(it->second);\n  445      }",
+      "code_key": null,
+      "file": "contrib/heputils/include/HEPUtils/Event.h",
+      "id": 5,
+      "stage": "storage",
+      "title": "The event stores cluster sequences by name",
+      "what": "<code>emplace_clusterseq(particles, jetdef, key)</code> keeps one cluster sequence per collection name, and the event owns it. The getter was also fixed: it used to dereference the result of <code>find()</code> without checking for <code>end()</code>.",
+      "why": "Multiple named collections coexist in one event, and not every collection exists on every path &mdash; the parton and LHEF readers skip VR entirely. Asking for a collection that was never filled is normal, so it had to stop being undefined behaviour."
+    },
+    {
+      "code": "   45        {\n   46          for (std::string jetcollection : event.jet_collections())\n   47          {\n   48            if (std::find(jetcollections_no_smear.begin(), jetcollections_no_smear.end(), jetcollection) != jetcollections_no_smear.end()) continue;\n   49            smearJets(event.jets(jetcollection));\n   50          }\n   51        }\n   52  \n   53        // Unset b-tags outside |eta|=2.5\n   54        for (std::string jetcollection : event.jet_collections())\n   55        {\n   56          if (std::find(jetcollections_no_smear.begin(), jetcollections_no_smear.end(), jetcollection) != jetcollections_no_smear.end()) continue;\n   57          for (HEPUtils::Jet* j : event.jets(jetcollection))\n   58          {\n   59            if (j->abseta() > 2.5) j->set_btag(false);\n   60          }",
+      "code_key": null,
+      "file": "ColliderBit/src/detectors/BuckFast.cpp",
+      "id": 6,
+      "stage": "detector",
+      "title": "VR collections opt out of detector smearing",
+      "what": "<code>std::vector<std::string> jetcollections_no_smear;</code> is filled from the VR collection keys, and BuckFast skips those collections in two loops: jet-momentum smearing, and the pass that clears b-tags outside |&eta;| &gt; 2.5.",
+      "why": "The BuckFast jet smearing is tuned for calorimeter jets with a fixed radius. VR track jets are a different object with different resolution, so applying the same smearing would be worse than applying none."
+    },
+    {
+      "code": null,
+      "code_key": "skips",
+      "file": "ColliderBit/src/lhef2heputils.cpp",
+      "id": 7,
+      "stage": "boundary",
+      "title": "Two readers decline VR outright",
+      "what": "2 sites <code>continue</code> past any VR collection: the parton-level Pythia conversion and the LHEF reader.",
+      "why": "VR track jets are built from charged-particle tracks. A parton-level or LHE-level event has no tracks to cluster, so producing a collection there would be inventing an object rather than reconstructing one."
+    }
+  ]
+}

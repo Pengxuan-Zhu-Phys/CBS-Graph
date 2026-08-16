@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Variable-R jets in ColliderBit</title>
+  <style>
+    :root { --paper:#f5f5f5; --paper-2:#ececec; --ink:#2d3142; --muted:#4f5d75; --soft:#7a8399; --rule:rgba(45,49,66,.12); --accent:#eb6c36; --accent-tint:rgba(235,108,54,.08); --green:#4f8a69; --green-tint:#eef8f1; --red:#93513f; --red-tint:#f3e9e5; --font-sans:'Geist',system-ui,sans-serif; --font-mono:'Geist Mono',ui-monospace,monospace; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:14px/1.55 var(--font-sans); }
+    .frame { max-width:1520px; margin:0 auto; padding:42px 42px 64px; }
+    .eyebrow,.kicker,.meta,.source,.status,th,footer { font-family:var(--font-mono); }
+    .eyebrow { color:var(--muted); font-size:10px; letter-spacing:.16em; text-transform:uppercase; margin:0 0 12px; }
+    h1 { font-family:'Instrument Serif',Georgia,serif; font-size:clamp(42px,5vw,72px); font-weight:400; letter-spacing:-.04em; line-height:.98; margin:0 0 14px; }
+    h2 { font-size:28px; font-weight:600; letter-spacing:-.03em; line-height:1.08; margin:0 0 8px; }
+    p { color:var(--muted); }
+    .intro { max-width:1080px; font-size:15px; line-height:1.65; margin:0 0 18px; }
+    .meta { display:flex; flex-wrap:wrap; gap:8px 18px; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:12px 0; color:var(--muted); font-size:10px; }
+    .meta strong { color:var(--accent); font-weight:600; }
+    .note { border-left:3px solid var(--accent); color:var(--muted); font-size:11px; line-height:1.6; margin:18px 0; max-width:1160px; padding:8px 12px; }
+    .backlink { align-items:baseline; background:#fff; border:1px solid var(--rule); border-left:3px solid var(--accent);
+      border-radius:0 6px 6px 0; color:var(--muted); display:flex; flex-wrap:wrap; font-size:12.5px; gap:4px 12px;
+      line-height:1.6; margin:18px 0 0; max-width:1160px; padding:11px 14px; }
+    .backlink .lbl { color:var(--soft); font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; }
+    .backlink span:last-child { flex:1 1 420px; }
+    .backlink a { border-bottom:1px solid rgba(235,108,54,.42); color:var(--accent); font-weight:600; text-decoration:none; }
+    .backlink a:hover { background:var(--accent-tint); }
+    .summary-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin:22px 0 32px; }
+    .card { background:#fff; border:1px solid var(--rule); border-radius:6px; padding:14px 16px; }
+    .card.accent { border-color:rgba(235,108,54,.45); background:var(--accent-tint); }
+    .card .n { color:var(--ink); display:block; font-size:26px; font-weight:600; letter-spacing:-.04em; line-height:1; margin-bottom:8px; }
+    .card .label { color:var(--soft); font-family:var(--font-mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; }
+    section { border-top:1px solid var(--rule); margin-top:28px; padding:24px 0 0; }
+    .kicker { color:var(--soft); font-size:9px; letter-spacing:.16em; margin:0 0 8px; text-transform:uppercase; }
+    .source { color:var(--soft); font-size:10px; line-height:1.55; margin:0 0 14px; }
+    .diagram-shell { overflow-x:auto; background:#fff; border:1px solid var(--rule); border-radius:8px; padding:8px; }
+    svg { display:block; min-width:1080px; width:100%; height:auto; }
+    svg .zone { fill:rgba(45,49,66,.025); stroke:rgba(45,49,66,.13); stroke-width:1; }
+    svg .zone-label { fill:var(--soft); font:500 10px var(--font-mono); letter-spacing:1.6px; }
+    svg .node .kind { fill:var(--soft); font:500 9px var(--font-mono); letter-spacing:1.2px; }
+    svg .node .title { fill:var(--ink); font:600 12px var(--font-mono); }
+    svg .node .body { fill:var(--muted); font:9px var(--font-mono); }
+    svg .legend-label { fill:var(--soft); font:9px var(--font-mono); letter-spacing:.6px; }
+    svg .detail-edge { fill:none; stroke:var(--muted); stroke-width:1.4; }
+    svg .node.detail-primary rect { fill:#fff; stroke:var(--soft); stroke-width:1.2; }
+    svg .node.detail-data rect { fill:rgba(79,93,117,.08); stroke:var(--soft); stroke-width:1.2; }
+    svg .node.detail-optional rect { fill:#fff; stroke:var(--soft); stroke-width:1.2; stroke-dasharray:5 4; }
+    svg .node.detail-focal rect { fill:var(--accent-tint); stroke:var(--accent); stroke-width:1.6; }
+    svg .node.detail-focal .kind { fill:var(--accent); }
+    .unit-list { display:grid; gap:14px; margin-top:18px; }
+    .unit { border:1px solid var(--rule); border-radius:8px; background:#fff; padding:16px 18px; scroll-margin-top:20px; }
+    .unit:target { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-tint); }
+    .unit-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+    .unit-num { display:grid; place-items:center; width:26px; height:26px; border-radius:50%;
+      border:1.2px solid var(--ink); font:600 13px var(--font-mono); }
+    .unit-title { font-size:16px; font-weight:600; letter-spacing:-.01em; }
+    .unit-kind { padding:2px 7px; border-radius:3px; border:1px solid currentColor;
+      font:8px var(--font-mono); letter-spacing:.9px; text-transform:uppercase;
+      color:#4f8a69; background:var(--green-tint); }
+    .unit-delta { margin-left:auto; font:11px var(--font-mono); color:var(--soft); }
+    .unit-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px 24px; margin:0; }
+    .unit-grid > div { display:flex; gap:10px; border-bottom:1px solid var(--rule); padding-bottom:8px; }
+    .unit-grid dt { flex:0 0 46px; margin:2px 0 0; color:var(--soft);
+      font:9px var(--font-mono); letter-spacing:1px; text-transform:uppercase; }
+    .unit-grid dd { margin:0; color:var(--muted); font-size:12.5px; line-height:1.6; }
+    .unit-diff { margin-top:11px; border:1px solid var(--rule); border-radius:6px; background:#fff; }
+    .unit-diff summary { cursor:pointer; padding:9px 13px; color:var(--accent);
+      font:11px var(--font-mono); letter-spacing:.4px; list-style:none; }
+    .unit-diff summary::-webkit-details-marker { display:none; }
+    .unit-diff summary::before { content:"\25b8 "; display:inline-block; width:14px; }
+    .unit-diff[open] summary::before { content:"\25be "; }
+    .unit-diff[open] summary { border-bottom:1px solid var(--rule); }
+    .unit-diff summary:hover { background:rgba(235,108,54,.05); }
+    .unit-hunks { margin:0; padding:12px 14px; overflow-x:auto; font:11px/1.7 var(--font-mono);
+      background:#fff; border:0; color:var(--ink); white-space:pre; }
+    .diagram-note { color:var(--muted); font-size:12px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
+    .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
+    .mapping-table table { min-width:900px; }
+    table { border-collapse:collapse; font-size:11px; width:100%; }
+    th,td { border-bottom:1px solid var(--rule); padding:8px 9px; text-align:left; vertical-align:top; }
+    th { background:#ececec; color:var(--muted); font-size:9px; letter-spacing:.08em; text-transform:uppercase; }
+    td code { color:var(--ink); font-family:var(--font-mono); font-size:10px; word-break:break-word; }
+    td.num { text-align:right; font-family:var(--font-mono); white-space:nowrap; }
+    .add { color:var(--green); } .del { color:var(--red); }
+    .status { font-size:9px; font-weight:600; letter-spacing:.04em; }
+    .status.added-in-right { color:var(--green); } .status.unchanged { color:#b55c2d; }
+    footer { border-top:1px solid var(--rule); color:var(--soft); font-size:10px; margin-top:32px; padding-top:14px; }
+    @media (max-width:900px) { .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } }
+    @media (max-width:560px) { h1 { font-size:44px; } }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<main class="frame">
+  <p class="eyebrow">ColliderBit &#183; event pipeline</p>
+  <h1>Variable-R jets</h1>
+  <p class="intro">How a variable-R jet collection was threaded through ColliderBit: what it depends on, which files it touches, what was filled in at each stage, and the three places where it deliberately does nothing. A VR jet has no fixed radius &mdash; its catchment is <code>rho / p<sub>T</sub></code>, clamped between <code>Rmin</code> and <code>Rmax</code> &mdash; and almost every decision below follows from that one fact.</p>
+  <div class="meta"><span><strong>BASELINE</strong> 9c955e3a7</span><span><strong>HEAD</strong> 65aca0890d</span><span><strong>DEPENDS ON</strong> fjcontrib VariableRPlugin</span><span><strong>STATIC EVIDENCE</strong> no build / no events processed</span></div>
+  <p class="backlink"><span class="lbl">context</span><span>This page expands <a href="cbs-change-ledger.html#9">slide 9 of the CBS change-ledger deck &#8599;</a>. The build work it rests on is on the <a href="cbs-fastjet-cmake.html#unit-4">FastJet &amp; fjcontrib page &#8599;</a> &mdash; <code>-lVariableR</code> and the FastJet plugin libraries had to exist before one line here could compile.</span></p>
+  <div class="summary-grid" aria-label="Summary">
+    <div class="card accent"><span class="n">7</span><span class="label">pipeline files</span></div>
+    <div class="card"><span class="n">+334 &#8722;97</span><span class="label">pipeline lines</span></div>
+    <div class="card accent"><span class="n">7</span><span class="label">numbered additions</span></div>
+    <div class="card"><span class="n">1337</span><span class="label">lines &#183; new analyses</span></div>
+    <div class="card"><span class="n">4</span><span class="label">deliberate opt-outs</span></div>
+  </div>
+  <div class="note">Everything below is read from the worktree when this page is generated: line counts from <code>git diff --numstat</code>, YAML keys from the parser, validation text from the throw sites, opt-outs from the <code>continue</code> statements. No CBS binary was built and no events were processed, so nothing here is a statement about physics results.</div>
+
+  <section>
+    <p class="kicker">01 &#183; the shape of it</p>
+    <h2>One collection, seven stages</h2>
+    <p class="source">A VR collection is declared once in YAML and then has to survive parsing, clustering, tagging, storage, the detector model and the analysis API. Each stage needed something.</p>
+    <div class="diagram-shell">
+      <svg viewBox="0 0 1240 340" role="img" aria-labelledby="vr-title vr-desc">
+<title id="vr-title">The variable-R jet pipeline</title>
+<desc id="vr-desc">A VR collection is declared in YAML, parsed into a typed struct, clustered through the fjcontrib VariableRPlugin, tagged using its own effective radius, stored by name on the event, skipped by detector smearing, and read by analyses.</desc>
+<defs><marker id="vr-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4f5d75"/></marker></defs>
+<g class="node detail-data"><rect x="20" y="60" width="160" height="96" rx="8"/>
+<text class="kind" x="34" y="84">YAML</text>
+<text class="title" x="34" y="106" style="font-size:10.5px">jet_collections:</text>
+<text class="body" x="34" y="127">algorithm / rho /</text>
+<text class="body" x="34" y="140">Rmin / Rmax</text>
+</g>
+<path class="detail-edge" d="M180 108 H191" marker-end="url(#vr-arrow)"/>
+<g class="node detail-primary"><rect x="196" y="60" width="160" height="96" rx="8"/>
+<text class="kind" x="210" y="84">PARSE</text>
+<text class="title" x="210" y="106" style="font-size:10.5px">read_jet_collection_</text>
+<text class="title" x="210" y="121" style="font-size:10.5px">  settings_from_options</text>
+<text class="body" x="210" y="142">typed struct +</text>
+<text class="body" x="210" y="155">validation</text>
+</g>
+<path class="detail-edge" d="M356 108 H367" marker-end="url(#vr-arrow)"/>
+<g class="node detail-focal"><rect x="372" y="60" width="160" height="96" rx="8"/>
+<text class="kind" x="386" y="84">CLUSTER</text>
+<text class="title" x="386" y="106" style="font-size:10.5px">VariableRPlugin</text>
+<text class="body" x="386" y="127">AKTLIKE, one CS per</text>
+<text class="body" x="386" y="140">key</text>
+</g>
+<path class="detail-edge" d="M532 108 H543" marker-end="url(#vr-arrow)"/>
+<g class="node detail-focal"><rect x="548" y="60" width="160" height="96" rx="8"/>
+<text class="kind" x="562" y="84">TAG</text>
+<text class="title" x="562" y="106" style="font-size:10.5px">effectiveR</text>
+<text class="body" x="562" y="127">b / c / tau by jet</text>
+<text class="body" x="562" y="140">radius</text>
+</g>
+<path class="detail-edge" d="M708 108 H719" marker-end="url(#vr-arrow)"/>
+<g class="node detail-primary"><rect x="724" y="60" width="160" height="96" rx="8"/>
+<text class="kind" x="738" y="84">STORE</text>
+<text class="title" x="738" y="106" style="font-size:10.5px">HEPUtils::Event</text>
+<text class="body" x="738" y="127">named jets + cluster</text>
+<text class="body" x="738" y="140">seqs</text>
+</g>
+<path class="detail-edge" d="M884 108 H895" marker-end="url(#vr-arrow)"/>
+<g class="node detail-optional"><rect x="900" y="60" width="160" height="96" rx="8"/>
+<text class="kind" x="914" y="84">DETECTOR</text>
+<text class="title" x="914" y="106" style="font-size:10.5px">BuckFast</text>
+<text class="body" x="914" y="127">VR keys skipped</text>
+</g>
+<path class="detail-edge" d="M1060 108 H1071" marker-end="url(#vr-arrow)"/>
+<g class="node detail-primary"><rect x="1076" y="60" width="160" height="96" rx="8"/>
+<text class="kind" x="1090" y="84">ANALYSIS</text>
+<text class="title" x="1090" y="106" style="font-size:10.5px">event-&gt;jets(key)</text>
+<text class="body" x="1090" y="127">EXOT 2019-04 /</text>
+<text class="body" x="1090" y="140">2019-07</text>
+</g>
+<rect class="zone" x="20" y="184" width="1200" height="60" rx="7"/>
+<text class="zone-label" x="38" y="206">DEPENDS ON</text>
+<text class="body" x="38" y="226" fill="#4f5d75">fjcontrib VariableRPlugin &#8594; FastJet plugin machinery &#8594; -lfastjetplugins, -lsiscone, -lsiscone_spherical &#8212; none of which the source branch linked</text>
+<text class="legend-label" x="20" y="272">dashed = the stage that deliberately does nothing for VR collections</text>
+<text class="legend-label" x="20" y="292">the parton-level and LHEF readers are not on this line at all: both skip VR, because neither has tracks to cluster</text>
+</svg>
+    </div>
+    <div class="mapping-table" style="margin-top:16px"><table>
+      <thead><tr><th style="width:22%">File</th><th>What it contributes</th><th style="width:14%">Lines</th></tr></thead>
+      <tbody><tr><td><code>Utils.hpp</code></td><td>YAML schema, typed settings struct, validation, VR key list</td><td class="num"><span class="add">+95</span> <span class="del">&#8722;5</span></td></tr><tr><td><code>Py8EventConversions.hpp</code></td><td>VariableRPlugin clustering and effective-radius flavour tagging</td><td class="num"><span class="add">+192</span> <span class="del">&#8722;82</span></td></tr><tr><td><code>Event.h</code></td><td>named cluster-sequence storage, plus the missing-key fix</td><td class="num"><span class="add">+5</span> <span class="del">&#8722;5</span></td></tr><tr><td><code>BuckFast.hpp</code></td><td>the no-smear collection list</td><td class="num"><span class="add">+6</span> <span class="del">&#8722;0</span></td></tr><tr><td><code>BuckFast.cpp</code></td><td>skips VR in the smearing and b-tag-clearing loops</td><td class="num"><span class="add">+4</span> <span class="del">&#8722;0</span></td></tr><tr><td><code>getBuckFast.cpp</code></td><td>fills the no-smear list from the parsed VR keys</td><td class="num"><span class="add">+31</span> <span class="del">&#8722;5</span></td></tr><tr><td><code>lhef2heputils.cpp</code></td><td>declines VR at LHE level</td><td class="num"><span class="add">+1</span> <span class="del">&#8722;0</span></td></tr><tr><td><strong>pipeline total</strong></td><td>7 files, all modified in place</td><td class="num"><strong><span class="add">+334</span> <span class="del">&#8722;97</span></strong></td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">Every one of these is a modification, not a new file. VR jets were not bolted on beside the existing jet path &mdash; they were threaded through it, which is why the fixed-R behaviour had to keep working at each step.</p>
+  </section>
+
+  <section>
+    <p class="kicker">02 &#183; the dependency</p>
+    <h2>What it rests on</h2>
+    <p class="source">One class, and everything that class drags in.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:26%">Needed</th><th style="width:24%">Comes from</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td><code>fastjet::contrib::VariableRPlugin</code></td><td>fjcontrib 1.049</td>
+            <td>The single class the pipeline is built around. Constructed in <code>AKTLIKE</code> mode at <code>Py8EventConversions.hpp:227</code>.</td></tr>
+        <tr><td>FastJet plugin machinery</td><td>FastJet 3.4.2</td>
+            <td>VariableR is a <em>plugin</em>, not a built-in algorithm, so <code>-lfastjetplugins</code> became necessary &mdash; and it pulls both SISCone libraries with it.</td></tr>
+        <tr><td><code>-lVariableR</code></td><td>fjcontrib build</td>
+            <td>Added to <code>fjcontrib_LDFLAGS</code>, which previously carried only <code>-lRecursiveTools</code>.</td></tr>
+        <tr><td>A provisioned FastJet install</td><td>the machine, not the repo</td>
+            <td>If the FastJet probe fails, the build falls back to fjcore &mdash; which has no plugin support at all, so VR jets simply cannot exist in that configuration.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="diagram-note">This is the direct reason the build had to change first: the source branch linked FastJet without plugins, and no amount of ColliderBit code would have made <code>VariableRPlugin</code> resolve. The <a href="cbs-fastjet-cmake.html">FastJet &amp; fjcontrib page</a> covers that half.</p>
+  </section>
+
+  <section>
+    <p class="kicker">03 &#183; what was filled in</p>
+    <h2>Seven additions, stage by stage</h2>
+    <p class="source">One card per stage, with the reason it was needed and the source it produced.</p>
+    <div class="unit-list">
+      
+        <article class="unit" id="unit-1">
+          <header class="unit-head">
+            <span class="unit-num">1</span>
+            <span class="unit-title">A jet collection became a named, typed thing</span>
+            <span class="unit-kind extracted">YAML</span>
+            <span class="unit-delta">Utils.hpp</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>what</dt><dd><code>jet_collection_settings</code> carries 9 fields. A fixed-R collection reads <code>R</code>, <code>recombination_scheme</code>, <code>strategy</code>; a variable-R one reads <code>rho</code>, <code>Rmin</code>, <code>Rmax</code>, <code>pt_min</code> instead. The algorithm string decides which branch runs, so the two parameter sets never mix.</dd></div>
+            <div><dt>why</dt><dd>VR jets are not a fixed-R jet with a different number in the R slot. They have no single R at all &mdash; the radius is a function of <code>rho</code> and the jet's own p<sub>T</sub>, clamped between <code>Rmin</code> and <code>Rmax</code>. Reusing the <code>R</code> field would have made a meaningless value mandatory.</dd></div>
+          </dl>
+          <details class="unit-diff"><summary>source</summary><pre class="unit-hunks">   66  std::string key;
+   67  std::string algorithm;
+   68  double R = 0.4;
+   69  std::string recombination_scheme = &quot;E_scheme&quot;;
+   70  std::string strategy = &quot;Best&quot;;
+   71  double rho = 30.0;
+   72  double Rmin = 0.02;
+   73  double Rmax = 0.4;
+   74  double pt_min = -1.0;</pre></details>
+        </article>
+
+        <article class="unit" id="unit-2">
+          <header class="unit-head">
+            <span class="unit-num">2</span>
+            <span class="unit-title">The YAML is validated, not trusted</span>
+            <span class="unit-kind extracted">YAML</span>
+            <span class="unit-delta">Utils.hpp</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>what</dt><dd>3 explicit checks. Every VR parameter is read with <code>getValue</code> rather than <code>getValueOrDef</code>, so a missing <code>rho</code> is an error rather than a silent default.</dd></div>
+            <div><dt>why</dt><dd>A VR collection with a wrong radius law produces jets that look plausible and are wrong. The failure has to happen at configure time, before any events are read.</dd></div>
+          </dl>
+          <details class="unit-diff"><summary>source</summary><pre class="unit-hunks">   96  throw std::runtime_error(&quot;Could not find jet_collections option. Please provide this in the YAML file.&quot;);
+  133  throw std::runtime_error(&quot;Please provide the jet_collection_taus setting for jet collections.&quot;);
+  140  throw std::runtime_error(&quot;jet_collection_taus must refer to a non-VariableR jet collection.&quot;);</pre></details>
+        </article>
+
+        <article class="unit" id="unit-3">
+          <header class="unit-head">
+            <span class="unit-num">3</span>
+            <span class="unit-title">Clustering through the fjcontrib plugin</span>
+            <span class="unit-kind extracted">conversion</span>
+            <span class="unit-delta">Py8EventConversions.hpp</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>what</dt><dd>A <code>VariableRPlugin</code> in <code>AKTLIKE</code> mode is wrapped in a <code>JetDefinition</code> and handed to the event's cluster sequence. <code>delete_plugin_when_unused()</code> hands the plugin's lifetime to FastJet.</dd></div>
+            <div><dt>why</dt><dd>This is the single line that needs the build changes: <code>VariableRPlugin</code> lives in fjcontrib and is a FastJet <em>plugin</em>, which is why the link surface had to grow by <code>fastjetplugins</code> and both SISCone libraries.</dd></div>
+          </dl>
+          <details class="unit-diff"><summary>source</summary><pre class="unit-hunks">  227            auto* vr_plugin = new fastjet::contrib::VariableRPlugin(rho, Rmin, Rmax, fastjet::contrib::VariableRPlugin::AKTLIKE);
+  228            fastjet::JetDefinition vr_jet_def(vr_plugin);
+  229            vr_jet_def.delete_plugin_when_unused();
+  230            std::shared_ptr&lt;const FJNS::ClusterSequence&gt; CSeqBasePtr = result.emplace_clusterseq(jetparticles, vr_jet_def, jetcollection.key);
+  231            std::vector&lt;fastjet::PseudoJet&gt; pjets = fastjet::sorted_by_pt(CSeqBasePtr-&gt;inclusive_jets(pt_min_vr));</pre></details>
+        </article>
+
+        <article class="unit" id="unit-4">
+          <header class="unit-head">
+            <span class="unit-num">4</span>
+            <span class="unit-title">Flavour tagging by the jet&#x27;s own radius</span>
+            <span class="unit-kind extracted">conversion</span>
+            <span class="unit-delta">Py8EventConversions.hpp</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>what</dt><dd>b, c and &tau; association uses <code>effectiveR = min(Rmax, max(Rmin, rho / pT))</code> &mdash; the radius that jet actually had &mdash; instead of a fixed cone. W, Z and h association still uses a hard-coded &Delta;R &lt; 1.0, marked <code>@todo Make selectable?</code> in the source.</dd></div>
+            <div><dt>why</dt><dd>Matching a 20 GeV VR jet and a 500 GeV VR jet with the same cone would mis-tag both, in opposite directions. The whole point of a variable radius is that the catchment shrinks with p<sub>T</sub>, and the tagging has to follow it.</dd></div>
+          </dl>
+          <details class="unit-diff"><summary>source</summary><pre class="unit-hunks">  236              const double effectiveR = std::min(Rmax, std::max(Rmin, rho / pj.pt()));</pre></details>
+        </article>
+
+        <article class="unit" id="unit-5">
+          <header class="unit-head">
+            <span class="unit-num">5</span>
+            <span class="unit-title">The event stores cluster sequences by name</span>
+            <span class="unit-kind extracted">storage</span>
+            <span class="unit-delta">Event.h</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>what</dt><dd><code>emplace_clusterseq(particles, jetdef, key)</code> keeps one cluster sequence per collection name, and the event owns it. The getter was also fixed: it used to dereference the result of <code>find()</code> without checking for <code>end()</code>.</dd></div>
+            <div><dt>why</dt><dd>Multiple named collections coexist in one event, and not every collection exists on every path &mdash; the parton and LHEF readers skip VR entirely. Asking for a collection that was never filled is normal, so it had to stop being undefined behaviour.</dd></div>
+          </dl>
+          <details class="unit-diff"><summary>source</summary><pre class="unit-hunks">  441      typename std::shared_ptr&lt;const CS&gt; clusterseq(const std::string&amp; key) const {
+  442        auto it = _cseqs.find(key);
+  443        if (it == _cseqs.end()) return typename std::shared_ptr&lt;const CS&gt;();
+  444        return std::dynamic_pointer_cast&lt;const CS&gt;(it-&gt;second);
+  445      }</pre></details>
+        </article>
+
+        <article class="unit" id="unit-6">
+          <header class="unit-head">
+            <span class="unit-num">6</span>
+            <span class="unit-title">VR collections opt out of detector smearing</span>
+            <span class="unit-kind extracted">detector</span>
+            <span class="unit-delta">BuckFast.cpp</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>what</dt><dd><code>std::vector<std::string> jetcollections_no_smear;</code> is filled from the VR collection keys, and BuckFast skips those collections in two loops: jet-momentum smearing, and the pass that clears b-tags outside |&eta;| &gt; 2.5.</dd></div>
+            <div><dt>why</dt><dd>The BuckFast jet smearing is tuned for calorimeter jets with a fixed radius. VR track jets are a different object with different resolution, so applying the same smearing would be worse than applying none.</dd></div>
+          </dl>
+          <details class="unit-diff"><summary>source</summary><pre class="unit-hunks">   45        {
+   46          for (std::string jetcollection : event.jet_collections())
+   47          {
+   48            if (std::find(jetcollections_no_smear.begin(), jetcollections_no_smear.end(), jetcollection) != jetcollections_no_smear.end()) continue;
+   49            smearJets(event.jets(jetcollection));
+   50          }
+   51        }
+   52  
+   53        // Unset b-tags outside |eta|=2.5
+   54        for (std::string jetcollection : event.jet_collections())
+   55        {
+   56          if (std::find(jetcollections_no_smear.begin(), jetcollections_no_smear.end(), jetcollection) != jetcollections_no_smear.end()) continue;
+   57          for (HEPUtils::Jet* j : event.jets(jetcollection))
+   58          {
+   59            if (j-&gt;abseta() &gt; 2.5) j-&gt;set_btag(false);
+   60          }</pre></details>
+        </article>
+
+        <article class="unit" id="unit-7">
+          <header class="unit-head">
+            <span class="unit-num">7</span>
+            <span class="unit-title">Two readers decline VR outright</span>
+            <span class="unit-kind extracted">boundary</span>
+            <span class="unit-delta">lhef2heputils.cpp</span>
+          </header>
+          <dl class="unit-grid">
+            <div><dt>what</dt><dd>2 sites <code>continue</code> past any VR collection: the parton-level Pythia conversion and the LHEF reader.</dd></div>
+            <div><dt>why</dt><dd>VR track jets are built from charged-particle tracks. A parton-level or LHE-level event has no tracks to cluster, so producing a collection there would be inventing an object rather than reconstructing one.</dd></div>
+          </dl>
+          <details class="unit-diff"><summary>source</summary><pre class="unit-hunks">Py8EventConversions.hpp:519
+      if (is_vr_algorithm(jetcollection.algorithm)) continue;
+lhef2heputils.cpp:111
+      if (is_vr_algorithm(jetcollection.algorithm)) continue;</pre></details>
+        </article>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">04 &#183; the contract</p>
+    <h2>What a YAML collection may say</h2>
+    <p class="source">The settings struct, extracted field by field. Which keys are read depends on the <code>algorithm</code> string.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:16%">Field</th><th style="width:14%">Type</th><th style="width:16%">Default</th><th style="width:20%">Read for</th><th style="width:8%">Line</th></tr></thead>
+      <tbody><tr><td><code>key</code></td><td><code>std::string</code></td><td><code>&amp;mdash;</code></td><td><span class="status">both</span></td><td class="num">66</td></tr><tr><td><code>algorithm</code></td><td><code>std::string</code></td><td><code>&amp;mdash;</code></td><td><span class="status">both</span></td><td class="num">67</td></tr><tr><td><code>R</code></td><td><code>double</code></td><td><code>0.4</code></td><td><span class="status unchanged">fixed-R only</span></td><td class="num">68</td></tr><tr><td><code>recombination_scheme</code></td><td><code>std::string</code></td><td><code>&quot;E_scheme&quot;</code></td><td><span class="status unchanged">fixed-R only</span></td><td class="num">69</td></tr><tr><td><code>strategy</code></td><td><code>std::string</code></td><td><code>&quot;Best&quot;</code></td><td><span class="status unchanged">fixed-R only</span></td><td class="num">70</td></tr><tr><td><code>rho</code></td><td><code>double</code></td><td><code>30.0</code></td><td><span class="status added-in-right">variable-R only</span></td><td class="num">71</td></tr><tr><td><code>Rmin</code></td><td><code>double</code></td><td><code>0.02</code></td><td><span class="status added-in-right">variable-R only</span></td><td class="num">72</td></tr><tr><td><code>Rmax</code></td><td><code>double</code></td><td><code>0.4</code></td><td><span class="status added-in-right">variable-R only</span></td><td class="num">73</td></tr><tr><td><code>pt_min</code></td><td><code>double</code></td><td><code>-1.0</code></td><td><span class="status added-in-right">variable-R only</span></td><td class="num">74</td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">The VR keys are read with <code>getValue</code>, not <code>getValueOrDef</code> &mdash; the defaults visible in the struct are there for the fixed-R path and for direct construction in C++, not as YAML fallbacks. Omitting <code>rho</code> from a VR collection is an error, not a silent 30.0.</p>
+    <div class="mapping-table" style="margin-top:16px"><table>
+      <thead><tr><th style="width:8%">Line</th><th>Rejected at configure time</th></tr></thead>
+      <tbody><tr><td class="num">96</td><td>Could not find jet_collections option. Please provide this in the YAML file.</td></tr><tr><td class="num">133</td><td>Please provide the jet_collection_taus setting for jet collections.</td></tr><tr><td class="num">140</td><td>jet_collection_taus must refer to a non-VariableR jet collection.</td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">The third one is the interesting one: <code>jet_collection_taus</code> may not point at a VR collection. Tau candidates are matched inside a fixed cone, and a collection whose radius changes per jet cannot serve that role &mdash; so rather than producing quietly wrong taus, the configuration is refused.</p>
+  </section>
+
+  <section>
+    <p class="kicker">05 &#183; the boundaries</p>
+    <h2>Where VR jets deliberately do nothing</h2>
+    <p class="source">Four sites skip VR collections on purpose. Each is a physics decision written as a <code>continue</code>.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:24%">Site</th><th style="width:40%">Source</th><th>Reason</th></tr></thead>
+      <tbody><tr><td><code>Py8EventConversions.hpp:519</code></td><td><code>if (is_vr_algorithm(jetcollection.algorithm)) continue;</code></td><td>no tracks exist at this level to cluster</td></tr><tr><td><code>lhef2heputils.cpp:111</code></td><td><code>if (is_vr_algorithm(jetcollection.algorithm)) continue;</code></td><td>no tracks exist at this level to cluster</td></tr><tr><td><code>BuckFast.cpp:48</code></td><td><code>if (std::find(jetcollections_no_smear.begin(), jetcollections_no_smear.end(), jetcollection) != </code></td><td>calorimeter-jet smearing does not describe VR track jets</td></tr><tr><td><code>BuckFast.cpp:56</code></td><td><code>if (std::find(jetcollections_no_smear.begin(), jetcollections_no_smear.end(), jetcollection) != </code></td><td>calorimeter-jet smearing does not describe VR track jets</td></tr></tbody>
+    </table></div>
+    <p class="diagram-note"><strong>One of these has a consequence worth stating aloud.</strong> BuckFast skips VR collections in two loops, and the second is the pass that clears b-tags outside |&eta;| &gt; 2.5. So a VR jet keeps whatever b-tag the truth matching gave it, at any &eta;. Both pipeline analyses cut <code>abseta() &lt; 2.5</code> themselves before using VR jets, so the effect does not reach them &mdash; but an analysis that forgets that cut would inherit b-tags the detector model was supposed to have removed.</p>
+  </section>
+
+  <section>
+    <p class="kicker">06 &#183; the consumers</p>
+    <h2>Three analyses, two ways of asking</h2>
+    <p class="source">All three are new on this branch. Two take the collection the pipeline built; one builds its own.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:26%">Analysis</th><th style="width:8%">Lines</th><th>Where its VR jets come from</th><th style="width:14%">|&eta;|&lt;2.5 cut sites</th></tr></thead>
+      <tbody><tr><td><code>ATLAS_EXOT_2019_04</code></td><td class="num">353</td><td><span class="status added-in-right">pipeline &mdash; <code>VRTrackJets</code></span></td><td class="num">1</td></tr><tr><td><code>ATLAS_EXOT_2019_07</code></td><td class="num">364</td><td><span class="status added-in-right">pipeline &mdash; <code>VRTrackJets</code></span></td><td class="num">3</td></tr><tr><td><code>ATLAS_SUSY_2018_07</code></td><td class="num">620</td><td><span class="status unchanged">clusters its own &mdash; <code>fastjet::contrib::VariableRPlugin vr_plugin(rho, Rmin, Rma</code> at line 330</span></td><td class="num">3</td></tr></tbody>
+    </table></div>
+    <p class="diagram-note"><strong>The exception is the caveat from the deck, made concrete.</strong> <code>ATLAS_SUSY_2018_07</code> constructs its own <code>VariableRPlugin</code> with <code>rho</code>, <code>Rmin</code> and <code>Rmax</code> hard-coded in the analysis body. It works, but YAML cannot reach it: changing the collection definition in the input file changes nothing for that analysis, and it does not appear in <code>event-&gt;jet_collections()</code>. It is also outside every opt-out above &mdash; the no-smear list is keyed by collection name, and this collection has no name.</p>
+    <p class="diagram-note">The recommendation that follows is the one already on the slide: declare the collection in YAML and read it with <code>event-&gt;jets("&lt;key&gt;")</code>. That is the path the validation, the tagging and the detector opt-outs all understand.</p>
+  </section>
+
+  <section>
+    <p class="kicker">07 &#183; boundary</p>
+    <h2>What this page does not claim</h2>
+    <p class="source">The usual limits, stated rather than implied.</p>
+    <div class="note">This page describes code paths, not results. No CBS binary was built for it and no events were clustered. It does not show that the VR jets produced here match ATLAS's, that the effective-radius flavour matching reproduces the published tagging efficiencies, or that the b-tag working points used in the analyses are right. Those are validation questions and need a run with real events on both sides, which is a separate exercise.</div>
+    <p class="diagram-note">What it does establish, from source: which files a VR collection passes through, what each stage contributes, which YAML keys are mandatory, what the configuration refuses, and the four places where VR is deliberately absent.</p>
+  </section>
+
+  <p class="backlink"><span class="lbl">return</span><span>Back to <a href="cbs-change-ledger.html#9">the change-ledger deck &#183; slide 9 &#8599;</a>, or across to the <a href="cbs-fastjet-cmake.html">FastJet &amp; fjcontrib build integration &#8599;</a> that made this possible.</span></p>
+
+  <footer>Generated by <code>scripts/build-vrjet-page.py</code>. Baseline <code>9c955e3a7</code>, head <code>65aca0890d</code>.</footer>
+</main>
+</body>
+</html>
