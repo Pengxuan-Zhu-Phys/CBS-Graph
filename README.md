@@ -271,6 +271,19 @@ python3 scripts/build-yaml-config-page.py \
 | **条件性** | 1 | `target_fractional_uncert`：开 convergence 时必填，关时 `getValueOrDef(0.30)` |
 | **谁都不读** | 3 | `covariance_marg_convthres_abs/_rel`、`covariance_nsamples_start` |
 
+**`check_histogram` 对两种 histogram 的控制逻辑不一样**（专页 §05）。默认 `false`，读一次存进一个所有分析共享的 static：
+
+| histogram 种类 | `false`（默认） | `true` |
+|---|---|---|
+| **纯 histogram** | 不 book、不 fill、不写出 | 出现在 `histograms.1d` |
+| **SR histogram** | 同上，**而且 `COMMIT_HISTOGRAM_SRS` 不跑，per-bin signal region 不存在** | 出现在 JSON，**且每个 bin 变成一个 SignalRegionData** |
+
+所以同一个 key：对纯 histogram 只决定"有没有图"，对 SR histogram **直接改变 likelihood 里有几个 signal region**。从 YAML 上看不出自己处在哪种情况——key 长得一模一样，只有分析源码里写着区别。
+
+**门的位置有个不对称**：只有 `FILL_HISTOGRAM_1D` / `_2D` 自带 `if (Histogram1D::check_histogram())`（`Histogram1D::fill` 在 `Histogram.hpp:148` 还会再查一次）。`DEFINE_*` 和 `COMMIT_*` **都不自带**——靠分析作者手写。
+
+留下的失败模式：一个 SR histogram 分析如果漏写那个手写守卫，flag 关着时仍会 book、仍会 commit，但 fill 全被跳过——结果是**一整组 per-bin signal region，每个 bin 的信号预期恰好是 0**。不崩溃、不缺 key，就是一个建立在空预期上的 likelihood，而且框架不会报任何东西。目前三个消费者都写了守卫，所以这是隐患不是现存 bug——但这个守卫应该挪进 `COMMIT_HISTOGRAM_SRS` 里，让它没法被忘掉。
+
 **最要紧的一条：三个键 YAML 根本够不着。** `solo.cpp` 用用户设置建好 options 节点之后直接覆盖：`min_nEvents = 1000`（L383）、`max_nEvents = INT_MAX`（L384）、`run_convergence_checks = false`（L386，注释写着 *"always process all events provided by the user"*）。
 
 因为 convergence 被强制关掉，原始文件里那**一整组 convergence 设置在 CBS 下是惰性的**——还能解析、还有默认值、但不再改变任何行为。`ColliderBit_eventloop.cpp:197` 专门为此改过：开着时 `target_fractional_uncert` 必填，关着时退到 `0.30`，注释是 *"For explicit no-convergence runs (CBS policy), this value is unused."*

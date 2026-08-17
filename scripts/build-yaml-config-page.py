@@ -133,6 +133,67 @@ ALTERNATIVES = {
 }
 
 
+MACROS_HPP = "ColliderBit/include/gambit/ColliderBit/analyses/AnalysisMacros.hpp"
+HISTOGRAM_HPP = "ColliderBit/include/gambit/ColliderBit/analyses/Histogram.hpp"
+
+HIST_CONSUMERS = [
+    "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_04.cpp",
+    "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2019_07.cpp",
+    "ColliderBit/src/analyses/Analysis_ATLAS_EXOT_2021_35.cpp",
+]
+
+
+def histogram_gate(root: Path, ref: str) -> dict:
+    """What `check_histogram` actually gates, macro by macro.
+
+    Only the FILL macros test the flag themselves.  Booking and committing are
+    guarded by the analysis writing the test by hand, which is why the two
+    histogram modes end up with different consequences for a run.
+    """
+    macros = show(root, ref, MACROS_HPP).splitlines()
+    hist = show(root, ref, HISTOGRAM_HPP).splitlines()
+    solo = show(root, ref, SOLO).splitlines()
+
+    guarded = {}
+    for index, line in enumerate(macros):
+        match = re.match(r"#define\s+((?:DEFINE|FILL|COMMIT)_HISTOGRAM\w*)", line)
+        if not match:
+            continue
+        body, probe = [line], index
+        while probe < len(macros) and macros[probe].rstrip().endswith("\\"):
+            probe += 1
+            body.append(macros[probe])
+        guarded[match.group(1)] = {
+            "self_guarded": any("check_histogram()" in b for b in body),
+            "line": index + 1,
+        }
+
+    fill_guard = next((i + 1 for i, line in enumerate(hist)
+                       if "if (!check_histogram()) return;" in line), None)
+    read = next((i + 1 for i, line in enumerate(solo)
+                 if 'getValueOrDef<bool>(false, "check_histogram")' in line), None)
+
+    # Does each consumer wrap its own booking and committing?
+    consumers = []
+    for path in HIST_CONSUMERS:
+        src = show(root, ref, path).splitlines()
+        gates = [i + 1 for i, line in enumerate(src)
+                 if "Histogram1D::check_histogram()" in line]
+        consumers.append({
+            "name": Path(path).stem.replace("Analysis_", ""),
+            "gates": gates,
+            "commits_srs": any("COMMIT_HISTOGRAM_SRS" in line for line in src),
+        })
+
+    return {
+        "read_line": read,
+        "default": False,
+        "macros": guarded,
+        "fill_guard_line": fill_guard,
+        "consumers": consumers,
+    }
+
+
 def policies(root: Path, ref: str) -> dict[str, dict]:
     """Keys solo.cpp writes into the collider options node itself."""
     src = show(root, ref, SOLO)
@@ -202,6 +263,7 @@ def collect(root: Path) -> dict:
         entry.update(classify(entry["key"], reads, policy, False))
 
     jet_required = "jet_collections" in reads and reads["jet_collections"]["kind"] == "user"
+    gate = histogram_gate(root, "HEAD")
 
     counts = {"user": 0, "program": 0, "conditional": 0,
               "CBS policy": 0, "dead": 0, "unread": 0}
@@ -227,6 +289,7 @@ def collect(root: Path) -> dict:
         "policy": policy,
         "counts": counts,
         "jet_collections_required": jet_required,
+        "histogram_gate": gate,
         "caveat": "Static read of the worktree. Nothing was built or run.",
     }
 
@@ -300,6 +363,22 @@ def added_rows(data: dict) -> str:
                     f'<td><span class="status {WHERE_CLASS.get(entry["where"], "")}">'
                     f'{where}</span></td>'
                     f'<td><code>{esc(entry["value"])[:70]}</code></td></tr>')
+    return "\n".join(rows)
+
+
+def macro_gate_rows(data: dict) -> str:
+    rows = []
+    for name, record in data["histogram_gate"]["macros"].items():
+        if record["self_guarded"]:
+            badge = '<span class="status added-in-right">yes</span>'
+            note = "Expands to a guarded statement; safe to call unconditionally."
+        else:
+            badge = '<span class="status unchanged">no</span>'
+            note = ("Runs whenever the analysis calls it. The analysis must supply the "
+                    "<code>if (Histogram1D::check_histogram())</code> itself.")
+        rows.append(f'<tr><td><code>{esc(name)}</code>'
+                    f'<span class="ln">AnalysisMacros.hpp:{record["line"]}</span></td>'
+                    f'<td>{badge}</td><td>{note}</td></tr>')
     return "\n".join(rows)
 
 
@@ -419,8 +498,45 @@ __CSS__
     <p class="diagram-note">Note which one is <em>required</em>: <code>jet_collections</code>. The original ran without it because the jet definition was not configurable; now it must be present or <code>Utils.hpp:96</code> throws. That single change is what makes the default card necessary rather than merely convenient.</p>
   </section>
 
+  <section id="check-histogram">
+    <p class="kicker">05 &#183; one switch, two consequences</p>
+    <h2><code>check_histogram</code> does not mean the same thing twice</h2>
+    <p class="source">Read once at <code>solo.cpp:__CH_LINE__</code> with <code>getValueOrDef&lt;bool&gt;(false, &hellip;)</code> and set on a static that every analysis shares. <strong>The default is <code>false</code>.</strong></p>
+    <div class="mapping-table"><table>
+      <thead><tr>
+        <th style="width:20%">Histogram kind</th>
+        <th style="width:26%"><code>check_histogram: false</code> &mdash; the default</th>
+        <th style="width:26%"><code>check_histogram: true</code></th>
+        <th>What the flag actually costs</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>plain</strong><span class="ln">obs empty</span></td>
+          <td>Not booked, not filled, not written. Nothing in the JSON, nothing to plot.</td>
+          <td>Appears under <code>histograms.1d</code> with counts and <code>sumw2</code>.</td>
+          <td><span class="status added-in-right">output only</span> Signal regions are identical either way. Turning it on adds a diagnostic and changes no result.</td>
+        </tr>
+        <tr>
+          <td><strong>signal region</strong><span class="ln">obs / bkg / bkg_err set</span></td>
+          <td>Same as above &mdash; <em>and</em> <code>COMMIT_HISTOGRAM_SRS</code> never runs, so the per-bin regions do not exist.</td>
+          <td>Appears in the JSON <em>and</em> every bin is added as a <code>SignalRegionData</code>.</td>
+          <td><span class="status unchanged">changes the likelihood</span> The analysis contributes a different number of signal regions depending on this flag.</td>
+        </tr>
+      </tbody>
+    </table></div>
+    <p class="diagram-note">__CH_CONSUMER_NOTE__</p>
+
+    <h3 style="margin-top:22px;font-size:15px">Where the gate actually sits</h3>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:32%">Macro</th><th style="width:20%">Tests the flag itself?</th><th>Consequence</th></tr></thead>
+      <tbody>__CH_MACRO_ROWS__</tbody>
+    </table></div>
+    <p class="diagram-note"><strong>Only the fill macros are self-guarding.</strong> <code>FILL_HISTOGRAM_1D</code> and <code>FILL_HISTOGRAM_2D</code> expand to <code>if (Histogram1D::check_histogram()) &hellip;</code>, and <code>Histogram1D::fill</code> checks again at <code>Histogram.hpp:__CH_FILL_GUARD__</code>. Booking and committing are <em>not</em> guarded by the macro &mdash; each analysis writes <code>if (Histogram1D::check_histogram())</code> around them by hand.</p>
+    <div class="note"><strong>The failure mode this leaves open.</strong> An analysis that books and commits signal-region histograms <em>without</em> the hand-written guard would, with the flag off, still create the histogram and still commit its bins &mdash; but the fills would all have been skipped. The result is a full set of per-bin signal regions with a signal prediction of exactly zero in every bin. That is not a crash and not a missing key; it is a likelihood built on empty predictions, and nothing in the framework would report it. All three current consumers do write the guard, so this is a latent hazard rather than a present bug &mdash; but the guard belongs inside <code>COMMIT_HISTOGRAM_SRS</code>, where it cannot be forgotten.</div>
+  </section>
+
   <section id="defaults">
-    <p class="kicker">05 &#183; the default card</p>
+    <p class="kicker">06 &#183; the default card</p>
     <h2>Three layers, user wins</h2>
     <p class="source">__DEFAULTS_SOURCE__</p>
     <div class="grid-2">
@@ -444,7 +560,7 @@ __CSS__
   </section>
 
   <section>
-    <p class="kicker">06 &#183; boundary</p>
+    <p class="kicker">07 &#183; boundary</p>
     <h2>What this page does not tell you</h2>
     <div class="note">Each key is placed by the call that reads it, found by scanning four source files for <code>getValue</code> and <code>getValueOrDef</code>. That is a textual match, not an execution trace: a key consumed through some other path would be reported as unread, and the &ldquo;dead key&rdquo; verdict means only that no <code>.cpp</code> or <code>.hpp</code> in the repository names it at either ref. Nothing was compiled and no run was performed, so this page describes what the code says it will do with a setting, not what a run then produces.</div>
   </section>
@@ -509,6 +625,21 @@ def render_html(data: dict) -> str:
         'look longer.'
     )
 
+    gate = data["histogram_gate"]
+    sr_users = [c["name"] for c in gate["consumers"] if c["commits_srs"]]
+    plain_users = [c["name"] for c in gate["consumers"] if not c["commits_srs"]]
+    ch_consumer_note = (
+        "Both rows are live in this branch. "
+        + ", ".join(f"<code>{esc(n)}</code>" for n in sr_users)
+        + (" commit" if len(sr_users) != 1 else " commits")
+        + " histogram-backed signal regions, so the flag moves their likelihood; "
+        + ", ".join(f"<code>{esc(n)}</code>" for n in plain_users)
+        + (" books" if len(plain_users) == 1 else " book")
+        + " plain histograms only, so the flag decides whether a plot exists and nothing more. "
+        "A reader cannot tell which case they are in from the YAML &mdash; the key looks the same "
+        "in both, and the analysis source is the only place the difference is written down."
+    )
+
     css = CSS.read_text() if CSS.exists() else "<style></style>"
     expected = set(re.findall(r"__[A-Z_]+__", TEMPLATE))
     page = TEMPLATE.replace("__CSS__", css)
@@ -532,6 +663,10 @@ def render_html(data: dict) -> str:
         "__WHERE_NOTE__": where_note,
         "__POLICY_ROWS__": policy_rows(data),
         "__ADDED_ROWS__": added_rows(data),
+        "__CH_LINE__": str(gate["read_line"]),
+        "__CH_FILL_GUARD__": str(gate["fill_guard_line"]),
+        "__CH_MACRO_ROWS__": macro_gate_rows(data),
+        "__CH_CONSUMER_NOTE__": ch_consumer_note,
         "__DEFAULTS_SOURCE__": defaults_source,
         "__DEFAULTS_CAPTION__": defaults_caption,
         "__DEFAULTS_TEXT__": defaults_text,

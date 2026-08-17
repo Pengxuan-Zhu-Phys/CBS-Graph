@@ -270,8 +270,53 @@ settings:
     <p class="diagram-note">Note which one is <em>required</em>: <code>jet_collections</code>. The original ran without it because the jet definition was not configurable; now it must be present or <code>Utils.hpp:96</code> throws. That single change is what makes the default card necessary rather than merely convenient.</p>
   </section>
 
+  <section id="check-histogram">
+    <p class="kicker">05 &#183; one switch, two consequences</p>
+    <h2><code>check_histogram</code> does not mean the same thing twice</h2>
+    <p class="source">Read once at <code>solo.cpp:179</code> with <code>getValueOrDef&lt;bool&gt;(false, &hellip;)</code> and set on a static that every analysis shares. <strong>The default is <code>false</code>.</strong></p>
+    <div class="mapping-table"><table>
+      <thead><tr>
+        <th style="width:20%">Histogram kind</th>
+        <th style="width:26%"><code>check_histogram: false</code> &mdash; the default</th>
+        <th style="width:26%"><code>check_histogram: true</code></th>
+        <th>What the flag actually costs</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>plain</strong><span class="ln">obs empty</span></td>
+          <td>Not booked, not filled, not written. Nothing in the JSON, nothing to plot.</td>
+          <td>Appears under <code>histograms.1d</code> with counts and <code>sumw2</code>.</td>
+          <td><span class="status added-in-right">output only</span> Signal regions are identical either way. Turning it on adds a diagnostic and changes no result.</td>
+        </tr>
+        <tr>
+          <td><strong>signal region</strong><span class="ln">obs / bkg / bkg_err set</span></td>
+          <td>Same as above &mdash; <em>and</em> <code>COMMIT_HISTOGRAM_SRS</code> never runs, so the per-bin regions do not exist.</td>
+          <td>Appears in the JSON <em>and</em> every bin is added as a <code>SignalRegionData</code>.</td>
+          <td><span class="status unchanged">changes the likelihood</span> The analysis contributes a different number of signal regions depending on this flag.</td>
+        </tr>
+      </tbody>
+    </table></div>
+    <p class="diagram-note">Both rows are live in this branch. <code>ATLAS_EXOT_2019_04</code>, <code>ATLAS_EXOT_2019_07</code> commit histogram-backed signal regions, so the flag moves their likelihood; <code>ATLAS_EXOT_2021_35</code> books plain histograms only, so the flag decides whether a plot exists and nothing more. A reader cannot tell which case they are in from the YAML &mdash; the key looks the same in both, and the analysis source is the only place the difference is written down.</p>
+
+    <h3 style="margin-top:22px;font-size:15px">Where the gate actually sits</h3>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:32%">Macro</th><th style="width:20%">Tests the flag itself?</th><th>Consequence</th></tr></thead>
+      <tbody><tr><td><code>COMMIT_HISTOGRAMS</code><span class="ln">AnalysisMacros.hpp:468</span></td><td><span class="status unchanged">no</span></td><td>Runs whenever the analysis calls it. The analysis must supply the <code>if (Histogram1D::check_histogram())</code> itself.</td></tr>
+<tr><td><code>COMMIT_HISTOGRAM_SRS</code><span class="ln">AnalysisMacros.hpp:472</span></td><td><span class="status unchanged">no</span></td><td>Runs whenever the analysis calls it. The analysis must supply the <code>if (Histogram1D::check_histogram())</code> itself.</td></tr>
+<tr><td><code>DEFINE_HISTOGRAM_1D</code><span class="ln">AnalysisMacros.hpp:479</span></td><td><span class="status unchanged">no</span></td><td>Runs whenever the analysis calls it. The analysis must supply the <code>if (Histogram1D::check_histogram())</code> itself.</td></tr>
+<tr><td><code>DEFINE_HISTOGRAM_SR_1D</code><span class="ln">AnalysisMacros.hpp:483</span></td><td><span class="status unchanged">no</span></td><td>Runs whenever the analysis calls it. The analysis must supply the <code>if (Histogram1D::check_histogram())</code> itself.</td></tr>
+<tr><td><code>DEFINE_HISTOGRAM_1D_UNIFORM</code><span class="ln">AnalysisMacros.hpp:487</span></td><td><span class="status unchanged">no</span></td><td>Runs whenever the analysis calls it. The analysis must supply the <code>if (Histogram1D::check_histogram())</code> itself.</td></tr>
+<tr><td><code>FILL_HISTOGRAM_1D</code><span class="ln">AnalysisMacros.hpp:491</span></td><td><span class="status added-in-right">yes</span></td><td>Expands to a guarded statement; safe to call unconditionally.</td></tr>
+<tr><td><code>DEFINE_HISTOGRAM_2D</code><span class="ln">AnalysisMacros.hpp:495</span></td><td><span class="status unchanged">no</span></td><td>Runs whenever the analysis calls it. The analysis must supply the <code>if (Histogram1D::check_histogram())</code> itself.</td></tr>
+<tr><td><code>DEFINE_HISTOGRAM_2D_UNIFORM</code><span class="ln">AnalysisMacros.hpp:499</span></td><td><span class="status unchanged">no</span></td><td>Runs whenever the analysis calls it. The analysis must supply the <code>if (Histogram1D::check_histogram())</code> itself.</td></tr>
+<tr><td><code>FILL_HISTOGRAM_2D</code><span class="ln">AnalysisMacros.hpp:503</span></td><td><span class="status added-in-right">yes</span></td><td>Expands to a guarded statement; safe to call unconditionally.</td></tr></tbody>
+    </table></div>
+    <p class="diagram-note"><strong>Only the fill macros are self-guarding.</strong> <code>FILL_HISTOGRAM_1D</code> and <code>FILL_HISTOGRAM_2D</code> expand to <code>if (Histogram1D::check_histogram()) &hellip;</code>, and <code>Histogram1D::fill</code> checks again at <code>Histogram.hpp:148</code>. Booking and committing are <em>not</em> guarded by the macro &mdash; each analysis writes <code>if (Histogram1D::check_histogram())</code> around them by hand.</p>
+    <div class="note"><strong>The failure mode this leaves open.</strong> An analysis that books and commits signal-region histograms <em>without</em> the hand-written guard would, with the flag off, still create the histogram and still commit its bins &mdash; but the fills would all have been skipped. The result is a full set of per-bin signal regions with a signal prediction of exactly zero in every bin. That is not a crash and not a missing key; it is a likelihood built on empty predictions, and nothing in the framework would report it. All three current consumers do write the guard, so this is a latent hazard rather than a present bug &mdash; but the guard belongs inside <code>COMMIT_HISTOGRAM_SRS</code>, where it cannot be forgotten.</div>
+  </section>
+
   <section id="defaults">
-    <p class="kicker">05 &#183; the default card</p>
+    <p class="kicker">06 &#183; the default card</p>
     <h2>Three layers, user wins</h2>
     <p class="source"><code>CBS_yaml/CBS_defaults.yaml</code>, 22 lines of settings in the working tree.</p>
     <div class="grid-2">
@@ -327,7 +372,7 @@ analysis_defaults:
   </section>
 
   <section>
-    <p class="kicker">06 &#183; boundary</p>
+    <p class="kicker">07 &#183; boundary</p>
     <h2>What this page does not tell you</h2>
     <div class="note">Each key is placed by the call that reads it, found by scanning four source files for <code>getValue</code> and <code>getValueOrDef</code>. That is a textual match, not an execution trace: a key consumed through some other path would be reported as unread, and the &ldquo;dead key&rdquo; verdict means only that no <code>.cpp</code> or <code>.hpp</code> in the repository names it at either ref. Nothing was compiled and no run was performed, so this page describes what the code says it will do with a setting, not what a run then produces.</div>
   </section>

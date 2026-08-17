@@ -558,5 +558,77 @@
     "unread": 0
   },
   "jet_collections_required": true,
+  "histogram_gate": {
+    "read_line": 179,
+    "default": false,
+    "macros": {
+      "COMMIT_HISTOGRAMS": {
+        "self_guarded": false,
+        "line": 468
+      },
+      "COMMIT_HISTOGRAM_SRS": {
+        "self_guarded": false,
+        "line": 472
+      },
+      "DEFINE_HISTOGRAM_1D": {
+        "self_guarded": false,
+        "line": 479
+      },
+      "DEFINE_HISTOGRAM_SR_1D": {
+        "self_guarded": false,
+        "line": 483
+      },
+      "DEFINE_HISTOGRAM_1D_UNIFORM": {
+        "self_guarded": false,
+        "line": 487
+      },
+      "FILL_HISTOGRAM_1D": {
+        "self_guarded": true,
+        "line": 491
+      },
+      "DEFINE_HISTOGRAM_2D": {
+        "self_guarded": false,
+        "line": 495
+      },
+      "DEFINE_HISTOGRAM_2D_UNIFORM": {
+        "self_guarded": false,
+        "line": 499
+      },
+      "FILL_HISTOGRAM_2D": {
+        "self_guarded": true,
+        "line": 503
+      }
+    },
+    "fill_guard_line": 148,
+    "consumers": [
+      {
+        "name": "ATLAS_EXOT_2019_04",
+        "gates": [
+          51,
+          319,
+          331
+        ],
+        "commits_srs": true
+      },
+      {
+        "name": "ATLAS_EXOT_2019_07",
+        "gates": [
+          79,
+          332,
+          346
+        ],
+        "commits_srs": true
+      },
+      {
+        "name": "ATLAS_EXOT_2021_35",
+        "gates": [
+          116,
+          278,
+          289
+        ],
+        "commits_srs": false
+      }
+    ]
+  },
   "caveat": "Static read of the worktree. Nothing was built or run."
 }
