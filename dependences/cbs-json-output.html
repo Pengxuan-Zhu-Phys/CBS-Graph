@@ -419,6 +419,30 @@
     </table></div>
     <p class="diagram-note"><strong>The flags carry the arithmetic rules the numbers cannot.</strong> Signal-region terms are <code>safe_to_sum: false</code> because the SRs of one analysis overlap &mdash; summing them double-counts events. Only the per-analysis combined terms and the Contur total are <code>true</code>. Alternative variants of the same quantity share an <code>exclusive_group</code>: pick one per group, never add them. A consumer that ignores these flags and sums the <code>loglike</code> column will get a confident, wrong number, which is exactly why they are in the file rather than in a README.</p>
     <p class="diagram-note"><code>predefined_sets.default_total</code> is the ready-made answer: the list of <code>term_id</code>s the emitter guarantees is a valid sum. Start there, and treat everything else as opt-in.</p>
+    
+    <h3 style="margin-top:24px;font-size:17px">Reading a <code>term_id</code></h3>
+    <p class="diagram-note">Three colon-separated fields:
+    <code>&lt;analysis&gt;::&lt;signal region <em>or</em> "combined"&gt;::&lt;variant&gt;</code>.
+    The middle slot is a signal-region label for a per-SR term and the literal
+    <code>combined</code> for the analysis-level term; the last is the systematic variant,
+    <code>nominal</code> unless alternatives were produced. So
+    <code>ATLAS_EXOT_2019_04::combined::nominal</code> is
+    <em>&ldquo;the combined log-likelihood of ATLAS_EXOT_2019_04, nominal variant&rdquo;</em>
+    &mdash; the analysis&#8217;s single answer, not one of its regions.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:20%">Analysis</th><th style="width:16%">SR slot</th>
+      <th style="width:12%">Variant</th><th style="width:18%">Component</th>
+      <th style="width:12%">loglike</th><th style="width:12%">safe_to_sum</th>
+      <th>in default_total</th></tr></thead>
+      <tbody><tr><td><code>ATLAS_EXOT_2019_04</code></td><td><code>SR</code></td><td><code>nominal</code></td><td><code>signal_region</code></td><td class="num">-0.9350</td><td><span class="status unchanged">no</span></td><td></td></tr><tr><td><code>ATLAS_EXOT_2019_04</code></td><td><code>m_VLB_bin0</code></td><td><code>nominal</code></td><td><code>signal_region</code></td><td class="num">-0.4700</td><td><span class="status unchanged">no</span></td><td></td></tr><tr><td><code>ATLAS_EXOT_2019_04</code></td><td><code>m_VLB_bin1</code></td><td><code>nominal</code></td><td><code>signal_region</code></td><td class="num">-1.4193</td><td><span class="status unchanged">no</span></td><td></td></tr><tr><td><code>ATLAS_EXOT_2019_04</code></td><td><code>m_VLB_bin2</code></td><td><code>nominal</code></td><td><code>signal_region</code></td><td class="num">-1.9241</td><td><span class="status unchanged">no</span></td><td></td></tr><tr><td><code>ATLAS_EXOT_2019_04</code></td><td><code>m_VLB_bin3</code></td><td><code>nominal</code></td><td><code>signal_region</code></td><td class="num">+0.8291</td><td><span class="status unchanged">no</span></td><td></td></tr><tr><td><code>ATLAS_EXOT_2019_04</code></td><td><code>m_VLB_bin4</code></td><td><code>nominal</code></td><td><code>signal_region</code></td><td class="num">-0.3482</td><td><span class="status unchanged">no</span></td><td></td></tr><tr><td><code>ATLAS_EXOT_2019_04</code></td><td><code>m_VLB_bin5</code></td><td><code>nominal</code></td><td><code>signal_region</code></td><td class="num">-0.0147</td><td><span class="status unchanged">no</span></td><td></td></tr><tr><td><code>ATLAS_EXOT_2019_04</code></td><td><code>m_VLB_bin6</code></td><td><code>nominal</code></td><td><code>signal_region</code></td><td class="num">-0.1795</td><td><span class="status unchanged">no</span></td><td></td></tr><tr><td><code>ATLAS_EXOT_2019_04</code></td><td><em>combined</em></td><td><code>nominal</code></td><td><code>analysis_combined</code></td><td class="num">-1.9241</td><td><span class="status added-in-right">yes</span></td><td>&#10003;</td></tr></tbody>
+    </table></div>
+    <p class="diagram-note"><strong>9 terms, 1 of them summable.</strong> The
+    per-SR rows are alternatives to one another over the same events, which is why every one is
+    <code>safe_to_sum: false</code> and why <code>default_total</code> lists only the combined
+    term. Note also that the combined value here equals the
+    <code>m_VLB_bin2</code> row exactly: this analysis
+    combines by <em>picking its most sensitive region</em>, not by adding regions up. And a
+    positive <code>loglike</code> is normal &mdash; these are relative, not absolute.</p>
   </section>
 
   <section>

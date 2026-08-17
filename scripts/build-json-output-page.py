@@ -101,6 +101,30 @@ def run_samples(gambit_root) -> dict:
     return out
 
 
+def sample_terms(gambit_root):
+    """Every term of the sample run, for the worked term_id walk-through."""
+    path = gambit_root / SAMPLE_RUN
+    if not path.exists():
+        return [], [], ""
+    document = json.loads(path.read_text())
+    terms = [
+        {
+            "term_id": t["term_id"],
+            "component": t["component"],
+            "loglike": t["loglike"],
+            "safe_to_sum": bool(t["safe_to_sum"]),
+        }
+        for t in document.get("terms", [])
+    ]
+    default_total = list(document.get("predefined_sets", {}).get("default_total", []))
+    analyses = document.get("analyses", {})
+    selected = ""
+    if analyses:
+        first = next(iter(analyses.values()))
+        selected = first.get("combination", {}).get("selected_sr_label", "")
+    return terms, default_total, selected
+
+
 # --------------------------------------------------------------------------
 # source access
 # --------------------------------------------------------------------------
@@ -634,6 +658,9 @@ def build_data(gambit_root: Path) -> dict:
         "consumers": consumers,
         "terms": terms,
         "samples": run_samples(gambit_root),
+        "sample_terms": sample_terms(gambit_root)[0],
+        "sample_default_total": sample_terms(gambit_root)[1],
+        "sample_selected_sr": sample_terms(gambit_root)[2],
         "totals": {
             "top_level_keys": len(root_fields),
             "emitted_fields": emitted_total,
@@ -969,6 +996,60 @@ def json_skeleton(fields, indent=2, keyed_by=None) -> str:
     return esc("\n".join(rows))
 
 
+def term_grammar(data: dict) -> str:
+    """The term_id grammar, worked through every term of the sample run."""
+    samples = data.get("samples") or {}
+    meta = samples.get("__meta__") or {}
+    raw = data.get("sample_terms") or []
+    if not raw or not meta:
+        return ""
+
+    default_set = data.get("sample_default_total") or []
+    rows = []
+    for term in raw:
+        parts = term["term_id"].split("::")
+        middle = parts[1] if len(parts) > 2 else ""
+        slot = ("<em>combined</em>" if middle == "combined"
+                else f'<code>{esc(middle)}</code>')
+        flag = ('<span class="status added-in-right">yes</span>' if term["safe_to_sum"]
+                else '<span class="status unchanged">no</span>')
+        chosen = ("&#10003;" if term["term_id"] in default_set else "")
+        rows.append(
+            f'<tr><td><code>{esc(parts[0])}</code></td>'
+            f'<td>{slot}</td>'
+            f'<td><code>{esc(parts[-1])}</code></td>'
+            f'<td><code>{esc(term["component"])}</code></td>'
+            f'<td class="num">{term["loglike"]:+.4f}</td>'
+            f'<td>{flag}</td><td>{chosen}</td></tr>'
+        )
+
+    summable = sum(1 for t in raw if t["safe_to_sum"])
+    return f'''
+    <h3 style="margin-top:24px;font-size:17px">Reading a <code>term_id</code></h3>
+    <p class="diagram-note">Three colon-separated fields:
+    <code>&lt;analysis&gt;::&lt;signal region <em>or</em> "combined"&gt;::&lt;variant&gt;</code>.
+    The middle slot is a signal-region label for a per-SR term and the literal
+    <code>combined</code> for the analysis-level term; the last is the systematic variant,
+    <code>nominal</code> unless alternatives were produced. So
+    <code>ATLAS_EXOT_2019_04::combined::nominal</code> is
+    <em>&ldquo;the combined log-likelihood of ATLAS_EXOT_2019_04, nominal variant&rdquo;</em>
+    &mdash; the analysis&#8217;s single answer, not one of its regions.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:20%">Analysis</th><th style="width:16%">SR slot</th>
+      <th style="width:12%">Variant</th><th style="width:18%">Component</th>
+      <th style="width:12%">loglike</th><th style="width:12%">safe_to_sum</th>
+      <th>in default_total</th></tr></thead>
+      <tbody>{"".join(rows)}</tbody>
+    </table></div>
+    <p class="diagram-note"><strong>{len(raw)} terms, {summable} of them summable.</strong> The
+    per-SR rows are alternatives to one another over the same events, which is why every one is
+    <code>safe_to_sum: false</code> and why <code>default_total</code> lists only the combined
+    term. Note also that the combined value here equals the
+    <code>{esc(data.get("sample_selected_sr") or "selected")}</code> row exactly: this analysis
+    combines by <em>picking its most sensitive region</em>, not by adding regions up. And a
+    positive <code>loglike</code> is normal &mdash; these are relative, not absolute.</p>'''
+
+
 def sample_block(data: dict, key: str) -> str:
     """The key as it comes out of a real run, or a note that it was absent."""
     samples = data.get("samples") or {}
@@ -1155,6 +1236,7 @@ def render_html(data: dict) -> str:
         "__KEY_CARDS__": key_cards(data),
         "__OBJECT_TABLES__": object_tables(data),
         "__TERM_ROWS__": terms_table(data),
+        "__TERM_GRAMMAR__": term_grammar(data),
         "__CONSUMER_ROWS__": consumer_rows(data),
         "__GUARD_ROWS__": guard_rows(data),
         "__GATE_ROWS__": gate_rows(data),
@@ -1387,6 +1469,7 @@ TEMPLATE = r'''<!doctype html>
     </table></div>
     <p class="diagram-note"><strong>The flags carry the arithmetic rules the numbers cannot.</strong> Signal-region terms are <code>safe_to_sum: false</code> because the SRs of one analysis overlap &mdash; summing them double-counts events. Only the per-analysis combined terms and the Contur total are <code>true</code>. Alternative variants of the same quantity share an <code>exclusive_group</code>: pick one per group, never add them. A consumer that ignores these flags and sums the <code>loglike</code> column will get a confident, wrong number, which is exactly why they are in the file rather than in a README.</p>
     <p class="diagram-note"><code>predefined_sets.default_total</code> is the ready-made answer: the list of <code>term_id</code>s the emitter guarantees is a valid sum. Start there, and treat everything else as opt-in.</p>
+    __TERM_GRAMMAR__
   </section>
 
   <section>

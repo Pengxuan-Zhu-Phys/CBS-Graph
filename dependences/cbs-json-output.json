@@ -1301,6 +1301,66 @@
       "line": 633
     }
   ],
+  "sample_default_total": [
+    "ATLAS_EXOT_2019_04::combined::nominal"
+  ],
+  "sample_selected_sr": "m_VLB_bin2",
+  "sample_terms": [
+    {
+      "component": "signal_region",
+      "loglike": -0.9350345037068344,
+      "safe_to_sum": false,
+      "term_id": "ATLAS_EXOT_2019_04::SR::nominal"
+    },
+    {
+      "component": "signal_region",
+      "loglike": -0.4699740806359407,
+      "safe_to_sum": false,
+      "term_id": "ATLAS_EXOT_2019_04::m_VLB_bin0::nominal"
+    },
+    {
+      "component": "signal_region",
+      "loglike": -1.4193118610322442,
+      "safe_to_sum": false,
+      "term_id": "ATLAS_EXOT_2019_04::m_VLB_bin1::nominal"
+    },
+    {
+      "component": "signal_region",
+      "loglike": -1.9241471016776481,
+      "safe_to_sum": false,
+      "term_id": "ATLAS_EXOT_2019_04::m_VLB_bin2::nominal"
+    },
+    {
+      "component": "signal_region",
+      "loglike": 0.8291186116141995,
+      "safe_to_sum": false,
+      "term_id": "ATLAS_EXOT_2019_04::m_VLB_bin3::nominal"
+    },
+    {
+      "component": "signal_region",
+      "loglike": -0.34824570486673556,
+      "safe_to_sum": false,
+      "term_id": "ATLAS_EXOT_2019_04::m_VLB_bin4::nominal"
+    },
+    {
+      "component": "signal_region",
+      "loglike": -0.01469460969566061,
+      "safe_to_sum": false,
+      "term_id": "ATLAS_EXOT_2019_04::m_VLB_bin5::nominal"
+    },
+    {
+      "component": "signal_region",
+      "loglike": -0.1795040759366784,
+      "safe_to_sum": false,
+      "term_id": "ATLAS_EXOT_2019_04::m_VLB_bin6::nominal"
+    },
+    {
+      "component": "analysis_combined",
+      "loglike": -1.9241471016776481,
+      "safe_to_sum": true,
+      "term_id": "ATLAS_EXOT_2019_04::combined::nominal"
+    }
+  ],
   "samples": {
     "__meta__": {
       "n_events": 30000,
