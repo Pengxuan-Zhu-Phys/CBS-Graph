@@ -1320,7 +1320,7 @@ TEMPLATE = r'''<!doctype html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CBS JSON output contract &#183; __SCHEMA__</title>
+  <title>CBS output</title>
   <style>
     :root { --paper:#f5f5f5; --paper-2:#ececec; --ink:#2d3142; --muted:#4f5d75; --soft:#7a8399; --rule:rgba(45,49,66,.12); --accent:#eb6c36; --accent-tint:rgba(235,108,54,.08); --green:#4f8a69; --green-tint:#eef8f1; --red:#93513f; --red-tint:#f3e9e5; --font-sans:'Geist',system-ui,sans-serif; --font-mono:'Geist Mono',ui-monospace,monospace; }
     * { box-sizing:border-box; }
@@ -1416,8 +1416,8 @@ TEMPLATE = r'''<!doctype html>
 </head>
 <body>
 <main class="frame">
-  <p class="eyebrow">ColliderBit Solo &#183; JSON output contract</p>
-  <h1>__SCHEMA__</h1>
+  <p class="eyebrow">ColliderBit Solo &#183; CBS output</p>
+  <h1>CBS output</h1>
   <p class="intro">How a CBS run arranges its results on disk. This is a new-only description: <code>private-SUSYRun2</code> has no JSON output at all &mdash; no <code>Utils/include/gambit/Utils/json.hpp</code>, and zero occurrences of <code>json</code> in its <code>solo.cpp</code> &mdash; so there is no earlier layout to compare against. Every key, field and line number below is read out of the emitter at page-generation time.</p>
   <div class="meta"><span><strong>SCHEMA</strong> __SCHEMA__</span><span><strong>WRITER</strong> ColliderBit/examples/solo_output.cpp</span><span><strong>INDENT</strong> __INDENT__</span><span><strong>LIBRARY</strong> nlohmann::json __LIB_VERSION__</span><span><strong>STATIC EVIDENCE</strong> no build / no run</span></div>
   <p class="backlink"><span class="lbl">context</span><span>This page expands <a href="cbs-change-ledger.html#7">slide 6 of the CBS change-ledger deck &#8599;</a> &mdash; <em>Results became a data contract</em>. The deck says the contract exists; this page says what is actually in it.</span></p>
