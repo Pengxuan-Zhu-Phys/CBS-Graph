@@ -62,6 +62,8 @@ h3{margin:0 0 8px;font-size:18px;letter-spacing:-.01em}
 .card{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:13px 15px}
 .card p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.62}
 .card p + p{margin-top:8px}
+.card ul{margin:6px 0 0;padding-left:17px}
+.card li{margin:1px 0;color:var(--muted);font-size:13.5px;line-height:1.45}
 .card ul{margin:8px 0 0 18px;padding:0;color:var(--muted);font-size:15px;line-height:1.55}
 .card li + li{margin-top:3px}
 .card.blue{border-top:3px solid var(--blue)}
@@ -160,7 +162,7 @@ svg{display:block;max-width:100%;height:auto}
 <!-- ============ 1 · title ============ -->
 <section class="slide active">
   <p class="eyebrow">GAMBIT · ColliderBit · change ledger</p>
-  <h1>What CBS changed, and who changed it</h1>
+  <h1>What CBS changed</h1>
   <p class="lede">
     A file-level ledger of <code>ColliderBit_solo_development</code> measured against the
     <code>private-SUSYRun2</code> source branch it grew out of — separating work done here
@@ -498,19 +500,19 @@ svg{display:block;max-width:100%;height:auto}
 <section class="slide">
   <p class="eyebrow">06 · new capability</p>
   <h2>The user YAML, and what left it</h2>
-  <p class="lede">The original file held 14 settings, all inline, and <b>no jet configuration at
-  all</b>. This branch made jet collections required — then built default cards so nobody writes
-  them. Meanwhile another set of settings quietly stopped being the user’s to decide.</p>
+  <p class="lede">The original file held 14 settings inline and <b>no jet configuration at all</b>.
+  This branch made jet collections required, then built default cards so nobody writes them — and
+  another set quietly stopped being the user’s to decide.</p>
   <div class="body">
     <div class="grid g4">
       <div class="stat"><div class="n">29 → 17</div><div class="k">lines of settings</div>
         <div class="s">blank and comment lines excluded</div></div>
       <div class="stat"><div class="n">7</div><div class="k">optional program defaults</div>
-        <div class="s"><code>getValueOrDef</code>: missing key → code/default-card value; required keys stay required</div></div>
+        <div class="s"><code>getValueOrDef</code> — missing key falls back; required keys stay required</div></div>
       <div class="stat"><div class="n">3</div><div class="k">still yours</div>
         <div class="s">event source and cross-section</div></div>
       <div class="stat"><div class="n">3 + 3</div><div class="k">forced policy + dead keys</div>
-        <div class="s">3 overwritten by <code>solo.cpp</code> · 3 have no C++ reader</div></div>
+        <div class="s">forced in <code>solo.cpp</code> · no C++ reader</div></div>
     </div>
 
     <div class="grid g2" style="align-items:start;margin-top:16px">
@@ -518,54 +520,45 @@ svg{display:block;max-width:100%;height:auto}
         <span class="tag red">CBS policy</span>
         <h3 style="margin-top:10px">Three keys the YAML cannot reach</h3>
         <p><b>These are forced policy keys, not dead code.</b> <code>solo.cpp</code> builds the
-        options node from the user settings and then writes over it:</p>
+        options node from the user settings, then writes over it:</p>
         <ul>
-          <li><code>min_nEvents</code> → <code>1000</code></li>
-          <li><code>max_nEvents</code> → <code>INT_MAX</code></li>
+          <li><code>min_nEvents</code> → <code>1000</code> · <code>max_nEvents</code> → <code>INT_MAX</code></li>
           <li><code>run_convergence_checks</code> → <code>false</code> — always process all supplied events</li>
         </ul>
-        <p style="margin-top:10px"><b>That makes the whole convergence block inert</b> — five
-        keys that still parse, still have defaults, and no longer change what a CBS run does. Old
-        files carry them forward silently.</p>
-        <p style="margin-top:10px"><b>Dead keys — no reader in any current C++ file:</b></p>
-        <ul>
-          <li><code>covariance_marg_convthres_abs</code></li>
-          <li><code>covariance_marg_convthres_rel</code></li>
-          <li><code>covariance_nsamples_start</code></li>
-        </ul>
+        <p style="margin-top:9px"><b>That makes the whole convergence block inert</b> — five keys
+        that still parse, still have defaults, and no longer change what a CBS run does.</p>
+        <p style="margin-top:9px"><b>Dead keys — no reader in any current C++ file:</b>
+        <code>covariance_marg_convthres_abs</code>, <code>covariance_marg_convthres_rel</code>,
+        <code>covariance_nsamples_start</code>.</p>
       </div>
       <div class="card blue">
         <span class="tag blue">default cards</span>
         <h3 style="margin-top:10px">Three layers, user wins</h3>
-        <p>For optional scalar controls, <code>getValueOrDef(default, key)</code> means a missing
-        YAML key falls back to the program default. The lookup happens after
-        <code>CBS_defaults.yaml → settings:</code>, then
-        <code>analysis_defaults: &lt;NAME&gt;:</code> merged in the order the analyses appear, then
-        the user file. <code>merge_yaml_nodes</code> (<code>solo_input.cpp:62</code>) recurses
-        through maps but <b>replaces scalars and sequences whole</b> — override a list, never
-        append to one.</p>
+        <p>For optional scalar controls, <code>getValueOrDef(default, key)</code> falls back to the
+        program default. The lookup runs <code>CBS_defaults.yaml → settings:</code>, then
+        <code>analysis_defaults: &lt;NAME&gt;:</code> in analysis order, then the user file.
+        <code>merge_yaml_nodes</code> (<code>solo_input.cpp:62</code>) recurses through maps but
+        <b>replaces scalars and sequences whole</b> — override a list, never append to one.</p>
         <p style="margin-top:10px"><b>This does not make required inputs optional:</b> the event
         source, cross-section and required jet configuration are still validated separately.</p>
-        <p style="margin-top:10px">So <code>ATLAS_EXOT_2019_04.yaml</code> names <b>no jet
-        collection at all</b>, including the variable-R one the analysis needs: the card supplies
-        22 lines the user never sees.</p>
+        <p style="margin-top:9px">So <code>ATLAS_EXOT_2019_04.yaml</code> names <b>no jet collection
+        at all</b>, including the variable-R one: the card supplies 22 lines the user never sees.</p>
       </div>
     </div>
 
-    <div class="note red" style="margin-top:14px">
+    <div class="grid g2" style="align-items:start;margin-top:12px">
+    <div class="note red" style="margin-top:0">
       <b>The card itself is not in the repository.</b> <code>.gitignore:50</code> ignores
-      <code>CBS_yaml/*</code> and <code>git ls-files CBS_yaml/</code> is empty. On a fresh clone all
-      five lookup steps fail, <code>apply_default_settings</code> returns the user settings
-      unchanged and <b>silently</b> (<code>solo_input.cpp:130</code>), and the run dies at
-      <code>Utils.hpp:96</code> with <i>“Could not find jet_collections option. Please provide this
-      in the YAML file”</i> — pointing at the user’s file rather than the missing card.
+      <code>CBS_yaml/*</code>, so on a fresh clone all five lookup steps fail,
+      <code>apply_default_settings</code> returns the user settings unchanged and <b>silently</b>
+      (<code>solo_input.cpp:130</code>), and the run dies at <code>Utils.hpp:96</code> blaming the
+      user’s own YAML for the missing <code>jet_collections</code>.
     </div>
 
-    <div class="deep">
+    <div class="deep" style="margin-top:0">
       <span class="lbl">Line-level companion page</span>
-      <p><a href="cbs-yaml-config.html">The user YAML · before and after ↗</a> puts both files side
-      by side and traces <b>every one of the 14 original settings</b> to the call that reads it
-      today — including the three that were never read by anything, then or now.</p>
+      <p><a href="cbs-yaml-config.html">The user YAML · before and after ↗</a> traces <b>all 14
+      original settings</b> to the call that reads them today.</p>
       <div class="units">
         <a href="cbs-yaml-config.html#files"><b>1</b> the two files</a>
         <a href="cbs-yaml-config.html#where"><b>2</b> where each went</a>
@@ -573,6 +566,7 @@ svg{display:block;max-width:100%;height:auto}
         <a href="cbs-yaml-config.html#added"><b>4</b> what was added</a>
         <a href="cbs-yaml-config.html#defaults"><b>5</b> the default card</a>
       </div>
+    </div>
     </div>
   </div>
 </section>
@@ -1067,9 +1061,73 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 14 · next ============ -->
+<!-- ============ 14 · distribution ============ -->
 <section class="slide">
-  <p class="eyebrow">14 · next</p>
+  <p class="eyebrow">14 · open design question</p>
+  <h2>Getting CBS onto someone else&#8217;s machine</h2>
+  <p class="lede">The work is done when a collaborator can run it. Today that is the hardest part of
+  CBS, and <b>it is not a C++ problem — it is a provisioning problem</b>. Raising it here because
+  the fix is a design decision, not a patch.</p>
+  <div class="body">
+    <div class="grid g3">
+      <div class="card red">
+        <span class="tag red">the barrier</span>
+        <h3 style="margin-top:10px">69 backends for a runner that needs a handful</h3>
+        <p><code>cmake/backends.cmake</code> declares <b>69</b> backends. CBS declares
+        <code>MODULES ColliderBit DEPENDENCIES hepmc pybind11</code>. A new user has to navigate the
+        gap themselves, with <code>-Ditch</code> and <code>-DBits</code> as the only map.</p>
+        <p style="margin-top:9px"><code>contrib.cmake</code> builds HepMC, YODA and RestFrames from
+        source through <code>./configure</code> — the step that fails differently on every macOS and
+        every Linux. <code>GAMBIT_USE_LLD_FOR_CBS</code> exists because <i>linking</i> CBS was itself
+        worth an option.</p>
+      </div>
+      <div class="card orange">
+        <span class="tag orange">hepforge</span>
+        <h3 style="margin-top:10px">29 of 71 download URLs, one host</h3>
+        <p><b>41% of backend downloads point at hepforge.org.</b> When it is slow or down, configure
+        fails partway and leaves a half-populated tree — and the user cannot tell a network problem
+        from a build problem.</p>
+        <p style="margin-top:9px"><b>Half the mitigation already exists, from <code>master</code>:</b>
+        <code>safe_dl.sh</code> falls back across axel/wget/curl and accepts a secondary URL;
+        <code>copy_tarballs.sh</code> and <code>restore_tarballs.sh</code> build an offline mirror.
+        Nothing tells a user these are there.</p>
+      </div>
+      <div class="card">
+        <span class="tag gray">and it fails quietly</span>
+        <h3 style="margin-top:10px">Two silent failures we already found</h3>
+        <p><b>Slide 12:</b> the FastJet probe has an empty <code>else()</code>. A fresh clone falls
+        back to fjcore without a word; the first symptom is Rivet announcing its own exclusion.</p>
+        <p style="margin-top:9px"><b>Slide 6:</b> <code>CBS_defaults.yaml</code> is gitignored, so
+        the defaults lookup fails silently and the run dies later blaming the user&#8217;s own YAML.</p>
+        <p style="margin-top:9px">Both fail <i>late</i>, and neither names the real cause. That is
+        the difference between a hard build and an unexplained one.</p>
+      </div>
+    </div>
+
+    <div class="note blue" style="margin-top:16px">
+      <b>Proposal, for discussion — not built.</b>
+      <b>(1)</b> Declare a CBS-minimal dependency set as a named CMake preset, so the answer to
+      &ldquo;what do I need?&rdquo; is one file rather than 69 entries and two ditch flags.
+      <b>(2)</b> One command — <code>./cbs-setup</code> — that probes the machine, prints
+      <i>one table</i> of what it found and what is missing, and provisions the rest.
+      <b>(3)</b> Move every check to configure time and fail loudly with the cause named; no silent
+      fallback that surfaces as an unrelated error an hour later.
+      <b>(4)</b> Take HepForge off the critical path: pin, checksum, and mirror using the tarball
+      scripts already in the tree.
+      <b>(5)</b> Ship a built artefact. ROOT gets away with source builds because it also ships
+      binaries, conda packages and containers; <b>CBS has no such budget</b>, which makes a
+      container image or a conda/spack recipe the cheapest route to &ldquo;it runs&rdquo; —
+      and the one that does not need every user to become a C++ build engineer.
+    </div>
+    <p class="foot" style="margin-top:14px">Counts from <code>cmake/backends.cmake</code>,
+    <code>cmake/contrib.cmake</code> and <code>cmake/standalones.cmake</code> at
+    <code>65aca0890d</code>. Items 1–5 are a proposal; none of it is implemented on this branch.</p>
+  </div>
+</section>
+
+<!-- ============ 15 · next ============ -->
+<section class="slide">
+  <p class="eyebrow">15 · next</p>
   <h2>Where this goes</h2>
   <div class="body">
     <div class="grid g2">
@@ -1122,7 +1180,7 @@ svg{display:block;max-width:100%;height:auto}
 <nav class="nav">
   <button id="prev" aria-label="Previous slide">←</button>
   <button id="next" aria-label="Next slide">→</button>
-  <span class="counter mono" id="counter">1 / 14</span>
+  <span class="counter mono" id="counter">1 / 15</span>
   <span class="mono" id="title">CBS change ledger</span>
   <span class="dots" id="dots"></span>
 </nav>

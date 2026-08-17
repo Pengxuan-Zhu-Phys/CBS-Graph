@@ -196,7 +196,7 @@ python3 scripts/build-change-ledger.py \
 生成：
 
 - `dependences/cbs-change-ledger.json`：逐文件的改动量、提交数、作者列表和归属分类（`own` / `mixed` / `upstream`）；
-- `dependences/cbs-change-ledger.html`：14 页自包含 slide，内联 SVG 流程图，不依赖任何 CDN；按 `P` 展开全部页面以便打印成 PDF。
+- `dependences/cbs-change-ledger.html`：15 页自包含 slide，内联 SVG 流程图，不依赖任何 CDN；按 `P` 展开全部页面以便打印成 PDF。
 
 基线是 `private-SUSYRun2` 与开发分支的共同祖先，而不是 `gambit/master`——因为要回答的问题是"相对合作者手上的源分支我改了什么"。`gambit/master` 已完全合入，分支落后 0 个提交。
 
@@ -246,6 +246,18 @@ python3 scripts/build-rename-migration-page.py \
 
 - `ATLAS_8TeV_1LEPbb_20invfb` 是唯一保留旧名的物理分析，文件里写了原因：`:D unrenamed, can not find original exp report`。留例外就该这么留——下一个人不用猜是漏了还是故意的。
 - `yaml_files/PX_SUSYRun2_stop.yaml` 里还有 **48 个已经不存在的分析名**，今天跑会在 configure 阶段就挂。这是仓库内部的证据，说明仓库外每一份按名字选分析的配置都有同样的问题、而且没有任何警告。
+
+### 构建与分发（slide 14）
+
+一页讨论稿，不是已完成的工作。事实部分：
+
+- `cmake/backends.cmake` 声明 **69 个 backend**，而 CBS 只声明 `MODULES ColliderBit DEPENDENCIES hepmc pybind11`——中间的落差要新用户自己用 `-Ditch` / `-DBits` 摸索。
+- `cmake/contrib.cmake` 从源码 `./configure` 编 HepMC、YODA、RestFrames——这是在每台 macOS 和每台 Linux 上坏法都不同的那一步。`GAMBIT_USE_LLD_FOR_CBS` 这个选项存在，本身说明**链接 CBS** 就已经值得单开一个开关。
+- **71 个 backend 下载 URL 里有 29 个指向 hepforge.org（41%）**。它慢或挂的时候，configure 会中途失败并留下一棵半成品的树，而用户分不出这是网络问题还是构建问题。
+- 缓解手段**一半已经在树里了，而且是从 `master` 来的**：`safe_dl.sh` 会在 axel/wget/curl 之间回退并支持备用 URL，`copy_tarballs.sh` / `restore_tarballs.sh` 能做离线镜像。**没有任何地方告诉用户这些东西存在。**
+- 加上已经查到的两处静默失败：FastJet 探测（slide 12）和没提交的 `CBS_defaults.yaml`（slide 6）。两个都是**晚失败**，而且都不点出真正的原因。
+
+提案（5 条，未实现）：声明 CBS 最小依赖集为一个 CMake preset；一条 `./cbs-setup` 命令做探测+一张表+装齐；所有检查挪到 configure 期并大声报出原因；把 HepForge 移出关键路径（pin + checksum + 用已有的 tarball 脚本）；发布构建产物——ROOT 敢让人从源码编是因为它同时发二进制、conda 包和容器，**CBS 没有这个预算**。
 
 ### 用户 YAML：前后对比（slide 6 + 专页）
 
