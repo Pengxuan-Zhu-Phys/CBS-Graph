@@ -631,12 +631,19 @@ def change_units(data: dict) -> list[dict]:
 # rendering
 # --------------------------------------------------------------------------
 
+# Advance width of the mono face as a fraction of font size, used to size SVG
+# boxes from their labels.  Geist Mono sits near 0.6; the margin below covers
+# the difference against whatever fallback a viewer actually has.
+MONO_ADVANCE = 0.62
+TITLE_PX = 12.5
+BODY_PX = 11.0
+
+
 def esc(text) -> str:
     return html.escape(str(text), quote=True)
 
 
 def pipeline_svg(data: dict) -> str:
-    width = 1240
     stages = [
         ("YAML", "jet_collections:", "algorithm / rho / Rmin / Rmax", "detail-data", [UTILS]),
         ("PARSE", "read_jet_collection_\n  settings_from_options", "typed struct + validation", "detail-primary", [UTILS]),
@@ -657,6 +664,20 @@ def pipeline_svg(data: dict) -> str:
         return offset + max(0, len(wrap(sub, 20)) - 1) * 13 + 5
 
     box_h = max(content_bottom(t, s) for _k, t, s, _c, _f in stages) - box_y
+
+    # Width follows the widest label rather than a fixed number, so a change to
+    # the stylesheet's font sizes cannot push a title through the box edge.
+    def text_width(text: str, size: float) -> float:
+        return len(text) * size * MONO_ADVANCE
+
+    widest = max(
+        max([text_width(line, TITLE_PX) for line in title.split("\n")]
+            + [text_width(line, BODY_PX) for line in wrap(sub, 20)])
+        for _k, title, sub, _c, _f in stages
+    )
+    box_w = max(box_w, int(widest) + 30)
+    width = 40 + len(stages) * box_w + (len(stages) - 1) * gap
+
     mid_y = box_y + box_h // 2
     zone_y = box_y + box_h + 28
     height = zone_y + 120
@@ -678,7 +699,7 @@ def pipeline_svg(data: dict) -> str:
         out.append(f'<text class="kind" x="{x + 14}" y="84">{esc(kind)}</text>')
         for line_index, chunk in enumerate(title.split("\n")):
             out.append(f'<text class="title" x="{x + 14}" y="{106 + line_index * 15}" '
-                       f'style="font-size:10.5px">{esc(chunk)}</text>')
+                       f'style="font-size:{TITLE_PX}px">{esc(chunk)}</text>')
         offset = 106 + len(title.split("\n")) * 15 + 6
         for line_index, chunk in enumerate(wrap(sub, 20)):
             out.append(f'<text class="body" x="{x + 14}" y="{offset + line_index * 13}">{esc(chunk)}</text>')
@@ -724,7 +745,7 @@ def fork_svg(data: dict) -> str:
     def box(x, y, w, h, cls, kind, title, sub):
         out.append(f'<g class="node {cls}"><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8"/>')
         out.append(f'<text class="kind" x="{x + 13}" y="{y + 21}">{esc(kind)}</text>')
-        out.append(f'<text class="title" x="{x + 13}" y="{y + 41}" style="font-size:11px">{esc(title)}</text>')
+        out.append(f'<text class="title" x="{x + 13}" y="{y + 41}" style="font-size:13px">{esc(title)}</text>')
         for i, chunk in enumerate(wrap(sub, 30)):
             out.append(f'<text class="body" x="{x + 13}" y="{y + 58 + i * 13}">{esc(chunk)}</text>')
         out.append("</g>")
@@ -1069,21 +1090,21 @@ TEMPLATE = r'''<!doctype html>
   <style>
     :root { --paper:#f5f5f5; --paper-2:#ececec; --ink:#2d3142; --muted:#4f5d75; --soft:#7a8399; --rule:rgba(45,49,66,.12); --accent:#eb6c36; --accent-tint:rgba(235,108,54,.08); --green:#4f8a69; --green-tint:#eef8f1; --red:#93513f; --red-tint:#f3e9e5; --font-sans:'Geist',system-ui,sans-serif; --font-mono:'Geist Mono',ui-monospace,monospace; }
     * { box-sizing:border-box; }
-    body { margin:0; background:var(--paper); color:var(--ink); font:14px/1.55 var(--font-sans); }
+    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.55 var(--font-sans); }
     .frame { max-width:1520px; margin:0 auto; padding:42px 42px 64px; }
     .eyebrow,.kicker,.meta,.source,.status,th,footer { font-family:var(--font-mono); }
-    .eyebrow { color:var(--muted); font-size:10px; letter-spacing:.16em; text-transform:uppercase; margin:0 0 12px; }
+    .eyebrow { color:var(--muted); font-size:12px; letter-spacing:.16em; text-transform:uppercase; margin:0 0 12px; }
     h1 { font-family:'Instrument Serif',Georgia,serif; font-size:clamp(42px,5vw,72px); font-weight:400; letter-spacing:-.04em; line-height:.98; margin:0 0 14px; }
     h2 { font-size:28px; font-weight:600; letter-spacing:-.03em; line-height:1.08; margin:0 0 8px; }
     p { color:var(--muted); }
-    .intro { max-width:1080px; font-size:15px; line-height:1.65; margin:0 0 18px; }
-    .meta { display:flex; flex-wrap:wrap; gap:8px 18px; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:12px 0; color:var(--muted); font-size:10px; }
+    .intro { max-width:1080px; font-size:17px; line-height:1.65; margin:0 0 18px; }
+    .meta { display:flex; flex-wrap:wrap; gap:8px 18px; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:12px 0; color:var(--muted); font-size:12px; }
     .meta strong { color:var(--accent); font-weight:600; }
-    .note { border-left:3px solid var(--accent); color:var(--muted); font-size:11px; line-height:1.6; margin:18px 0; max-width:1160px; padding:8px 12px; }
+    .note { border-left:3px solid var(--accent); color:var(--muted); font-size:13px; line-height:1.6; margin:18px 0; max-width:1160px; padding:8px 12px; }
     .backlink { align-items:baseline; background:#fff; border:1px solid var(--rule); border-left:3px solid var(--accent);
-      border-radius:0 6px 6px 0; color:var(--muted); display:flex; flex-wrap:wrap; font-size:12.5px; gap:4px 12px;
+      border-radius:0 6px 6px 0; color:var(--muted); display:flex; flex-wrap:wrap; font-size:14.5px; gap:4px 12px;
       line-height:1.6; margin:18px 0 0; max-width:1160px; padding:11px 14px; }
-    .backlink .lbl { color:var(--soft); font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; }
+    .backlink .lbl { color:var(--soft); font-family:var(--font-mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; }
     .backlink span:last-child { flex:1 1 420px; }
     .backlink a { border-bottom:1px solid rgba(235,108,54,.42); color:var(--accent); font-weight:600; text-decoration:none; }
     .backlink a:hover { background:var(--accent-tint); }
@@ -1091,18 +1112,18 @@ TEMPLATE = r'''<!doctype html>
     .card { background:#fff; border:1px solid var(--rule); border-radius:6px; padding:14px 16px; }
     .card.accent { border-color:rgba(235,108,54,.45); background:var(--accent-tint); }
     .card .n { color:var(--ink); display:block; font-size:26px; font-weight:600; letter-spacing:-.04em; line-height:1; margin-bottom:8px; }
-    .card .label { color:var(--soft); font-family:var(--font-mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; }
+    .card .label { color:var(--soft); font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; }
     section { border-top:1px solid var(--rule); margin-top:28px; padding:24px 0 0; }
-    .kicker { color:var(--soft); font-size:9px; letter-spacing:.16em; margin:0 0 8px; text-transform:uppercase; }
-    .source { color:var(--soft); font-size:10px; line-height:1.55; margin:0 0 14px; }
+    .kicker { color:var(--soft); font-size:11px; letter-spacing:.16em; margin:0 0 8px; text-transform:uppercase; }
+    .source { color:var(--soft); font-size:12px; line-height:1.55; margin:0 0 14px; }
     .diagram-shell { overflow-x:auto; background:#fff; border:1px solid var(--rule); border-radius:8px; padding:8px; }
     svg { display:block; min-width:1080px; width:100%; height:auto; }
     svg .zone { fill:rgba(45,49,66,.025); stroke:rgba(45,49,66,.13); stroke-width:1; }
-    svg .zone-label { fill:var(--soft); font:500 10px var(--font-mono); letter-spacing:1.6px; }
-    svg .node .kind { fill:var(--soft); font:500 9px var(--font-mono); letter-spacing:1.2px; }
-    svg .node .title { fill:var(--ink); font:600 12px var(--font-mono); }
-    svg .node .body { fill:var(--muted); font:9px var(--font-mono); }
-    svg .legend-label { fill:var(--soft); font:9px var(--font-mono); letter-spacing:.6px; }
+    svg .zone-label { fill:var(--soft); font:500 12px var(--font-mono); letter-spacing:1.6px; }
+    svg .node .kind { fill:var(--soft); font:500 11px var(--font-mono); letter-spacing:1.2px; }
+    svg .node .title { fill:var(--ink); font:600 14px var(--font-mono); }
+    svg .node .body { fill:var(--muted); font:11px var(--font-mono); }
+    svg .legend-label { fill:var(--soft); font:11px var(--font-mono); letter-spacing:.6px; }
     svg .detail-edge { fill:none; stroke:var(--muted); stroke-width:1.4; }
     svg .node.detail-primary rect { fill:#fff; stroke:var(--soft); stroke-width:1.2; }
     svg .node.detail-data rect { fill:rgba(79,93,117,.08); stroke:var(--soft); stroke-width:1.2; }
@@ -1114,45 +1135,45 @@ TEMPLATE = r'''<!doctype html>
     .unit:target { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-tint); }
     .unit-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
     .unit-num { display:grid; place-items:center; width:26px; height:26px; border-radius:50%;
-      border:1.2px solid var(--ink); font:600 13px var(--font-mono); }
-    .unit-title { font-size:16px; font-weight:600; letter-spacing:-.01em; }
+      border:1.2px solid var(--ink); font:600 15px var(--font-mono); }
+    .unit-title { font-size:18px; font-weight:600; letter-spacing:-.01em; }
     .unit-kind { padding:2px 7px; border-radius:3px; border:1px solid currentColor;
-      font:8px var(--font-mono); letter-spacing:.9px; text-transform:uppercase;
+      font:10px var(--font-mono); letter-spacing:.9px; text-transform:uppercase;
       color:#4f8a69; background:var(--green-tint); }
-    .unit-delta { margin-left:auto; font:11px var(--font-mono); color:var(--soft); }
+    .unit-delta { margin-left:auto; font:13px var(--font-mono); color:var(--soft); }
     .unit-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px 24px; margin:0; }
     .unit-grid > div { display:flex; gap:10px; border-bottom:1px solid var(--rule); padding-bottom:8px; }
     .unit-grid dt { flex:0 0 46px; margin:2px 0 0; color:var(--soft);
-      font:9px var(--font-mono); letter-spacing:1px; text-transform:uppercase; }
-    .unit-grid dd { margin:0; color:var(--muted); font-size:12.5px; line-height:1.6; }
+      font:11px var(--font-mono); letter-spacing:1px; text-transform:uppercase; }
+    .unit-grid dd { margin:0; color:var(--muted); font-size:14.5px; line-height:1.6; }
     .unit-diff { margin-top:11px; border:1px solid var(--rule); border-radius:6px; background:#fff; }
     .unit-diff summary { cursor:pointer; padding:9px 13px; color:var(--accent);
-      font:11px var(--font-mono); letter-spacing:.4px; list-style:none; }
+      font:13px var(--font-mono); letter-spacing:.4px; list-style:none; }
     .unit-diff summary::-webkit-details-marker { display:none; }
     .unit-diff summary::before { content:"\25b8 "; display:inline-block; width:14px; }
     .unit-diff[open] summary::before { content:"\25be "; }
     .unit-diff[open] summary { border-bottom:1px solid var(--rule); }
     .unit-diff summary:hover { background:rgba(235,108,54,.05); }
-    .unit-hunks { margin:0; padding:12px 14px; overflow-x:auto; font:11px/1.7 var(--font-mono);
+    .unit-hunks { margin:0; padding:12px 14px; overflow-x:auto; font:13px/1.7 var(--font-mono);
       background:#fff; border:0; color:var(--ink); white-space:pre; }
-    .diagram-note { color:var(--muted); font-size:12px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
+    .diagram-note { color:var(--muted); font-size:14px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
     .claim-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:18px; }
     .claim { background:#fff; border:1px solid var(--rule); border-left:3px solid var(--accent); border-radius:0 6px 6px 0; padding:13px 16px; }
-    .claim-h { color:var(--ink); font-size:13px; font-weight:600; letter-spacing:-.01em; margin:0 0 6px; }
-    .claim p:last-child { font-size:12px; line-height:1.62; margin:0; }
-    .ln { color:var(--soft); font-family:var(--font-mono); font-size:9px; display:block; margin-top:3px; }
-    .delta { color:var(--accent); font-family:var(--font-mono); font-size:10px; }
+    .claim-h { color:var(--ink); font-size:15px; font-weight:600; letter-spacing:-.01em; margin:0 0 6px; }
+    .claim p:last-child { font-size:14px; line-height:1.62; margin:0; }
+    .ln { color:var(--soft); font-family:var(--font-mono); font-size:11px; display:block; margin-top:3px; }
+    .delta { color:var(--accent); font-family:var(--font-mono); font-size:12px; }
     .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
     .mapping-table table { min-width:900px; }
-    table { border-collapse:collapse; font-size:11px; width:100%; }
+    table { border-collapse:collapse; font-size:13px; width:100%; }
     th,td { border-bottom:1px solid var(--rule); padding:8px 9px; text-align:left; vertical-align:top; }
-    th { background:#ececec; color:var(--muted); font-size:9px; letter-spacing:.08em; text-transform:uppercase; }
-    td code { color:var(--ink); font-family:var(--font-mono); font-size:10px; word-break:break-word; }
+    th { background:#ececec; color:var(--muted); font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
+    td code { color:var(--ink); font-family:var(--font-mono); font-size:12px; word-break:break-word; }
     td.num { text-align:right; font-family:var(--font-mono); white-space:nowrap; }
     .add { color:var(--green); } .del { color:var(--red); }
-    .status { font-size:9px; font-weight:600; letter-spacing:.04em; }
+    .status { font-size:11px; font-weight:600; letter-spacing:.04em; }
     .status.added-in-right { color:var(--green); } .status.unchanged { color:#b55c2d; }
-    footer { border-top:1px solid var(--rule); color:var(--soft); font-size:10px; margin-top:32px; padding-top:14px; }
+    footer { border-top:1px solid var(--rule); color:var(--soft); font-size:12px; margin-top:32px; padding-top:14px; }
     @media (max-width:900px) { .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } .claim-grid { grid-template-columns:1fr; } }
     @media (max-width:560px) { h1 { font-size:44px; } }
   </style>

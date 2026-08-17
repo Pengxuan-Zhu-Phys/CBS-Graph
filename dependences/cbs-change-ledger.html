@@ -23,17 +23,17 @@ code,.mono{font-family:var(--font-mono)}
 /* ---------- deck chrome ---------- */
 .deck{position:relative}
 .slide{
-  display:none; min-height:100vh; padding:56px 64px 96px;
+  display:none; min-height:100vh; padding:40px 64px 74px;
   width:min(1240px,100%); margin:0 auto; flex-direction:column;
 }
 .slide.active{display:flex}
-.eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);margin:0}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);margin:0}
 h1{margin:14px 0 0;font-size:clamp(34px,5.4vw,62px);line-height:1.02;letter-spacing:-.045em;max-width:20ch}
 h2{margin:10px 0 6px;font-size:clamp(26px,3.4vw,40px);line-height:1.08;letter-spacing:-.03em}
-h3{margin:0 0 8px;font-size:16px;letter-spacing:-.01em}
-.lede{max-width:78ch;color:var(--muted);font-size:16px;line-height:1.68;margin:16px 0 0}
-.slide > .body{margin-top:26px;flex:1}
-.rule{height:1px;background:var(--rule);margin:22px 0 0}
+h3{margin:0 0 8px;font-size:18px;letter-spacing:-.01em}
+.lede{max-width:82ch;color:var(--muted);font-size:17px;line-height:1.6;margin:12px 0 0}
+.slide > .body{margin-top:20px;flex:1}
+.rule{height:1px;background:var(--rule);margin:16px 0 0}
 
 /* ---------- nav ---------- */
 .nav{
@@ -41,7 +41,7 @@ h3{margin:0 0 8px;font-size:16px;letter-spacing:-.01em}
   display:flex;align-items:center;gap:14px;
   padding:10px 20px;background:rgba(245,245,245,.93);
   backdrop-filter:blur(8px);border-top:1px solid var(--rule);
-  font-family:var(--font-mono);font-size:11px;color:var(--soft)
+  font-family:var(--font-mono);font-size:13px;color:var(--soft)
 }
 .nav button{
   font:inherit;color:var(--blue);background:var(--blue-bg);
@@ -59,8 +59,8 @@ h3{margin:0 0 8px;font-size:16px;letter-spacing:-.01em}
 .g2{grid-template-columns:repeat(2,1fr)}
 .g3{grid-template-columns:repeat(3,1fr)}
 .g4{grid-template-columns:repeat(4,1fr)}
-.card{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:16px 18px}
-.card p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.62}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:13px 15px}
+.card p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.62}
 .card p + p{margin-top:8px}
 .card.blue{border-top:3px solid var(--blue)}
 .card.orange{border-top:3px solid var(--orange)}
@@ -68,22 +68,22 @@ h3{margin:0 0 8px;font-size:16px;letter-spacing:-.01em}
 .card.red{border-top:3px solid var(--red)}
 
 .tag{display:inline-block;padding:3px 7px;border:1px solid currentColor;border-radius:3px;
-  font-family:var(--font-mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase}
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase}
 .tag.blue{color:var(--blue);background:var(--blue-bg)}
 .tag.orange{color:var(--orange);background:var(--orange-bg)}
 .tag.green{color:var(--green);background:var(--green-bg)}
 .tag.red{color:var(--red);background:var(--red-bg)}
 .tag.gray{color:var(--soft);background:#eceef2}
 
-.stat{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:16px 18px}
+.stat{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:12px 15px}
 .stat .n{font-size:clamp(28px,3.6vw,44px);line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
-.stat .k{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--soft);margin-top:9px}
-.stat .s{font-size:12px;color:var(--muted);margin-top:7px;line-height:1.5}
+.stat .k{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--soft);margin-top:9px}
+.stat .s{font-size:14px;color:var(--muted);margin-top:7px;line-height:1.5}
 
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--soft);font-weight:400;padding:0 10px 8px;border-bottom:1px solid var(--rule2)}
-td{padding:9px 10px;border-bottom:1px solid var(--rule);color:var(--muted);vertical-align:top}
+td{padding:7px 9px;border-bottom:1px solid var(--rule);color:var(--muted);vertical-align:top}
 td.name{color:var(--ink)}
 td.num{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 tr:last-child td{border-bottom:0}
@@ -93,48 +93,48 @@ tr:last-child td{border-bottom:0}
 .bar i{display:block}
 .bar .own{background:var(--blue)} .bar .mix{background:var(--orange)} .bar .up{background:#c3c8d2}
 
-.note{border-left:3px solid var(--orange);background:#fff8f3;padding:13px 16px;
-  color:var(--muted);font-size:13px;line-height:1.62;border-radius:0 6px 6px 0}
+.note{border-left:3px solid var(--orange);background:#fff8f3;padding:10px 14px;
+  color:var(--muted);font-size:15px;line-height:1.62;border-radius:0 6px 6px 0}
 .note.blue{border-left-color:var(--blue);background:var(--blue-bg)}
 .note.red{border-left-color:var(--red);background:var(--red-bg)}
 
-.kv{display:flex;gap:8px;font-size:12.5px;line-height:1.6;padding:6px 0;border-bottom:1px solid var(--rule)}
+.kv{display:flex;gap:8px;font-size:14.5px;line-height:1.6;padding:6px 0;border-bottom:1px solid var(--rule)}
 .kv:last-child{border-bottom:0}
-.kv dt{flex:0 0 148px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;
+.kv dt{flex:0 0 148px;font-family:var(--font-mono);font-size:12.5px;letter-spacing:.06em;
   text-transform:uppercase;color:var(--soft);margin:2px 0 0}
 .kv dd{margin:0;color:var(--muted)}
 dl{margin:0}
-.presenter-line{margin:12px 0 0;color:var(--muted);font-family:var(--font-mono);font-size:11px;line-height:1.5}
+.presenter-line{margin:12px 0 0;color:var(--muted);font-family:var(--font-mono);font-size:13px;line-height:1.5}
 .presenter-line b{color:var(--ink);font-weight:500}
 
-.renames{font-family:var(--font-mono);font-size:11px;line-height:1.85;columns:2;column-gap:30px}
+.renames{font-family:var(--font-mono);font-size:13px;line-height:1.85;columns:2;column-gap:30px}
 .renames div{break-inside:avoid;color:var(--soft)}
 .renames b{font-weight:400;color:var(--ink)}
 .renames s{color:var(--soft);text-decoration:none;opacity:.8}
 
 svg{display:block;max-width:100%;height:auto}
 .svg-wrap{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:18px;overflow-x:auto}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--font-mono);font-size:10px;
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--font-mono);font-size:12px;
   letter-spacing:.06em;color:var(--soft);margin-top:12px}
 .legend span{display:flex;align-items:center;gap:6px}
 .legend i{width:11px;height:11px;border-radius:2px;display:block}
 
-.foot{margin-top:auto;padding-top:20px;font-family:var(--font-mono);font-size:10px;
+.foot{margin-top:auto;padding-top:14px;font-family:var(--font-mono);font-size:11.5px;
   color:var(--soft);line-height:1.7;border-top:1px solid var(--rule)}
 
 /* ---------- companion-page hand-off ---------- */
-.deep{margin-top:14px;padding:14px 16px;border:1px solid rgba(74,111,165,.35);
+.deep{margin-top:12px;padding:11px 14px;border:1px solid rgba(74,111,165,.35);
   border-radius:9px;background:var(--blue-bg)}
-.deep .lbl{display:block;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.13em;
+.deep .lbl{display:block;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--soft);margin-bottom:8px}
-.deep p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.62}
+.deep p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.62}
 .deep p a{color:var(--blue);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(74,111,165,.45)}
 .deep .units{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
 .deep .units a{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;
   border:1px solid rgba(74,111,165,.3);border-radius:6px;background:var(--card);
-  color:var(--ink);font-size:12px;text-decoration:none}
+  color:var(--ink);font-size:14px;text-decoration:none}
 .deep .units a:hover{background:#e2ecf9;border-color:var(--blue)}
-.deep .units b{font-family:var(--font-mono);font-size:10.5px;font-weight:500;color:var(--blue)}
+.deep .units b{font-family:var(--font-mono);font-size:12.5px;font-weight:500;color:var(--blue)}
 
 /* ---------- print ---------- */
 @media print{
@@ -250,8 +250,8 @@ svg{display:block;max-width:100%;height:auto}
         </defs>
         <style>
           .lbl{font:11.5px var(--font-sans,sans-serif);fill:#2d3142}
-          .sub{font:9.5px "SF Mono",monospace;fill:#7a8399}
-          .hdr{font:10px "SF Mono",monospace;fill:#7a8399;letter-spacing:.13em;text-transform:uppercase}
+          .sub{font:11.5px "SF Mono",monospace;fill:#7a8399}
+          .hdr{font:12px "SF Mono",monospace;fill:#7a8399;letter-spacing:.13em;text-transform:uppercase}
           .bx{fill:#fff;stroke:#c8ccd6;stroke-width:1;rx:6}
           .bx-new{fill:#eef3fb;stroke:#4a6fa5;stroke-width:1.4;rx:6}
           .bx-core{fill:#eef8f1;stroke:#4f8a69;stroke-width:1.2;rx:6}
@@ -400,9 +400,9 @@ svg{display:block;max-width:100%;height:auto}
     <div class="svg-wrap">
       <svg viewBox="0 0 1120 300" role="img" aria-label="CBS runner module flow">
         <style>
-          .l{font:11.5px var(--font-sans,sans-serif);fill:#2d3142}
-          .m{font:9.5px "SF Mono",monospace;fill:#7a8399}
-          .t{font:10px "SF Mono",monospace;fill:#4a6fa5}
+          .l{font:13.5px var(--font-sans,sans-serif);fill:#2d3142}
+          .m{font:11.5px "SF Mono",monospace;fill:#7a8399}
+          .t{font:12px "SF Mono",monospace;fill:#4a6fa5}
           .b{fill:#eef3fb;stroke:#4a6fa5;stroke-width:1.4;rx:7}
           .bg{fill:#eef8f1;stroke:#4f8a69;stroke-width:1.2;rx:7}
           .e{stroke:#4a6fa5;stroke-width:1.4;fill:none;marker-end:url(#a3)}
@@ -574,9 +574,9 @@ svg{display:block;max-width:100%;height:auto}
         <div class="svg-wrap">
           <svg viewBox="0 0 540 330" role="img" aria-label="Result framework types">
             <style>
-              .n{font:11.5px var(--font-sans,sans-serif);fill:#2d3142}
-              .c{font:9.5px "SF Mono",monospace;fill:#7a8399}
-              .h{font:10px "SF Mono",monospace;fill:#4a6fa5}
+              .n{font:13.5px var(--font-sans,sans-serif);fill:#2d3142}
+              .c{font:11.5px "SF Mono",monospace;fill:#7a8399}
+              .h{font:12px "SF Mono",monospace;fill:#4a6fa5}
               .r{fill:#eef3fb;stroke:#4a6fa5;stroke-width:1.3;rx:6}
               .r2{fill:#fff;stroke:#c8ccd6;stroke-width:1;rx:6}
               .ar{stroke:#4a6fa5;stroke-width:1.3;fill:none;marker-end:url(#a5)}
@@ -926,8 +926,8 @@ svg{display:block;max-width:100%;height:auto}
           <td><code>3.1.5</code></td><td><code>4.1.0</code></td>
           <td><code>4.1.0</code></td>
           <td>The one real version bump. BOSS wrappers regenerated —
-          <span class="mono">14 files, +1,045 / −803</span> against master, <b>0 against the
-          merge-base</b>: done on SUSYRun2, inherited here untouched.</td>
+          <span class="mono">+1,045 / −803</span> vs master, <b>0 vs the merge-base</b>: done on
+          SUSYRun2, inherited untouched.</td>
         </tr>
         <tr>
           <td class="name">Contur</td>
@@ -941,8 +941,8 @@ svg{display:block;max-width:100%;height:auto}
           <td><code>8.312</code></td><td><code>8.312</code></td>
           <td><code>8.312</code></td>
           <td>Version unchanged on all three. The <em>patch and frontend</em> moved
-          (<span class="mono">+115 / −42</span> vs master, 0 vs merge-base — SUSYRun2's work);
-          the BOSS wrappers moved <span class="mono">+14 / −14</span> vs <em>both</em>, which is ours.</td>
+          (SUSYRun2's work); the BOSS wrappers moved <span class="mono">+14 / −14</span> vs
+          <em>both</em> — ours.</td>
         </tr>
         <tr>
           <td class="name">FastJet<br>fjcontrib</td>
@@ -970,15 +970,14 @@ svg{display:block;max-width:100%;height:auto}
     </table>
 
     <div class="note red" style="margin-top:16px">
-      <b>Contur will not build at HEAD.</b>
-      <code>backends.cmake:2185</code> declares <code>set(ver "2.1.1")</code> and points the patch
-      step at <code>patches/contur/2.1.1/patch_contur_2.1.1.dif</code> — <b>a file not in the
-      tree</b>. The only patch dir is <code>3.0.0/</code>; the frontend is
-      <code>Contur_3_0_0.hpp</code>. <code>git log -L</code> puts it on <code>3d9ebcb490 "Fixing
-      very minor merge conflicts"</code> — the merge took master's side of this block while the
-      frontend and patch tree kept SUSYRun2's. All three branches are self-consistent; only HEAD is
-      split. SUSYRun2's deliberate no-patch note and its <code>pathos, joblib</code> module
-      requirements were lost in the same resolution.
+      <b>Contur will not build at HEAD.</b> <code>backends.cmake:2185</code> declares
+      <code>set(ver "2.1.1")</code> and points the patch step at
+      <code>patches/contur/2.1.1/…dif</code> — <b>a file not in the tree</b>. The only patch dir is
+      <code>3.0.0/</code>; the frontend is <code>Contur_3_0_0.hpp</code>. <code>git log -L</code>
+      blames <code>3d9ebcb490 "Fixing very minor merge conflicts"</code>: the merge took master's
+      side while the frontend and patch tree kept SUSYRun2's. All three branches are
+      self-consistent; only HEAD is split, and SUSYRun2's <code>pathos, joblib</code> requirements
+      went with it.
     </div>
 
     <div class="grid g2" style="margin-top:14px">
@@ -1081,7 +1080,7 @@ svg{display:block;max-width:100%;height:auto}
         (HepMC event → HEPUtils event → object selection → overlap removal → b-tagging → cuts →
         signal region), emitting JSON per run, would let the same input events be run on two commits
         and diffed:</p>
-        <p style="margin-top:10px;font-family:var(--font-mono);font-size:11.5px;color:var(--ink);line-height:1.75">
+        <p style="margin-top:10px;font-family:var(--font-mono);font-size:13.5px;color:var(--ink);line-height:1.75">
           overlap removal ← CHANGED<br>
           &nbsp;&nbsp;jets 6 → 4<br>
           &nbsp;&nbsp;Njet ≥ 5: PASS → FAIL<br>

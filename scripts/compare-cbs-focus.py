@@ -1692,22 +1692,22 @@ def page_html(data: dict[str, Any]) -> str:
   <style>
     :root { --paper:#f5f5f5; --paper-2:#ececec; --ink:#2d3142; --muted:#4f5d75; --soft:#7a8399; --rule:rgba(45,49,66,.12); --accent:#eb6c36; --accent-tint:rgba(235,108,54,.08); --green:#4f8a69; --green-tint:#eef8f1; --red:#93513f; --red-tint:#f3e9e5; --font-sans:'Geist',system-ui,sans-serif; --font-mono:'Geist Mono',ui-monospace,monospace; }
     * { box-sizing:border-box; }
-    body { margin:0; background:var(--paper); color:var(--ink); font:14px/1.55 var(--font-sans); }
+    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.55 var(--font-sans); }
     .frame { max-width:1520px; margin:0 auto; padding:42px 42px 64px; }
     .eyebrow,.kicker,.meta,.source,.status,th,footer,.tag { font-family:var(--font-mono); }
-    .eyebrow { color:var(--muted); font-size:10px; letter-spacing:.16em; text-transform:uppercase; margin:0 0 12px; }
+    .eyebrow { color:var(--muted); font-size:12px; letter-spacing:.16em; text-transform:uppercase; margin:0 0 12px; }
     h1 { font-family:'Instrument Serif',Georgia,serif; font-size:clamp(42px,5vw,72px); font-weight:400; letter-spacing:-.04em; line-height:.98; margin:0 0 14px; }
     h2 { font-size:28px; font-weight:600; letter-spacing:-.03em; line-height:1.08; margin:0 0 8px; }
-    h3 { font-size:16px; margin:0 0 8px; }
+    h3 { font-size:18px; margin:0 0 8px; }
     p { color:var(--muted); }
-    .intro { max-width:1080px; font-size:15px; line-height:1.65; margin:0 0 18px; }
-    .meta { display:flex; flex-wrap:wrap; gap:8px 18px; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:12px 0; color:var(--muted); font-size:10px; }
+    .intro { max-width:1080px; font-size:17px; line-height:1.65; margin:0 0 18px; }
+    .meta { display:flex; flex-wrap:wrap; gap:8px 18px; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:12px 0; color:var(--muted); font-size:12px; }
     .meta strong { color:var(--accent); font-weight:600; }
-    .note { border-left:3px solid var(--accent); color:var(--muted); font-size:11px; line-height:1.6; margin:18px 0; max-width:1160px; padding:8px 12px; }
+    .note { border-left:3px solid var(--accent); color:var(--muted); font-size:13px; line-height:1.6; margin:18px 0; max-width:1160px; padding:8px 12px; }
     .backlink { align-items:baseline; background:#fff; border:1px solid var(--rule); border-left:3px solid var(--accent);
-      border-radius:0 6px 6px 0; color:var(--muted); display:flex; flex-wrap:wrap; font-size:12.5px; gap:4px 12px;
+      border-radius:0 6px 6px 0; color:var(--muted); display:flex; flex-wrap:wrap; font-size:14.5px; gap:4px 12px;
       line-height:1.6; margin:18px 0 0; max-width:1160px; padding:11px 14px; }
-    .backlink .lbl { color:var(--soft); font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; }
+    .backlink .lbl { color:var(--soft); font-family:var(--font-mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; }
     .backlink span:last-child { flex:1 1 420px; }
     .backlink a { border-bottom:1px solid rgba(235,108,54,.42); color:var(--accent); font-weight:600; text-decoration:none; }
     .backlink a:hover { background:var(--accent-tint); }
@@ -1715,14 +1715,14 @@ def page_html(data: dict[str, Any]) -> str:
     .card { background:#fff; border:1px solid var(--rule); border-radius:6px; padding:14px 16px; }
     .card.accent { border-color:rgba(235,108,54,.45); background:var(--accent-tint); }
     .card .n { color:var(--ink); display:block; font-size:28px; font-weight:600; letter-spacing:-.04em; line-height:1; margin-bottom:8px; }
-    .card .label { color:var(--soft); font-family:var(--font-mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; }
+    .card .label { color:var(--soft); font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; }
     section { border-top:1px solid var(--rule); margin-top:28px; padding:24px 0 0; }
-    .kicker { color:var(--soft); font-size:9px; letter-spacing:.16em; margin:0 0 8px; text-transform:uppercase; }
-    .source { color:var(--soft); font-size:10px; line-height:1.55; margin:0 0 14px; }
+    .kicker { color:var(--soft); font-size:11px; letter-spacing:.16em; margin:0 0 8px; text-transform:uppercase; }
+    .source { color:var(--soft); font-size:12px; line-height:1.55; margin:0 0 14px; }
     .diagram-shell { overflow-x:auto; }
     svg { display:block; min-width:1000px; width:100%; height:auto; }
     svg .zone { fill:rgba(45,49,66,.025); stroke:rgba(45,49,66,.13); stroke-width:1; }
-    svg .zone-label { fill:var(--soft); font:500 10px var(--font-mono); letter-spacing:1.6px; }
+    svg .zone-label { fill:var(--soft); font:500 12px var(--font-mono); letter-spacing:1.6px; }
     svg .edge { fill:none; stroke:var(--muted); stroke-width:1.2; marker-end:url(#focus-arrow); }
     svg .edge.delta { stroke:var(--accent); stroke-dasharray:5 4; marker-end:url(#focus-arrow-accent); }
     svg .node rect { fill:#fff; stroke:var(--ink); stroke-width:1.2; }
@@ -1732,14 +1732,14 @@ def page_html(data: dict[str, Any]) -> str:
     svg .node.remove rect { fill:var(--red-tint); stroke:var(--red); stroke-dasharray:5 4; }
     svg .node.focal rect { fill:var(--accent-tint); stroke:var(--accent); stroke-width:1.6; }
     svg .node.focal ellipse { fill:var(--accent-tint); stroke:var(--accent); stroke-width:1.6; }
-    svg .node .kind { fill:var(--soft); font:500 9px var(--font-mono); letter-spacing:1.2px; }
-    svg .node .title { fill:var(--ink); font:600 13px var(--font-sans); }
-    svg .node .body { fill:var(--muted); font:9px var(--font-mono); }
-    svg .node .tag { fill:var(--soft); font:8px var(--font-mono); letter-spacing:.8px; }
+    svg .node .kind { fill:var(--soft); font:500 11px var(--font-mono); letter-spacing:1.2px; }
+    svg .node .title { fill:var(--ink); font:600 15px var(--font-sans); }
+    svg .node .body { fill:var(--muted); font:11px var(--font-mono); }
+    svg .node .tag { fill:var(--soft); font:10px var(--font-mono); letter-spacing:.8px; }
     svg .node.mod .kind { fill:#b55c2d; } svg .node.add .kind { fill:var(--green); } svg .node.remove .kind { fill:var(--red); } svg .node.focal .kind { fill:var(--accent); }
-    svg .edge-label, svg .legend-label { fill:var(--muted); font:8px var(--font-mono); letter-spacing:.8px; }
+    svg .edge-label, svg .legend-label { fill:var(--muted); font:10px var(--font-mono); letter-spacing:.8px; }
     svg .node.add { color:#4f8a69; } svg .node.mod { color:#b55c2d; }
-    svg .unit-number { fill:var(--ink); font:600 13px var(--font-mono); }
+    svg .unit-number { fill:var(--ink); font:600 15px var(--font-mono); }
     svg a { cursor:pointer; }
     svg a:hover .title { text-decoration:underline; }
     svg a:focus-visible rect { stroke-width:2.4; outline:none; }
@@ -1748,42 +1748,42 @@ def page_html(data: dict[str, Any]) -> str:
     .unit:target { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-tint); }
     .unit-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
     .unit-num { display:grid; place-items:center; width:26px; height:26px; border-radius:50%;
-      border:1.2px solid var(--ink); font:600 13px var(--font-mono); }
-    .unit-title { font-size:16px; font-weight:600; letter-spacing:-.01em; }
+      border:1.2px solid var(--ink); font:600 15px var(--font-mono); }
+    .unit-title { font-size:18px; font-weight:600; letter-spacing:-.01em; }
     .unit-kind { padding:2px 7px; border-radius:3px; border:1px solid currentColor;
-      font:8px var(--font-mono); letter-spacing:.9px; text-transform:uppercase; }
+      font:10px var(--font-mono); letter-spacing:.9px; text-transform:uppercase; }
     .unit-kind.extracted { color:#4f8a69; background:var(--green-tint); }
     .unit-kind.in-place { color:#b55c2d; background:#fff0e8; }
-    .unit-delta { margin-left:auto; font:11px var(--font-mono); color:var(--soft); }
+    .unit-delta { margin-left:auto; font:13px var(--font-mono); color:var(--soft); }
     .unit-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px 24px; margin:0; }
     .unit-grid > div { display:flex; gap:10px; border-bottom:1px solid var(--rule); padding-bottom:8px; }
     .unit-grid dt { flex:0 0 62px; margin:2px 0 0; color:var(--soft);
-      font:9px var(--font-mono); letter-spacing:1px; text-transform:uppercase; }
-    .unit-grid dd { margin:0; color:var(--muted); font-size:12.5px; line-height:1.6; }
-    .unit-grid code { font-size:11.5px; }
+      font:11px var(--font-mono); letter-spacing:1px; text-transform:uppercase; }
+    .unit-grid dd { margin:0; color:var(--muted); font-size:14.5px; line-height:1.6; }
+    .unit-grid code { font-size:13.5px; }
     .unit-code { margin:13px 0 0; padding:13px 15px; border-radius:6px; overflow-x:auto;
       background:rgba(45,49,66,.04); border:1px solid var(--rule);
-      font:11.5px/1.7 var(--font-mono); color:var(--ink); white-space:pre; }
-    .unit-link { color:var(--accent); font:600 12px var(--font-mono); text-decoration:none; }
+      font:13.5px/1.7 var(--font-mono); color:var(--ink); white-space:pre; }
+    .unit-link { color:var(--accent); font:600 14px var(--font-mono); text-decoration:none; }
     .unit-link:hover { text-decoration:underline; }
     .unit-diff { margin-top:11px; border:1px solid var(--rule); border-radius:6px; background:#fff; }
     .unit-diff summary { cursor:pointer; padding:9px 13px; color:var(--accent);
-      font:11px var(--font-mono); letter-spacing:.4px; list-style:none; }
+      font:13px var(--font-mono); letter-spacing:.4px; list-style:none; }
     .unit-diff summary::-webkit-details-marker { display:none; }
     .unit-diff summary::before { content:"▸ "; display:inline-block; width:14px; }
     .unit-diff[open] summary::before { content:"▾ "; }
     .unit-diff[open] summary { border-bottom:1px solid var(--rule); }
     .unit-diff summary:hover { background:rgba(235,108,54,.05); }
-    .unit-hunks { margin:0; padding:12px 0; overflow-x:auto; font:11px/1.65 var(--font-mono); }
+    .unit-hunks { margin:0; padding:12px 0; overflow-x:auto; font:13px/1.65 var(--font-mono); }
     .unit-hunks span { display:block; padding:0 13px; white-space:pre; }
     .unit-hunks .dh { color:var(--accent); background:rgba(235,108,54,.06); margin:6px 0 4px; padding:3px 13px; }
     .unit-hunks .da { color:#2f6b4a; background:rgba(79,138,105,.09); }
     .unit-hunks .dr { color:#8c3a30; background:rgba(164,68,58,.08); }
     .unit-hunks .dc { color:var(--soft); }
     .unit-nohunk { margin:11px 0 0; padding:10px 13px; border-radius:6px;
-      background:rgba(45,49,66,.035); color:var(--muted); font-size:12px; line-height:1.6; }
+      background:rgba(45,49,66,.035); color:var(--muted); font-size:14px; line-height:1.6; }
     @media (max-width:900px) { .unit-grid { grid-template-columns:1fr; } }
-    .diagram-note { color:var(--muted); font-size:12px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
+    .diagram-note { color:var(--muted); font-size:14px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
     .flow-figure { background:#fff; border:1px solid var(--rule); border-radius:8px; padding:8px; }
     .flow-figure svg { min-width:1080px; }
     .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
@@ -1806,22 +1806,22 @@ def page_html(data: dict[str, Any]) -> str:
     svg .node.detail-focal ellipse { fill:var(--accent-tint); stroke:var(--accent); stroke-width:1.6; }
     .details-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
     .controls { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:12px 0; }
-    input,select { background:#fff; border:1px solid rgba(45,49,66,.2); border-radius:4px; color:var(--ink); font:11px var(--font-mono); padding:8px 9px; }
+    input,select { background:#fff; border:1px solid rgba(45,49,66,.2); border-radius:4px; color:var(--ink); font:13px var(--font-mono); padding:8px 9px; }
     input[type=search] { flex:1; min-width:220px; }
     .scroll { border:1px solid var(--rule); max-height:520px; overflow:auto; }
-    table { border-collapse:collapse; font-size:11px; width:100%; }
+    table { border-collapse:collapse; font-size:13px; width:100%; }
     th,td { border-bottom:1px solid var(--rule); padding:8px 9px; text-align:left; vertical-align:top; }
-    th { background:#ececec; color:var(--muted); font-size:9px; letter-spacing:.08em; position:sticky; text-transform:uppercase; top:0; z-index:1; }
-    td code { color:var(--ink); font-family:var(--font-mono); font-size:10px; word-break:break-word; }
-    .status { font-size:9px; font-weight:600; letter-spacing:.04em; white-space:nowrap; }
+    th { background:#ececec; color:var(--muted); font-size:11px; letter-spacing:.08em; position:sticky; text-transform:uppercase; top:0; z-index:1; }
+    td code { color:var(--ink); font-family:var(--font-mono); font-size:12px; word-break:break-word; }
+    .status { font-size:11px; font-weight:600; letter-spacing:.04em; white-space:nowrap; }
     .status.modified { color:#b55c2d; } .status.added-in-right { color:var(--green); } .status.removed-in-right { color:var(--red); } .status.unchanged { color:var(--soft); }
     .module-strip { display:flex; flex-wrap:wrap; gap:8px 18px; border-bottom:1px solid var(--rule); padding:0 0 14px; }
-    .module-strip span { color:var(--muted); font:10px var(--font-mono); }
+    .module-strip span { color:var(--muted); font:12px var(--font-mono); }
     .module-strip strong { color:var(--ink); font-weight:600; }
     details { border-top:1px solid var(--rule); margin-top:16px; }
-    summary { cursor:pointer; color:var(--ink); font:11px var(--font-mono); padding:12px 0; }
-    pre { background:#fff; border:1px solid var(--rule); color:var(--ink); font:10px/1.45 var(--font-mono); margin:0; max-height:720px; overflow:auto; padding:16px; white-space:pre; }
-    footer { border-top:1px solid var(--rule); color:var(--soft); font-size:10px; margin-top:32px; padding-top:14px; }
+    summary { cursor:pointer; color:var(--ink); font:13px var(--font-mono); padding:12px 0; }
+    pre { background:#fff; border:1px solid var(--rule); color:var(--ink); font:12px/1.45 var(--font-mono); margin:0; max-height:720px; overflow:auto; padding:16px; white-space:pre; }
+    footer { border-top:1px solid var(--rule); color:var(--soft); font-size:12px; margin-top:32px; padding-top:14px; }
     @media (max-width:900px) { .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .details-grid { grid-template-columns:1fr; } }
     @media (max-width:560px) { .summary-grid { grid-template-columns:1fr 1fr; } h1 { font-size:48px; } }
   </style>

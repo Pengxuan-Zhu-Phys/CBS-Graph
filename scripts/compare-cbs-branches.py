@@ -346,9 +346,9 @@ def page_html(data: dict[str, Any]) -> str:
   <title>__TITLE__</title>
   <style>
     :root { color-scheme: dark; --bg:#0b1020; --panel:#121a2d; --panel2:#0f172a; --text:#eef4ff; --muted:#9aa8c3; --line:#263452; --accent:#7dd3fc; }
-    * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--text); font:14px/1.5 system-ui,sans-serif; }
+    * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--text); font:16px/1.5 system-ui,sans-serif; }
     main { max-width:1500px; margin:auto; padding:34px 22px 60px; } h1 { margin:0 0 8px; font-size:clamp(28px,5vw,48px); letter-spacing:-.04em; }
-    h2 { margin:0 0 10px; font-size:20px; } h3 { margin:20px 0 8px; font-size:15px; color:var(--accent); }
+    h2 { margin:0 0 10px; font-size:20px; } h3 { margin:20px 0 8px; font-size:17px; color:var(--accent); }
     p { color:var(--muted); } code,.mono { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
     .meta { display:flex; flex-wrap:wrap; gap:8px; margin:18px 0; } .pill { border:1px solid var(--line); border-radius:999px; padding:5px 10px; color:var(--muted); }
     .pill strong { color:var(--accent); } .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin:18px 0; }
@@ -356,12 +356,12 @@ def page_html(data: dict[str, Any]) -> str:
     .layout { display:grid; grid-template-columns:minmax(0,2fr) minmax(340px,1fr); gap:16px; } section { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; }
     .controls { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; } input,select { background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:7px; padding:8px; }
     input[type=search] { min-width:260px; flex:1; } label { color:var(--muted); display:flex; align-items:center; gap:5px; }
-    .scroll { overflow:auto; max-height:700px; border:1px solid var(--line); border-radius:8px; } table { width:100%; border-collapse:collapse; font-size:12px; }
+    .scroll { overflow:auto; max-height:700px; border:1px solid var(--line); border-radius:8px; } table { width:100%; border-collapse:collapse; font-size:14px; }
     th,td { text-align:left; vertical-align:top; padding:8px 9px; border-bottom:1px solid var(--line); } th { position:sticky; top:0; background:#18233b; color:var(--accent); }
     td code { color:#dbeafe; word-break:break-word; } .status { font-weight:700; white-space:nowrap; } .status.modified { color:#fbbf24; } .status.added-in-right { color:#4ade80; } .status.removed-in-right { color:#f87171; } .status.unchanged { color:#94a3b8; }
-    #graph-wrap { overflow:auto; background:#f8fafc; border-radius:8px; min-height:500px; } svg { display:block; min-width:900px; } .edge { stroke:#64748b; stroke-width:1.1; opacity:.55; } .edge.changed { stroke:#f59e0b; stroke-width:2; opacity:.9; } .node text { font:11px ui-monospace,SFMono-Regular,Menlo,monospace; fill:#0f172a; pointer-events:none; }
-    .legend { display:flex; flex-wrap:wrap; gap:12px; color:var(--muted); font-size:12px; margin:9px 0; } .legend span::before { content:""; display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--c); margin-right:5px; }
-    .note { padding:10px 12px; background:#17223a; border-left:3px solid var(--accent); color:var(--muted); } footer { margin-top:18px; color:var(--muted); font-size:12px; }
+    #graph-wrap { overflow:auto; background:#f8fafc; border-radius:8px; min-height:500px; } svg { display:block; min-width:900px; } .edge { stroke:#64748b; stroke-width:1.1; opacity:.55; } .edge.changed { stroke:#f59e0b; stroke-width:2; opacity:.9; } .node text { font:13px ui-monospace,SFMono-Regular,Menlo,monospace; fill:#0f172a; pointer-events:none; }
+    .legend { display:flex; flex-wrap:wrap; gap:12px; color:var(--muted); font-size:14px; margin:9px 0; } .legend span::before { content:""; display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--c); margin-right:5px; }
+    .note { padding:10px 12px; background:#17223a; border-left:3px solid var(--accent); color:var(--muted); } footer { margin-top:18px; color:var(--muted); font-size:14px; }
     @media (max-width:900px) { .layout { grid-template-columns:1fr; } }
   </style>
 </head>

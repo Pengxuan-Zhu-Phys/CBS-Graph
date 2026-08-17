@@ -1,10 +1,10 @@
 # Focused CBS source comparison
 
 File: `ColliderBit/examples/solo.cpp`
-Old: `SUSYRun2` (`5989e2d27a`)
-New: `ColliderBit_solo_development` (`65aca0890d`)
+Old: `ColliderBit_solo_development` (`65aca0890d`)
+New: `SUSYRun2` (`5989e2d27a`)
 
-- Lines: +291 / -139 (34 hunks)
+- Lines: +139 / -291 (34 hunks)
 - Functions: 1 changed of 2
 - Changed includes: 10
 - Changed source relations: 10
@@ -14,20 +14,20 @@ Focused static source evidence for one file; comparison direction is SUSYRun2 (o
 
 ## Module total
 
-The counts above are file-scoped and therefore cannot show an extraction refactor. Across the whole `ColliderBit/examples/solo*` family the change is **+2978 / -153** over 10 files, 8 of them new on `ColliderBit_solo_development`.
+The counts above are file-scoped and therefore cannot show an extraction refactor. Across the whole `ColliderBit/examples/solo*` family the change is **+153 / -2978** over 10 files, 0 of them new on `SUSYRun2`.
 
 | File | Status | Added | Removed |
 |---|---|---:|---:|
-| `solo.cpp` | modified | +291 | -139 |
-| `solo_batch.cpp` | added | +1171 | -0 |
-| `solo_batch.hpp` | added | +85 | -0 |
-| `solo_cli.cpp` | added | +83 | -0 |
-| `solo_cli.hpp` | added | +43 | -0 |
-| `solo_example.yaml` | modified | +24 | -14 |
-| `solo_input.cpp` | added | +458 | -0 |
-| `solo_input.hpp` | added | +56 | -0 |
-| `solo_output.cpp` | added | +689 | -0 |
-| `solo_output.hpp` | added | +78 | -0 |
+| `solo.cpp` | modified | +139 | -291 |
+| `solo_batch.cpp` | removed | +0 | -1171 |
+| `solo_batch.hpp` | removed | +0 | -85 |
+| `solo_cli.cpp` | removed | +0 | -83 |
+| `solo_cli.hpp` | removed | +0 | -43 |
+| `solo_example.yaml` | modified | +14 | -24 |
+| `solo_input.cpp` | removed | +0 | -458 |
+| `solo_input.hpp` | removed | +0 | -56 |
+| `solo_output.cpp` | removed | +0 | -689 |
+| `solo_output.hpp` | removed | +0 | -78 |
 
 ## Logic flow
 
@@ -63,5 +63,5 @@ The HTML page contains the full YAML/default table and dependency table. The res
 
 | Status | Function | Old | New | Diff |
 |---|---|---:|---:|---:|
-| unchanged | `apply_setting_if_present` | 48–56 | 61–69 | +0 / -0 |
-| modified | `main` | 59–445 | 71–598 | +272 / -131 |
+| unchanged | `apply_setting_if_present` | 61–69 | 48–56 | +0 / -0 |
+| modified | `main` | 71–598 | 59–445 | +131 / -272 |

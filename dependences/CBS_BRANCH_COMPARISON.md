@@ -1,7 +1,7 @@
 # CBS branch comparison
 
-Baseline: `ColliderBit_solo_development` (`65aca0890`)
-Comparison: `SUSYRun2` (`5989e2d27`)
+Baseline: `ColliderBit_solo_development` (`65aca0890d`)
+Comparison: `SUSYRun2` (`5989e2d27a`)
 
 - Files in union: 387
 - Graph nodes: 1125 (738 symbols)

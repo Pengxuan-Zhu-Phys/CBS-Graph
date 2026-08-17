@@ -16,10 +16,10 @@
     body { background: var(--paper); color: var(--ink); min-height: 100vh; padding: 36px; font-family: var(--font-sans); }
     .frame { width: min(1540px, 100%); margin: 0 auto; }
     .eyebrow, .kicker, .legend, .source, .meta { font-family: var(--font-mono); }
-    .eyebrow { color: var(--muted); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 10px; }
+    .eyebrow { color: var(--muted); font-size: 12px; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 10px; }
     h1 { font-size: clamp(30px, 4vw, 48px); font-weight: 650; letter-spacing: -.04em; line-height: 1.05; margin-bottom: 12px; }
-    .intro { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 1120px; }
-    .legend { display: flex; flex-wrap: wrap; gap: 14px 22px; color: var(--muted); font-size: 10px; margin: 20px 0 26px; }
+    .intro { color: var(--muted); font-size: 16px; line-height: 1.6; max-width: 1120px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px 22px; color: var(--muted); font-size: 12px; margin: 20px 0 26px; }
     .legend span { display: inline-flex; align-items: center; gap: 7px; }
     .swatch { width: 22px; height: 10px; border: 1px solid var(--ink); border-radius: 3px; display: inline-block; background: var(--node); }
     .swatch.function { border-color: #4a6fa5; background: #eef3fb; }
@@ -40,38 +40,38 @@
     .change-key.reused { color: #697386; background: #eef0f3; }
     .change-key.optional { color: #697386; background: #f1f2f4; border-style: dashed; }
     .change-notes { margin-top: 34px; }
-    .change-notes-intro { color: var(--muted); font-size: 13px; line-height: 1.6; max-width: 1180px; margin-bottom: 16px; }
+    .change-notes-intro { color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 1180px; margin-bottom: 16px; }
     .summary-entry { display: flex; align-items: center; gap: 12px; border: 1px solid rgba(181,92,45,.34); border-left: 4px solid #b55c2d; border-radius: 8px; background: #fff8f3; padding: 12px 16px; margin: 0 0 16px; color: var(--ink); }
-    .summary-entry strong { font-size: 13px; }
+    .summary-entry strong { font-size: 15px; }
     .summary-entry code { color: var(--muted); }
     .change-grid { display: grid; grid-template-columns: 1.12fr 1fr; gap: 12px 16px; align-items: start; }
     .change-item { border: 1px solid var(--rule); border-radius: 8px; background: rgba(255,255,255,.28); }
     .change-item[open] { background: #fff; }
-    .change-item summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px 14px; color: var(--ink); font-size: 13px; font-weight: 650; }
+    .change-item summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px 14px; color: var(--ink); font-size: 15px; font-weight: 650; }
     .change-item summary::-webkit-details-marker { display: none; }
-    .change-item summary::after { content: '+'; margin-left: auto; color: var(--soft); font-family: var(--font-mono); font-size: 16px; font-weight: 400; }
+    .change-item summary::after { content: '+'; margin-left: auto; color: var(--soft); font-family: var(--font-mono); font-size: 18px; font-weight: 400; }
     .change-item[open] summary::after { content: '−'; }
-    .change-chip { min-width: 34px; padding: 2px 5px; border: 1px solid currentColor; border-radius: 3px; font-family: var(--font-mono); font-size: 9px; letter-spacing: .04em; text-align: center; }
+    .change-chip { min-width: 34px; padding: 2px 5px; border: 1px solid currentColor; border-radius: 3px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; text-align: center; }
     .change-chip.added { color: #2f8f6b; background: #e7f5ee; }
     .change-chip.modified { color: #b55c2d; background: #fff0e8; }
     .change-chip.partial { color: #735ca6; background: #f1ecfa; }
     .change-chip.optional { color: #697386; background: #f1f2f4; border-style: dashed; }
-    .change-detail { padding: 0 14px 14px 58px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .change-detail { padding: 0 14px 14px 58px; color: var(--muted); font-size: 14px; line-height: 1.55; }
     .change-detail p { margin-bottom: 7px; }
     .change-detail ul { margin: 0 0 8px 16px; }
     .change-detail li { margin: 3px 0; }
-    .change-evidence { color: var(--soft); font-family: var(--font-mono); font-size: 10px; }
-    .dossier-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 3px; color: #b55c2d; font-family: var(--font-mono); font-size: 10px; text-decoration: none; border-bottom: 1px solid rgba(181,92,45,.35); }
+    .change-evidence { color: var(--soft); font-family: var(--font-mono); font-size: 12px; }
+    .dossier-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 3px; color: #b55c2d; font-family: var(--font-mono); font-size: 12px; text-decoration: none; border-bottom: 1px solid rgba(181,92,45,.35); }
     .dossier-link:hover, .dossier-link:focus-visible { color: #8f431f; border-bottom-color: currentColor; }
     .mini-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 12px; padding: 10px 12px; border: 1px solid rgba(45,49,66,.10); border-radius: 6px; background: #f8f8f6; }
-    .mini-flow-label { width: 100%; color: var(--soft); font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
-    .flow-step { display: inline-flex; align-items: center; min-height: 28px; padding: 6px 8px; border: 1px solid #697386; border-radius: 5px; color: var(--ink); background: #fff; font-family: var(--font-mono); font-size: 10px; line-height: 1.25; }
+    .mini-flow-label { width: 100%; color: var(--soft); font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+    .flow-step { display: inline-flex; align-items: center; min-height: 28px; padding: 6px 8px; border: 1px solid #697386; border-radius: 5px; color: var(--ink); background: #fff; font-family: var(--font-mono); font-size: 12px; line-height: 1.25; }
     .flow-step.fn { border-color: #4a6fa5; background: #eef3fb; }
     .flow-step.data { border-color: #4f8a69; background: #eef8f1; }
     .flow-step.stage { border-color: #7a8399; background: #f1f2f4; }
     .flow-step.output { border-color: #b55c2d; background: #fff0e8; }
     .flow-step.branch { border-style: dashed; }
-    .flow-arrow { color: var(--muted); font-family: var(--font-mono); font-size: 14px; }
+    .flow-arrow { color: var(--muted); font-family: var(--font-mono); font-size: 16px; }
     svg .change-dot { stroke: var(--paper); stroke-width: 1.2; }
     svg .change-dot.added { fill: #2f8f6b; }
     svg .change-dot.modified { fill: #b55c2d; }
@@ -80,12 +80,12 @@
     svg .change-dot.optional { fill: var(--paper); stroke: #697386; stroke-dasharray: 2 1; }
     svg .node .change-dot { display: none; }
     section { border-top: 1px solid var(--rule); padding-top: 20px; margin-top: 25px; }
-    .kicker { color: var(--soft); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 7px; }
+    .kicker { color: var(--soft); font-size: 11px; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 7px; }
     h2 { font-size: 27px; font-weight: 600; letter-spacing: -.025em; margin-bottom: 5px; }
-    .source { color: var(--soft); font-size: 10px; line-height: 1.5; margin-bottom: 14px; }
+    .source { color: var(--soft); font-size: 12px; line-height: 1.5; margin-bottom: 14px; }
     svg { display: block; width: 100%; height: auto; overflow: visible; }
-    .note { color: var(--muted); font-size: 13px; line-height: 1.6; margin-top: 13px; max-width: 1160px; }
-    .meta { border-top: 1px solid var(--rule); margin-top: 30px; padding-top: 17px; color: var(--muted); font-size: 10px; line-height: 1.65; }
+    .note { color: var(--muted); font-size: 15px; line-height: 1.6; margin-top: 13px; max-width: 1160px; }
+    .meta { border-top: 1px solid var(--rule); margin-top: 30px; padding-top: 17px; color: var(--muted); font-size: 12px; line-height: 1.65; }
     code { font-family: var(--font-mono); font-size: .92em; }
 
     svg .zone { fill: rgba(45,49,66,.025); stroke: rgba(45,49,66,.13); stroke-width: 1; }
