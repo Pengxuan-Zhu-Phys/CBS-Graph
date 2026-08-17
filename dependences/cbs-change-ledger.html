@@ -1044,9 +1044,10 @@ svg{display:block;max-width:100%;height:auto}
     </div>
     <div class="note blue" style="margin-top:14px">
       <b>What this deck does not measure.</b> Nothing here was recompiled or re-run. It shows that
-      code changed and who changed it — not which physics results moved. A before/after
-      data-flow comparison on identical input events is the natural next step, and would answer
-      the question this ledger can only frame.
+      code changed and who changed it. For the paths that already existed that is close to the
+      whole story — CBS changes how ColliderBit is called, not the physics it runs — but for the
+      new analyses above, "the code is there" and "the numbers match the paper" are different
+      claims, and only the first is evidenced here.
     </div>
   </div>
 </section>
@@ -1073,21 +1074,17 @@ svg{display:block;max-width:100%;height:auto}
         </div>
       </div>
       <div class="card green">
-        <h3>Runtime data-flow diff</h3>
-        <p>This ledger answers <i>what code changed</i>. It cannot answer <i>which events now take a
-        different path</i> — the question that actually matters for validation.</p>
-        <p style="margin-top:10px">A thin semantic tracer at ~10–20 checkpoints
-        (HepMC event → HEPUtils event → object selection → overlap removal → b-tagging → cuts →
-        signal region), emitting JSON per run, would let the same input events be run on two commits
-        and diffed:</p>
-        <p style="margin-top:10px;font-family:var(--font-mono);font-size:13.5px;color:var(--ink);line-height:1.75">
-          overlap removal ← CHANGED<br>
-          &nbsp;&nbsp;jets 6 → 4<br>
-          &nbsp;&nbsp;Njet ≥ 5: PASS → FAIL<br>
-          &nbsp;&nbsp;SR1 acceptance 0.132 → 0.119
-        </p>
-        <p style="margin-top:10px">That is a far stronger argument to a collaborator than a diff —
-        and it reuses the JSON output contract this branch already built.</p>
+        <h3>What this branch did not change</h3>
+        <p>CBS changes <i>how ColliderBit is invoked</i> — a standalone runner, its own input and
+        output path — not the physics underneath it. The existing analysis code was not rewritten
+        to accommodate it.</p>
+        <p style="margin-top:10px">The jet pipeline is the measurable case: the fixed-R branch of
+        the event conversion is <b>336 tokens before and 336 after, 99.4% identical</b>, and the
+        only difference is a two-argument reorder from an unrelated commit. Variable-R jets were
+        threaded through that same path rather than built beside it.</p>
+        <p style="margin-top:10px">So the question for a reviewer is not whether old results moved.
+        It is whether the <b>new</b> capability — 12 analyses, VR jets, histogram signal regions —
+        is correct on its own terms, and slide 13 says plainly where that is not yet established.</p>
       </div>
     </div>
     <div class="rule"></div>

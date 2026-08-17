@@ -168,6 +168,7 @@
           </dl>
           <p class="diagram-note">A single string constant. Every consumer should branch on it before reading anything else, because it is the only field guaranteed to keep its meaning across future revisions.</p>
           
+          <details class="unit-diff"><summary>example &#183; from a 30,000-event run</summary><pre class="unit-hunks">&quot;cbs-solo-loglike-v1&quot;</pre></details>
         </article>
 
         <article class="unit" id="key-2">
@@ -183,6 +184,13 @@
           </dl>
           <p class="diagram-note">Event count, whether Contur ran, and the set of likelihood variants that actually appear in this file. <code>enabled_variants</code> is assembled while the analyses are walked, so it is written last even though it lives under a key created first.</p>
           <div class="mapping-table" style="margin-top:12px"><table><thead><tr><th>Field</th><th>Value expression</th><th>Emitted at</th></tr></thead><tbody><tr><td><code>n_events</code></td><td><code>n_events</code></td><td><code>ColliderBit/examples/solo_output.cpp:409</code></td></tr><tr><td><code>with_contur</code></td><td><code>with_contur</code></td><td><code>ColliderBit/examples/solo_output.cpp:410</code></td></tr><tr><td><code>enabled_variants</code></td><td><code>variants_json</code></td><td><code>ColliderBit/examples/solo_output.cpp:633</code></td></tr></tbody></table></div>
+          <details class="unit-diff"><summary>example &#183; from a 30,000-event run</summary><pre class="unit-hunks">{
+  &quot;enabled_variants&quot;: [
+    &quot;nominal&quot;
+  ],
+  &quot;n_events&quot;: 30000,
+  &quot;with_contur&quot;: false
+}</pre></details>
         </article>
 
         <article class="unit" id="key-3">
@@ -198,6 +206,36 @@
           </dl>
           <p class="diagram-note">An object keyed by analysis name. Everything an analysis produced in this run &mdash; signal regions, the selected combination, cutflows, histograms and the SR covariance when one exists &mdash; hangs here.</p>
           
+          <details class="unit-diff"><summary>example &#183; from a 30,000-event run</summary><pre class="unit-hunks">{
+  &quot;ATLAS_EXOT_2019_04&quot;: {
+    &quot;bkgjson_path&quot;: &quot;&quot;,
+    &quot;combination&quot;: {
+      &quot;alternatives&quot;: {},
+      &quot;nominal_loglike&quot;: -1.924147,
+      &quot;selected_sr_index&quot;: 3,
+      &quot;selected_sr_label&quot;: &quot;m_VLB_bin2&quot;
+    },
+    &quot;cutflows&quot;: &quot;... 1 entries, same shape ...&quot;,
+    &quot;histograms&quot;: &quot;... 1 1D, 0 2D ...&quot;,
+    &quot;luminosity&quot;: 139.0,
+    &quot;n_signal_regions&quot;: 8,
+    &quot;signal_regions&quot;: {
+      &quot;SR&quot;: {
+        &quot;alt_loglikes&quot;: {},
+        &quot;loglike&quot;: -0.935035,
+        &quot;n_bkg&quot;: 260.0,
+        &quot;n_bkg_err&quot;: 17.0,
+        &quot;n_obs&quot;: 262.0,
+        &quot;n_sig_MC&quot;: 200.0,
+        &quot;n_sig_MC_stat&quot;: 14.142136,
+        &quot;n_sig_scaled&quot;: 34.6388,
+        &quot;n_sig_scaled_err&quot;: 2.449333,
+        &quot;sr_index&quot;: 0
+      },
+      &quot;... 7 more keys&quot;: &quot;...&quot;
+    }
+  }
+}</pre></details>
         </article>
 
         <article class="unit" id="key-4">
@@ -213,6 +251,20 @@
           </dl>
           <p class="diagram-note">A flat array over the same numbers already present under <code>analyses</code>, re-expressed so a fitter can consume them without walking the nested tree. Each entry carries the flags that say whether it may be summed and what it is mutually exclusive with.</p>
           
+          <details class="unit-diff"><summary>example &#183; from a 30,000-event run</summary><pre class="unit-hunks">[
+  {
+    &quot;analysis_name&quot;: &quot;ATLAS_EXOT_2019_04&quot;,
+    &quot;component&quot;: &quot;signal_region&quot;,
+    &quot;exclusive_group&quot;: &quot;analysis_sr::ATLAS_EXOT_2019_04::SR&quot;,
+    &quot;loglike&quot;: -0.935035,
+    &quot;safe_to_sum&quot;: false,
+    &quot;selected_in_default&quot;: false,
+    &quot;sr_label&quot;: &quot;SR&quot;,
+    &quot;term_id&quot;: &quot;ATLAS_EXOT_2019_04::SR::nominal&quot;,
+    &quot;variant&quot;: &quot;nominal&quot;
+  },
+  &quot;... 8 more, same shape ...&quot;
+]</pre></details>
         </article>
 
         <article class="unit" id="key-5">
@@ -228,6 +280,10 @@
           </dl>
           <p class="diagram-note">Analysis count and the combined log-likelihood, plus the Contur total when Contur ran. This is the block a human reads first.</p>
           
+          <details class="unit-diff"><summary>example &#183; from a 30,000-event run</summary><pre class="unit-hunks">{
+  &quot;combined_loglike&quot;: -1.924147,
+  &quot;n_analyses&quot;: 1
+}</pre></details>
         </article>
 
         <article class="unit" id="key-6">
@@ -243,6 +299,11 @@
           </dl>
           <p class="diagram-note">Named lists of <code>term_id</code>s. <code>default_total</code> is the one set the emitter guarantees is safe to sum &mdash; it holds the per-analysis combined terms, plus the Contur total when present.</p>
           
+          <details class="unit-diff"><summary>example &#183; from a 30,000-event run</summary><pre class="unit-hunks">{
+  &quot;default_total&quot;: [
+    &quot;ATLAS_EXOT_2019_04::combined::nominal&quot;
+  ]
+}</pre></details>
         </article>
 
         <article class="unit" id="key-7">
@@ -258,6 +319,21 @@
           </dl>
           <p class="diagram-note">Per analysis, for the selected signal region: current fractional uncertainty, and for each requested target how many more events each process needs. Absent entirely in a single-file run.</p>
           
+          <details class="unit-diff"><summary>example &#183; from a 30,000-event run</summary><pre class="unit-hunks">{
+  &quot;allocation_rule&quot;: &quot;cross_section_proportional&quot;,
+  &quot;analyses&quot;: [
+    {
+      &quot;analysis_name&quot;: &quot;ATLAS_EXOT_2019_04&quot;,
+      &quot;effective_events&quot;: 153.0,
+      &quot;fractional_uncert&quot;: 0.080845,
+      &quot;n_sig_scaled&quot;: 26.498682,
+      &quot;n_sig_scaled_err&quot;: 2.142291,
+      &quot;selected_sr_index&quot;: 3,
+      &quot;selected_sr_label&quot;: &quot;m_VLB_bin2&quot;,
+      &quot;targets&quot;: &quot;... 3 entries, same shape ...&quot;
+    }
+  ]
+}</pre></details>
         </article>
 
         <article class="unit" id="key-8">
@@ -273,6 +349,8 @@
           </dl>
           <p class="diagram-note">Total Contur log-likelihood and a per-pool breakdown with the dominant measurement tag. Batch mode refuses Contur settings, so this key and <code>sampling_advice</code> never appear in the same file.</p>
           
+          <details class="unit-diff"><summary>example &#183; absent from this run</summary><pre class="unit-hunks">// absent from runs/CBS_result.json
+// the gate on this key did not fire, so the emitter never wrote it</pre></details>
         </article>
     </div>
   </section>

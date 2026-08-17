@@ -1301,6 +1301,28 @@
       "line": 633
     }
   ],
+  "samples": {
+    "__meta__": {
+      "n_events": 30000,
+      "path": "runs/CBS_result.json",
+      "present": [
+        "analyses",
+        "predefined_sets",
+        "run",
+        "sampling_advice",
+        "schema_version",
+        "summary",
+        "terms"
+      ]
+    },
+    "analyses": "{\n  \"ATLAS_EXOT_2019_04\": {\n    \"bkgjson_path\": \"\",\n    \"combination\": {\n      \"alternatives\": {},\n      \"nominal_loglike\": -1.924147,\n      \"selected_sr_index\": 3,\n      \"selected_sr_label\": \"m_VLB_bin2\"\n    },\n    \"cutflows\": \"... 1 entries, same shape ...\",\n    \"histograms\": \"... 1 1D, 0 2D ...\",\n    \"luminosity\": 139.0,\n    \"n_signal_regions\": 8,\n    \"signal_regions\": {\n      \"SR\": {\n        \"alt_loglikes\": {},\n        \"loglike\": -0.935035,\n        \"n_bkg\": 260.0,\n        \"n_bkg_err\": 17.0,\n        \"n_obs\": 262.0,\n        \"n_sig_MC\": 200.0,\n        \"n_sig_MC_stat\": 14.142136,\n        \"n_sig_scaled\": 34.6388,\n        \"n_sig_scaled_err\": 2.449333,\n        \"sr_index\": 0\n      },\n      \"... 7 more keys\": \"...\"\n    }\n  }\n}",
+    "predefined_sets": "{\n  \"default_total\": [\n    \"ATLAS_EXOT_2019_04::combined::nominal\"\n  ]\n}",
+    "run": "{\n  \"enabled_variants\": [\n    \"nominal\"\n  ],\n  \"n_events\": 30000,\n  \"with_contur\": false\n}",
+    "sampling_advice": "{\n  \"allocation_rule\": \"cross_section_proportional\",\n  \"analyses\": [\n    {\n      \"analysis_name\": \"ATLAS_EXOT_2019_04\",\n      \"effective_events\": 153.0,\n      \"fractional_uncert\": 0.080845,\n      \"n_sig_scaled\": 26.498682,\n      \"n_sig_scaled_err\": 2.142291,\n      \"selected_sr_index\": 3,\n      \"selected_sr_label\": \"m_VLB_bin2\",\n      \"targets\": \"... 3 entries, same shape ...\"\n    }\n  ]\n}",
+    "schema_version": "\"cbs-solo-loglike-v1\"",
+    "summary": "{\n  \"combined_loglike\": -1.924147,\n  \"n_analyses\": 1\n}",
+    "terms": "[\n  {\n    \"analysis_name\": \"ATLAS_EXOT_2019_04\",\n    \"component\": \"signal_region\",\n    \"exclusive_group\": \"analysis_sr::ATLAS_EXOT_2019_04::SR\",\n    \"loglike\": -0.935035,\n    \"safe_to_sum\": false,\n    \"selected_in_default\": false,\n    \"sr_label\": \"SR\",\n    \"term_id\": \"ATLAS_EXOT_2019_04::SR::nominal\",\n    \"variant\": \"nominal\"\n  },\n  \"... 8 more, same shape ...\"\n]"
+  },
   "schema_version": "cbs-solo-loglike-v1",
   "schema_version_line": 36,
   "sources": {

@@ -33,6 +33,73 @@ BATCH_CPP = "ColliderBit/examples/solo_batch.cpp"
 SOLO_CPP = "ColliderBit/examples/solo.cpp"
 JSON_HPP = "Utils/include/gambit/Utils/json.hpp"
 
+# A run whose output is committed in the tree, used to show each top-level key
+# as it actually comes out.  This is the only place on the page where a value
+# comes from an execution rather than from the emitter source, and the cards
+# say so.
+SAMPLE_RUN = "runs/CBS_result.json"
+
+# How much of each key to show.  Field names are unique enough across the
+# document to key on directly, so a rule applies at whatever depth the field
+# turns up rather than being scoped to one parent.
+ELIDE_FIELDS = {"cutflows", "histograms", "targets"}
+LIST_LIMIT = {"terms": 1, "analyses": 1, "cuts": 2, "process_recommendations": 1}
+DICT_LIMIT = {"analyses": 1, "signal_regions": 1}
+DEFAULT_LIST_LIMIT = 2
+
+
+def elide_note(value) -> str:
+    if isinstance(value, list):
+        return f"... {len(value)} entries, same shape ..."
+    if isinstance(value, dict):
+        inner = value.get("1d")
+        if isinstance(inner, list):
+            return f"... {len(inner)} 1D, {len(value.get('2d') or [])} 2D ..."
+        return f"... {len(value)} entries ..."
+    return "..."
+
+
+def trim_sample(value, key=None, depth=0):
+    """Shrink a run-output value to something quotable, marking what was cut."""
+    if isinstance(value, dict):
+        limit = DICT_LIMIT.get(key)
+        out, shown = {}, 0
+        for name, item in value.items():
+            if limit is not None and shown >= limit:
+                out[f"... {len(value) - shown} more keys"] = "..."
+                break
+            out[name] = (elide_note(item) if name in ELIDE_FIELDS
+                         else trim_sample(item, name, depth + 1))
+            shown += 1
+        return out
+
+    if isinstance(value, list):
+        limit = LIST_LIMIT.get(key, DEFAULT_LIST_LIMIT)
+        head = [trim_sample(item, None, depth + 1) for item in value[:limit]]
+        if len(value) > limit:
+            head.append(f"... {len(value) - limit} more, same shape ...")
+        return head
+
+    if isinstance(value, float):
+        return round(value, 6)
+    return value
+
+
+def run_samples(gambit_root) -> dict:
+    """One quotable excerpt per top-level key, from the committed run output."""
+    path = gambit_root / SAMPLE_RUN
+    if not path.exists():
+        return {}
+    document = json.loads(path.read_text())
+    out = {key: json.dumps(trim_sample(value, key), indent=2)
+           for key, value in document.items()}
+    out["__meta__"] = {
+        "path": SAMPLE_RUN,
+        "n_events": document.get("run", {}).get("n_events"),
+        "present": sorted(document),
+    }
+    return out
+
 
 # --------------------------------------------------------------------------
 # source access
@@ -566,6 +633,7 @@ def build_data(gambit_root: Path) -> dict:
         "objects": objects,
         "consumers": consumers,
         "terms": terms,
+        "samples": run_samples(gambit_root),
         "totals": {
             "top_level_keys": len(root_fields),
             "emitted_fields": emitted_total,
@@ -901,6 +969,26 @@ def json_skeleton(fields, indent=2, keyed_by=None) -> str:
     return esc("\n".join(rows))
 
 
+def sample_block(data: dict, key: str) -> str:
+    """The key as it comes out of a real run, or a note that it was absent."""
+    samples = data.get("samples") or {}
+    meta = samples.get("__meta__") or {}
+    if not meta:
+        return ""
+
+    if key in samples:
+        events = f'{meta["n_events"]:,}' if meta.get("n_events") else "a"
+        body = samples[key]
+        summary = f"example &#183; from a {events}-event run"
+    else:
+        body = (f"// absent from {meta['path']}\n"
+                "// the gate on this key did not fire, so the emitter never wrote it")
+        summary = "example &#183; absent from this run"
+
+    return (f'<details class="unit-diff"><summary>{summary}</summary>'
+            f'<pre class="unit-hunks">{esc(body)}</pre></details>')
+
+
 def key_cards(data: dict) -> str:
     always, conditional = numbered_keys(data)
     cards = []
@@ -937,6 +1025,7 @@ def key_cards(data: dict) -> str:
           </dl>
           <p class="diagram-note">{note["what"]}</p>
           {extra}
+          {sample_block(data, key)}
         </article>""")
     return "\n".join(cards)
 
