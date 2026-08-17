@@ -239,9 +239,97 @@
     },
     "lld_line": 38
   },
+  "self_description": {
+    "line": 4,
+    "text": "ColliderBit Solo: an event-based LHC recast tool using the GAMBIT ColliderBit module.",
+    "file": "solo.cpp",
+    "other_statements": 0
+  },
+  "contur_declarations": [
+    {
+      "source": "solo.cpp",
+      "line": 45,
+      "version": "3.0.0"
+    },
+    {
+      "source": "frontends/Contur_3_0_0.hpp",
+      "line": null,
+      "version": "3.0.0"
+    },
+    {
+      "source": "patches/contur/3.0.0/",
+      "line": null,
+      "version": "3.0.0"
+    }
+  ],
   "gitignore_cbs_yaml": 50,
   "caveat": "Static read of the worktree and of the other pages' JSON. Nothing was built or run.",
   "questions": [
+    {
+      "group": "framing",
+      "severity": "framing",
+      "title": "What is the paper claiming CBS is?",
+      "evidence": [
+        {
+          "fact": "the only statement of purpose in the tree, and there is no second one",
+          "source": "solo.cpp:4"
+        },
+        {
+          "fact": "the runner itself is small: 10 files, +2,978 lines",
+          "source": "ledger \u00b7 cbs-runner"
+        },
+        {
+          "fact": "the analysis work is not: 162 files, +11,073/\u22127,437, against a library of 137 registered names",
+          "source": "ledger \u00b7 analyses"
+        },
+        {
+          "fact": "the jet pipeline sits between them: 14 files, +1,098",
+          "source": "ledger \u00b7 event-pipeline"
+        },
+        {
+          "fact": "and the subject is wider than this deck: ONNX (5 files), METSignificance (7 files) are absent from released GAMBIT entirely but predate the branch point, so they appear nowhere here \u2014 correct for a changelog, wrong for a paper",
+          "source": "ColliderBit tree vs master"
+        }
+      ]
+    },
+    {
+      "group": "framing",
+      "severity": "framing",
+      "title": "Who is the reader, and how much GAMBIT do they already have?",
+      "evidence": [
+        {
+          "fact": "CBS asks for 2 dependencies but sits behind 69 declared backends \u2014 the gap only matters to reader two",
+          "source": "cmake/standalones.cmake:36"
+        },
+        {
+          "fact": "123 retired analysis names only matter to reader one, who has YAML already written",
+          "source": "cbs-rename-migration.json"
+        },
+        {
+          "fact": "the JSON contract, 8 top-level keys with 7 in-tree consumers, only matters to reader three",
+          "source": "cbs-json-output.json"
+        }
+      ]
+    },
+    {
+      "group": "framing",
+      "severity": "framing",
+      "title": "What is CBS measured against?",
+      "evidence": [
+        {
+          "fact": "no file in the tree names a comparison framework or benchmarks against one",
+          "source": "searched at HEAD"
+        },
+        {
+          "fact": "what CBS actually inherits and exposes is the ColliderBit likelihood machinery and a 137-analysis library \u2014 not event generation or detector simulation, which are Pythia\u2019s and BuckFast\u2019s",
+          "source": "ledger \u00b7 themes"
+        },
+        {
+          "fact": "the histogram signal regions are the one mechanism with no obvious equivalent elsewhere: a binned distribution becoming per-bin likelihood terms",
+          "source": "cbs-histograms.json"
+        }
+      ]
+    },
     {
       "group": "results",
       "severity": "numbers",
@@ -316,16 +404,12 @@
       ]
     },
     {
-      "group": "reproducibility",
-      "severity": "rerun",
-      "title": "Where does a reader get the default settings?",
+      "group": "release",
+      "severity": "release",
+      "title": "Ship the default cards, and make a run self-describing",
       "evidence": [
         {
-          "fact": "CBS_yaml/CBS_defaults.yaml exists in the worktree, 22 lines of settings, tracked: False",
-          "source": "cbs-yaml-config.json \u00b7 defaults"
-        },
-        {
-          "fact": "CBS_yaml/* ignored",
+          "fact": "CBS_yaml/CBS_defaults.yaml, 22 lines of settings, currently ignored by git \u2014 a packaging step, not a question",
           "source": ".gitignore:50"
         },
         {
@@ -335,9 +419,9 @@
       ]
     },
     {
-      "group": "reproducibility",
-      "severity": "text",
-      "title": "Which settings does CBS overrule, and which do nothing at all?",
+      "group": "placement",
+      "severity": "placement",
+      "title": "What does the configuration section actually document?",
       "evidence": [
         {
           "fact": "min_nEvents forced to (long long)(1000)",
@@ -358,32 +442,36 @@
       ]
     },
     {
-      "group": "reproducibility",
-      "severity": "decision",
-      "title": "Which backend versions is the paper claiming?",
+      "group": "release",
+      "severity": "release",
+      "title": "Make the Contur version agree with itself",
       "evidence": [
         {
-          "fact": "master: cmake says 2.1.1; patch patch_contur_2.1.1.dif present; self-consistent: yes",
-          "source": "cmake/backends.cmake:2236"
-        },
-        {
-          "fact": "base: cmake says 3.0.0; no patch line (deliberately absent); self-consistent: yes",
-          "source": "cmake/backends.cmake:2244"
-        },
-        {
-          "fact": "sr2: cmake says 3.0.0; no patch line (deliberately absent); self-consistent: yes",
-          "source": "cmake/backends.cmake:2244"
-        },
-        {
-          "fact": "head: cmake says 2.1.1; patch patch_contur_2.1.1.dif missing; self-consistent: no",
+          "fact": "cmake says 2.1.1, pointing at patch_contur_2.1.1.dif \u2014 missing",
           "source": "cmake/backends.cmake:2185"
+        },
+        {
+          "fact": "solo.cpp says 3.0.0",
+          "source": "solo.cpp:45"
+        },
+        {
+          "fact": "frontends/Contur_3_0_0.hpp says 3.0.0",
+          "source": "frontends/Contur_3_0_0.hpp"
+        },
+        {
+          "fact": "patches/contur/3.0.0/ says 3.0.0",
+          "source": "patches/contur/3.0.0/"
+        },
+        {
+          "fact": "the other three refs are each self-consistent: master 2.1.1, base 3.0.0, sr2 3.0.0",
+          "source": "cbs-package-matrix.json"
         }
       ]
     },
     {
-      "group": "compatibility",
-      "severity": "decision",
-      "title": "What happens to an existing user\u2019s YAML?",
+      "group": "placement",
+      "severity": "placement",
+      "title": "Where does the old-to-new name mapping live?",
       "evidence": [
         {
           "fact": "123 names retired, 132 introduced, 128 \u2192 137 registered overall",
@@ -400,8 +488,8 @@
       ]
     },
     {
-      "group": "interface",
-      "severity": "decision",
+      "group": "placement",
+      "severity": "placement",
       "title": "Is the output JSON a specified interface, or an implementation detail?",
       "evidence": [
         {
@@ -419,9 +507,9 @@
       ]
     },
     {
-      "group": "distribution",
-      "severity": "decision",
-      "title": "What installation route does the paper tell a reader to take?",
+      "group": "release",
+      "severity": "release",
+      "title": "Give the installation route a name, and take HepForge off the critical path",
       "evidence": [
         {
           "fact": "add_standalone(CBS \u2026 MODULES ColliderBit DEPENDENCIES hepmc pybind11)",
@@ -438,33 +526,6 @@
         {
           "fact": "GAMBIT_USE_LLD_FOR_CBS exists because linking CBS was worth an option",
           "source": "cmake/standalones.cmake:38"
-        }
-      ]
-    },
-    {
-      "group": "scope",
-      "severity": "decision",
-      "title": "What does \u201cCBS\u201d name, and against which baseline?",
-      "evidence": [
-        {
-          "fact": "ONNX \u2014 master 0 files, merge-base 5, HEAD 5 \u2014 predates the branch point; absent from master",
-          "source": "ColliderBit tree"
-        },
-        {
-          "fact": "BDT \u2014 master 3 files, merge-base 15, HEAD 17 \u2014 grew on this branch",
-          "source": "ColliderBit tree"
-        },
-        {
-          "fact": "METSignificance \u2014 master 0 files, merge-base 5, HEAD 7 \u2014 predates the branch point; absent from master",
-          "source": "ColliderBit tree"
-        },
-        {
-          "fact": "FullLikes \u2014 master 10 files, merge-base 12, HEAD 15 \u2014 grew on this branch",
-          "source": "ColliderBit tree"
-        },
-        {
-          "fact": "2 of 4 probed capabilities are absent from master entirely, and this deck mentions none of them",
-          "source": "scope gap"
         }
       ]
     }

@@ -38,8 +38,9 @@ NEW_ANALYSES = [
 ]
 
 # Capabilities that exist in CBS and not in released GAMBIT. Checked across all
-# four refs because *where* they entered decides whether the deck should have
-# mentioned them -- see question 10.
+# four refs because *where* they entered decides whether this project should
+# have mentioned them: anything already present at the merge-base is correctly
+# absent from a changelog and wrongly absent from a paper.
 FEATURES = ["ONNX", "BDT", "METSignificance", "FullLikes"]
 
 CAVEAT_RE = re.compile(
@@ -55,34 +56,33 @@ STRONG_RE = re.compile(
     r"Implement the published", re.IGNORECASE)
 
 SEVERITY = {
+    "framing": ("decides what the paper is", "sev-frame"),
     "numbers": ("changes published numbers", "sev-num"),
-    "rerun": ("blocks an independent rerun", "sev-run"),
-    "decision": ("needs a decision, not text", "sev-dec"),
-    "text": ("needs a paragraph", "sev-txt"),
+    "placement": ("paper, appendix, or manual", "sev-dec"),
+    "release": ("a task, not a question", "sev-txt"),
 }
 
 GROUPS = [
+    ("framing", "What the paper is",
+     "Not a code question, and the only one that cannot be settled by editing "
+     "a file. Everything below inherits its answer from here: the results "
+     "worth showing, the tools worth comparing against, and how much GAMBIT a "
+     "reader is assumed to already know."),
     ("results", "What the numbers depend on",
-     "Settings and modelling choices that move the yields. If the paper does "
-     "not pin these down, two people running the same input file get two "
-     "different likelihoods and neither is wrong."),
-    ("reproducibility", "What a reader needs to rerun it",
-     "A reader with the repository and the paper should be able to reproduce a "
-     "run. Each of these is something they would need and cannot currently get "
-     "from either."),
-    ("compatibility", "What existing users walk into",
-     "CBS is not a new tool for new users only. Anyone with a working GAMBIT "
-     "ColliderBit setup has files that CBS will now reject, and the paper is "
-     "where they will look first."),
-    ("interface", "What downstream code may rely on",
-     "The JSON output is already being consumed by scripts. The paper decides "
-     "whether that is a promise or an accident."),
-    ("distribution", "How anyone gets it at all",
-     "Covered at length on slide 14. Restated here because a paper with no "
-     "followable installation route is a paper nobody reproduces."),
-    ("scope", "What the paper is even about",
-     "The one question that has to be answered first, because it silently "
-     "sets the answer to several of the others."),
+     "Given a thesis, these are the settings and modelling choices that decide "
+     "whether the numbers supporting it are reproducible. Two people running "
+     "the same input file currently get two different likelihoods, and neither "
+     "is wrong."),
+    ("placement", "What goes in the paper, and what goes in the manual",
+     "Each of these has to be written down somewhere. The question is not "
+     "whether, but where -- and a paper that documents all of it is a manual, "
+     "while one that documents none of it is unusable."),
+    ("release", "The release checklist",
+     "Listed so they are not mistaken for open questions. These are code and "
+     "packaging tasks with obvious fixes, several of which a release does "
+     "automatically. They are here only because each one is currently "
+     "load-bearing for a claim above, so the claim is unsafe until the task "
+     "is done."),
 ]
 
 
@@ -228,6 +228,53 @@ def distribution(root: Path) -> dict:
     }
 
 
+def self_description(root: Path) -> dict:
+    """The only place in the tree that says what CBS is for.
+
+    Worth extracting rather than quoting from memory, because its being a
+    single Doxygen header line in one file is itself the finding: there is no
+    abstract anywhere for a paper to start from.
+    """
+    path = root / "ColliderBit" / "examples" / "solo.cpp"
+    lines = path.read_text(errors="replace").splitlines()
+    hit = next((i for i, line in enumerate(lines)
+                if "recast" in line and "ColliderBit Solo" in line), None)
+    if hit is None:
+        return {}
+    text = " ".join(line.lstrip("/ ").strip()
+                    for line in lines[hit:hit + 2]).strip()
+    others = len(git(root, "grep", "-l", "recast tool", "HEAD",
+                     "--", "ColliderBit").splitlines())
+    return {"line": hit + 1, "text": text, "file": "solo.cpp",
+            "other_statements": max(0, others - 1)}
+
+
+def contur_declarations(root: Path) -> list[dict]:
+    """Places outside cmake that name a Contur version.
+
+    The cmake side is deliberately not re-derived here: `set(name)` and
+    `set(ver)` are separate lines and the package-matrix script already walks
+    those blocks correctly, so its answer is read instead of second-guessed.
+    """
+    found = []
+    solo = root / "ColliderBit" / "examples" / "solo.cpp"
+    pattern = re.compile(r'CONTUR_VERSION\s+"([\d.]+)"')
+    for index, line in enumerate(solo.read_text(errors="replace").splitlines()):
+        match = pattern.search(line)
+        if match:
+            found.append({"source": "solo.cpp", "line": index + 1,
+                          "version": match.group(1)})
+    frontends = (root / "Backends" / "include" / "gambit" / "Backends" / "frontends")
+    for header in sorted(frontends.glob("Contur_*.hpp")):
+        found.append({"source": f"frontends/{header.name}", "line": None,
+                      "version": header.stem.split("Contur_", 1)[1].replace("_", ".")})
+    patches = root / "Backends" / "patches" / "contur"
+    for entry in sorted(p for p in patches.glob("*") if p.is_dir()):
+        found.append({"source": f"patches/contur/{entry.name}/", "line": None,
+                      "version": entry.name})
+    return found
+
+
 def gitignore_hit(root: Path, needle: str) -> int | None:
     path = root / ".gitignore"
     if not path.exists():
@@ -248,6 +295,8 @@ def collect(root: Path, out_dir: Path) -> dict:
         "analyses": analysis_caveats(root),
         "features": feature_origins(root),
         "distribution": distribution(root),
+        "self_description": self_description(root),
+        "contur_declarations": contur_declarations(root),
         "gitignore_cbs_yaml": gitignore_hit(root, "CBS_yaml"),
         "pages": pages,
         "caveat": "Static read of the worktree and of the other pages' JSON. "
@@ -276,6 +325,115 @@ def build_questions(data: dict) -> list[dict]:
     dist = data["distribution"]
 
     questions: list[dict] = []
+
+    # ---- framing: what the paper claims ---------------------------------
+    desc = data["self_description"]
+    themes = ledger.get("by_theme", {})
+    runner = themes.get("cbs-runner", {})
+    analyses_theme = themes.get("analyses", {})
+    pipeline = themes.get("event-pipeline", {})
+    reg = rename.get("registered", {})
+    questions.append({
+        "group": "framing",
+        "severity": "framing",
+        "title": "What is the paper claiming CBS is?",
+        "ask": (
+            f"The whole tree says this about CBS&#8217;s purpose, once, in a file header: "
+            f"<em>&ldquo;{esc(desc.get('text', '').rstrip('.'))}&rdquo;</em>. "
+            f"That is a description, not a "
+            f"claim. At least four papers could be written from the same branch, and they do not "
+            f"share results, comparisons, or readers: "
+            f"<b>(a)</b> a standalone recast tool; "
+            f"<b>(b)</b> an interface that makes ColliderBit usable without a GAMBIT scan; "
+            f"<b>(c)</b> a new analysis library plus a variable-R jet capability; "
+            f"<b>(d)</b> a reproducible results contract for recasting. Pick one as the thesis "
+            f"and the rest become supporting sections."),
+        "evidence": [
+            (f"the only statement of purpose in the tree, and there is no second one",
+             f"{desc.get('file')}:{desc.get('line')}"),
+            (f"the runner itself is small: <b>{runner.get('own', 0) + runner.get('mixed', 0)} "
+             f"files, +{runner.get('added', 0):,} lines</b>",
+             "ledger &middot; cbs-runner"),
+            (f"the analysis work is not: <b>{analyses_theme.get('own', 0) + analyses_theme.get('mixed', 0)} "
+             f"files, +{analyses_theme.get('added', 0):,}/&minus;{analyses_theme.get('deleted', 0):,}</b>, "
+             f"against a library of {reg.get('head')} registered names",
+             "ledger &middot; analyses"),
+            (f"the jet pipeline sits between them: "
+             f"{pipeline.get('own', 0) + pipeline.get('mixed', 0)} files, "
+             f"+{pipeline.get('added', 0):,}",
+             "ledger &middot; event-pipeline"),
+            (f"and the subject is wider than this deck: "
+             + ", ".join(f"<code>{f['term']}</code> ({f['head']} files)"
+                         for f in data["features"] if f["master"] == 0)
+             + " are absent from released GAMBIT entirely but predate the branch point, so they "
+               "appear nowhere here &mdash; correct for a changelog, wrong for a paper",
+             "ColliderBit tree vs master"),
+        ],
+        "consequence": (
+            "Reading (a) invites the comparison CBS is weakest on &mdash; it does not simulate "
+            "detectors better than anyone else. Reading (b) or (d) is defensible and nearly "
+            "unclaimed. Reading (c) makes the validation question the whole paper. Choosing late "
+            "means writing three half-papers and picking the least bad."),
+        "link": ("Where the changes landed", "cbs-change-ledger.html#4"),
+    })
+
+    questions.append({
+        "group": "framing",
+        "severity": "framing",
+        "title": "Who is the reader, and how much GAMBIT do they already have?",
+        "ask": (
+            "Three plausible readers want incompatible papers. A GAMBIT user wants the delta: "
+            "what CBS adds to a module they already build. Someone who has never built GAMBIT "
+            "wants a self-contained tool description &mdash; and for them the "
+            f"{dist['backends']}-backend build system is the first thing on the page, not an "
+            f"appendix. Someone building their own pipeline wants the output contract and little "
+            f"else."),
+        "evidence": [
+            (f"CBS asks for {len(dist['cbs_deps'])} dependencies but sits behind "
+             f"{dist['backends']} declared backends &mdash; the gap only matters to reader two",
+             f"cmake/standalones.cmake:{dist['cbs_line']}"),
+            (f"{len(reg.get('retired', []))} retired analysis names only matter to reader one, "
+             f"who has YAML already written", "cbs-rename-migration.json"),
+            (f"the JSON contract, {len(jsonp.get('root_fields', []))} top-level keys with "
+             f"{len(jsonp.get('consumers', []))} in-tree consumers, only matters to reader three",
+             "cbs-json-output.json"),
+        ],
+        "consequence": (
+            "Written for reader one, the paper reads as a changelog and no new user can follow "
+            "it. Written for reader two, half of it is build instructions. The choice also sets "
+            "how much of ColliderBit has to be re-explained, which is most of the page budget."),
+        "link": ("From a module to a runner", "cbs-change-ledger.html#3"),
+    })
+
+    questions.append({
+        "group": "framing",
+        "severity": "framing",
+        "title": "What is CBS measured against?",
+        "ask": (
+            "A recast-tool paper is read beside the tools a referee already uses. Nothing in the "
+            "tree compares CBS to any of them, on any axis &mdash; no benchmark, no cross-check "
+            "against another framework&#8217;s yields, no statement of what it does differently. "
+            "That comparison has to be constructed, and it decides which numbers are worth "
+            "producing."),
+        "evidence": [
+            ("no file in the tree names a comparison framework or benchmarks against one",
+             "searched at HEAD"),
+            (f"what CBS actually inherits and exposes is the ColliderBit likelihood machinery and "
+             f"a {reg.get('head')}-analysis library &mdash; not event generation or detector "
+             f"simulation, which are Pythia&#8217;s and BuckFast&#8217;s",
+             "ledger &middot; themes"),
+            ("the histogram signal regions are the one mechanism with no obvious equivalent "
+             "elsewhere: a binned distribution becoming per-bin likelihood terms",
+             "cbs-histograms.json"),
+        ],
+        "consequence": (
+            "Compared on event throughput or detector fidelity, CBS loses to tools built for it. "
+            "Compared on <i>what you can do with the result</i> &mdash; correlated likelihoods, "
+            "per-bin signal regions, a machine-readable contract &mdash; the comparison is "
+            "favourable and mostly unoccupied. Choosing the axis is the same act as choosing the "
+            "thesis above."),
+        "link": ("Results as a data contract", "cbs-change-ledger.html#7"),
+    })
 
     # ---- 1. check_histogram -------------------------------------------
     consumers = hist.get("consumers", [])
@@ -393,30 +551,29 @@ def build_questions(data: dict) -> list[dict]:
     # ---- 4. the defaults file ------------------------------------------
     defaults = yaml_data.get("defaults", {})
     questions.append({
-        "group": "reproducibility",
-        "severity": "rerun",
-        "title": "Where does a reader get the default settings?",
+        "group": "release",
+        "severity": "release",
+        "title": "Ship the default cards, and make a run self-describing",
         "ask": (
             f"The three-layer merge &mdash; global defaults, per-analysis card, user file &mdash; "
-            f"is the headline simplification of the new configuration. The defaults file at the "
-            f"bottom of it is <strong>not in the repository</strong>: the whole "
-            f"<code>CBS_yaml/</code> directory is gitignored, and a missing defaults file is a "
-            f"silent fallback rather than an error."),
+            f"is the headline simplification of the new configuration, and the cards go into the "
+            f"release. <b>The task is not the packaging.</b> It is that a missing defaults file is "
+            f"a silent fallback rather than an error, so a run whose cards did not load looks "
+            f"exactly like one whose cards did."),
         "evidence": [
-            (f"<code>{esc(defaults.get('path', 'CBS_yaml/CBS_defaults.yaml'))}</code> exists in the "
-             f"worktree, {defaults.get('lines', {}).get('code', '?')} lines of settings, "
-             f"<strong>tracked: {defaults.get('tracked')}</strong>",
-             "cbs-yaml-config.json &middot; defaults"),
-            ("<code>CBS_yaml/*</code> ignored",
+            (f"<code>{esc(defaults.get('path', 'CBS_yaml/CBS_defaults.yaml'))}</code>, "
+             f"{defaults.get('lines', {}).get('code', '?')} lines of settings, currently ignored "
+             f"by git &mdash; a packaging step, not a question",
              f".gitignore:{data['gitignore_cbs_yaml']}"),
             ("absent defaults return silently rather than failing, so the run proceeds on "
              "whatever the compiled-in values happen to be", "solo_input.cpp"),
         ],
         "consequence": (
-            "Every number in the paper was produced under a set of defaults that ships with "
-            "nobody. Either commit the file and cite it, or print the resolved settings into the "
-            "output JSON so a run is self-describing. The second is cheaper and also fixes the "
-            "previous question."),
+            "Two cheap fixes, and the second is the one that matters: fail loudly when the cards "
+            "are missing, and <b>write the resolved settings into the output JSON</b> so every "
+            "run states the configuration it actually ran under. That also settles the "
+            "<code>check_histogram</code> question above without anyone having to remember to "
+            "write the flag down."),
         "link": ("User YAML", "cbs-yaml-config.html"),
     })
 
@@ -424,14 +581,15 @@ def build_questions(data: dict) -> list[dict]:
     policy = yaml_data.get("policy", {})
     counts = yaml_data.get("counts", {})
     questions.append({
-        "group": "reproducibility",
-        "severity": "text",
-        "title": "Which settings does CBS overrule, and which do nothing at all?",
+        "group": "placement",
+        "severity": "placement",
+        "title": "What does the configuration section actually document?",
         "ask": (
+            f"Every tool paper has a settings table, and CBS&#8217;s is not a list of keys. "
             f"{len(policy)} keys are overwritten in <code>solo.cpp</code> after the user file is "
-            f"read, so setting them in YAML has no effect. A further "
-            f"<strong>{counts.get('dead', 0)}</strong> keys are read by no source file at either "
-            f"ref. Both kinds look exactly like working settings in an example file."),
+            f"read, so setting them in YAML has no effect; a further "
+            f"<strong>{counts.get('dead', 0)}</strong> are read by no source file at all. A table "
+            f"that lists them as options is worse than no table."),
         "evidence": [
             (f"<code>{key}</code> forced to <code>{esc(info['value'])}</code>"
              + (f" &mdash; {esc(info['why'])}" if info.get("why") else ""),
@@ -446,53 +604,63 @@ def build_questions(data: dict) -> list[dict]:
              "cbs-yaml-config.json &middot; counts"),
         ],
         "consequence": (
-            "<code>run_convergence_checks</code> being forced to <code>false</code> makes the "
-            "whole convergence block inert &mdash; a reader tuning those thresholds is tuning "
-            "nothing. A configuration table in the paper that lists dead keys as options is "
-            "worse than no table."),
+            "The interesting row is <code>run_convergence_checks</code>, forced to "
+            "<code>false</code> as deliberate CBS policy: the whole convergence block is inert, so "
+            "a reader tuning those thresholds is tuning nothing. Whatever the paper says about "
+            "configuration has to distinguish <i>yours</i>, <i>defaulted</i>, <i>overruled</i> and "
+            "<i>dead</i> &mdash; four categories, not one list."),
         "link": ("User YAML", "cbs-yaml-config.html"),
     })
 
-    # ---- 6. backend versions -------------------------------------------
+    # ---- release: contur version ---------------------------------------
     contur = pkg.get("contur_check", {})
     head_contur = contur.get("head", {})
+    decls = data["contur_declarations"]
+    versions = sorted({d["version"] for d in decls}
+                      | {head_contur.get("cmake_version")} - {None})
     questions.append({
-        "group": "reproducibility",
-        "severity": "decision",
-        "title": "Which backend versions is the paper claiming?",
+        "group": "release",
+        "severity": "release",
+        "title": "Make the Contur version agree with itself",
         "ask": (
-            "A software paper carries a version table. At HEAD the tree does not agree with "
-            "itself about at least one entry: cmake and the frontend name different Contur "
-            "versions, and the patch cmake points at does not exist."),
+            f"A tool paper carries a version table, and one row cannot currently be written "
+            f"truthfully. At HEAD, <strong>{len(decls) + 1} declaration sites name "
+            f"{len(versions)} different Contur versions</strong>, and the patch cmake points at "
+            f"does not exist in the tree. Purely a merge artefact: HEAD is the only one of four "
+            f"refs that disagrees with itself."),
         "evidence": [
-            (f"<code>{ref}</code>: cmake says <code>{info.get('cmake_version')}</code>; "
-             + ("no patch line (deliberately absent)" if info.get("patch_referenced") is None
-                else f"patch <code>{esc(Path(info['patch_referenced']).name)}</code> "
-                     f"<strong>{'present' if info.get('patch_exists') else 'missing'}</strong>")
-             + f"; self-consistent: <strong>{'yes' if info.get('consistent') else 'no'}</strong>",
-             f"cmake/backends.cmake:{info.get('cmake_line')}")
-            for ref, info in contur.items()
+            (f"cmake says <code>{head_contur.get('cmake_version')}</code>, pointing at "
+             f"<code>{esc(Path(head_contur['patch_referenced']).name) if head_contur.get('patch_referenced') else '&mdash;'}</code> "
+             f"&mdash; <strong>missing</strong>",
+             f"cmake/backends.cmake:{head_contur.get('cmake_line')}"),
+        ] + [
+            (f"<code>{esc(d['source'])}</code> says <code>{d['version']}</code>",
+             f"{d['source']}:{d['line']}" if d["line"] else d["source"])
+            for d in decls
+        ] + [
+            (f"the other three refs are each self-consistent: "
+             + ", ".join(f"<code>{ref}</code> {info.get('cmake_version')}"
+                         for ref, info in contur.items() if ref != "head"),
+             "cbs-package-matrix.json"),
         ],
         "consequence": (
-            f"HEAD is the only ref of the four that is internally inconsistent here. Fix it "
-            f"before the version table is written, or the table records a configuration that "
-            f"cannot be built."),
+            "Pick a version, delete the other declarations, and the row writes itself. Left alone, "
+            "the version table records a configuration that cannot be built."),
         "link": ("Package matrix", "cbs-change-ledger.html#12"),
     })
 
-    # ---- 7. name migration ---------------------------------------------
-    reg = rename.get("registered", {})
+    # ---- placement: the migration mapping -------------------------------
     files = rename.get("files", {})
     debt = rename.get("yaml_debt", [])
     questions.append({
-        "group": "compatibility",
-        "severity": "decision",
-        "title": "What happens to an existing user&#8217;s YAML?",
+        "group": "placement",
+        "severity": "placement",
+        "title": "Where does the old-to-new name mapping live?",
         "ask": (
-            f"<strong>{len(reg.get('retired', []))} registered analysis names were retired.</strong> "
-            f"Any input file naming one of them now fails. The migration is documented in the "
-            f"source as per-file comments, which is the one place a user with a broken YAML will "
-            f"not look."),
+            f"<strong>{len(reg.get('retired', []))} registered analysis names were retired</strong>, "
+            f"so any input file naming one of them now fails. Today the mapping exists only as "
+            f"per-file comments in the source &mdash; the one place a user with a broken YAML will "
+            f"not look. It is too long for the body and too load-bearing to omit."),
         "evidence": [
             (f"{len(reg.get('retired', []))} names retired, "
              f"{len(reg.get('introduced', []))} introduced, "
@@ -508,16 +676,17 @@ def build_questions(data: dict) -> list[dict]:
             for d in debt
         ],
         "consequence": (
-            "Decide whether CBS accepts old names with a deprecation warning or breaks cleanly. "
-            "Either is defensible; silence is not. If it breaks, the paper needs the mapping as "
-            "an appendix or a cited machine-readable file &mdash; not a comment in a .cpp."),
+            "Three options and they are not equivalent: an appendix table, a cited "
+            "machine-readable file, or aliases in the code so old names keep working with a "
+            "deprecation warning. The third makes the other two optional and is the only one that "
+            "helps a user who does not read the paper at all."),
         "link": ("Naming migration", "cbs-rename-migration.html"),
     })
 
-    # ---- 8. the JSON contract -------------------------------------------
+    # ---- placement: the JSON contract -----------------------------------
     questions.append({
-        "group": "interface",
-        "severity": "decision",
+        "group": "placement",
+        "severity": "placement",
         "title": "Is the output JSON a specified interface, or an implementation detail?",
         "ask": (
             f"The output carries <code>schema_version</code> "
@@ -546,15 +715,16 @@ def build_questions(data: dict) -> list[dict]:
     scripts_present = [n for n, ok in dist["scripts"].items() if ok]
     pct = round(100 * dist["hepforge"] / dist["urls"]) if dist["urls"] else 0
     questions.append({
-        "group": "distribution",
-        "severity": "decision",
-        "title": "What installation route does the paper tell a reader to take?",
+        "group": "release",
+        "severity": "release",
+        "title": "Give the installation route a name, and take HepForge off the critical path",
         "ask": (
             f"CBS declares one module and <strong>{len(dist['cbs_deps'])} dependencies</strong> "
             f"({', '.join(f'<code>{d}</code>' for d in dist['cbs_deps'])}). The build system in "
             f"front of it declares <strong>{dist['backends']}</strong> backends, and "
             f"<strong>{dist['hepforge']} of {dist['urls']}</strong> download URLs ({pct}%) point "
-            f"at a single host. Nothing tells a reader which of the two numbers applies to them."),
+            f"at a single host. Nothing tells a reader which of the two numbers applies to them. "
+            f"Slide 14 has the full argument; the checklist part is small."),
         "evidence": [
             (f"<code>add_standalone(CBS &hellip; MODULES {esc(dist['cbs_modules'])} "
              f"DEPENDENCIES {esc(' '.join(dist['cbs_deps']))})</code>",
@@ -568,40 +738,11 @@ def build_questions(data: dict) -> list[dict]:
              f"cmake/standalones.cmake:{dist['lld_line']}"),
         ],
         "consequence": (
-            "The cheapest fix is a paragraph: name the minimal dependency set, and point at the "
-            "tarball-mirror scripts that are already in the tree. The real fix is a container or "
-            "conda recipe, so that most readers never build at all."),
+            "Two paragraphs and a preset: name the minimal dependency set, and point at the "
+            "tarball-mirror scripts that are already in the tree and already undocumented. The "
+            "larger move &mdash; a container or conda recipe, so most readers never build at all "
+            "&mdash; is a real decision and it is on slide 14, not here."),
         "link": ("Build and distribution", "cbs-change-ledger.html#14"),
-    })
-
-    # ---- 10. scope --------------------------------------------------------
-    feats = data["features"]
-    cbs_only = [f for f in feats if f["master"] == 0 and f["head"] > 0]
-    questions.append({
-        "group": "scope",
-        "severity": "decision",
-        "title": "What does &ldquo;CBS&rdquo; name, and against which baseline?",
-        "ask": (
-            f"This whole project is scoped to <em>what changed on this branch</em>, so it is "
-            f"baselined at the merge-base. A paper is scoped to <em>what CBS is</em>, which is "
-            f"the delta against released GAMBIT. Those are different sets, and the gap is not "
-            f"small: capabilities that predate the branch point are invisible here but are "
-            f"squarely part of what the paper describes."),
-        "evidence": [
-            (f"<code>{f['term']}</code> &mdash; master {f['master']} files, merge-base "
-             f"{f['base']}, HEAD {f['head']} &mdash; {f['where']}", "ColliderBit tree")
-            for f in feats
-        ] + [
-            (f"{len(cbs_only)} of {len(feats)} probed capabilities are absent from master "
-             f"entirely, and this deck mentions none of them",
-             "scope gap"),
-        ],
-        "consequence": (
-            "Answer this first. It decides whether the paper&#8217;s change list starts at the "
-            "merge-base (in which case ONNX and MET-significance belong to somebody else&#8217;s "
-            "paper) or at master (in which case they are CBS features that are currently "
-            "undocumented in every artefact here)."),
-        "link": ("What counts as my change", "cbs-change-ledger.html#2"),
     })
 
     return questions
@@ -611,13 +752,20 @@ def build_questions(data: dict) -> list[dict]:
 
 
 def question_html(questions: list[dict]) -> str:
+    # Rendering walks GROUPS, so a question tagged with a group that is not
+    # listed there would vanish from the page without any error. Catch it.
+    known = {group_id for group_id, _, _ in GROUPS}
+    orphans = sorted({q["group"] for q in questions} - known)
+    if orphans:
+        raise SystemExit(f"questions tagged with unknown groups: {orphans}")
+
     out = []
     number = 0
     for group_id, group_title, group_blurb in GROUPS:
         members = [q for q in questions if q["group"] == group_id]
         if not members:
             continue
-        out.append('<section class="qgroup">')
+        out.append(f'<section class="qgroup {group_id}">')
         out.append(f'<p class="kicker">{esc(group_id)}</p>')
         out.append(f"<h2>{group_title}</h2>")
         out.append(f'<p class="source">{group_blurb}</p>')
@@ -657,10 +805,13 @@ PAGE_CSS = """
   .q-head .unit-title { flex:1 1 420px; }
   .q-sev { border:1px solid currentColor; border-radius:3px; font:10.5px var(--font-mono);
            letter-spacing:.8px; padding:3px 8px; text-transform:uppercase; white-space:nowrap; }
+  .sev-frame { color:var(--accent); background:var(--accent-tint); }
   .sev-num { color:#93513f; background:var(--red-tint); }
-  .sev-run { color:var(--accent); background:var(--accent-tint); }
   .sev-dec { color:#4a6fa5; background:#eef3fb; }
   .sev-txt { color:var(--green); background:var(--green-tint); }
+  /* The release group is a checklist, not a debate: same card, quieter. */
+  .qgroup.release .q { background:var(--paper-2); }
+  .qgroup.release .q-cons { background:#fff; }
   .q-ask { color:var(--muted); font-size:15.5px; line-height:1.62; margin:0 0 13px; max-width:96ch; }
   .q-ask strong, .q-cons strong { color:var(--ink); font-weight:600; }
   .q-ev { margin:0 0 13px; }
@@ -694,17 +845,19 @@ __PAGE_CSS__
   <p class="eyebrow">ColliderBit Solo &middot; paper punch-list</p>
   <h1>What the paper still has to answer</h1>
   <p class="intro">
-    Every other page in this project documents what CBS does. This one is the residue: the
-    questions that came up while writing those pages and that the source cannot settle on its
-    own. <strong>__N__ questions</strong> in __N_GROUPS__ groups, ordered by what they cost if
-    they stay unanswered &mdash; from settings that change the published yields, down to a
-    paragraph that is merely missing.
+    Every other page in this project documents what CBS does. This one is the residue.
+    <strong>__N_OPEN__ of the __N__ items are genuinely open</strong> &mdash; they ask what the
+    paper is for, and what its numbers depend on. The rest are on the list only because they are
+    currently load-bearing for one of those answers; they have obvious fixes and a release does
+    several of them by itself, so they are set apart at the bottom rather than dressed up as
+    questions.
   </p>
   <div class="meta">
     <span>refs <strong>__BASE__</strong> &rarr; <strong>__HEAD__</strong>, master <strong>__MASTER__</strong></span>
     <span>evidence from <strong>__N_PAGES__</strong> generated data files</span>
+    <span>__N_FRAMING__ decide what the paper is</span>
     <span>__N_NUMBERS__ affect published numbers</span>
-    <span>generated by <strong>__SCRIPT__</strong></span>
+    <span>__N_RELEASE__ are tasks, not questions</span>
   </div>
   <div class="note">
     The questions are ours &mdash; editorial judgement about what a paper owes a reader. Every
@@ -764,8 +917,9 @@ def render_html(data: dict, questions: list[dict]) -> str:
     for q in questions:
         by_sev[q["severity"]] = by_sev.get(q["severity"], 0) + 1
 
-    cards = [f'<div class="card accent"><span class="n">{len(questions)}</span>'
-             f'<span class="label">open questions</span></div>']
+    open_count = len(questions) - by_sev.get("release", 0)
+    cards = [f'<div class="card accent"><span class="n">{open_count}</span>'
+             f'<span class="label">genuinely open</span></div>']
     for key, (label, _) in SEVERITY.items():
         cards.append(f'<div class="card"><span class="n">{by_sev.get(key, 0)}</span>'
                      f'<span class="label">{label}</span></div>')
@@ -782,9 +936,12 @@ def render_html(data: dict, questions: list[dict]) -> str:
         "__CSS__": css,
         "__PAGE_CSS__": PAGE_CSS,
         "__N__": str(len(questions)),
+        "__N_OPEN__": str(open_count),
         "__N_GROUPS__": str(groups_used),
         "__N_PAGES__": str(len(data["pages_read"])),
+        "__N_FRAMING__": str(by_sev.get("framing", 0)),
         "__N_NUMBERS__": str(by_sev.get("numbers", 0)),
+        "__N_RELEASE__": str(by_sev.get("release", 0)),
         "__BASE__": esc(data["refs"]["base"]),
         "__HEAD__": esc(data["refs"]["head"]),
         "__MASTER__": esc(data["refs"]["master"]),
