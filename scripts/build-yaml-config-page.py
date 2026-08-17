@@ -340,27 +340,50 @@ def annotated_example_text(text: str, side: str, data: dict) -> str:
                 ])
                 dead_note_added = True
             annotated.append(line)
+        annotated.extend([
+            "",
+            "  # Jet definitions had to be supplied explicitly in the old standalone YAML.",
+            "  jet_collections:",
+            "    antikt_R04:",
+            "      algorithm: antikt",
+            "      R: 0.4",
+            "      recombination_scheme: E_scheme",
+            "      strategy: Best",
+            "  jet_collection_taus: antikt_R04",
+        ])
         return "\n".join(annotated)
 
     if side == "after":
+        # Keep the generated example focused on the active batch input.  The
+        # source YAML still carries several historical, commented-out
+        # single-file alternatives; showing all of them makes the example
+        # look like a mixture of mutually exclusive configurations.  Retain
+        # one explicit single-file alternative below instead.
+        cleaned_lines = []
+        yaml_started = False
         for line in lines:
-            annotated.append(line)
-            if line.strip() == "settings:":
+            stripped = line.strip()
+            if not yaml_started:
+                if stripped in {"analyses:", "settings:"}:
+                    yaml_started = True
+                else:
+                    continue
+            if re.match(r"^\s*#\s*-?\s*CMS_SUS_", line):
+                continue
+            if re.match(r"^\s*#\s*(event_file|cross_section_fb):", line):
+                continue
+            cleaned_lines.append(line)
+        lines = cleaned_lines
+
+        for line in lines:
+            if line.strip().startswith("# jet_collections"):
                 annotated.extend([
-                    "  # CHANGE MAP (documentation comments):",
-                    "  # OPTIONAL PROGRAM DEFAULTS: absent getValueOrDef keys use the",
-                    "  # program/default-card value; this does not remove required inputs.",
-                    "  # CBS POLICY / NOT USER-CONTROLLED: solo.cpp overwrites",
-                    "  # - min_nEvents=1000",
-                    "  # - max_nEvents=INT_MAX",
-                    "  # - run_convergence_checks=false",
-                    "  # ABSENT HERE BUT STILL SUPPORTED: event_file and top-level",
-                    "  # cross_section_* belong to single-file mode; this example uses processes/files.",
-                    "  # OMITTED AS INERT LEGACY CONVERGENCE:",
-                    *[f"  # - {key}" for key in CONVERGENCE_KEYS],
-                    "  # OMITTED AS DEAD KEYS (no C++ reader):",
-                    *[f"  # - {key}" for key in dead_keys],
+                    "  # SINGLE-FILE ALTERNATIVE (replace the processes block above):",
+                    "  # event_file: /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singletB_2000_50K.hepmc",
+                    "  # cross_section_fb: 17.564",
+                    "  # cross_section_fractional_uncert: 0.20  # replace with the appropriate value",
                 ])
+            annotated.append(line)
         return "\n".join(annotated)
 
     raise ValueError(f"unknown example side: {side}")
@@ -515,17 +538,17 @@ __CSS__
   <p class="source">Left: <code>__ORIG_PATH__</code> at the baseline. Right: <code>__NEW_PATH__</code> today. The YAML is retained and annotated in place so the examples show what is optional, forced by CBS, inert, or absent only because this example uses batch input. Counts exclude blank and comment lines &mdash; __COUNT_NOTE__</p>
     <div class="example-grid">
       <div class="example-col">
-        <p class="example-h"><span class="tag-plain">before</span> __ORIG_CODE__ lines of settings</p>
-        <p class="example-note">Every setting inline. <strong>No jet configuration at all</strong> &mdash; jets were not something a user could describe.</p>
+        <p class="example-h"><span class="tag-plain">before</span> __ORIG_CODE__ lines of settings + explicit jet configuration</p>
+        <p class="example-note">The historical standalone YAML, including the explicit jet configuration expected by the old <code>solo.cpp</code> path:</p>
         <pre class="unit-hunks json-block">__ORIG_TEXT__</pre>
       </div>
       <div class="example-col">
         <p class="example-h"><span class="tag-sr">after</span> __NEW_CODE__ lines of settings</p>
-        <p class="example-note">The analysis, the cross-section and its files, four switches. Inline comments mark optional defaults, forced CBS policy, inert legacy keys, dead keys, and single-file fields that are simply not used by this batch example.</p>
+    <p class="example-note">The analysis, the cross-section and its files, four switches, plus one explicit single-file alternative.</p>
         <pre class="unit-hunks json-block">__NEW_TEXT__</pre>
       </div>
     </div>
-    <p class="diagram-note"><strong>The shape of the change is not &ldquo;shorter&rdquo;.</strong> This branch <em>added</em> a required setting the original never had &mdash; <code>jet_collections</code>, read with <code>getValue</code> so a missing one throws &mdash; and jet configuration is verbose: three collections is 22 lines. Left alone, every user file would have grown. The default card exists to absorb the requirement this branch created, and separately the convergence block that used to be the user&#8217;s business stopped being the user&#8217;s business. Those are two different movements and the file diff shows neither.</p>
+    <p class="diagram-note"><strong>The shape of the change is not &ldquo;shorter&rdquo;.</strong> The historical standalone example omitted <code>jet_collections</code>, but the old standalone code already expected that setting from the user. Current CBS keeps the jet definitions required in the merged settings while allowing <code>CBS_defaults.yaml</code> to supply them, so the main user file can stay compact. Separately, the convergence block that used to be the user&#8217;s business stopped being the user&#8217;s business. Those are two different movements and the file diff shows neither.</p>
   </section>
 
   <section id="where">
@@ -559,7 +582,7 @@ __CSS__
       <thead><tr><th style="width:28%">Key</th><th style="width:16%">Who decides</th><th>Value in the shipped example</th></tr></thead>
       <tbody>__ADDED_ROWS__</tbody>
     </table></div>
-    <p class="diagram-note">Note which one is <em>required</em>: <code>jet_collections</code>. The original ran without it because the jet definition was not configurable; now it must be present or <code>Utils.hpp:96</code> throws. That single change is what makes the default card necessary rather than merely convenient.</p>
+    <p class="diagram-note">Note which one is <em>required</em>: <code>jet_collections</code>. The old standalone path expected the user to provide it explicitly; current CBS still requires it in the merged settings, but <code>CBS_defaults.yaml</code> can now supply it before the lookup. If neither source provides it, <code>Utils.hpp:96</code> throws.</p>
   </section>
 
   <section id="check-histogram">

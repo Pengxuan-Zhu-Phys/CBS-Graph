@@ -131,11 +131,11 @@
   <section id="files">
     <p class="kicker">01 &#183; the two files</p>
     <h2>What a user actually writes</h2>
-    <p class="source">Left: <code>ColliderBit/examples/solo_example.yaml</code> at the baseline. Right: <code>CBS_yaml/ATLAS_EXOT_2019_04.yaml</code> today. The YAML is retained and annotated in place so the examples show what is optional, forced by CBS, inert, or absent only because this example uses batch input. Counts exclude blank and comment lines &mdash; 33 and 37 lines raw, which points the wrong way: the current file carries 20 comment and blank lines against the original’s 4, so counting everything makes the shorter file look longer.</p>
+  <p class="source">Left: <code>ColliderBit/examples/solo_example.yaml</code> at the baseline. Right: <code>CBS_yaml/ATLAS_EXOT_2019_04.yaml</code> today. The YAML is retained and annotated in place so the examples show what is optional, forced by CBS, inert, or absent only because this example uses batch input. Counts exclude blank and comment lines &mdash; 33 and 37 lines raw, which points the wrong way: the current file carries 20 comment and blank lines against the original’s 4, so counting everything makes the shorter file look longer.</p>
     <div class="example-grid">
       <div class="example-col">
-        <p class="example-h"><span class="tag-plain">before</span> 29 lines of settings</p>
-        <p class="example-note">Every setting inline. <strong>No jet configuration at all</strong> &mdash; jets were not something a user could describe.</p>
+        <p class="example-h"><span class="tag-plain">before</span> 29 lines of settings + explicit jet configuration</p>
+        <p class="example-note">The historical standalone YAML, including the explicit jet configuration expected by the old <code>solo.cpp</code> path:</p>
         <pre class="unit-hunks json-block"># Simple example input file for running CBS
 # Pat Scott May 2019
 
@@ -161,64 +161,38 @@ settings:
   cross_section_pb: 1.0
   cross_section_fractional_uncert: 0.2
   use_lognormal_distribution_for_1d_systematic: true
-  # LEGACY / INERT IN CURRENT CBS:
-  # These settings may still parse, but solo.cpp forces
-  # run_convergence_checks=false, so they no longer control early stopping.
-  # - events_between_convergence_checks
-  # - target_fractional_uncert
-  # - halt_when_systematic_dominated
-  # - all_analyses_must_converge
-  # - all_SR_must_converge
+# LEGACY / INERT IN CURRENT CBS:
+# These settings may still parse, but solo.cpp forces
+# run_convergence_checks=false, so they no longer control early stopping.
   events_between_convergence_checks: 5000
   target_fractional_uncert: 0.3
   halt_when_systematic_dominated: true
   all_analyses_must_converge: false
   all_SR_must_converge: false
-  # DEAD KEYS / NO C++ READER IN THE CURRENT TREE:
-  # - covariance_marg_convthres_abs
-  # - covariance_marg_convthres_rel
-  # - covariance_nsamples_start
+# DEAD KEYS / NO C++ READER IN THE CURRENT TREE:
+# - covariance_marg_convthres_abs
+# - covariance_marg_convthres_rel
+# - covariance_nsamples_start
   covariance_marg_convthres_abs: 0.05
   covariance_marg_convthres_rel: 0.05
   covariance_nsamples_start: 100000
-</pre>
+
+  # Jet definitions had to be supplied explicitly in the old standalone YAML.
+  jet_collections:
+    antikt_R04:
+      algorithm: antikt
+      R: 0.4
+      recombination_scheme: E_scheme
+      strategy: Best
+  jet_collection_taus: antikt_R04</pre>
       </div>
       <div class="example-col">
         <p class="example-h"><span class="tag-sr">after</span> 17 lines of settings</p>
-        <p class="example-note">The analysis, the cross-section and its files, four switches. Inline comments mark optional defaults, forced CBS policy, inert legacy keys, dead keys, and single-file fields that are simply not used by this batch example.</p>
-        <pre class="unit-hunks json-block"># Simple example input file for running CBS
-# Pat Scott May 2019
-
-#TP 19th Jul 2019 - just fiddled slightly with the original to take a hepmc file from
-#the ATLAS_0Lep analysis (generated in PYTHIA) which we are using to verify CBS.
-#Settings adjusted accordingly.
-
-#EDIT TP Jul 22nd - using input from GAMBIT to esnure consistency.generate
-
-analyses:
+    <p class="example-note">The analysis, the cross-section and its files, four switches, plus one explicit single-file alternative.</p>
+        <pre class="unit-hunks json-block">analyses:
   - ATLAS_EXOT_2019_04
-  # - CMS_SUS_19_012
 
 settings:
-  # CHANGE MAP (documentation comments):
-  # OPTIONAL PROGRAM DEFAULTS: absent getValueOrDef keys use the
-  # program/default-card value; this does not remove required inputs.
-  # CBS POLICY / NOT USER-CONTROLLED: solo.cpp overwrites
-  # - min_nEvents=1000
-  # - max_nEvents=INT_MAX
-  # - run_convergence_checks=false
-  # ABSENT HERE BUT STILL SUPPORTED: event_file and top-level
-  # cross_section_* belong to single-file mode; this example uses processes/files.
-  # OMITTED AS INERT LEGACY CONVERGENCE:
-  # - events_between_convergence_checks
-  # - target_fractional_uncert
-  # - halt_when_systematic_dominated
-  # - all_analyses_must_converge
-  # - all_SR_must_converge
-  # OMITTED AS DEAD KEYS (no C++ reader):
-  # - covariance_marg_convthres_abs
-  # - covariance_marg_convthres_rel
-  # - covariance_nsamples_start
   debug: true
   seed: 1337
   check_cutflow: true
@@ -231,21 +205,18 @@ settings:
         - /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singleB_1200_10K_01.hepmc
         - /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singleB_1200_10K_02.hepmc
         - /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singleB_1200_10K_03.hepmc
-  # event_file: /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singletB_1200_50K.hepmc
-  # cross_section_fb: 37.38
-  # event_file: /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singletB_1600_50K.hepmc
-  # cross_section_fb: 22.705
+
+  # SINGLE-FILE ALTERNATIVE (replace the processes block above):
   # event_file: /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singletB_2000_50K.hepmc
   # cross_section_fb: 17.564
-
+  # cross_section_fractional_uncert: 0.20  # replace with the appropriate value
   # jet_collections, including VRTrackJets, are supplied by CBS_defaults.yaml
   # for ATLAS_EXOT_2019_04. Add them here only to override the defaults.
   output: ./runs/CBS_result.json
-  screen_output: true
-</pre>
+  screen_output: true</pre>
       </div>
     </div>
-    <p class="diagram-note"><strong>The shape of the change is not &ldquo;shorter&rdquo;.</strong> This branch <em>added</em> a required setting the original never had &mdash; <code>jet_collections</code>, read with <code>getValue</code> so a missing one throws &mdash; and jet configuration is verbose: three collections is 22 lines. Left alone, every user file would have grown. The default card exists to absorb the requirement this branch created, and separately the convergence block that used to be the user&#8217;s business stopped being the user&#8217;s business. Those are two different movements and the file diff shows neither.</p>
+    <p class="diagram-note"><strong>The shape of the change is not &ldquo;shorter&rdquo;.</strong> The historical standalone example omitted <code>jet_collections</code>, but the old standalone code already expected that setting from the user. Current CBS keeps the jet definitions required in the merged settings while allowing <code>CBS_defaults.yaml</code> to supply them, so the main user file can stay compact. Separately, the convergence block that used to be the user&#8217;s business stopped being the user&#8217;s business. Those are two different movements and the file diff shows neither.</p>
   </section>
 
   <section id="where">
@@ -298,7 +269,7 @@ settings:
 <tr><td><code>jet_collections</code></td><td><span class="status unchanged">still yours</span></td><td><code></code></td></tr>
 <tr><td><code>jet_collection_taus</code></td><td><span class="status unchanged">conditional</span></td><td><code>antikt_R04</code></td></tr></tbody>
     </table></div>
-    <p class="diagram-note">Note which one is <em>required</em>: <code>jet_collections</code>. The original ran without it because the jet definition was not configurable; now it must be present or <code>Utils.hpp:96</code> throws. That single change is what makes the default card necessary rather than merely convenient.</p>
+    <p class="diagram-note">Note which one is <em>required</em>: <code>jet_collections</code>. The old standalone path expected the user to provide it explicitly; current CBS still requires it in the merged settings, but <code>CBS_defaults.yaml</code> can now supply it before the lookup. If neither source provides it, <code>Utils.hpp:96</code> throws.</p>
   </section>
 
   <section id="check-histogram">
