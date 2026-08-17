@@ -131,7 +131,7 @@
   <section id="files">
     <p class="kicker">01 &#183; the two files</p>
     <h2>What a user actually writes</h2>
-    <p class="source">Left: <code>ColliderBit/examples/solo_example.yaml</code> at the baseline. Right: <code>CBS_yaml/ATLAS_EXOT_2019_04.yaml</code> today. Counts exclude blank and comment lines &mdash; 33 and 37 lines raw, which points the wrong way: the current file carries 20 comment and blank lines against the original’s 4, so counting everything makes the shorter file look longer.</p>
+    <p class="source">Left: <code>ColliderBit/examples/solo_example.yaml</code> at the baseline. Right: <code>CBS_yaml/ATLAS_EXOT_2019_04.yaml</code> today. The YAML is retained and annotated in place so the examples show what is optional, forced by CBS, inert, or absent only because this example uses batch input. Counts exclude blank and comment lines &mdash; 33 and 37 lines raw, which points the wrong way: the current file carries 20 comment and blank lines against the original’s 4, so counting everything makes the shorter file look longer.</p>
     <div class="example-grid">
       <div class="example-col">
         <p class="example-h"><span class="tag-plain">before</span> 29 lines of settings</p>
@@ -161,11 +161,23 @@ settings:
   cross_section_pb: 1.0
   cross_section_fractional_uncert: 0.2
   use_lognormal_distribution_for_1d_systematic: true
+  # LEGACY / INERT IN CURRENT CBS:
+  # These settings may still parse, but solo.cpp forces
+  # run_convergence_checks=false, so they no longer control early stopping.
+  # - events_between_convergence_checks
+  # - target_fractional_uncert
+  # - halt_when_systematic_dominated
+  # - all_analyses_must_converge
+  # - all_SR_must_converge
   events_between_convergence_checks: 5000
   target_fractional_uncert: 0.3
   halt_when_systematic_dominated: true
   all_analyses_must_converge: false
   all_SR_must_converge: false
+  # DEAD KEYS / NO C++ READER IN THE CURRENT TREE:
+  # - covariance_marg_convthres_abs
+  # - covariance_marg_convthres_rel
+  # - covariance_nsamples_start
   covariance_marg_convthres_abs: 0.05
   covariance_marg_convthres_rel: 0.05
   covariance_nsamples_start: 100000
@@ -173,7 +185,7 @@ settings:
       </div>
       <div class="example-col">
         <p class="example-h"><span class="tag-sr">after</span> 17 lines of settings</p>
-        <p class="example-note">The analysis, the cross-section and its files, four switches. The convergence block is gone and the jet collections are never named.</p>
+        <p class="example-note">The analysis, the cross-section and its files, four switches. Inline comments mark optional defaults, forced CBS policy, inert legacy keys, dead keys, and single-file fields that are simply not used by this batch example.</p>
         <pre class="unit-hunks json-block"># Simple example input file for running CBS
 # Pat Scott May 2019
 
@@ -188,6 +200,25 @@ analyses:
   # - CMS_SUS_19_012
 
 settings:
+  # CHANGE MAP (documentation comments):
+  # OPTIONAL PROGRAM DEFAULTS: absent getValueOrDef keys use the
+  # program/default-card value; this does not remove required inputs.
+  # CBS POLICY / NOT USER-CONTROLLED: solo.cpp overwrites
+  # - min_nEvents=1000
+  # - max_nEvents=INT_MAX
+  # - run_convergence_checks=false
+  # ABSENT HERE BUT STILL SUPPORTED: event_file and top-level
+  # cross_section_* belong to single-file mode; this example uses processes/files.
+  # OMITTED AS INERT LEGACY CONVERGENCE:
+  # - events_between_convergence_checks
+  # - target_fractional_uncert
+  # - halt_when_systematic_dominated
+  # - all_analyses_must_converge
+  # - all_SR_must_converge
+  # OMITTED AS DEAD KEYS (no C++ reader):
+  # - covariance_marg_convthres_abs
+  # - covariance_marg_convthres_rel
+  # - covariance_nsamples_start
   debug: true
   seed: 1337
   check_cutflow: true

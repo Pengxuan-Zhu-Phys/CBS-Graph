@@ -62,6 +62,8 @@ h3{margin:0 0 8px;font-size:18px;letter-spacing:-.01em}
 .card{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:13px 15px}
 .card p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.62}
 .card p + p{margin-top:8px}
+.card ul{margin:8px 0 0 18px;padding:0;color:var(--muted);font-size:15px;line-height:1.55}
+.card li + li{margin-top:3px}
 .card.blue{border-top:3px solid var(--blue)}
 .card.orange{border-top:3px solid var(--orange)}
 .card.green{border-top:3px solid var(--green)}
@@ -503,34 +505,47 @@ svg{display:block;max-width:100%;height:auto}
     <div class="grid g4">
       <div class="stat"><div class="n">29 → 17</div><div class="k">lines of settings</div>
         <div class="s">blank and comment lines excluded</div></div>
-      <div class="stat"><div class="n">7</div><div class="k">now program defaults</div>
-        <div class="s"><code>getValueOrDef</code> — omit them freely</div></div>
+      <div class="stat"><div class="n">7</div><div class="k">optional program defaults</div>
+        <div class="s"><code>getValueOrDef</code>: missing key → code/default-card value; required keys stay required</div></div>
       <div class="stat"><div class="n">3</div><div class="k">still yours</div>
         <div class="s">event source and cross-section</div></div>
-      <div class="stat"><div class="n">3 / 3</div><div class="k">CBS policy / dead</div>
-        <div class="s">forced in solo.cpp · never read at all</div></div>
+      <div class="stat"><div class="n">3 + 3</div><div class="k">forced policy + dead keys</div>
+        <div class="s">3 overwritten by <code>solo.cpp</code> · 3 have no C++ reader</div></div>
     </div>
 
     <div class="grid g2" style="align-items:start;margin-top:16px">
       <div class="card red">
         <span class="tag red">CBS policy</span>
         <h3 style="margin-top:10px">Three keys the YAML cannot reach</h3>
-        <p><code>solo.cpp</code> builds the options node from the user settings and then writes
-        over it: <code>min_nEvents = 1000</code>, <code>max_nEvents = INT_MAX</code>, and
-        <code>run_convergence_checks = false</code> — the last one commented
-        <i>“always process all events provided by the user”</i>.</p>
+        <p><b>These are forced policy keys, not dead code.</b> <code>solo.cpp</code> builds the
+        options node from the user settings and then writes over it:</p>
+        <ul>
+          <li><code>min_nEvents</code> → <code>1000</code></li>
+          <li><code>max_nEvents</code> → <code>INT_MAX</code></li>
+          <li><code>run_convergence_checks</code> → <code>false</code> — always process all supplied events</li>
+        </ul>
         <p style="margin-top:10px"><b>That makes the whole convergence block inert</b> — five
         keys that still parse, still have defaults, and no longer change what a CBS run does. Old
         files carry them forward silently.</p>
+        <p style="margin-top:10px"><b>Dead keys — no reader in any current C++ file:</b></p>
+        <ul>
+          <li><code>covariance_marg_convthres_abs</code></li>
+          <li><code>covariance_marg_convthres_rel</code></li>
+          <li><code>covariance_nsamples_start</code></li>
+        </ul>
       </div>
       <div class="card blue">
         <span class="tag blue">default cards</span>
         <h3 style="margin-top:10px">Three layers, user wins</h3>
-        <p><code>CBS_defaults.yaml → settings:</code>, then
+        <p>For optional scalar controls, <code>getValueOrDef(default, key)</code> means a missing
+        YAML key falls back to the program default. The lookup happens after
+        <code>CBS_defaults.yaml → settings:</code>, then
         <code>analysis_defaults: &lt;NAME&gt;:</code> merged in the order the analyses appear, then
         the user file. <code>merge_yaml_nodes</code> (<code>solo_input.cpp:62</code>) recurses
         through maps but <b>replaces scalars and sequences whole</b> — override a list, never
         append to one.</p>
+        <p style="margin-top:10px"><b>This does not make required inputs optional:</b> the event
+        source, cross-section and required jet configuration are still validated separately.</p>
         <p style="margin-top:10px">So <code>ATLAS_EXOT_2019_04.yaml</code> names <b>no jet
         collection at all</b>, including the variable-R one the analysis needs: the card supplies
         22 lines the user never sees.</p>

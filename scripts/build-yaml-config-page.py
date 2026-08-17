@@ -35,7 +35,7 @@ EVENTLOOP = "ColliderBit/src/ColliderBit_eventloop.cpp"
 UTILS = "ColliderBit/include/gambit/ColliderBit/Utils.hpp"
 
 # The new-style user file lives outside git (CBS_yaml/* is ignored), so it is
-# read from the worktree if present and quoted verbatim.
+# read from the worktree if present and quoted with explanatory annotations.
 NEW_STYLE = "CBS_yaml/ATLAS_EXOT_2019_04.yaml"
 DEFAULTS = "CBS_yaml/CBS_defaults.yaml"
 
@@ -302,6 +302,70 @@ def esc(text) -> str:
     return html.escape(str(text), quote=True)
 
 
+CONVERGENCE_KEYS = (
+    "events_between_convergence_checks",
+    "target_fractional_uncert",
+    "halt_when_systematic_dominated",
+    "all_analyses_must_converge",
+    "all_SR_must_converge",
+)
+
+
+def annotated_example_text(text: str, side: str, data: dict) -> str:
+    """Add inline comments that classify settings in the two examples."""
+    if not text:
+        return text
+
+    dead_keys = [row["key"] for row in data["rows"] if row["where"] == "dead"]
+    lines = text.splitlines()
+    annotated = []
+
+    if side == "before":
+        convergence_note_added = False
+        dead_note_added = False
+        for line in lines:
+            match = re.match(r"^\s*([A-Za-z_]\w*):", line)
+            key = match.group(1) if match else ""
+            if key in CONVERGENCE_KEYS and not convergence_note_added:
+                annotated.extend([
+                    "# LEGACY / INERT IN CURRENT CBS:",
+                    "# These settings may still parse, but solo.cpp forces",
+                    "# run_convergence_checks=false, so they no longer control early stopping.",
+                ])
+                convergence_note_added = True
+            if key in dead_keys and not dead_note_added:
+                annotated.extend([
+                    "# DEAD KEYS / NO C++ READER IN THE CURRENT TREE:",
+                    *[f"# - {key}" for key in dead_keys],
+                ])
+                dead_note_added = True
+            annotated.append(line)
+        return "\n".join(annotated)
+
+    if side == "after":
+        for line in lines:
+            annotated.append(line)
+            if line.strip() == "settings:":
+                annotated.extend([
+                    "  # CHANGE MAP (documentation comments):",
+                    "  # OPTIONAL PROGRAM DEFAULTS: absent getValueOrDef keys use the",
+                    "  # program/default-card value; this does not remove required inputs.",
+                    "  # CBS POLICY / NOT USER-CONTROLLED: solo.cpp overwrites",
+                    "  # - min_nEvents=1000",
+                    "  # - max_nEvents=INT_MAX",
+                    "  # - run_convergence_checks=false",
+                    "  # ABSENT HERE BUT STILL SUPPORTED: event_file and top-level",
+                    "  # cross_section_* belong to single-file mode; this example uses processes/files.",
+                    "  # OMITTED AS INERT LEGACY CONVERGENCE:",
+                    *[f"  # - {key}" for key in CONVERGENCE_KEYS],
+                    "  # OMITTED AS DEAD KEYS (no C++ reader):",
+                    *[f"  # - {key}" for key in dead_keys],
+                ])
+        return "\n".join(annotated)
+
+    raise ValueError(f"unknown example side: {side}")
+
+
 WHERE_CLASS = {"user": "unchanged", "program": "added-in-right",
                "conditional": "unchanged", "CBS policy": "added-in-right",
                "dead": "", "unread": ""}
@@ -448,7 +512,7 @@ __CSS__
   <section id="files">
     <p class="kicker">01 &#183; the two files</p>
     <h2>What a user actually writes</h2>
-    <p class="source">Left: <code>__ORIG_PATH__</code> at the baseline. Right: <code>__NEW_PATH__</code> today. Counts exclude blank and comment lines &mdash; __COUNT_NOTE__</p>
+  <p class="source">Left: <code>__ORIG_PATH__</code> at the baseline. Right: <code>__NEW_PATH__</code> today. The YAML is retained and annotated in place so the examples show what is optional, forced by CBS, inert, or absent only because this example uses batch input. Counts exclude blank and comment lines &mdash; __COUNT_NOTE__</p>
     <div class="example-grid">
       <div class="example-col">
         <p class="example-h"><span class="tag-plain">before</span> __ORIG_CODE__ lines of settings</p>
@@ -457,7 +521,7 @@ __CSS__
       </div>
       <div class="example-col">
         <p class="example-h"><span class="tag-sr">after</span> __NEW_CODE__ lines of settings</p>
-        <p class="example-note">The analysis, the cross-section and its files, four switches. The convergence block is gone and the jet collections are never named.</p>
+        <p class="example-note">The analysis, the cross-section and its files, four switches. Inline comments mark optional defaults, forced CBS policy, inert legacy keys, dead keys, and single-file fields that are simply not used by this batch example.</p>
         <pre class="unit-hunks json-block">__NEW_TEXT__</pre>
       </div>
     </div>
@@ -657,8 +721,8 @@ def render_html(data: dict) -> str:
         "__ORIG_CODE__": str(data["original"]["lines"]["code"]),
         "__NEW_CODE__": str(data["new_style"]["lines"]["code"]),
         "__COUNT_NOTE__": count_note,
-        "__ORIG_TEXT__": esc(data["original"]["text"]),
-        "__NEW_TEXT__": esc(data["new_style"]["text"]),
+        "__ORIG_TEXT__": esc(annotated_example_text(data["original"]["text"], "before", data)),
+        "__NEW_TEXT__": esc(annotated_example_text(data["new_style"]["text"], "after", data)),
         "__KEY_ROWS__": key_rows(data),
         "__WHERE_NOTE__": where_note,
         "__POLICY_ROWS__": policy_rows(data),
