@@ -196,11 +196,11 @@ python3 scripts/build-change-ledger.py \
 生成：
 
 - `dependences/cbs-change-ledger.json`：逐文件的改动量、提交数、作者列表和归属分类（`own` / `mixed` / `upstream`）；
-- `dependences/cbs-change-ledger.html`：13 页自包含 slide，内联 SVG 流程图，不依赖任何 CDN；按 `P` 展开全部页面以便打印成 PDF。
+- `dependences/cbs-change-ledger.html`：14 页自包含 slide，内联 SVG 流程图，不依赖任何 CDN；按 `P` 展开全部页面以便打印成 PDF。
 
 基线是 `private-SUSYRun2` 与开发分支的共同祖先，而不是 `gambit/master`——因为要回答的问题是"相对合作者手上的源分支我改了什么"。`gambit/master` 已完全合入，分支落后 0 个提交。
 
-### Histogram 与 Histogram SR（slide 8 + 专页）
+### Histogram 与 Histogram SR（slide 9 + 专页）
 
 ```bash
 python3 scripts/build-histogram-page.py \
@@ -218,7 +218,7 @@ python3 scripts/build-histogram-page.py \
 
 另外，`ATLAS_EXOT_2019_07` 里还留着 **16 行注释掉的手写 per-bin `add_result`**（L313–328），观测数和本底都是硬编码字面量——那就是这套机制替换掉的东西，before/after 在同一个文件里看得见。
 
-### 命名迁移（slide 9 + 专页）
+### 命名迁移（slide 10 + 专页）
 
 分析从"描述看什么"的名字迁移到论文报告号。
 
@@ -247,7 +247,21 @@ python3 scripts/build-rename-migration-page.py \
 - `ATLAS_8TeV_1LEPbb_20invfb` 是唯一保留旧名的物理分析，文件里写了原因：`:D unrenamed, can not find original exp report`。留例外就该这么留——下一个人不用猜是漏了还是故意的。
 - `yaml_files/PX_SUSYRun2_stop.yaml` 里还有 **48 个已经不存在的分析名**，今天跑会在 configure 阶段就挂。这是仓库内部的证据，说明仓库外每一份按名字选分析的配置都有同样的问题、而且没有任何警告。
 
-### 依赖矩阵（slide 10）
+### 用户 YAML：默认卡片（slide 6）
+
+以前一个文件写全部设置，每次运行都要重复 `jet_collections`（`ATLAS_EXOT_2019_04` 光 jet 配置就 **22 行**，三个 collection）。现在三层合并，**用户永远覆盖**：
+
+1. `CBS_defaults.yaml → settings:`（全局）
+2. `CBS_defaults.yaml → analysis_defaults: <分析名>:`（**每个分析一张默认卡**，按 YAML 里分析出现的顺序合并）
+3. 用户输入文件
+
+`merge_yaml_nodes`（`solo_input.cpp:62`）对 map 递归下去，但**标量和序列是整体替换**——覆盖列表可以，往列表里追加不行。
+
+结果：`CBS_yaml/ATLAS_EXOT_2019_04.yaml` 里 jet 配置 **22 → 0 行**，连分析依赖的那个 VR collection 都不用写。
+
+**但默认文件本身没进仓库。** `.gitignore:50` 忽略 `CBS_yaml/*`，`git ls-files CBS_yaml/` 是空的。新 clone 上五个查找位置全落空，`apply_default_settings` **静默**原样返回用户设置（`solo_input.cpp:130`），最后死在 `Utils.hpp:96`：*"Could not find jet_collections option. Please provide this in the YAML file"*——**把用户指向他自己的文件，而不是缺失的默认文件**。和 FastJet 探测那条是同一个形状。
+
+### 依赖矩阵（slide 12）
 
 哪些程序包相对 `gambit/master` 和 `private-SUSYRun2` 有更新：
 

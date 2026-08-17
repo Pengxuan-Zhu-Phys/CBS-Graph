@@ -489,9 +489,73 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 6 · result framework ============ -->
+<!-- ============ 6 · configuration ============ -->
 <section class="slide">
   <p class="eyebrow">06 · new capability</p>
+  <h2>The user YAML stopped repeating itself</h2>
+  <p class="lede">Before, one file carried everything — every run spelled out its own jet
+  collections and thresholds. Now <b>each analysis ships a default card</b> and the user file says
+  only what is specific to this run.</p>
+  <div class="body">
+    <div class="grid g2" style="align-items:start">
+      <div class="card">
+        <span class="tag gray">before · SUSYRun2</span>
+        <h3 style="margin-top:10px">One flat file</h3>
+        <p>Every setting inline, whether or not the user had an opinion about it. The jet
+        configuration for <code>ATLAS_EXOT_2019_04</code> alone is <b>22 lines</b> — three
+        collections, each with algorithm, radius, recombination scheme and strategy — and it is
+        the same 22 lines in every file that runs that analysis.</p>
+        <p style="margin-top:10px">Copy-paste is the only mechanism, and a collection definition
+        that drifts between two files is invisible until the yields disagree.</p>
+      </div>
+      <div class="card blue">
+        <span class="tag blue">after · CBS</span>
+        <h3 style="margin-top:10px">Three layers, user wins</h3>
+        <dl style="margin-top:6px">
+          <div class="kv"><dt>1 · global</dt><dd><code>CBS_defaults.yaml → settings:</code></dd></div>
+          <div class="kv"><dt>2 · per analysis</dt><dd><code>analysis_defaults: &lt;NAME&gt;:</code> — merged in YAML analysis order</dd></div>
+          <div class="kv"><dt>3 · user</dt><dd>the input file — always overrides</dd></div>
+        </dl>
+        <p style="margin-top:10px"><code>merge_yaml_nodes</code> (<code>solo_input.cpp:62</code>)
+        recurses through maps. <b>Scalars and sequences are replaced whole</b> — you override a
+        list, you never append to it.</p>
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:16px">
+      <div class="stat"><div class="n">22 → 0</div><div class="k">jet-config lines in the user file</div>
+        <div class="s">for ATLAS_EXOT_2019_04</div></div>
+      <div class="stat"><div class="n">5</div><div class="k">defaults-file lookup steps</div>
+        <div class="s">YAML key → env var → three paths</div></div>
+      <div class="stat"><div class="n">0</div><div class="k">defaults files in the repo</div>
+        <div class="s">see the box below</div></div>
+    </div>
+
+    <div class="note" style="margin-top:16px">
+      <b>What the user file now looks like.</b> <code>CBS_yaml/ATLAS_EXOT_2019_04.yaml</code>
+      declares the analysis, the process cross-section and its HepMC files, and four switches. It
+      names <b>no jet collection at all</b> — including the variable-R one the analysis depends on.
+      Escape hatches run both ways: <code>cbs_defaults_file:</code> or
+      <code>$CBS_DEFAULTS_FILE</code> to point elsewhere, <code>use_cbs_defaults: false</code> to
+      opt out entirely.
+    </div>
+
+    <div class="note red" style="margin-top:14px">
+      <b>The defaults file is not in the repository.</b> <code>.gitignore:50</code> ignores
+      <code>CBS_yaml/*</code>, and <code>git ls-files CBS_yaml/</code> is empty — so a fresh clone
+      has no <code>CBS_defaults.yaml</code>. The lookup then fails all five candidates and
+      <code>apply_default_settings</code> returns the user settings <b>unchanged and silently</b>
+      (<code>solo_input.cpp:130</code>). The run dies later at <code>Utils.hpp:96</code> with
+      <i>“Could not find jet_collections option. Please provide this in the YAML file”</i> — which
+      points the user at their own file rather than at the missing defaults. Same shape as the
+      FastJet probe on slide 12: a silent fallback whose first visible symptom names the wrong thing.
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7 · result framework ============ -->
+<section class="slide">
+  <p class="eyebrow">07 · new capability</p>
   <h2>Results became a data contract</h2>
   <p class="lede">Cutflows, histograms and signal regions used to be per-analysis conventions living
   as C++ objects. They are now shared types with a versioned serialisation.</p>
@@ -587,9 +651,9 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 7 · analyses ============ -->
+<!-- ============ 8 · analyses ============ -->
 <section class="slide">
-  <p class="eyebrow">07 · analysis layer</p>
+  <p class="eyebrow">08 · analysis layer</p>
   <h2>Twelve new analyses</h2>
   <p class="lede">Ten are implemented and registered; one is a partial recast; one is an honest
   skeleton. The distinction matters more than the count.</p>
@@ -608,7 +672,7 @@ svg{display:block;max-width:100%;height:auto}
         <tr><td class="name mono">ATLAS_EXOT_2019_04</td><td class="num">353</td><td><span class="tag blue">local</span></td><td><span class="tag green">done</span></td><td>VLQ · VRTrackJets · m<sub>VLB</sub> histogram SR</td></tr>
         <tr><td class="name mono">ATLAS_EXOT_2021_35</td><td class="num">337</td><td><span class="tag orange">mixed</span></td><td><span class="tag green">done</span></td><td>shape variables</td></tr>
         <tr><td class="name mono">ATLAS_EXOT_2016_017</td><td class="num">189</td><td><span class="tag orange">mixed</span></td><td><span class="tag green">done</span></td><td>single-lepton Wb · forward jets</td></tr>
-        <tr><td class="name mono">ATLAS_EXOT_2018_60</td><td class="num">38</td><td><span class="tag blue">local</span></td><td><span class="tag red">skeleton</span></td><td>registration only — see slide 12</td></tr>
+        <tr><td class="name mono">ATLAS_EXOT_2018_60</td><td class="num">38</td><td><span class="tag blue">local</span></td><td><span class="tag red">skeleton</span></td><td>registration only — see slide 13</td></tr>
       </tbody>
     </table>
     <div class="grid g3" style="margin-top:18px">
@@ -625,9 +689,9 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 8 · histograms ============ -->
+<!-- ============ 9 · histograms ============ -->
 <section class="slide">
-  <p class="eyebrow">08 · analysis layer</p>
+  <p class="eyebrow">09 · analysis layer</p>
   <h2>Histograms, and histogram signal regions</h2>
   <p class="lede">One new class does two jobs. Booked one way it is a diagnostic object.
   Booked the other way <b>every bin becomes a signal region that enters the likelihood</b> —
@@ -686,9 +750,9 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 9 · rename migration ============ -->
+<!-- ============ 10 · rename migration ============ -->
 <section class="slide">
-  <p class="eyebrow">09 · analysis layer</p>
+  <p class="eyebrow">10 · analysis layer</p>
   <h2>The naming migration</h2>
   <p class="lede">Analyses moved from names describing what they looked at to the report number of
   the paper they reproduce. <b>The file count understates it.</b> 75 files move; what a YAML
@@ -751,9 +815,9 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 10 · event pipeline ============ -->
+<!-- ============ 11 · event pipeline ============ -->
 <section class="slide">
-  <p class="eyebrow">10 · new capability</p>
+  <p class="eyebrow">11 · new capability</p>
   <h2>Variable-R jets, threaded end to end</h2>
   <p class="lede">Previously a per-analysis construction. Now declared in YAML and carried through
   the same conversion path as fixed-R jets — +1,098 lines, no upstream contribution.</p>
@@ -831,9 +895,9 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 11 · dependencies ============ -->
+<!-- ============ 12 · dependencies ============ -->
 <section class="slide">
-  <p class="eyebrow">11 · dependencies</p>
+  <p class="eyebrow">12 · dependencies</p>
   <h2>Which packages moved, and who moved them</h2>
   <p class="lede">Four places record a backend version — <b>cmake</b>, the <b>frontend header</b>, the
   <b>BOSS wrapper tree</b>, the <b>patch directory</b>. Across the three branches they mostly agree.
@@ -931,9 +995,9 @@ svg{display:block;max-width:100%;height:auto}
   </p>
 </section>
 
-<!-- ============ 12 · boundaries ============ -->
+<!-- ============ 13 · boundaries ============ -->
 <section class="slide">
-  <p class="eyebrow">12 · completion boundary</p>
+  <p class="eyebrow">13 · completion boundary</p>
   <h2>What is not finished</h2>
   <p class="lede">Registered in the framework is not the same as reproducing the published analysis.
   Three things should be said plainly rather than discovered later.</p>
@@ -979,9 +1043,9 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 13 · next ============ -->
+<!-- ============ 14 · next ============ -->
 <section class="slide">
-  <p class="eyebrow">13 · next</p>
+  <p class="eyebrow">14 · next</p>
   <h2>Where this goes</h2>
   <div class="body">
     <div class="grid g2">
@@ -1023,7 +1087,7 @@ svg{display:block;max-width:100%;height:auto}
       <div class="stat"><div class="n">10</div><div class="k">files · runner</div><div class="s">No upstream equivalent</div></div>
       <div class="stat"><div class="n">14</div><div class="k">files · jet pipeline</div><div class="s">No upstream equivalent</div></div>
       <div class="stat"><div class="n">226</div><div class="k">commits authored</div><div class="s">of 606 on the branch</div></div>
-      <div class="stat"><div class="n">2</div><div class="k">open caveats</div><div class="s">Stated on slide 12</div></div>
+      <div class="stat"><div class="n">2</div><div class="k">open caveats</div><div class="s">Stated on slide 13</div></div>
     </div>
   </div>
   <p class="foot">
@@ -1038,7 +1102,7 @@ svg{display:block;max-width:100%;height:auto}
 <nav class="nav">
   <button id="prev" aria-label="Previous slide">←</button>
   <button id="next" aria-label="Next slide">→</button>
-  <span class="counter mono" id="counter">1 / 13</span>
+  <span class="counter mono" id="counter">1 / 14</span>
   <span class="mono" id="title">CBS change ledger</span>
   <span class="dots" id="dots"></span>
 </nav>

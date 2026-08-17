@@ -81,6 +81,19 @@
     .ln { color:var(--soft); font-family:var(--font-mono); font-size:9px; display:block; margin-top:3px; }
     .delta { color:var(--accent); font-family:var(--font-mono); font-size:10px; }
     .grid-2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); gap:16px; align-items:start; }
+    .example-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin-top:6px; }
+    .example-col { background:#fff; border:1px solid var(--rule); border-radius:8px; padding:14px 16px; }
+    .example-h { align-items:center; display:flex; flex-wrap:wrap; gap:8px; font:600 13px var(--font-mono); color:var(--ink); margin:0 0 10px; }
+    .tag-plain,.tag-sr { border:1px solid currentColor; border-radius:3px; font:8px var(--font-mono);
+      letter-spacing:.9px; padding:2px 6px; text-transform:uppercase; }
+    .tag-plain { color:var(--green); background:var(--green-tint); }
+    .tag-sr { color:var(--accent); background:var(--accent-tint); }
+    .example-note { color:var(--muted); font-size:11.5px; line-height:1.55; margin:11px 0 5px; }
+    .json-block { border:1px solid var(--rule); border-radius:5px; font-size:10px; max-height:520px; overflow:auto; padding:11px 13px; }
+    .plot-figure { background:#fff; border:1px solid var(--rule); border-radius:6px; margin:0; padding:12px; }
+    .plot-figure img { display:block; width:100%; height:auto; border-radius:3px; }
+    .plot-figure figcaption { color:var(--soft); font-size:11px; line-height:1.55; margin-top:9px; }
+    .example-col .unit-hunks { border:1px solid var(--rule); border-radius:5px; font-size:10px; padding:9px 11px; }
     .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
     .mapping-table table { min-width:900px; }
     .grid-2 .mapping-table table { min-width:0; }
@@ -93,7 +106,7 @@
     .status { font-size:9px; font-weight:600; letter-spacing:.04em; }
     .status.added-in-right { color:var(--green); } .status.unchanged { color:#b55c2d; }
     footer { border-top:1px solid var(--rule); color:var(--soft); font-size:10px; margin-top:32px; padding-top:14px; }
-    @media (max-width:900px) { .grid-2 { grid-template-columns:1fr; } .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } .claim-grid { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .grid-2 { grid-template-columns:1fr; } .example-grid { grid-template-columns:1fr; } .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } .claim-grid { grid-template-columns:1fr; } }
     @media (max-width:560px) { h1 { font-size:44px; } }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -104,7 +117,7 @@
   <h1>The naming migration</h1>
   <p class="intro">Every analysis moved from a name describing what it looked at to the report number of the paper it reproduces. The deck quotes the file count. This page carries the other number &mdash; the one a YAML actually depends on &mdash; the full old-to-new table, the files that absorbed several analyses each, and the two analyses whose source says plainly why they did not move.</p>
   <div class="meta"><span><strong>BASELINE</strong> 9c955e3a78</span><span><strong>HEAD</strong> 65aca0890d</span><span><strong>SOURCE</strong> provenance comments + DEFINE_ANALYSIS_FACTORY</span><span><strong>STATIC EVIDENCE</strong> no build / no events processed</span></div>
-  <p class="backlink"><span class="lbl">context</span><span>This page expands <a href="cbs-change-ledger.html#9">slide 8 of the CBS change-ledger deck &#8599;</a>, which summarises the migration in one card. Everything below is read from the worktree at generation time.</span></p>
+  <p class="backlink"><span class="lbl">context</span><span>This page expands <a href="cbs-change-ledger.html#10">slide 8 of the CBS change-ledger deck &#8599;</a>, which summarises the migration in one card. Everything below is read from the worktree at generation time.</span></p>
 
   <div class="summary-grid" aria-label="Summary">
     <div class="card"><span class="n">75</span><span class="label">git-detected renames</span></div>
@@ -350,7 +363,7 @@
     <div class="note">Names, provenance comments and factory registrations are read from the worktree as text. Nothing was compiled, no analysis was instantiated, and no event was processed &mdash; so this page shows that a name changed, not that the analysis behind it still produces the same yields. The similarity percentages come from <code>git diff -M</code> and describe textual overlap only; a 60% move is not evidence that 40% of the physics changed, and the low-similarity entries are worth opening individually before anyone says otherwise.</div>
   </section>
 
-  <p class="backlink" style="margin-top:26px"><span class="lbl">back</span><span>Return to <a href="cbs-change-ledger.html#9">slide 8 &#8599;</a>, or to the <a href="cbs-change-ledger.html#1">start of the deck &#8599;</a>.</span></p>
+  <p class="backlink" style="margin-top:26px"><span class="lbl">back</span><span>Return to <a href="cbs-change-ledger.html#10">slide 8 &#8599;</a>, or to the <a href="cbs-change-ledger.html#1">start of the deck &#8599;</a>.</span></p>
   <footer>Generated by <code>scripts/build-rename-migration-page.py</code>. Baseline <code>9c955e3a78</code>, head <code>65aca0890d</code>.</footer>
 </main>
 </body>
