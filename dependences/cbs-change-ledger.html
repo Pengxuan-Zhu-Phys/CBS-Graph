@@ -492,63 +492,69 @@ svg{display:block;max-width:100%;height:auto}
 <!-- ============ 6 · configuration ============ -->
 <section class="slide">
   <p class="eyebrow">06 · new capability</p>
-  <h2>The user YAML stopped repeating itself</h2>
-  <p class="lede">Before, one file carried everything — every run spelled out its own jet
-  collections and thresholds. Now <b>each analysis ships a default card</b> and the user file says
-  only what is specific to this run.</p>
+  <h2>The user YAML, and what left it</h2>
+  <p class="lede">The original file held 14 settings, all inline, and <b>no jet configuration at
+  all</b>. This branch made jet collections required — then built default cards so nobody writes
+  them. Meanwhile another set of settings quietly stopped being the user’s to decide.</p>
   <div class="body">
-    <div class="grid g2" style="align-items:start">
-      <div class="card">
-        <span class="tag gray">before · SUSYRun2</span>
-        <h3 style="margin-top:10px">One flat file</h3>
-        <p>Every setting inline, whether or not the user had an opinion about it. The jet
-        configuration for <code>ATLAS_EXOT_2019_04</code> alone is <b>22 lines</b> — three
-        collections, each with algorithm, radius, recombination scheme and strategy — and it is
-        the same 22 lines in every file that runs that analysis.</p>
-        <p style="margin-top:10px">Copy-paste is the only mechanism, and a collection definition
-        that drifts between two files is invisible until the yields disagree.</p>
+    <div class="grid g4">
+      <div class="stat"><div class="n">3</div><div class="k">still yours</div>
+        <div class="s">event source and cross-section</div></div>
+      <div class="stat"><div class="n">7</div><div class="k">now program defaults</div>
+        <div class="s"><code>getValueOrDef</code> — omit them freely</div></div>
+      <div class="stat"><div class="n">3</div><div class="k">decided by CBS</div>
+        <div class="s">overwritten whatever the YAML says</div></div>
+      <div class="stat"><div class="n">3</div><div class="k">read by nothing</div>
+        <div class="s">dead in the original too</div></div>
+    </div>
+
+    <div class="grid g2" style="align-items:start;margin-top:16px">
+      <div class="card red">
+        <span class="tag red">CBS policy</span>
+        <h3 style="margin-top:10px">Three keys the YAML cannot reach</h3>
+        <p><code>solo.cpp</code> builds the options node from the user settings and then writes
+        over it: <code>min_nEvents = 1000</code>, <code>max_nEvents = INT_MAX</code>, and
+        <code>run_convergence_checks = false</code> — the last one commented
+        <i>“always process all events provided by the user”</i>.</p>
+        <p style="margin-top:10px"><b>That makes the whole convergence block inert</b> — five
+        keys that still parse, still have defaults, and no longer change what a CBS run does. Old
+        files carry them forward silently.</p>
       </div>
       <div class="card blue">
-        <span class="tag blue">after · CBS</span>
+        <span class="tag blue">default cards</span>
         <h3 style="margin-top:10px">Three layers, user wins</h3>
-        <dl style="margin-top:6px">
-          <div class="kv"><dt>1 · global</dt><dd><code>CBS_defaults.yaml → settings:</code></dd></div>
-          <div class="kv"><dt>2 · per analysis</dt><dd><code>analysis_defaults: &lt;NAME&gt;:</code> — merged in YAML analysis order</dd></div>
-          <div class="kv"><dt>3 · user</dt><dd>the input file — always overrides</dd></div>
-        </dl>
-        <p style="margin-top:10px"><code>merge_yaml_nodes</code> (<code>solo_input.cpp:62</code>)
-        recurses through maps. <b>Scalars and sequences are replaced whole</b> — you override a
-        list, you never append to it.</p>
+        <p><code>CBS_defaults.yaml → settings:</code>, then
+        <code>analysis_defaults: &lt;NAME&gt;:</code> merged in the order the analyses appear, then
+        the user file. <code>merge_yaml_nodes</code> (<code>solo_input.cpp:62</code>) recurses
+        through maps but <b>replaces scalars and sequences whole</b> — override a list, never
+        append to one.</p>
+        <p style="margin-top:10px">So <code>ATLAS_EXOT_2019_04.yaml</code> names <b>no jet
+        collection at all</b>, including the variable-R one the analysis needs: the card supplies
+        22 lines the user never sees.</p>
       </div>
-    </div>
-
-    <div class="grid g3" style="margin-top:16px">
-      <div class="stat"><div class="n">22 → 0</div><div class="k">jet-config lines in the user file</div>
-        <div class="s">for ATLAS_EXOT_2019_04</div></div>
-      <div class="stat"><div class="n">5</div><div class="k">defaults-file lookup steps</div>
-        <div class="s">YAML key → env var → three paths</div></div>
-      <div class="stat"><div class="n">0</div><div class="k">defaults files in the repo</div>
-        <div class="s">see the box below</div></div>
-    </div>
-
-    <div class="note" style="margin-top:16px">
-      <b>What the user file now looks like.</b> <code>CBS_yaml/ATLAS_EXOT_2019_04.yaml</code>
-      declares the analysis, the process cross-section and its HepMC files, and four switches. It
-      names <b>no jet collection at all</b> — including the variable-R one the analysis depends on.
-      Escape hatches run both ways: <code>cbs_defaults_file:</code> or
-      <code>$CBS_DEFAULTS_FILE</code> to point elsewhere, <code>use_cbs_defaults: false</code> to
-      opt out entirely.
     </div>
 
     <div class="note red" style="margin-top:14px">
-      <b>The defaults file is not in the repository.</b> <code>.gitignore:50</code> ignores
-      <code>CBS_yaml/*</code>, and <code>git ls-files CBS_yaml/</code> is empty — so a fresh clone
-      has no <code>CBS_defaults.yaml</code>. The lookup then fails all five candidates and
-      <code>apply_default_settings</code> returns the user settings <b>unchanged and silently</b>
-      (<code>solo_input.cpp:130</code>). The run dies later at <code>Utils.hpp:96</code> with
-      <i>“Could not find jet_collections option. Please provide this in the YAML file”</i> — which
-      points the user at their own file rather than at the missing defaults. Same shape as the
-      FastJet probe on slide 12: a silent fallback whose first visible symptom names the wrong thing.
+      <b>The card itself is not in the repository.</b> <code>.gitignore:50</code> ignores
+      <code>CBS_yaml/*</code> and <code>git ls-files CBS_yaml/</code> is empty. On a fresh clone all
+      five lookup steps fail, <code>apply_default_settings</code> returns the user settings
+      unchanged and <b>silently</b> (<code>solo_input.cpp:130</code>), and the run dies at
+      <code>Utils.hpp:96</code> with <i>“Could not find jet_collections option. Please provide this
+      in the YAML file”</i> — pointing at the user’s file rather than the missing card.
+    </div>
+
+    <div class="deep">
+      <span class="lbl">Line-level companion page</span>
+      <p><a href="cbs-yaml-config.html">The user YAML · before and after ↗</a> puts both files side
+      by side and traces <b>every one of the 14 original settings</b> to the call that reads it
+      today — including the three that were never read by anything, then or now.</p>
+      <div class="units">
+        <a href="cbs-yaml-config.html#files"><b>1</b> the two files</a>
+        <a href="cbs-yaml-config.html#where"><b>2</b> where each went</a>
+        <a href="cbs-yaml-config.html#policy"><b>3</b> CBS policy</a>
+        <a href="cbs-yaml-config.html#added"><b>4</b> what was added</a>
+        <a href="cbs-yaml-config.html#defaults"><b>5</b> the default card</a>
+      </div>
     </div>
   </div>
 </section>

@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The user YAML, before and after</title>
+  <style>
+    :root { --paper:#f5f5f5; --paper-2:#ececec; --ink:#2d3142; --muted:#4f5d75; --soft:#7a8399; --rule:rgba(45,49,66,.12); --accent:#eb6c36; --accent-tint:rgba(235,108,54,.08); --green:#4f8a69; --green-tint:#eef8f1; --red:#93513f; --red-tint:#f3e9e5; --font-sans:'Geist',system-ui,sans-serif; --font-mono:'Geist Mono',ui-monospace,monospace; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:14px/1.55 var(--font-sans); }
+    .frame { max-width:1520px; margin:0 auto; padding:42px 42px 64px; }
+    .eyebrow,.kicker,.meta,.source,.status,th,footer { font-family:var(--font-mono); }
+    .eyebrow { color:var(--muted); font-size:10px; letter-spacing:.16em; text-transform:uppercase; margin:0 0 12px; }
+    h1 { font-family:'Instrument Serif',Georgia,serif; font-size:clamp(42px,5vw,72px); font-weight:400; letter-spacing:-.04em; line-height:.98; margin:0 0 14px; }
+    h2 { font-size:28px; font-weight:600; letter-spacing:-.03em; line-height:1.08; margin:0 0 8px; }
+    p { color:var(--muted); }
+    .intro { max-width:1080px; font-size:15px; line-height:1.65; margin:0 0 18px; }
+    .meta { display:flex; flex-wrap:wrap; gap:8px 18px; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:12px 0; color:var(--muted); font-size:10px; }
+    .meta strong { color:var(--accent); font-weight:600; }
+    .note { border-left:3px solid var(--accent); color:var(--muted); font-size:11px; line-height:1.6; margin:18px 0; max-width:1160px; padding:8px 12px; }
+    .backlink { align-items:baseline; background:#fff; border:1px solid var(--rule); border-left:3px solid var(--accent);
+      border-radius:0 6px 6px 0; color:var(--muted); display:flex; flex-wrap:wrap; font-size:12.5px; gap:4px 12px;
+      line-height:1.6; margin:18px 0 0; max-width:1160px; padding:11px 14px; }
+    .backlink .lbl { color:var(--soft); font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; }
+    .backlink span:last-child { flex:1 1 420px; }
+    .backlink a { border-bottom:1px solid rgba(235,108,54,.42); color:var(--accent); font-weight:600; text-decoration:none; }
+    .backlink a:hover { background:var(--accent-tint); }
+    .summary-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin:22px 0 32px; }
+    .card { background:#fff; border:1px solid var(--rule); border-radius:6px; padding:14px 16px; }
+    .card.accent { border-color:rgba(235,108,54,.45); background:var(--accent-tint); }
+    .card .n { color:var(--ink); display:block; font-size:26px; font-weight:600; letter-spacing:-.04em; line-height:1; margin-bottom:8px; }
+    .card .label { color:var(--soft); font-family:var(--font-mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; }
+    section { border-top:1px solid var(--rule); margin-top:28px; padding:24px 0 0; }
+    .kicker { color:var(--soft); font-size:9px; letter-spacing:.16em; margin:0 0 8px; text-transform:uppercase; }
+    .source { color:var(--soft); font-size:10px; line-height:1.55; margin:0 0 14px; }
+    .diagram-shell { overflow-x:auto; background:#fff; border:1px solid var(--rule); border-radius:8px; padding:8px; }
+    svg { display:block; min-width:1080px; width:100%; height:auto; }
+    svg .zone { fill:rgba(45,49,66,.025); stroke:rgba(45,49,66,.13); stroke-width:1; }
+    svg .zone-label { fill:var(--soft); font:500 10px var(--font-mono); letter-spacing:1.6px; }
+    svg .node .kind { fill:var(--soft); font:500 9px var(--font-mono); letter-spacing:1.2px; }
+    svg .node .title { fill:var(--ink); font:600 12px var(--font-mono); }
+    svg .node .body { fill:var(--muted); font:9px var(--font-mono); }
+    svg .legend-label { fill:var(--soft); font:9px var(--font-mono); letter-spacing:.6px; }
+    svg .detail-edge { fill:none; stroke:var(--muted); stroke-width:1.4; }
+    svg .node.detail-primary rect { fill:#fff; stroke:var(--soft); stroke-width:1.2; }
+    svg .node.detail-data rect { fill:rgba(79,93,117,.08); stroke:var(--soft); stroke-width:1.2; }
+    svg .node.detail-optional rect { fill:#fff; stroke:var(--soft); stroke-width:1.2; stroke-dasharray:5 4; }
+    svg .node.detail-focal rect { fill:var(--accent-tint); stroke:var(--accent); stroke-width:1.6; }
+    svg .node.detail-focal .kind { fill:var(--accent); }
+    .unit-list { display:grid; gap:14px; margin-top:18px; }
+    .unit { border:1px solid var(--rule); border-radius:8px; background:#fff; padding:16px 18px; scroll-margin-top:20px; }
+    .unit:target { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-tint); }
+    .unit-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+    .unit-num { display:grid; place-items:center; width:26px; height:26px; border-radius:50%;
+      border:1.2px solid var(--ink); font:600 13px var(--font-mono); }
+    .unit-title { font-size:16px; font-weight:600; letter-spacing:-.01em; }
+    .unit-kind { padding:2px 7px; border-radius:3px; border:1px solid currentColor;
+      font:8px var(--font-mono); letter-spacing:.9px; text-transform:uppercase;
+      color:#4f8a69; background:var(--green-tint); }
+    .unit-delta { margin-left:auto; font:11px var(--font-mono); color:var(--soft); }
+    .unit-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px 24px; margin:0; }
+    .unit-grid > div { display:flex; gap:10px; border-bottom:1px solid var(--rule); padding-bottom:8px; }
+    .unit-grid dt { flex:0 0 46px; margin:2px 0 0; color:var(--soft);
+      font:9px var(--font-mono); letter-spacing:1px; text-transform:uppercase; }
+    .unit-grid dd { margin:0; color:var(--muted); font-size:12.5px; line-height:1.6; }
+    .unit-diff { margin-top:11px; border:1px solid var(--rule); border-radius:6px; background:#fff; }
+    .unit-diff summary { cursor:pointer; padding:9px 13px; color:var(--accent);
+      font:11px var(--font-mono); letter-spacing:.4px; list-style:none; }
+    .unit-diff summary::-webkit-details-marker { display:none; }
+    .unit-diff summary::before { content:"\25b8 "; display:inline-block; width:14px; }
+    .unit-diff[open] summary::before { content:"\25be "; }
+    .unit-diff[open] summary { border-bottom:1px solid var(--rule); }
+    .unit-diff summary:hover { background:rgba(235,108,54,.05); }
+    .unit-hunks { margin:0; padding:12px 14px; overflow-x:auto; font:11px/1.7 var(--font-mono);
+      background:#fff; border:0; color:var(--ink); white-space:pre; }
+    .diagram-note { color:var(--muted); font-size:12px; line-height:1.6; margin:13px 0 0; max-width:1160px; }
+    .claim-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:18px; }
+    .claim { background:#fff; border:1px solid var(--rule); border-left:3px solid var(--accent); border-radius:0 6px 6px 0; padding:13px 16px; }
+    .claim-h { color:var(--ink); font-size:13px; font-weight:600; letter-spacing:-.01em; margin:0 0 6px; }
+    .claim p:last-child { font-size:12px; line-height:1.62; margin:0; }
+    .ln { color:var(--soft); font-family:var(--font-mono); font-size:9px; display:block; margin-top:3px; }
+    .delta { color:var(--accent); font-family:var(--font-mono); font-size:10px; }
+    .grid-2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); gap:16px; align-items:start; }
+    .example-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin-top:6px; }
+    .example-col { background:#fff; border:1px solid var(--rule); border-radius:8px; padding:14px 16px; }
+    .example-h { align-items:center; display:flex; flex-wrap:wrap; gap:8px; font:600 13px var(--font-mono); color:var(--ink); margin:0 0 10px; }
+    .tag-plain,.tag-sr { border:1px solid currentColor; border-radius:3px; font:8px var(--font-mono);
+      letter-spacing:.9px; padding:2px 6px; text-transform:uppercase; }
+    .tag-plain { color:var(--green); background:var(--green-tint); }
+    .tag-sr { color:var(--accent); background:var(--accent-tint); }
+    .example-note { color:var(--muted); font-size:11.5px; line-height:1.55; margin:11px 0 5px; }
+    .json-block { border:1px solid var(--rule); border-radius:5px; font-size:10px; max-height:520px; overflow:auto; padding:11px 13px; }
+    .plot-figure { background:#fff; border:1px solid var(--rule); border-radius:6px; margin:0; padding:12px; }
+    .plot-figure img { display:block; width:100%; height:auto; border-radius:3px; }
+    .plot-figure figcaption { color:var(--soft); font-size:11px; line-height:1.55; margin-top:9px; }
+    .example-col .unit-hunks { border:1px solid var(--rule); border-radius:5px; font-size:10px; padding:9px 11px; }
+    .mapping-table { overflow-x:auto; border:1px solid var(--rule); }
+    .mapping-table table { min-width:900px; }
+    .grid-2 .mapping-table table { min-width:0; }
+    table { border-collapse:collapse; font-size:11px; width:100%; }
+    th,td { border-bottom:1px solid var(--rule); padding:8px 9px; text-align:left; vertical-align:top; }
+    th { background:#ececec; color:var(--muted); font-size:9px; letter-spacing:.08em; text-transform:uppercase; }
+    td code { color:var(--ink); font-family:var(--font-mono); font-size:10px; word-break:break-word; }
+    td.num { text-align:right; font-family:var(--font-mono); white-space:nowrap; }
+    .add { color:var(--green); } .del { color:var(--red); }
+    .status { font-size:9px; font-weight:600; letter-spacing:.04em; }
+    .status.added-in-right { color:var(--green); } .status.unchanged { color:#b55c2d; }
+    footer { border-top:1px solid var(--rule); color:var(--soft); font-size:10px; margin-top:32px; padding-top:14px; }
+    @media (max-width:900px) { .grid-2 { grid-template-columns:1fr; } .example-grid { grid-template-columns:1fr; } .frame { padding:30px 20px 48px; } .summary-grid { grid-template-columns:repeat(2,1fr); } .unit-grid { grid-template-columns:1fr; } .claim-grid { grid-template-columns:1fr; } }
+    @media (max-width:560px) { h1 { font-size:44px; } }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<main class="frame">
+  <p class="eyebrow">ColliderBit Solo &#183; configuration</p>
+  <h1>The user YAML</h1>
+  <p class="intro">The original input file and the one a user writes now, side by side &mdash; and then the question a YAML diff cannot answer: for each setting that used to be in that file, who decides it today. Some are still the user&#8217;s. Some the program now defaults. Three are overwritten by CBS whatever the file says. Three were read by nothing at all, then or now.</p>
+  <div class="meta"><span><strong>BASELINE</strong> 9c955e3a78</span><span><strong>HEAD</strong> 65aca0890d</span><span><strong>METHOD</strong> every key traced to the call that consumes it</span><span><strong>STATIC EVIDENCE</strong> no build / no events processed</span></div>
+  <p class="backlink"><span class="lbl">context</span><span>This page expands <a href="cbs-change-ledger.html#6">slide 6 of the CBS change-ledger deck &#8599;</a>.</span></p>
+
+  <div class="summary-grid" aria-label="Summary">
+    <div class="card"><span class="n">14</span><span class="label">settings in the original</span></div>
+    <div class="card accent"><span class="n">7</span><span class="label">settings now written</span></div>
+    <div class="card"><span class="n">3</span><span class="label">still yours</span></div>
+    <div class="card accent"><span class="n">7</span><span class="label">program defaults</span></div>
+    <div class="card accent"><span class="n">3</span><span class="label">CBS policy</span></div>
+    <div class="card"><span class="n">3</span><span class="label">read by nothing</span></div>
+  </div>
+
+  <section id="files">
+    <p class="kicker">01 &#183; the two files</p>
+    <h2>What a user actually writes</h2>
+    <p class="source">Left: <code>ColliderBit/examples/solo_example.yaml</code> at the baseline. Right: <code>CBS_yaml/ATLAS_EXOT_2019_04.yaml</code> today.</p>
+    <div class="example-grid">
+      <div class="example-col">
+        <p class="example-h"><span class="tag-plain">before</span> 33 lines</p>
+        <p class="example-note">Every setting inline. <strong>No jet configuration at all</strong> &mdash; jets were not something a user could describe.</p>
+        <pre class="unit-hunks json-block"># Simple example input file for running CBS
+# Pat Scott May 2019
+
+analyses:
+  - CMS_13TeV_0LEP_36invfb
+  - CMS_13TeV_1LEPbb_36invfb
+  - CMS_13TeV_2OSLEP_36invfb
+  - CMS_13TeV_2LEPsoft_36invfb
+  - CMS_13TeV_1LEPStop_36invfb
+  - CMS_13TeV_2LEPStop_36invfb
+  - CMS_13TeV_MultiLEP_36invfb
+  - CMS_13TeV_MONOJET_36invfb
+  - ATLAS_13TeV_0LEP_36invfb
+  - ATLAS_13TeV_MultiLEP_36invfb
+  - ATLAS_13TeV_0LEPStop_36invfb
+  - ATLAS_13TeV_2LEPStop_36invfb
+  - ATLAS_13TeV_2bMET_36invfb
+
+settings:
+  debug: true
+  seed: -1
+  event_file: susy10.hepmc
+  cross_section_pb: 1.0
+  cross_section_fractional_uncert: 0.2
+  use_lognormal_distribution_for_1d_systematic: true
+  events_between_convergence_checks: 5000
+  target_fractional_uncert: 0.3
+  halt_when_systematic_dominated: true
+  all_analyses_must_converge: false
+  all_SR_must_converge: false
+  covariance_marg_convthres_abs: 0.05
+  covariance_marg_convthres_rel: 0.05
+  covariance_nsamples_start: 100000
+</pre>
+      </div>
+      <div class="example-col">
+        <p class="example-h"><span class="tag-sr">after</span> 37 lines</p>
+        <p class="example-note">The analysis, the cross-section and its files, four switches. The convergence block is gone and the jet collections are never named.</p>
+        <pre class="unit-hunks json-block"># Simple example input file for running CBS
+# Pat Scott May 2019
+
+#TP 19th Jul 2019 - just fiddled slightly with the original to take a hepmc file from
+#the ATLAS_0Lep analysis (generated in PYTHIA) which we are using to verify CBS.
+#Settings adjusted accordingly.
+
+#EDIT TP Jul 22nd - using input from GAMBIT to esnure consistency.generate
+
+analyses:
+  - ATLAS_EXOT_2019_04
+  # - CMS_SUS_19_012
+
+settings:
+  debug: true
+  seed: 1337
+  check_cutflow: true
+  check_histogram: true
+  processes:
+    - name: EWino
+      cross_section_fb: 37.38
+      cross_section_uncert_fb: 0.001
+      files:
+        - /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singleB_1200_10K_01.hepmc
+        - /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singleB_1200_10K_02.hepmc
+        - /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singleB_1200_10K_03.hepmc
+  # event_file: /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singletB_1200_50K.hepmc
+  # cross_section_fb: 37.38
+  # event_file: /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singletB_1600_50K.hepmc
+  # cross_section_fb: 22.705
+  # event_file: /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singletB_2000_50K.hepmc
+  # cross_section_fb: 17.564
+
+  # jet_collections, including VRTrackJets, are supplied by CBS_defaults.yaml
+  # for ATLAS_EXOT_2019_04. Add them here only to override the defaults.
+  output: ./runs/CBS_result.json
+  screen_output: true
+</pre>
+      </div>
+    </div>
+    <p class="diagram-note"><strong>The shape of the change is not &ldquo;shorter&rdquo;.</strong> This branch <em>added</em> a required setting the original never had &mdash; <code>jet_collections</code>, read with <code>getValue</code> so a missing one throws &mdash; and jet configuration is verbose: three collections is 22 lines. Left alone, every user file would have grown. The default card exists to absorb the requirement this branch created, and separately the convergence block that used to be the user&#8217;s business stopped being the user&#8217;s business. Those are two different movements and the file diff shows neither.</p>
+  </section>
+
+  <section id="where">
+    <p class="kicker">02 &#183; where each setting went</p>
+    <h2>Who decides it now</h2>
+    <p class="source">Every key from the original file, traced to the call that reads it today.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:32%">Setting</th><th style="width:16%">Original value</th><th style="width:16%">Who decides</th><th>Evidence</th></tr></thead>
+      <tbody><tr><td><code>debug</code></td><td><code>true</code></td><td><span class="status added-in-right">program default</span></td><td><code>getValueOrDef(false)</code><span class="ln">solo.cpp:144</span></td></tr>
+<tr><td><code>seed</code></td><td><code>-1</code></td><td><span class="status added-in-right">program default</span></td><td><code>getValueOrDef(-1)</code><span class="ln">solo.cpp:377</span></td></tr>
+<tr><td><code>event_file</code></td><td><code>susy10.hepmc</code></td><td><span class="status unchanged">still yours</span></td><td><code>getValue</code> &mdash; or <code>processes</code><span class="ln">solo_input.cpp:432</span></td></tr>
+<tr><td><code>cross_section_pb</code></td><td><code>1.0</code></td><td><span class="status unchanged">still yours</span></td><td><code>getValue</code> &mdash; or <code>cross_section_fb</code><span class="ln">solo_input.cpp:227</span></td></tr>
+<tr><td><code>cross_section_fractional_uncert</code></td><td><code>0.2</code></td><td><span class="status unchanged">still yours</span></td><td><code>getValue</code> &mdash; or <code>cross_section_uncert_fb / _pb</code><span class="ln">solo_input.cpp:213</span></td></tr>
+<tr><td><code>use_lognormal_distribution_for_1d_systematic</code></td><td><code>true</code></td><td><span class="status added-in-right">program default</span></td><td><code>getValueOrDef(false)</code><span class="ln">solo.cpp:160</span></td></tr>
+<tr><td><code>events_between_convergence_checks</code></td><td><code>5000</code></td><td><span class="status added-in-right">program default</span></td><td><code>getValueOrDef(200)</code><span class="ln">ColliderBit_eventloop.cpp:209</span></td></tr>
+<tr><td><code>target_fractional_uncert</code></td><td><code>0.3</code></td><td><span class="status unchanged">conditional</span></td><td><code>getValue</code> at <code>ColliderBit_eventloop.cpp:197</code> when convergence checks run, else <code>getValueOrDef(0.30)</code><span class="ln">CBS forces the second branch</span></td></tr>
+<tr><td><code>halt_when_systematic_dominated</code></td><td><code>true</code></td><td><span class="status added-in-right">program default</span></td><td><code>getValueOrDef(true)</code><span class="ln">ColliderBit_eventloop.cpp:204</span></td></tr>
+<tr><td><code>all_analyses_must_converge</code></td><td><code>false</code></td><td><span class="status added-in-right">program default</span></td><td><code>getValueOrDef(false)</code><span class="ln">ColliderBit_eventloop.cpp:205</span></td></tr>
+<tr><td><code>all_SR_must_converge</code></td><td><code>false</code></td><td><span class="status added-in-right">program default</span></td><td><code>getValueOrDef(false)</code><span class="ln">ColliderBit_eventloop.cpp:206</span></td></tr>
+<tr><td><code>covariance_marg_convthres_abs</code></td><td><code>0.05</code></td><td><span class="status ">dead key</span></td><td><span class="status">no reader in any .cpp/.hpp</span></td></tr>
+<tr><td><code>covariance_marg_convthres_rel</code></td><td><code>0.05</code></td><td><span class="status ">dead key</span></td><td><span class="status">no reader in any .cpp/.hpp</span></td></tr>
+<tr><td><code>covariance_nsamples_start</code></td><td><code>100000</code></td><td><span class="status ">dead key</span></td><td><span class="status">no reader in any .cpp/.hpp</span></td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">3 of the original settings are still read from the user file and still required. 7 gained a default inside the program, so omitting them is now legal &mdash; that is the bulk of why the new file is shorter. And 3 were read by <strong>nothing at all</strong>, at either ref: <code>covariance_marg_convthres_abs</code>, <code>covariance_marg_convthres_rel</code>, <code>covariance_nsamples_start</code>. They were already inert when the original example shipped them, which is worth knowing before anyone copies that file forward as a reference.</p>
+  </section>
+
+  <section id="policy">
+    <p class="kicker">03 &#183; what CBS decides for you</p>
+    <h2>Three settings the YAML cannot reach</h2>
+    <p class="source"><code>solo.cpp</code> builds the collider options node from the user settings and then writes over it.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:26%">Key</th><th style="width:22%">Forced to</th><th style="width:10%">Line</th><th>Reason in the source</th></tr></thead>
+      <tbody><tr><td><code>min_nEvents</code></td><td><code>(long long)(1000)</code></td><td class="num">383</td><td>&#8212;</td></tr>
+<tr><td><code>max_nEvents</code></td><td><code>(long long)(std::numeric_limits&lt;int&gt;::max())</code></td><td class="num">384</td><td>&#8212;</td></tr>
+<tr><td><code>run_convergence_checks</code></td><td><code>false</code></td><td class="num">386</td><td>CBS policy: always process all events provided by the user (no convergence-based early stop).</td></tr></tbody>
+    </table></div>
+    <p class="diagram-note"><strong>This is the one to say aloud.</strong> <code>run_convergence_checks</code> is forced to <code>false</code>, so CBS always processes every event the user supplied and never stops early. That makes the whole convergence group from the original file inert &mdash; <code>target_fractional_uncert</code>, <code>halt_when_systematic_dominated</code>, <code>all_analyses_must_converge</code>, <code>all_SR_must_converge</code>, <code>events_between_convergence_checks</code> are still read, still have defaults, and no longer change what a CBS run does. The event loop was edited to match: <code>ColliderBit_eventloop.cpp:197</code> keeps <code>target_fractional_uncert</code> mandatory when convergence checks are on, and falls back to <code>0.30</code> when they are off, with the comment <em>&ldquo;For explicit no-convergence runs (CBS policy), this value is unused.&rdquo;</em></p>
+    <p class="diagram-note">A user carrying an old file forward will not be told any of this. The keys still parse, so nothing warns; they simply stop meaning anything. Worth a line in the CBS documentation rather than leaving it to be discovered.</p>
+  </section>
+
+  <section id="added">
+    <p class="kicker">04 &#183; what the branch added</p>
+    <h2>New keys the original never had</h2>
+    <p class="source">Present in the shipped example at HEAD, absent at the baseline.</p>
+    <div class="mapping-table"><table>
+      <thead><tr><th style="width:28%">Key</th><th style="width:16%">Who decides</th><th>Value in the shipped example</th></tr></thead>
+      <tbody><tr><td><code>check_cutflow</code></td><td><span class="status added-in-right">program default</span></td><td><code>false</code></td></tr>
+<tr><td><code>output</code></td><td><span class="status added-in-right">program default</span></td><td><code>./runs/CBS_result.json</code></td></tr>
+<tr><td><code>screen_output</code></td><td><span class="status added-in-right">program default</span></td><td><code>true</code></td></tr>
+<tr><td><code>jet_collections</code></td><td><span class="status unchanged">still yours</span></td><td><code></code></td></tr>
+<tr><td><code>jet_collection_taus</code></td><td><span class="status unchanged">conditional</span></td><td><code>antikt_R04</code></td></tr></tbody>
+    </table></div>
+    <p class="diagram-note">Note which one is <em>required</em>: <code>jet_collections</code>. The original ran without it because the jet definition was not configurable; now it must be present or <code>Utils.hpp:96</code> throws. That single change is what makes the default card necessary rather than merely convenient.</p>
+  </section>
+
+  <section id="defaults">
+    <p class="kicker">05 &#183; the default card</p>
+    <h2>Three layers, user wins</h2>
+    <p class="source"><code>CBS_yaml/CBS_defaults.yaml</code>, 32 lines in the working tree.</p>
+    <div class="grid-2">
+      <div>
+        <div class="mapping-table"><table>
+          <thead><tr><th style="width:34%">Layer</th><th>What it contributes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1 &#183; global</strong></td><td><code>CBS_defaults.yaml &rarr; settings:</code></td></tr>
+            <tr><td><strong>2 &#183; per analysis</strong></td><td><code>analysis_defaults: &lt;NAME&gt;:</code>, merged in the order the analyses appear in the user's YAML</td></tr>
+            <tr><td><strong>3 &#183; user</strong></td><td>the input file &mdash; always last, always wins</td></tr>
+          </tbody>
+        </table></div>
+        <p class="diagram-note"><code>merge_yaml_nodes</code> (<code>solo_input.cpp:62</code>) recurses through maps, but <strong>scalars and sequences are replaced whole</strong>: a list can be overridden, never appended to. Lookup for the defaults file runs five steps &mdash; <code>cbs_defaults_file:</code>, <code>$CBS_DEFAULTS_FILE</code>, then three paths &mdash; and <code>use_cbs_defaults: false</code> opts out entirely.</p>
+      </div>
+      <div>
+        <p class="example-note">The card for one analysis, verbatim.</p>
+        <pre class="unit-hunks json-block"># CBS default settings.
+#
+# Merge order:
+#   1. top-level settings below
+#   2. settings for each requested analysis, in YAML analysis order
+#   3. user input YAML settings
+#
+# User settings always override these defaults.
+
+settings:
+  jet_collection_taus: antikt_R04
+
+analysis_defaults:
+  ATLAS_EXOT_2019_04:
+    settings:
+      jet_collections:
+        antikt_R04:
+          algorithm: &quot;antikt&quot;
+          R: 0.4
+          recombination_scheme: &quot;E_scheme&quot;
+          strategy: &quot;Best&quot;
+        antikt_R10:
+          algorithm: &quot;antikt&quot;
+          R: 1.0
+          recombination_scheme: &quot;E_scheme&quot;
+          strategy: &quot;Best&quot;
+        VRTrackJets:
+          algorithm: &quot;VariableR&quot;
+          rho: 30.0
+          Rmin: 0.02
+          Rmax: 0.40
+          pt_min: 5.0
+</pre>
+      </div>
+    </div>
+    <div class="note"><strong>The defaults file is not in the repository.</strong> <code>.gitignore</code> ignores <code>CBS_yaml/*</code> and <code>git ls-files CBS_yaml/</code> is empty, so a fresh clone has no <code>CBS_defaults.yaml</code>. All five lookup steps then fail and <code>apply_default_settings</code> returns the user settings unchanged and <strong>silently</strong> (<code>solo_input.cpp:130</code>). The run dies later at <code>Utils.hpp:96</code> with <em>&ldquo;Could not find jet_collections option. Please provide this in the YAML file&rdquo;</em> &mdash; pointing the user at their own file rather than at the missing defaults. Committing the card, or printing one line when the lookup fails, would close this.</div>
+  </section>
+
+  <section>
+    <p class="kicker">06 &#183; boundary</p>
+    <h2>What this page does not tell you</h2>
+    <div class="note">Each key is placed by the call that reads it, found by scanning four source files for <code>getValue</code> and <code>getValueOrDef</code>. That is a textual match, not an execution trace: a key consumed through some other path would be reported as unread, and the &ldquo;dead key&rdquo; verdict means only that no <code>.cpp</code> or <code>.hpp</code> in the repository names it at either ref. Nothing was compiled and no run was performed, so this page describes what the code says it will do with a setting, not what a run then produces.</div>
+  </section>
+
+  <p class="backlink" style="margin-top:26px"><span class="lbl">back</span><span>Return to <a href="cbs-change-ledger.html#6">slide 6 &#8599;</a>, or to the <a href="cbs-change-ledger.html#1">start of the deck &#8599;</a>.</span></p>
+  <footer>Generated by <code>scripts/build-yaml-config-page.py</code>. Baseline <code>9c955e3a78</code>, head <code>65aca0890d</code>.</footer>
+</main>
+</body>
+</html>

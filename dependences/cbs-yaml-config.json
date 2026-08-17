@@ -1,0 +1,546 @@
+{
+  "generated_by": "scripts/build-yaml-config-page.py",
+  "refs": {
+    "baseline": "9c955e3a78",
+    "head": "65aca0890d"
+  },
+  "original": {
+    "path": "ColliderBit/examples/solo_example.yaml",
+    "text": "# Simple example input file for running CBS\n# Pat Scott May 2019\n\nanalyses:\n  - CMS_13TeV_0LEP_36invfb\n  - CMS_13TeV_1LEPbb_36invfb\n  - CMS_13TeV_2OSLEP_36invfb\n  - CMS_13TeV_2LEPsoft_36invfb\n  - CMS_13TeV_1LEPStop_36invfb\n  - CMS_13TeV_2LEPStop_36invfb\n  - CMS_13TeV_MultiLEP_36invfb\n  - CMS_13TeV_MONOJET_36invfb\n  - ATLAS_13TeV_0LEP_36invfb\n  - ATLAS_13TeV_MultiLEP_36invfb\n  - ATLAS_13TeV_0LEPStop_36invfb\n  - ATLAS_13TeV_2LEPStop_36invfb\n  - ATLAS_13TeV_2bMET_36invfb\n\nsettings:\n  debug: true\n  seed: -1\n  event_file: susy10.hepmc\n  cross_section_pb: 1.0\n  cross_section_fractional_uncert: 0.2\n  use_lognormal_distribution_for_1d_systematic: true\n  events_between_convergence_checks: 5000\n  target_fractional_uncert: 0.3\n  halt_when_systematic_dominated: true\n  all_analyses_must_converge: false\n  all_SR_must_converge: false\n  covariance_marg_convthres_abs: 0.05\n  covariance_marg_convthres_rel: 0.05\n  covariance_nsamples_start: 100000\n",
+    "keys": [
+      {
+        "key": "debug",
+        "value": "true",
+        "line": 20
+      },
+      {
+        "key": "seed",
+        "value": "-1",
+        "line": 21
+      },
+      {
+        "key": "event_file",
+        "value": "susy10.hepmc",
+        "line": 22
+      },
+      {
+        "key": "cross_section_pb",
+        "value": "1.0",
+        "line": 23
+      },
+      {
+        "key": "cross_section_fractional_uncert",
+        "value": "0.2",
+        "line": 24
+      },
+      {
+        "key": "use_lognormal_distribution_for_1d_systematic",
+        "value": "true",
+        "line": 25
+      },
+      {
+        "key": "events_between_convergence_checks",
+        "value": "5000",
+        "line": 26
+      },
+      {
+        "key": "target_fractional_uncert",
+        "value": "0.3",
+        "line": 27
+      },
+      {
+        "key": "halt_when_systematic_dominated",
+        "value": "true",
+        "line": 28
+      },
+      {
+        "key": "all_analyses_must_converge",
+        "value": "false",
+        "line": 29
+      },
+      {
+        "key": "all_SR_must_converge",
+        "value": "false",
+        "line": 30
+      },
+      {
+        "key": "covariance_marg_convthres_abs",
+        "value": "0.05",
+        "line": 31
+      },
+      {
+        "key": "covariance_marg_convthres_rel",
+        "value": "0.05",
+        "line": 32
+      },
+      {
+        "key": "covariance_nsamples_start",
+        "value": "100000",
+        "line": 33
+      }
+    ],
+    "lines": 33
+  },
+  "current_example": {
+    "path": "ColliderBit/examples/solo_example.yaml",
+    "keys": [
+      {
+        "key": "debug",
+        "value": "true",
+        "line": 20
+      },
+      {
+        "key": "check_cutflow",
+        "value": "false",
+        "line": 21,
+        "where": "program",
+        "detail": {
+          "kind": "program",
+          "default": "false",
+          "file": "solo.cpp",
+          "line": 163
+        }
+      },
+      {
+        "key": "seed",
+        "value": "-1",
+        "line": 22
+      },
+      {
+        "key": "event_file",
+        "value": "susy10.hepmc",
+        "line": 23
+      },
+      {
+        "key": "cross_section_pb",
+        "value": "1.0",
+        "line": 24
+      },
+      {
+        "key": "cross_section_fractional_uncert",
+        "value": "0.2",
+        "line": 25
+      },
+      {
+        "key": "use_lognormal_distribution_for_1d_systematic",
+        "value": "true",
+        "line": 26
+      },
+      {
+        "key": "events_between_convergence_checks",
+        "value": "5000",
+        "line": 27
+      },
+      {
+        "key": "target_fractional_uncert",
+        "value": "0.3",
+        "line": 28
+      },
+      {
+        "key": "halt_when_systematic_dominated",
+        "value": "true",
+        "line": 29
+      },
+      {
+        "key": "all_analyses_must_converge",
+        "value": "false",
+        "line": 30
+      },
+      {
+        "key": "all_SR_must_converge",
+        "value": "false",
+        "line": 31
+      },
+      {
+        "key": "covariance_marg_convthres_abs",
+        "value": "0.05",
+        "line": 32
+      },
+      {
+        "key": "covariance_marg_convthres_rel",
+        "value": "0.05",
+        "line": 33
+      },
+      {
+        "key": "covariance_nsamples_start",
+        "value": "100000",
+        "line": 34
+      },
+      {
+        "key": "output",
+        "value": "./runs/CBS_result.json",
+        "line": 35,
+        "where": "program",
+        "detail": {
+          "kind": "program",
+          "default": "\"CBS_output.json\"",
+          "file": "solo.cpp",
+          "line": 244
+        }
+      },
+      {
+        "key": "screen_output",
+        "value": "true",
+        "line": 36,
+        "where": "program",
+        "detail": {
+          "kind": "program",
+          "default": "true",
+          "file": "solo.cpp",
+          "line": 240
+        }
+      },
+      {
+        "key": "jet_collections",
+        "value": "",
+        "line": 37,
+        "where": "user",
+        "detail": {
+          "kind": "user",
+          "default": null,
+          "file": "solo.cpp",
+          "line": 184
+        }
+      },
+      {
+        "key": "jet_collection_taus",
+        "value": "antikt_R04",
+        "line": 43,
+        "where": "conditional",
+        "detail": {
+          "kind": "conditional",
+          "default": "\"antikt_R04\"",
+          "file": "solo.cpp",
+          "line": 185,
+          "other": {
+            "kind": "user",
+            "default": null,
+            "file": "Utils.hpp",
+            "line": 130
+          }
+        }
+      }
+    ],
+    "lines": 43
+  },
+  "new_style": {
+    "path": "CBS_yaml/ATLAS_EXOT_2019_04.yaml",
+    "text": "# Simple example input file for running CBS\n# Pat Scott May 2019\n\n#TP 19th Jul 2019 - just fiddled slightly with the original to take a hepmc file from\n#the ATLAS_0Lep analysis (generated in PYTHIA) which we are using to verify CBS.\n#Settings adjusted accordingly.\n\n#EDIT TP Jul 22nd - using input from GAMBIT to esnure consistency.generate\n\nanalyses:\n  - ATLAS_EXOT_2019_04\n  # - CMS_SUS_19_012\n\nsettings:\n  debug: true\n  seed: 1337\n  check_cutflow: true\n  check_histogram: true\n  processes:\n    - name: EWino\n      cross_section_fb: 37.38\n      cross_section_uncert_fb: 0.001\n      files:\n        - /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singleB_1200_10K_01.hepmc\n        - /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singleB_1200_10K_02.hepmc\n        - /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singleB_1200_10K_03.hepmc\n  # event_file: /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singletB_1200_50K.hepmc\n  # cross_section_fb: 37.38\n  # event_file: /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singletB_1600_50K.hepmc\n  # cross_section_fb: 22.705\n  # event_file: /Users/p.zhu/Workshop/GambitWS/ATLAS_EXOT_2019_04/Events/singletB_2000_50K.hepmc\n  # cross_section_fb: 17.564\n\n  # jet_collections, including VRTrackJets, are supplied by CBS_defaults.yaml\n  # for ATLAS_EXOT_2019_04. Add them here only to override the defaults.\n  output: ./runs/CBS_result.json\n  screen_output: true\n",
+    "keys": [
+      {
+        "key": "debug",
+        "value": "true",
+        "line": 15
+      },
+      {
+        "key": "seed",
+        "value": "1337",
+        "line": 16
+      },
+      {
+        "key": "check_cutflow",
+        "value": "true",
+        "line": 17
+      },
+      {
+        "key": "check_histogram",
+        "value": "true",
+        "line": 18
+      },
+      {
+        "key": "processes",
+        "value": "",
+        "line": 19
+      },
+      {
+        "key": "output",
+        "value": "./runs/CBS_result.json",
+        "line": 36
+      },
+      {
+        "key": "screen_output",
+        "value": "true",
+        "line": 37
+      }
+    ],
+    "lines": 37,
+    "exists": true
+  },
+  "defaults": {
+    "path": "CBS_yaml/CBS_defaults.yaml",
+    "text": "# CBS default settings.\n#\n# Merge order:\n#   1. top-level settings below\n#   2. settings for each requested analysis, in YAML analysis order\n#   3. user input YAML settings\n#\n# User settings always override these defaults.\n\nsettings:\n  jet_collection_taus: antikt_R04\n\nanalysis_defaults:\n  ATLAS_EXOT_2019_04:\n    settings:\n      jet_collections:\n        antikt_R04:\n          algorithm: \"antikt\"\n          R: 0.4\n          recombination_scheme: \"E_scheme\"\n          strategy: \"Best\"\n        antikt_R10:\n          algorithm: \"antikt\"\n          R: 1.0\n          recombination_scheme: \"E_scheme\"\n          strategy: \"Best\"\n        VRTrackJets:\n          algorithm: \"VariableR\"\n          rho: 30.0\n          Rmin: 0.02\n          Rmax: 0.40\n          pt_min: 5.0\n",
+    "exists": true,
+    "tracked": false,
+    "lines": 32
+  },
+  "rows": [
+    {
+      "key": "debug",
+      "value": "true",
+      "line": 20,
+      "where": "program",
+      "detail": {
+        "kind": "program",
+        "default": "false",
+        "file": "solo.cpp",
+        "line": 144
+      },
+      "still_in_new": true
+    },
+    {
+      "key": "seed",
+      "value": "-1",
+      "line": 21,
+      "where": "program",
+      "detail": {
+        "kind": "program",
+        "default": "-1",
+        "file": "solo.cpp",
+        "line": 377
+      },
+      "still_in_new": true
+    },
+    {
+      "key": "event_file",
+      "value": "susy10.hepmc",
+      "line": 22,
+      "where": "user",
+      "detail": {
+        "kind": "user",
+        "default": null,
+        "file": "solo_input.cpp",
+        "line": 432
+      },
+      "still_in_new": false
+    },
+    {
+      "key": "cross_section_pb",
+      "value": "1.0",
+      "line": 23,
+      "where": "user",
+      "detail": {
+        "kind": "user",
+        "default": null,
+        "file": "solo_input.cpp",
+        "line": 227
+      },
+      "still_in_new": false
+    },
+    {
+      "key": "cross_section_fractional_uncert",
+      "value": "0.2",
+      "line": 24,
+      "where": "user",
+      "detail": {
+        "kind": "user",
+        "default": null,
+        "file": "solo_input.cpp",
+        "line": 213
+      },
+      "still_in_new": false
+    },
+    {
+      "key": "use_lognormal_distribution_for_1d_systematic",
+      "value": "true",
+      "line": 25,
+      "where": "program",
+      "detail": {
+        "kind": "program",
+        "default": "false",
+        "file": "solo.cpp",
+        "line": 160
+      },
+      "still_in_new": false
+    },
+    {
+      "key": "events_between_convergence_checks",
+      "value": "5000",
+      "line": 26,
+      "where": "program",
+      "detail": {
+        "kind": "program",
+        "default": "200",
+        "file": "ColliderBit_eventloop.cpp",
+        "line": 209
+      },
+      "still_in_new": false
+    },
+    {
+      "key": "target_fractional_uncert",
+      "value": "0.3",
+      "line": 27,
+      "where": "conditional",
+      "detail": {
+        "kind": "conditional",
+        "default": "0.30",
+        "file": "ColliderBit_eventloop.cpp",
+        "line": 202,
+        "other": {
+          "kind": "user",
+          "default": null,
+          "file": "ColliderBit_eventloop.cpp",
+          "line": 197
+        }
+      },
+      "still_in_new": false
+    },
+    {
+      "key": "halt_when_systematic_dominated",
+      "value": "true",
+      "line": 28,
+      "where": "program",
+      "detail": {
+        "kind": "program",
+        "default": "true",
+        "file": "ColliderBit_eventloop.cpp",
+        "line": 204
+      },
+      "still_in_new": false
+    },
+    {
+      "key": "all_analyses_must_converge",
+      "value": "false",
+      "line": 29,
+      "where": "program",
+      "detail": {
+        "kind": "program",
+        "default": "false",
+        "file": "ColliderBit_eventloop.cpp",
+        "line": 205
+      },
+      "still_in_new": false
+    },
+    {
+      "key": "all_SR_must_converge",
+      "value": "false",
+      "line": 30,
+      "where": "program",
+      "detail": {
+        "kind": "program",
+        "default": "false",
+        "file": "ColliderBit_eventloop.cpp",
+        "line": 206
+      },
+      "still_in_new": false
+    },
+    {
+      "key": "covariance_marg_convthres_abs",
+      "value": "0.05",
+      "line": 31,
+      "where": "dead",
+      "detail": null,
+      "still_in_new": false
+    },
+    {
+      "key": "covariance_marg_convthres_rel",
+      "value": "0.05",
+      "line": 32,
+      "where": "dead",
+      "detail": null,
+      "still_in_new": false
+    },
+    {
+      "key": "covariance_nsamples_start",
+      "value": "100000",
+      "line": 33,
+      "where": "dead",
+      "detail": null,
+      "still_in_new": false
+    }
+  ],
+  "added": [
+    {
+      "key": "check_cutflow",
+      "value": "false",
+      "line": 21,
+      "where": "program",
+      "detail": {
+        "kind": "program",
+        "default": "false",
+        "file": "solo.cpp",
+        "line": 163
+      }
+    },
+    {
+      "key": "output",
+      "value": "./runs/CBS_result.json",
+      "line": 35,
+      "where": "program",
+      "detail": {
+        "kind": "program",
+        "default": "\"CBS_output.json\"",
+        "file": "solo.cpp",
+        "line": 244
+      }
+    },
+    {
+      "key": "screen_output",
+      "value": "true",
+      "line": 36,
+      "where": "program",
+      "detail": {
+        "kind": "program",
+        "default": "true",
+        "file": "solo.cpp",
+        "line": 240
+      }
+    },
+    {
+      "key": "jet_collections",
+      "value": "",
+      "line": 37,
+      "where": "user",
+      "detail": {
+        "kind": "user",
+        "default": null,
+        "file": "solo.cpp",
+        "line": 184
+      }
+    },
+    {
+      "key": "jet_collection_taus",
+      "value": "antikt_R04",
+      "line": 43,
+      "where": "conditional",
+      "detail": {
+        "kind": "conditional",
+        "default": "\"antikt_R04\"",
+        "file": "solo.cpp",
+        "line": 185,
+        "other": {
+          "kind": "user",
+          "default": null,
+          "file": "Utils.hpp",
+          "line": 130
+        }
+      }
+    }
+  ],
+  "policy": {
+    "min_nEvents": {
+      "value": "(long long)(1000)",
+      "line": 383,
+      "why": ""
+    },
+    "max_nEvents": {
+      "value": "(long long)(std::numeric_limits<int>::max())",
+      "line": 384,
+      "why": ""
+    },
+    "run_convergence_checks": {
+      "value": "false",
+      "line": 386,
+      "why": "CBS policy: always process all events provided by the user (no convergence-based early stop)."
+    }
+  },
+  "counts": {
+    "user": 3,
+    "program": 7,
+    "conditional": 1,
+    "CBS policy": 0,
+    "dead": 3,
+    "unread": 0
+  },
+  "jet_collections_required": true,
+  "caveat": "Static read of the worktree. Nothing was built or run."
+}

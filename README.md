@@ -247,19 +247,35 @@ python3 scripts/build-rename-migration-page.py \
 - `ATLAS_8TeV_1LEPbb_20invfb` 是唯一保留旧名的物理分析，文件里写了原因：`:D unrenamed, can not find original exp report`。留例外就该这么留——下一个人不用猜是漏了还是故意的。
 - `yaml_files/PX_SUSYRun2_stop.yaml` 里还有 **48 个已经不存在的分析名**，今天跑会在 configure 阶段就挂。这是仓库内部的证据，说明仓库外每一份按名字选分析的配置都有同样的问题、而且没有任何警告。
 
-### 用户 YAML：默认卡片（slide 6）
+### 用户 YAML：前后对比（slide 6 + 专页）
 
-以前一个文件写全部设置，每次运行都要重复 `jet_collections`（`ATLAS_EXOT_2019_04` 光 jet 配置就 **22 行**，三个 collection）。现在三层合并，**用户永远覆盖**：
+```bash
+python3 scripts/build-yaml-config-page.py \
+  --gambit-root ~/Gambit-Workshop/gambit
+```
 
-1. `CBS_defaults.yaml → settings:`（全局）
-2. `CBS_defaults.yaml → analysis_defaults: <分析名>:`（**每个分析一张默认卡**，按 YAML 里分析出现的顺序合并）
-3. 用户输入文件
+生成 `dependences/cbs-yaml-config.{html,json}`、`CBS_YAML_CONFIG.md` 和 `site/cbs-yaml-config.html`。
 
-`merge_yaml_nodes`（`solo_input.cpp:62`）对 map 递归下去，但**标量和序列是整体替换**——覆盖列表可以，往列表里追加不行。
+**原始文件**是 `ColliderBit/examples/solo_example.yaml`（baseline 版，33 行、14 个设置全部内联），**里面根本没有 jet 配置**——jet 定义那时不是用户能描述的东西。
 
-结果：`CBS_yaml/ATLAS_EXOT_2019_04.yaml` 里 jet 配置 **22 → 0 行**，连分析依赖的那个 VR collection 都不用写。
+所以这次改动的形状不是"变短了"。本分支**新增了一个必填项** `jet_collections`（`getValue`，缺了就抛异常），而 jet 配置很啰嗦（三个 collection 就 22 行）。如果什么都不做，每个用户文件都会变长。**默认卡片是用来吸收本分支自己制造的这个要求的。**
 
-**但默认文件本身没进仓库。** `.gitignore:50` 忽略 `CBS_yaml/*`，`git ls-files CBS_yaml/` 是空的。新 clone 上五个查找位置全落空，`apply_default_settings` **静默**原样返回用户设置（`solo_input.cpp:130`），最后死在 `Utils.hpp:96`：*"Could not find jet_collections option. Please provide this in the YAML file"*——**把用户指向他自己的文件，而不是缺失的默认文件**。和 FastJet 探测那条是同一个形状。
+原始 14 个设置今天分别由谁决定（每一项都追到读它的那次调用）：
+
+| 去向 | 数量 | 例子 |
+|---|---|---|
+| **仍然是用户的** | 3 | `event_file`（或 `processes`）、截面及其不确定度 |
+| **程序默认了** | 7 | `debug`、`seed`、`use_lognormal_...`、四个 convergence 键 |
+| **条件性** | 1 | `target_fractional_uncert`：开 convergence 时必填，关时 `getValueOrDef(0.30)` |
+| **谁都不读** | 3 | `covariance_marg_convthres_abs/_rel`、`covariance_nsamples_start` |
+
+**最要紧的一条：三个键 YAML 根本够不着。** `solo.cpp` 用用户设置建好 options 节点之后直接覆盖：`min_nEvents = 1000`（L383）、`max_nEvents = INT_MAX`（L384）、`run_convergence_checks = false`（L386，注释写着 *"always process all events provided by the user"*）。
+
+因为 convergence 被强制关掉，原始文件里那**一整组 convergence 设置在 CBS 下是惰性的**——还能解析、还有默认值、但不再改变任何行为。`ColliderBit_eventloop.cpp:197` 专门为此改过：开着时 `target_fractional_uncert` 必填，关着时退到 `0.30`，注释是 *"For explicit no-convergence runs (CBS policy), this value is unused."*
+
+**带着旧文件过来的用户不会被告知任何这些。** 键还能解析，所以什么都不会警告，它们只是不再有意义了。
+
+另外那三个 `covariance_*` 键在 **base 和 HEAD 的任何 .cpp/.hpp 里都没有出现**——原始示例文件当年就在发一批没人读的设置。
 
 ### 依赖矩阵（slide 12）
 
