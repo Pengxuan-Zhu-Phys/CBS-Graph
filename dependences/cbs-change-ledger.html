@@ -62,10 +62,9 @@ h3{margin:0 0 8px;font-size:18px;letter-spacing:-.01em}
 .card{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:13px 15px}
 .card p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.62}
 .card p + p{margin-top:8px}
-.card ul{margin:6px 0 0;padding-left:17px}
-.card li{margin:1px 0;color:var(--muted);font-size:13.5px;line-height:1.45}
-.card ul{margin:8px 0 0 18px;padding:0;color:var(--muted);font-size:15px;line-height:1.55}
-.card li + li{margin-top:3px}
+.card ul{margin:7px 0 0;padding-left:17px}
+.card li{margin:1px 0;color:var(--muted);font-size:14px;line-height:1.5}
+.card li + li{margin-top:5px}
 .card.blue{border-top:3px solid var(--blue)}
 .card.orange{border-top:3px solid var(--orange)}
 .card.green{border-top:3px solid var(--green)}
@@ -1125,9 +1124,86 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 15 · next ============ -->
+<!-- ============ 15 · paper punch-list ============ -->
 <section class="slide">
-  <p class="eyebrow">15 · next</p>
+  <p class="eyebrow">15 · what the paper owes a reader</p>
+  <h2>Ten questions the source cannot answer</h2>
+  <p class="lede">Everything so far describes what CBS <i>does</i>. Writing it up surfaced a
+  different list: things a referee will ask that no file in the tree settles. <b>Three of them
+  change the published numbers.</b> Sorted by what they cost if they stay unanswered.</p>
+  <div class="body">
+    <div class="grid g3">
+      <div class="card red">
+        <span class="tag red">3 · changes the numbers</span>
+        <h3 style="margin-top:10px">Settings and modelling</h3>
+        <ul>
+          <li><b><code>check_histogram</code> defaults to <code>false</code>.</b> On, it adds
+          <b>23 signal regions</b> across 2 analyses. State which setting produced the results —
+          better, echo it into the output JSON.</li>
+          <li><b>VR jets are never smeared.</b> They are excluded from JER by being variable-R, at
+          <code>BuckFast.cpp:48,56</code>. Either it is deliberate and one sentence closes it, or
+          it is an unquantified systematic on both VR analyses.</li>
+          <li><b>Which of the twelve are validated?</b> 5 carry no cutflow instrumentation; 3 say
+          in their own comments that they are unfinished.</li>
+        </ul>
+      </div>
+      <div class="card orange">
+        <span class="tag orange">4 · blocks a rerun</span>
+        <h3 style="margin-top:10px">Reproducibility and compatibility</h3>
+        <ul>
+          <li><b>The defaults ship with nobody.</b> <code>CBS_yaml/</code> is gitignored, so the
+          file every run depends on is not in the repository, and a missing one is silent.</li>
+          <li><b>3 keys are overruled, 3 are read by nothing.</b> Of 14 keys in the original
+          example, only 3 are still genuinely the user's.</li>
+          <li><b>The version table has a contradiction.</b> At HEAD, cmake names Contur 2.1.1 and
+          points at a patch that does not exist; the frontend says 3.0.0. HEAD is the only ref of
+          four that disagrees with itself.</li>
+          <li><b>123 registered names were retired.</b> Deprecation aliases or a clean break — but
+          not silence, and not a mapping that lives only in <code>.cpp</code> comments.</li>
+        </ul>
+      </div>
+      <div class="card blue">
+        <span class="tag blue">3 · needs a decision</span>
+        <h3 style="margin-top:10px">Interface, install, and scope</h3>
+        <ul>
+          <li><b>Is the JSON a contract?</b> It carries <code>schema_version</code>, which is a
+          promise, but the <code>term_id</code> grammar every consumer parses is written down
+          nowhere.</li>
+          <li><b>What install route does the paper give?</b> Slide 14, restated: a paper with no
+          followable build is a paper nobody reproduces.</li>
+          <li><b>What does &ldquo;CBS&rdquo; even name?</b> — below.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="note blue">
+        <b>Answer the scope question first.</b> This deck is baselined at the <i>merge-base</i>,
+        because it answers &ldquo;what did I change&rdquo;. A paper is baselined against
+        <i>released GAMBIT</i>, because it answers &ldquo;what is CBS&rdquo;. Those are different
+        sets, and the gap is real: <b>ONNX</b> (5 files) and <b>MET significance</b> (7) are absent
+        from <code>master</code> entirely, predate the branch point, and so appear nowhere in this
+        deck — correctly by its rule, and wrongly by the paper's. Pick the baseline and several
+        other answers follow.
+      </div>
+      <div class="deep">
+        <span class="lbl">companion page</span>
+        <p>All ten, each with the evidence that raised it and what it costs unanswered —
+        <a href="cbs-paper-questions.html">open the paper punch-list &#8599;</a></p>
+        <p style="margin-top:9px">The questions are editorial. Every figure beside them is read
+        from the tree, or from the JSON behind the other pages, when the page is built — so a
+        stale number is a rebuild away, not a rewrite.</p>
+      </div>
+    </div>
+    <p class="foot" style="margin-top:14px">Generated by
+    <code>scripts/build-paper-questions-page.py</code> at <code>65aca0890d</code>, reading seven
+    generated data files plus the worktree. Nothing was built or run.</p>
+  </div>
+</section>
+
+<!-- ============ 16 · next ============ -->
+<section class="slide">
+  <p class="eyebrow">16 · next</p>
   <h2>Where this goes</h2>
   <div class="body">
     <div class="grid g2">
@@ -1180,7 +1256,7 @@ svg{display:block;max-width:100%;height:auto}
 <nav class="nav">
   <button id="prev" aria-label="Previous slide">←</button>
   <button id="next" aria-label="Next slide">→</button>
-  <span class="counter mono" id="counter">1 / 15</span>
+  <span class="counter mono" id="counter">1 / 16</span>
   <span class="mono" id="title">CBS change ledger</span>
   <span class="dots" id="dots"></span>
 </nav>

@@ -23,17 +23,17 @@ code,.mono{font-family:var(--font-mono)}
 /* ---------- deck chrome ---------- */
 .deck{position:relative}
 .slide{
-  display:none; min-height:100vh; padding:56px 64px 96px;
+  display:none; min-height:100vh; padding:40px 64px 74px;
   width:min(1240px,100%); margin:0 auto; flex-direction:column;
 }
 .slide.active{display:flex}
-.eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);margin:0}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);margin:0}
 h1{margin:14px 0 0;font-size:clamp(34px,5.4vw,62px);line-height:1.02;letter-spacing:-.045em;max-width:20ch}
 h2{margin:10px 0 6px;font-size:clamp(26px,3.4vw,40px);line-height:1.08;letter-spacing:-.03em}
-h3{margin:0 0 8px;font-size:16px;letter-spacing:-.01em}
-.lede{max-width:78ch;color:var(--muted);font-size:16px;line-height:1.68;margin:16px 0 0}
-.slide > .body{margin-top:26px;flex:1}
-.rule{height:1px;background:var(--rule);margin:22px 0 0}
+h3{margin:0 0 8px;font-size:18px;letter-spacing:-.01em}
+.lede{max-width:82ch;color:var(--muted);font-size:17px;line-height:1.6;margin:12px 0 0}
+.slide > .body{margin-top:20px;flex:1}
+.rule{height:1px;background:var(--rule);margin:16px 0 0}
 
 /* ---------- nav ---------- */
 .nav{
@@ -41,7 +41,7 @@ h3{margin:0 0 8px;font-size:16px;letter-spacing:-.01em}
   display:flex;align-items:center;gap:14px;
   padding:10px 20px;background:rgba(245,245,245,.93);
   backdrop-filter:blur(8px);border-top:1px solid var(--rule);
-  font-family:var(--font-mono);font-size:11px;color:var(--soft)
+  font-family:var(--font-mono);font-size:13px;color:var(--soft)
 }
 .nav button{
   font:inherit;color:var(--blue);background:var(--blue-bg);
@@ -59,31 +59,34 @@ h3{margin:0 0 8px;font-size:16px;letter-spacing:-.01em}
 .g2{grid-template-columns:repeat(2,1fr)}
 .g3{grid-template-columns:repeat(3,1fr)}
 .g4{grid-template-columns:repeat(4,1fr)}
-.card{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:16px 18px}
-.card p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.62}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:13px 15px}
+.card p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.62}
 .card p + p{margin-top:8px}
+.card ul{margin:7px 0 0;padding-left:17px}
+.card li{margin:1px 0;color:var(--muted);font-size:14px;line-height:1.5}
+.card li + li{margin-top:5px}
 .card.blue{border-top:3px solid var(--blue)}
 .card.orange{border-top:3px solid var(--orange)}
 .card.green{border-top:3px solid var(--green)}
 .card.red{border-top:3px solid var(--red)}
 
 .tag{display:inline-block;padding:3px 7px;border:1px solid currentColor;border-radius:3px;
-  font-family:var(--font-mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase}
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase}
 .tag.blue{color:var(--blue);background:var(--blue-bg)}
 .tag.orange{color:var(--orange);background:var(--orange-bg)}
 .tag.green{color:var(--green);background:var(--green-bg)}
 .tag.red{color:var(--red);background:var(--red-bg)}
 .tag.gray{color:var(--soft);background:#eceef2}
 
-.stat{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:16px 18px}
+.stat{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:12px 15px}
 .stat .n{font-size:clamp(28px,3.6vw,44px);line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
-.stat .k{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--soft);margin-top:9px}
-.stat .s{font-size:12px;color:var(--muted);margin-top:7px;line-height:1.5}
+.stat .k{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--soft);margin-top:9px}
+.stat .s{font-size:14px;color:var(--muted);margin-top:7px;line-height:1.5}
 
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--soft);font-weight:400;padding:0 10px 8px;border-bottom:1px solid var(--rule2)}
-td{padding:9px 10px;border-bottom:1px solid var(--rule);color:var(--muted);vertical-align:top}
+td{padding:7px 9px;border-bottom:1px solid var(--rule);color:var(--muted);vertical-align:top}
 td.name{color:var(--ink)}
 td.num{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 tr:last-child td{border-bottom:0}
@@ -93,48 +96,48 @@ tr:last-child td{border-bottom:0}
 .bar i{display:block}
 .bar .own{background:var(--blue)} .bar .mix{background:var(--orange)} .bar .up{background:#c3c8d2}
 
-.note{border-left:3px solid var(--orange);background:#fff8f3;padding:13px 16px;
-  color:var(--muted);font-size:13px;line-height:1.62;border-radius:0 6px 6px 0}
+.note{border-left:3px solid var(--orange);background:#fff8f3;padding:10px 14px;
+  color:var(--muted);font-size:15px;line-height:1.62;border-radius:0 6px 6px 0}
 .note.blue{border-left-color:var(--blue);background:var(--blue-bg)}
 .note.red{border-left-color:var(--red);background:var(--red-bg)}
 
-.kv{display:flex;gap:8px;font-size:12.5px;line-height:1.6;padding:6px 0;border-bottom:1px solid var(--rule)}
+.kv{display:flex;gap:8px;font-size:14.5px;line-height:1.6;padding:6px 0;border-bottom:1px solid var(--rule)}
 .kv:last-child{border-bottom:0}
-.kv dt{flex:0 0 148px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;
+.kv dt{flex:0 0 148px;font-family:var(--font-mono);font-size:12.5px;letter-spacing:.06em;
   text-transform:uppercase;color:var(--soft);margin:2px 0 0}
 .kv dd{margin:0;color:var(--muted)}
 dl{margin:0}
-.presenter-line{margin:12px 0 0;color:var(--muted);font-family:var(--font-mono);font-size:11px;line-height:1.5}
+.presenter-line{margin:12px 0 0;color:var(--muted);font-family:var(--font-mono);font-size:13px;line-height:1.5}
 .presenter-line b{color:var(--ink);font-weight:500}
 
-.renames{font-family:var(--font-mono);font-size:11px;line-height:1.85;columns:2;column-gap:30px}
+.renames{font-family:var(--font-mono);font-size:13px;line-height:1.85;columns:2;column-gap:30px}
 .renames div{break-inside:avoid;color:var(--soft)}
 .renames b{font-weight:400;color:var(--ink)}
 .renames s{color:var(--soft);text-decoration:none;opacity:.8}
 
 svg{display:block;max-width:100%;height:auto}
 .svg-wrap{background:var(--card);border:1px solid var(--rule);border-radius:9px;padding:18px;overflow-x:auto}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--font-mono);font-size:10px;
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--font-mono);font-size:12px;
   letter-spacing:.06em;color:var(--soft);margin-top:12px}
 .legend span{display:flex;align-items:center;gap:6px}
 .legend i{width:11px;height:11px;border-radius:2px;display:block}
 
-.foot{margin-top:auto;padding-top:20px;font-family:var(--font-mono);font-size:10px;
+.foot{margin-top:auto;padding-top:14px;font-family:var(--font-mono);font-size:11.5px;
   color:var(--soft);line-height:1.7;border-top:1px solid var(--rule)}
 
 /* ---------- companion-page hand-off ---------- */
-.deep{margin-top:14px;padding:14px 16px;border:1px solid rgba(74,111,165,.35);
+.deep{margin-top:12px;padding:11px 14px;border:1px solid rgba(74,111,165,.35);
   border-radius:9px;background:var(--blue-bg)}
-.deep .lbl{display:block;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.13em;
+.deep .lbl{display:block;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--soft);margin-bottom:8px}
-.deep p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.62}
+.deep p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.62}
 .deep p a{color:var(--blue);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(74,111,165,.45)}
 .deep .units{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
 .deep .units a{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;
   border:1px solid rgba(74,111,165,.3);border-radius:6px;background:var(--card);
-  color:var(--ink);font-size:12px;text-decoration:none}
+  color:var(--ink);font-size:14px;text-decoration:none}
 .deep .units a:hover{background:#e2ecf9;border-color:var(--blue)}
-.deep .units b{font-family:var(--font-mono);font-size:10.5px;font-weight:500;color:var(--blue)}
+.deep .units b{font-family:var(--font-mono);font-size:12.5px;font-weight:500;color:var(--blue)}
 
 /* ---------- print ---------- */
 @media print{
@@ -250,8 +253,8 @@ svg{display:block;max-width:100%;height:auto}
         </defs>
         <style>
           .lbl{font:11.5px var(--font-sans,sans-serif);fill:#2d3142}
-          .sub{font:9.5px "SF Mono",monospace;fill:#7a8399}
-          .hdr{font:10px "SF Mono",monospace;fill:#7a8399;letter-spacing:.13em;text-transform:uppercase}
+          .sub{font:11.5px "SF Mono",monospace;fill:#7a8399}
+          .hdr{font:12px "SF Mono",monospace;fill:#7a8399;letter-spacing:.13em;text-transform:uppercase}
           .bx{fill:#fff;stroke:#c8ccd6;stroke-width:1;rx:6}
           .bx-new{fill:#eef3fb;stroke:#4a6fa5;stroke-width:1.4;rx:6}
           .bx-core{fill:#eef8f1;stroke:#4f8a69;stroke-width:1.2;rx:6}
@@ -400,9 +403,9 @@ svg{display:block;max-width:100%;height:auto}
     <div class="svg-wrap">
       <svg viewBox="0 0 1120 300" role="img" aria-label="CBS runner module flow">
         <style>
-          .l{font:11.5px var(--font-sans,sans-serif);fill:#2d3142}
-          .m{font:9.5px "SF Mono",monospace;fill:#7a8399}
-          .t{font:10px "SF Mono",monospace;fill:#4a6fa5}
+          .l{font:13.5px var(--font-sans,sans-serif);fill:#2d3142}
+          .m{font:11.5px "SF Mono",monospace;fill:#7a8399}
+          .t{font:12px "SF Mono",monospace;fill:#4a6fa5}
           .b{fill:#eef3fb;stroke:#4a6fa5;stroke-width:1.4;rx:7}
           .bg{fill:#eef8f1;stroke:#4f8a69;stroke-width:1.2;rx:7}
           .e{stroke:#4a6fa5;stroke-width:1.4;fill:none;marker-end:url(#a3)}
@@ -492,9 +495,84 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 6 · result framework ============ -->
+<!-- ============ 6 · configuration ============ -->
 <section class="slide">
   <p class="eyebrow">06 · new capability</p>
+  <h2>The user YAML, and what left it</h2>
+  <p class="lede">The original file held 14 settings inline and <b>no jet configuration at all</b>.
+  This branch made jet collections required, then built default cards so nobody writes them — and
+  another set quietly stopped being the user’s to decide.</p>
+  <div class="body">
+    <div class="grid g4">
+      <div class="stat"><div class="n">29 → 17</div><div class="k">lines of settings</div>
+        <div class="s">blank and comment lines excluded</div></div>
+      <div class="stat"><div class="n">7</div><div class="k">optional program defaults</div>
+        <div class="s"><code>getValueOrDef</code> — missing key falls back; required keys stay required</div></div>
+      <div class="stat"><div class="n">3</div><div class="k">still yours</div>
+        <div class="s">event source and cross-section</div></div>
+      <div class="stat"><div class="n">3 + 3</div><div class="k">forced policy + dead keys</div>
+        <div class="s">forced in <code>solo.cpp</code> · no C++ reader</div></div>
+    </div>
+
+    <div class="grid g2" style="align-items:start;margin-top:16px">
+      <div class="card red">
+        <span class="tag red">CBS policy</span>
+        <h3 style="margin-top:10px">Three keys the YAML cannot reach</h3>
+        <p><b>These are forced policy keys, not dead code.</b> <code>solo.cpp</code> builds the
+        options node from the user settings, then writes over it:</p>
+        <ul>
+          <li><code>min_nEvents</code> → <code>1000</code> · <code>max_nEvents</code> → <code>INT_MAX</code></li>
+          <li><code>run_convergence_checks</code> → <code>false</code> — always process all supplied events</li>
+        </ul>
+        <p style="margin-top:9px"><b>That makes the whole convergence block inert</b> — five keys
+        that still parse, still have defaults, and no longer change what a CBS run does.</p>
+        <p style="margin-top:9px"><b>Dead keys — no reader in any current C++ file:</b>
+        <code>covariance_marg_convthres_abs</code>, <code>covariance_marg_convthres_rel</code>,
+        <code>covariance_nsamples_start</code>.</p>
+      </div>
+      <div class="card blue">
+        <span class="tag blue">default cards</span>
+        <h3 style="margin-top:10px">Three layers, user wins</h3>
+        <p>For optional scalar controls, <code>getValueOrDef(default, key)</code> falls back to the
+        program default. The lookup runs <code>CBS_defaults.yaml → settings:</code>, then
+        <code>analysis_defaults: &lt;NAME&gt;:</code> in analysis order, then the user file.
+        <code>merge_yaml_nodes</code> (<code>solo_input.cpp:62</code>) recurses through maps but
+        <b>replaces scalars and sequences whole</b> — override a list, never append to one.</p>
+        <p style="margin-top:10px"><b>This does not make required inputs optional:</b> the event
+        source, cross-section and required jet configuration are still validated separately.</p>
+        <p style="margin-top:9px">So <code>ATLAS_EXOT_2019_04.yaml</code> names <b>no jet collection
+        at all</b>, including the variable-R one: the card supplies 22 lines the user never sees.</p>
+      </div>
+    </div>
+
+    <div class="grid g2" style="align-items:start;margin-top:12px">
+    <div class="note red" style="margin-top:0">
+      <b>The card itself is not in the repository.</b> <code>.gitignore:50</code> ignores
+      <code>CBS_yaml/*</code>, so on a fresh clone all five lookup steps fail,
+      <code>apply_default_settings</code> returns the user settings unchanged and <b>silently</b>
+      (<code>solo_input.cpp:130</code>), and the run dies at <code>Utils.hpp:96</code> blaming the
+      user’s own YAML for the missing <code>jet_collections</code>.
+    </div>
+
+    <div class="deep" style="margin-top:0">
+      <span class="lbl">Line-level companion page</span>
+      <p><a href="cbs-yaml-config.html">The user YAML · before and after ↗</a> traces <b>all 14
+      original settings</b> to the call that reads them today.</p>
+      <div class="units">
+        <a href="cbs-yaml-config.html#files"><b>1</b> the two files</a>
+        <a href="cbs-yaml-config.html#where"><b>2</b> where each went</a>
+        <a href="cbs-yaml-config.html#policy"><b>3</b> CBS policy</a>
+        <a href="cbs-yaml-config.html#added"><b>4</b> what was added</a>
+        <a href="cbs-yaml-config.html#defaults"><b>5</b> the default card</a>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7 · result framework ============ -->
+<section class="slide">
+  <p class="eyebrow">07 · new capability</p>
   <h2>Results became a data contract</h2>
   <p class="lede">Cutflows, histograms and signal regions used to be per-analysis conventions living
   as C++ objects. They are now shared types with a versioned serialisation.</p>
@@ -504,9 +582,9 @@ svg{display:block;max-width:100%;height:auto}
         <div class="svg-wrap">
           <svg viewBox="0 0 540 330" role="img" aria-label="Result framework types">
             <style>
-              .n{font:11.5px var(--font-sans,sans-serif);fill:#2d3142}
-              .c{font:9.5px "SF Mono",monospace;fill:#7a8399}
-              .h{font:10px "SF Mono",monospace;fill:#4a6fa5}
+              .n{font:13.5px var(--font-sans,sans-serif);fill:#2d3142}
+              .c{font:11.5px "SF Mono",monospace;fill:#7a8399}
+              .h{font:12px "SF Mono",monospace;fill:#4a6fa5}
               .r{fill:#eef3fb;stroke:#4a6fa5;stroke-width:1.3;rx:6}
               .r2{fill:#fff;stroke:#c8ccd6;stroke-width:1;rx:6}
               .ar{stroke:#4a6fa5;stroke-width:1.3;fill:none;marker-end:url(#a5)}
@@ -590,9 +668,9 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 7 · analyses ============ -->
+<!-- ============ 8 · analyses ============ -->
 <section class="slide">
-  <p class="eyebrow">07 · analysis layer</p>
+  <p class="eyebrow">08 · analysis layer</p>
   <h2>Twelve new analyses</h2>
   <p class="lede">Ten are implemented and registered; one is a partial recast; one is an honest
   skeleton. The distinction matters more than the count.</p>
@@ -611,7 +689,7 @@ svg{display:block;max-width:100%;height:auto}
         <tr><td class="name mono">ATLAS_EXOT_2019_04</td><td class="num">353</td><td><span class="tag blue">local</span></td><td><span class="tag green">done</span></td><td>VLQ · VRTrackJets · m<sub>VLB</sub> histogram SR</td></tr>
         <tr><td class="name mono">ATLAS_EXOT_2021_35</td><td class="num">337</td><td><span class="tag orange">mixed</span></td><td><span class="tag green">done</span></td><td>shape variables</td></tr>
         <tr><td class="name mono">ATLAS_EXOT_2016_017</td><td class="num">189</td><td><span class="tag orange">mixed</span></td><td><span class="tag green">done</span></td><td>single-lepton Wb · forward jets</td></tr>
-        <tr><td class="name mono">ATLAS_EXOT_2018_60</td><td class="num">38</td><td><span class="tag blue">local</span></td><td><span class="tag red">skeleton</span></td><td>registration only — see next slide</td></tr>
+        <tr><td class="name mono">ATLAS_EXOT_2018_60</td><td class="num">38</td><td><span class="tag blue">local</span></td><td><span class="tag red">skeleton</span></td><td>registration only — see slide 13</td></tr>
       </tbody>
     </table>
     <div class="grid g3" style="margin-top:18px">
@@ -628,55 +706,135 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 8 · rename migration ============ -->
+<!-- ============ 9 · histograms ============ -->
 <section class="slide">
-  <p class="eyebrow">08 · analysis layer</p>
-  <h2>The naming migration</h2>
-  <p class="lede">75 analyses moved from descriptive names to publication report numbers, each
-  carrying a <code>// Renamed from:</code> provenance comment. Total churn +4,699 / −4,918 —
-  overwhelmingly the move itself, not rewritten physics.</p>
+  <p class="eyebrow">09 · analysis layer</p>
+  <h2>Histograms, and histogram signal regions</h2>
+  <p class="lede">One new class does two jobs. Booked one way it is a diagnostic object.
+  Booked the other way <b>every bin becomes a signal region that enters the likelihood</b> —
+  and the difference is whether one vector is empty.</p>
   <div class="body">
     <div class="grid g2" style="align-items:start">
-      <div class="card">
-        <h3>Why it matters for this comparison</h3>
-        <p>A plain tree diff cannot see these as moves. The existing branch-comparison page lists
-        each old name as "added in SUSYRun2" and each new name as "added in solo" — 150 phantom
-        file changes. Git's rename detection collapses them to 75 moves at 52–100% similarity.</p>
-        <p style="margin-top:10px">Five commits did this work: <code>ccf24b2959</code>,
-        <code>89d33f9c2d</code>, <code>07e7fb207e</code>, <code>f18f1e5cb8</code>,
-        <code>b76aecc71e</code> (the last aligning <code>.info</code> metadata).</p>
+      <div class="card blue">
+        <span class="tag blue">plain histogram</span>
+        <h3 style="margin-top:10px"><code>obs</code> empty</h3>
+        <p>Bins, weights, under/overflow. Reaches the run JSON and the plotting script and stops
+        there. <code>is_signal_region()</code> is false; nothing downstream reads it as physics.</p>
+        <p style="margin-top:10px"><b>Used by</b> <code>ATLAS_EXOT_2021_35</code> — two uniform
+        <code>mVLQlep</code> histograms alongside its 2 cut-and-count SRs, which the histograms
+        do not change.</p>
       </div>
-      <div class="card">
-        <h3>Representative moves</h3>
-        <div class="renames" style="margin-top:12px">
-          <div><s>ATLAS_8TeV_0LEP_20invfb</s> → <b>ATLAS_SUSY_2013_02</b></div>
-          <div><s>ATLAS_13TeV_0LEP_36invfb</s> → <b>ATLAS_SUSY_2016_07</b></div>
-          <div><s>ATLAS_13TeV_4LEP_139invfb</s> → <b>ATLAS_SUSY_2018_02</b></div>
-          <div><s>ATLAS_13TeV_MONOJET_139infb</s> → <b>ATLAS_EXOT_2018_06</b></div>
-          <div><s>ATLAS_13TeV_0LEP_13invfb</s> → <b>ATLAS_CONF_2016_078</b></div>
-          <div><s>CMS_13TeV_0LEP_137invfb</s> → <b>CMS_SUS_19_006</b></div>
-          <div><s>CMS_13TeV_MONOJET_36invfb</s> → <b>CMS_EXO_16_048</b></div>
-          <div><s>CMS_8TeV_2LEPDMTOP_20invfb</s> → <b>CMS_B2G_13_004</b></div>
-          <div><s>CMS_13TeV_1LEPbb_36invfb</s> → <b>CMS_SUS_16_043</b></div>
-          <div><s>ATLAS_13TeV_3b_24invfb</s> → <b>ATLAS_SUSY_2017_02</b></div>
-        </div>
-        <p style="margin-top:14px;font-size:12px">Full list in
-        <code>dependences/cbs-change-ledger.json</code> under <code>renames</code>.</p>
+      <div class="card orange">
+        <span class="tag orange">signal-region histogram</span>
+        <h3 style="margin-top:10px">+ <code>obs</code> / <code>bkg</code> / <code>bkg_err</code></h3>
+        <p><code>to_signal_regions()</code> turns each bin into a <code>SignalRegionData</code>
+        named <code>&lt;hist&gt;_bin&lt;i&gt;</code>, carrying that bin's observed count, its own
+        content as signal, the published background, and <code>sqrt(sumw2)</code> as the MC error.</p>
+        <p style="margin-top:10px"><b>Used by</b> <code>ATLAS_EXOT_2019_04</code> (m<sub>VLB</sub>,
+        7 bins) and <code>ATLAS_EXOT_2019_07</code> (m<sub>JJ</sub>, 16 bins).</p>
       </div>
     </div>
-    <div class="note" style="margin-top:18px">
-      <b>Open question for the collaboration.</b> Report-number naming is unambiguous and matches
-      how the papers are cited, but it breaks every existing YAML that selects analyses by the old
-      names. Whether upstream wants this migration — and whether it needs an alias table for
-      backward compatibility — is a decision for the group, not something this branch should settle
-      unilaterally.
+    <div class="grid g3" style="margin-top:16px">
+      <div class="stat"><div class="n">1 → 8</div><div class="k">EXOT_2019_04 SRs</div>
+        <div class="s">flag off → on</div></div>
+      <div class="stat"><div class="n">1 → 17</div><div class="k">EXOT_2019_07 SRs</div>
+        <div class="s">flag off → on</div></div>
+      <div class="stat"><div class="n">16</div><div class="k">lines it replaced</div>
+        <div class="s">hand-written per-bin SRs, still visible commented out</div></div>
+    </div>
+    <div class="note red" style="margin-top:16px">
+      <b>Say this one aloud.</b> <code>check_histogram</code> is read from YAML at
+      <code>solo.cpp:179</code> and <b>defaults to false</b>. It gates booking, filling
+      <i>and</i> committing — so on the two analyses above it does not decide whether plots appear,
+      it decides <b>how many signal regions exist</b>: 23 extra regions in total. A flag named like
+      a diagnostic toggle moves the likelihood, and two runs of the same YAML with it flipped are
+      not comparable.
+    </div>
+    <div class="deep">
+      <span class="lbl">Line-level companion page</span>
+      <p><a href="cbs-histograms.html">Histograms · one class, two jobs ↗</a> carries the member
+      table, the promotion code, all 9 macros, the JSON round trip through the batch merge, and
+      the commented-out block this mechanism replaced.</p>
+      <div class="units">
+        <a href="cbs-histograms.html#two-jobs"><b>1</b> the fork</a>
+        <a href="cbs-histograms.html#promotion"><b>2</b> bin → SR</a>
+        <a href="cbs-histograms.html#macros"><b>3</b> macros</a>
+        <a href="cbs-histograms.html#consumers"><b>4</b> who uses which</a>
+        <a href="cbs-histograms.html#flag"><b>5</b> the flag</a>
+        <a href="cbs-histograms.html#roundtrip"><b>6</b> round trip</a>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============ 9 · event pipeline ============ -->
+<!-- ============ 10 · rename migration ============ -->
 <section class="slide">
-  <p class="eyebrow">09 · new capability</p>
+  <p class="eyebrow">10 · analysis layer</p>
+  <h2>The naming migration</h2>
+  <p class="lede">Analyses moved from names describing what they looked at to the report number of
+  the paper they reproduce. <b>The file count understates it.</b> 75 files move; what a YAML
+  actually selects by is the registered analysis name, and <b>123 of those were retired</b>.</p>
+  <div class="body">
+    <div class="grid g4">
+      <div class="stat"><div class="n">75</div><div class="k">file renames</div>
+        <div class="s">git-detected, 52–100% similarity</div></div>
+      <div class="stat"><div class="n">80</div><div class="k">documented moves</div>
+        <div class="s">files carrying <code>// Renamed from:</code></div></div>
+      <div class="stat"><div class="n">123</div><div class="k">names retired</div>
+        <div class="s">of 128 registered at the baseline</div></div>
+      <div class="stat"><div class="n">1</div><div class="k">physics name kept</div>
+        <div class="s">and the source says why</div></div>
+    </div>
+    <div class="grid g2" style="align-items:start;margin-top:16px">
+      <div class="card">
+        <h3>The two numbers, and why both are right</h3>
+        <p><b>Files</b> are what <code>git diff -M</code> reports: 75. <b>Registered names</b> are
+        what <code>DEFINE_ANALYSIS_FACTORY</code> emits — the string a YAML writes — and one file
+        can register several. 128 at the baseline, 137 now, 123 retired.</p>
+        <p style="margin-top:10px">The gap is <b>18 consolidations</b>: files that absorbed several
+        old analyses each, 56 old files in total. A fold-in is not a rename, so git reports the
+        survivor as modified and the rest as deleted. No analysis was lost — each sub-region still
+        registers separately, it just lives in the report-number file now.</p>
+      </div>
+      <div class="card">
+        <h3>The one that stayed, and the one still broken</h3>
+        <p><code>ATLAS_8TeV_1LEPbb_20invfb</code> is the only physics analysis that kept its old
+        name, and the file says why: <i>"unrenamed, can not find original exp report"</i>. That is
+        the right way to leave an exception — the next person does not have to guess whether it was
+        missed or deliberate.</p>
+        <p style="margin-top:10px"><code>yaml_files/PX_SUSYRun2_stop.yaml</code> still names
+        <b>48 analyses that no longer exist</b>. It would fail at configure time today — in-tree
+        evidence of what the migration costs every configuration outside this repository.</p>
+      </div>
+    </div>
+    <div class="deep">
+      <span class="lbl">Line-level companion page</span>
+      <p><a href="cbs-rename-migration.html">The naming migration · every move ↗</a> carries the
+      full old-to-new table (80 rows), the 18 consolidations with the analysis names inside each,
+      the report-type breakdown, and the YAML that no longer resolves.</p>
+      <div class="units">
+        <a href="cbs-rename-migration.html#levels"><b>1</b> two levels</a>
+        <a href="cbs-rename-migration.html#scheme"><b>2</b> the scheme</a>
+        <a href="cbs-rename-migration.html#table"><b>3</b> full map</a>
+        <a href="cbs-rename-migration.html#consolidations"><b>4</b> consolidations</a>
+        <a href="cbs-rename-migration.html#stayed"><b>5</b> what stayed</a>
+        <a href="cbs-rename-migration.html#breaks"><b>6</b> what breaks</a>
+      </div>
+    </div>
+    <div class="note" style="margin-top:14px">
+      <b>Open question for the collaboration.</b> Report-number naming is unambiguous and matches
+      how the papers are cited, but 123 retired names means every existing configuration selecting
+      analyses by name has to be rewritten, and there is no alias table in the tree. Whether
+      upstream wants the migration, and whether it should ship with aliases for one release, is a
+      group call. Every moved file records where it came from — which is what would make that
+      alias table cheap to generate.
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 · event pipeline ============ -->
+<section class="slide">
+  <p class="eyebrow">11 · new capability</p>
   <h2>Variable-R jets, threaded end to end</h2>
   <p class="lede">Previously a per-analysis construction. Now declared in YAML and carried through
   the same conversion path as fixed-R jets — +1,098 lines, no upstream contribution.</p>
@@ -735,10 +893,14 @@ svg{display:block;max-width:100%;height:auto}
       <span class="lbl">Line-level companion pages</span>
       <p><a href="cbs-vr-jets.html">Variable-R jets · the pipeline ↗</a> walks the seven files a VR
       collection passes through — <span class="mono">+334 / −97</span> — what each stage fills in, and
-      the four places VR is deliberately skipped. <a href="cbs-fastjet-cmake.html">FastJet &amp;
+      the four places VR is deliberately skipped. It also puts the two jet paths
+      <a href="cbs-vr-jets.html#parallel">side by side, stage by stage ↗</a>: one loop, one fork, and a
+      fixed-R body that is <span class="mono">99.4%</span> token-identical to the source branch — VR was
+      threaded through the existing path, not built beside it. <a href="cbs-fastjet-cmake.html">FastJet &amp;
       fjcontrib · the build integration ↗</a> is the half underneath it: <span class="mono">-lVariableR</span>
       did not exist before this branch.</p>
       <div class="units">
+        <a href="cbs-vr-jets.html#parallel"><b>&#8214;</b> fixed-R vs VR</a>
         <a href="cbs-vr-jets.html#unit-1"><b>1</b> YAML schema</a>
         <a href="cbs-vr-jets.html#unit-3"><b>3</b> VariableRPlugin</a>
         <a href="cbs-vr-jets.html#unit-4"><b>4</b> tag by effective R</a>
@@ -750,9 +912,108 @@ svg{display:block;max-width:100%;height:auto}
   </div>
 </section>
 
-<!-- ============ 10 · boundaries ============ -->
+<!-- ============ 12 · dependencies ============ -->
 <section class="slide">
-  <p class="eyebrow">10 · completion boundary</p>
+  <p class="eyebrow">12 · dependencies</p>
+  <h2>Which packages moved, and who moved them</h2>
+  <p class="lede">Four places record a backend version — <b>cmake</b>, the <b>frontend header</b>, the
+  <b>BOSS wrapper tree</b>, the <b>patch directory</b>. Across the three branches they mostly agree.
+  On one backend they do not.</p>
+  <div class="body">
+    <table>
+      <thead><tr>
+        <th>Package</th>
+        <th style="width:132px">gambit/master</th>
+        <th style="width:132px">private-SUSYRun2</th>
+        <th style="width:150px">CBS HEAD</th>
+        <th>What actually changed</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td class="name">Rivet</td>
+          <td><code>3.1.5</code></td><td><code>4.1.0</code></td>
+          <td><code>4.1.0</code></td>
+          <td>The one real version bump. BOSS wrappers regenerated —
+          <span class="mono">+1,045 / −803</span> vs master, <b>0 vs the merge-base</b>: done on
+          SUSYRun2, inherited untouched.</td>
+        </tr>
+        <tr>
+          <td class="name">Contur</td>
+          <td><code>2.1.1</code></td><td><code>3.0.0</code></td>
+          <td><span class="tag red">2.1.1 · 3.0.0</span></td>
+          <td><b>cmake and the frontend disagree.</b> See the box below — this is the one
+          finding on this slide that needs an action, not a description.</td>
+        </tr>
+        <tr>
+          <td class="name">Pythia</td>
+          <td><code>8.312</code></td><td><code>8.312</code></td>
+          <td><code>8.312</code></td>
+          <td>Version unchanged on all three. The <em>patch and frontend</em> moved
+          (SUSYRun2's work); the BOSS wrappers moved <span class="mono">+14 / −14</span> vs
+          <em>both</em> — ours.</td>
+        </tr>
+        <tr>
+          <td class="name">FastJet<br>fjcontrib</td>
+          <td><code>3.3.2</code> / <code>1.041</code></td>
+          <td><code>3.4.0</code> / <code>1.049</code></td>
+          <td><span class="tag gray">not declared</span></td>
+          <td>Removed from <code>backends.cmake</code> entirely. <code>contrib.cmake</code> now
+          <em>probes</em> for a pre-built 3.4.2 / 1.049 instead of downloading one — the machine
+          provides it, not the repo.</td>
+        </tr>
+        <tr>
+          <td class="name">ATLAS_FullLikes</td>
+          <td><code>1.0</code></td><td><code>1.0</code></td><td><code>1.0</code></td>
+          <td>Unchanged from SUSYRun2 — <span class="mono">+1 / −1</span> against master. Listed
+          because the changelog implies more than the diff shows.</td>
+        </tr>
+        <tr>
+          <td class="name">nlohmann/json</td>
+          <td><span class="tag gray">absent</span></td><td><span class="tag gray">absent</span></td>
+          <td><code>3.11.3</code></td>
+          <td>Vendored single-header, <span class="mono">+25.5k lines</span> — ours, and the largest
+          line-count item in the ledger. Name it so it is not mistaken for physics code.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note red" style="margin-top:16px">
+      <b>Contur will not build at HEAD.</b> <code>backends.cmake:2185</code> declares
+      <code>set(ver "2.1.1")</code> and points the patch step at
+      <code>patches/contur/2.1.1/…dif</code> — <b>a file not in the tree</b>. The only patch dir is
+      <code>3.0.0/</code>; the frontend is <code>Contur_3_0_0.hpp</code>. <code>git log -L</code>
+      blames <code>3d9ebcb490 "Fixing very minor merge conflicts"</code>: the merge took master's
+      side while the frontend and patch tree kept SUSYRun2's. All three branches are
+      self-consistent; only HEAD is split, and SUSYRun2's <code>pathos, joblib</code> requirements
+      went with it.
+    </div>
+
+    <div class="grid g2" style="margin-top:14px">
+      <div class="note blue">
+        <b>Inherited from SUSYRun2.</b> Rivet wrappers and frontend, Contur frontend, the Pythia
+        patch/frontend refresh, ATLAS_FullLikes, and the DecayBit off-shell-W chargino refactor.
+        All six are non-zero against master and <b>exactly zero</b> against the merge-base — that
+        is the test, not a judgement.
+      </div>
+      <div class="note">
+        <b>Ours.</b> Build wiring (<span class="mono">+306 / −63</span> vs the merge-base), the
+        <code>contrib.cmake</code> FastJet rework, <code>gambit_backend_interfaces.yaml</code> (new),
+        vendored <code>json.hpp</code>, Pythia BOSS wrapper edits, <span class="mono">+15</span>
+        gitignore rules. <code>standalone_facilitator.py</code> is <em>not</em> new — it existed on
+        master; we changed one line and wired it into cmake.
+      </div>
+    </div>
+  </div>
+  <p class="foot">
+    Extracted by <code>scripts/build-package-matrix.py</code> from four independent declaration
+    sources · data <code>dependences/cbs-package-matrix.json</code> ·
+    nothing was built or run
+  </p>
+</section>
+
+<!-- ============ 13 · boundaries ============ -->
+<section class="slide">
+  <p class="eyebrow">13 · completion boundary</p>
   <h2>What is not finished</h2>
   <p class="lede">Registered in the framework is not the same as reproducing the published analysis.
   Three things should be said plainly rather than discovered later.</p>
@@ -791,16 +1052,158 @@ svg{display:block;max-width:100%;height:auto}
     </div>
     <div class="note blue" style="margin-top:14px">
       <b>What this deck does not measure.</b> Nothing here was recompiled or re-run. It shows that
-      code changed and who changed it — not which physics results moved. A before/after
-      data-flow comparison on identical input events is the natural next step, and would answer
-      the question this ledger can only frame.
+      code changed and who changed it. For the paths that already existed that is close to the
+      whole story — CBS changes how ColliderBit is called, not the physics it runs — but for the
+      new analyses above, "the code is there" and "the numbers match the paper" are different
+      claims, and only the first is evidenced here.
     </div>
   </div>
 </section>
 
-<!-- ============ 11 · next ============ -->
+<!-- ============ 14 · distribution ============ -->
 <section class="slide">
-  <p class="eyebrow">11 · next</p>
+  <p class="eyebrow">14 · open design question</p>
+  <h2>Getting CBS onto someone else&#8217;s machine</h2>
+  <p class="lede">The work is done when a collaborator can run it. Today that is the hardest part of
+  CBS, and <b>it is not a C++ problem — it is a provisioning problem</b>. Raising it here because
+  the fix is a design decision, not a patch.</p>
+  <div class="body">
+    <div class="grid g3">
+      <div class="card red">
+        <span class="tag red">the barrier</span>
+        <h3 style="margin-top:10px">69 backends for a runner that needs a handful</h3>
+        <p><code>cmake/backends.cmake</code> declares <b>69</b> backends. CBS declares
+        <code>MODULES ColliderBit DEPENDENCIES hepmc pybind11</code>. A new user has to navigate the
+        gap themselves, with <code>-Ditch</code> and <code>-DBits</code> as the only map.</p>
+        <p style="margin-top:9px"><code>contrib.cmake</code> builds HepMC, YODA and RestFrames from
+        source through <code>./configure</code> — the step that fails differently on every macOS and
+        every Linux. <code>GAMBIT_USE_LLD_FOR_CBS</code> exists because <i>linking</i> CBS was itself
+        worth an option.</p>
+      </div>
+      <div class="card orange">
+        <span class="tag orange">hepforge</span>
+        <h3 style="margin-top:10px">29 of 71 download URLs, one host</h3>
+        <p><b>41% of backend downloads point at hepforge.org.</b> When it is slow or down, configure
+        fails partway and leaves a half-populated tree — and the user cannot tell a network problem
+        from a build problem.</p>
+        <p style="margin-top:9px"><b>Half the mitigation already exists, from <code>master</code>:</b>
+        <code>safe_dl.sh</code> falls back across axel/wget/curl and accepts a secondary URL;
+        <code>copy_tarballs.sh</code> and <code>restore_tarballs.sh</code> build an offline mirror.
+        Nothing tells a user these are there.</p>
+      </div>
+      <div class="card">
+        <span class="tag gray">and it fails quietly</span>
+        <h3 style="margin-top:10px">Two silent failures we already found</h3>
+        <p><b>Slide 12:</b> the FastJet probe has an empty <code>else()</code>. A fresh clone falls
+        back to fjcore without a word; the first symptom is Rivet announcing its own exclusion.</p>
+        <p style="margin-top:9px"><b>Slide 6:</b> <code>CBS_defaults.yaml</code> is gitignored, so
+        the defaults lookup fails silently and the run dies later blaming the user&#8217;s own YAML.</p>
+        <p style="margin-top:9px">Both fail <i>late</i>, and neither names the real cause. That is
+        the difference between a hard build and an unexplained one.</p>
+      </div>
+    </div>
+
+    <div class="note blue" style="margin-top:16px">
+      <b>Proposal, for discussion — not built.</b>
+      <b>(1)</b> Declare a CBS-minimal dependency set as a named CMake preset, so the answer to
+      &ldquo;what do I need?&rdquo; is one file rather than 69 entries and two ditch flags.
+      <b>(2)</b> One command — <code>./cbs-setup</code> — that probes the machine, prints
+      <i>one table</i> of what it found and what is missing, and provisions the rest.
+      <b>(3)</b> Move every check to configure time and fail loudly with the cause named; no silent
+      fallback that surfaces as an unrelated error an hour later.
+      <b>(4)</b> Take HepForge off the critical path: pin, checksum, and mirror using the tarball
+      scripts already in the tree.
+      <b>(5)</b> Ship a built artefact. ROOT gets away with source builds because it also ships
+      binaries, conda packages and containers; <b>CBS has no such budget</b>, which makes a
+      container image or a conda/spack recipe the cheapest route to &ldquo;it runs&rdquo; —
+      and the one that does not need every user to become a C++ build engineer.
+    </div>
+    <p class="foot" style="margin-top:14px">Counts from <code>cmake/backends.cmake</code>,
+    <code>cmake/contrib.cmake</code> and <code>cmake/standalones.cmake</code> at
+    <code>65aca0890d</code>. Items 1–5 are a proposal; none of it is implemented on this branch.</p>
+  </div>
+</section>
+
+<!-- ============ 15 · paper punch-list ============ -->
+<section class="slide">
+  <p class="eyebrow">15 · what the paper owes a reader</p>
+  <h2>Ten questions the source cannot answer</h2>
+  <p class="lede">Everything so far describes what CBS <i>does</i>. Writing it up surfaced a
+  different list: things a referee will ask that no file in the tree settles. <b>Three of them
+  change the published numbers.</b> Sorted by what they cost if they stay unanswered.</p>
+  <div class="body">
+    <div class="grid g3">
+      <div class="card red">
+        <span class="tag red">3 · changes the numbers</span>
+        <h3 style="margin-top:10px">Settings and modelling</h3>
+        <ul>
+          <li><b><code>check_histogram</code> defaults to <code>false</code>.</b> On, it adds
+          <b>23 signal regions</b> across 2 analyses. State which setting produced the results —
+          better, echo it into the output JSON.</li>
+          <li><b>VR jets are never smeared.</b> They are excluded from JER by being variable-R, at
+          <code>BuckFast.cpp:48,56</code>. Either it is deliberate and one sentence closes it, or
+          it is an unquantified systematic on both VR analyses.</li>
+          <li><b>Which of the twelve are validated?</b> 5 carry no cutflow instrumentation; 3 say
+          in their own comments that they are unfinished.</li>
+        </ul>
+      </div>
+      <div class="card orange">
+        <span class="tag orange">4 · blocks a rerun</span>
+        <h3 style="margin-top:10px">Reproducibility and compatibility</h3>
+        <ul>
+          <li><b>The defaults ship with nobody.</b> <code>CBS_yaml/</code> is gitignored, so the
+          file every run depends on is not in the repository, and a missing one is silent.</li>
+          <li><b>3 keys are overruled, 3 are read by nothing.</b> Of 14 keys in the original
+          example, only 3 are still genuinely the user's.</li>
+          <li><b>The version table has a contradiction.</b> At HEAD, cmake names Contur 2.1.1 and
+          points at a patch that does not exist; the frontend says 3.0.0. HEAD is the only ref of
+          four that disagrees with itself.</li>
+          <li><b>123 registered names were retired.</b> Deprecation aliases or a clean break — but
+          not silence, and not a mapping that lives only in <code>.cpp</code> comments.</li>
+        </ul>
+      </div>
+      <div class="card blue">
+        <span class="tag blue">3 · needs a decision</span>
+        <h3 style="margin-top:10px">Interface, install, and scope</h3>
+        <ul>
+          <li><b>Is the JSON a contract?</b> It carries <code>schema_version</code>, which is a
+          promise, but the <code>term_id</code> grammar every consumer parses is written down
+          nowhere.</li>
+          <li><b>What install route does the paper give?</b> Slide 14, restated: a paper with no
+          followable build is a paper nobody reproduces.</li>
+          <li><b>What does &ldquo;CBS&rdquo; even name?</b> — below.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="note blue">
+        <b>Answer the scope question first.</b> This deck is baselined at the <i>merge-base</i>,
+        because it answers &ldquo;what did I change&rdquo;. A paper is baselined against
+        <i>released GAMBIT</i>, because it answers &ldquo;what is CBS&rdquo;. Those are different
+        sets, and the gap is real: <b>ONNX</b> (5 files) and <b>MET significance</b> (7) are absent
+        from <code>master</code> entirely, predate the branch point, and so appear nowhere in this
+        deck — correctly by its rule, and wrongly by the paper's. Pick the baseline and several
+        other answers follow.
+      </div>
+      <div class="deep">
+        <span class="lbl">companion page</span>
+        <p>All ten, each with the evidence that raised it and what it costs unanswered —
+        <a href="cbs-paper-questions.html">open the paper punch-list &#8599;</a></p>
+        <p style="margin-top:9px">The questions are editorial. Every figure beside them is read
+        from the tree, or from the JSON behind the other pages, when the page is built — so a
+        stale number is a rebuild away, not a rewrite.</p>
+      </div>
+    </div>
+    <p class="foot" style="margin-top:14px">Generated by
+    <code>scripts/build-paper-questions-page.py</code> at <code>65aca0890d</code>, reading seven
+    generated data files plus the worktree. Nothing was built or run.</p>
+  </div>
+</section>
+
+<!-- ============ 16 · next ============ -->
+<section class="slide">
+  <p class="eyebrow">16 · next</p>
   <h2>Where this goes</h2>
   <div class="body">
     <div class="grid g2">
@@ -820,21 +1223,17 @@ svg{display:block;max-width:100%;height:auto}
         </div>
       </div>
       <div class="card green">
-        <h3>Runtime data-flow diff</h3>
-        <p>This ledger answers <i>what code changed</i>. It cannot answer <i>which events now take a
-        different path</i> — the question that actually matters for validation.</p>
-        <p style="margin-top:10px">A thin semantic tracer at ~10–20 checkpoints
-        (HepMC event → HEPUtils event → object selection → overlap removal → b-tagging → cuts →
-        signal region), emitting JSON per run, would let the same input events be run on two commits
-        and diffed:</p>
-        <p style="margin-top:10px;font-family:var(--font-mono);font-size:11.5px;color:var(--ink);line-height:1.75">
-          overlap removal ← CHANGED<br>
-          &nbsp;&nbsp;jets 6 → 4<br>
-          &nbsp;&nbsp;Njet ≥ 5: PASS → FAIL<br>
-          &nbsp;&nbsp;SR1 acceptance 0.132 → 0.119
-        </p>
-        <p style="margin-top:10px">That is a far stronger argument to a collaborator than a diff —
-        and it reuses the JSON output contract this branch already built.</p>
+        <h3>What this branch did not change</h3>
+        <p>CBS changes <i>how ColliderBit is invoked</i> — a standalone runner, its own input and
+        output path — not the physics underneath it. The existing analysis code was not rewritten
+        to accommodate it.</p>
+        <p style="margin-top:10px">The jet pipeline is the measurable case: the fixed-R branch of
+        the event conversion is <b>336 tokens before and 336 after, 99.4% identical</b>, and the
+        only difference is a two-argument reorder from an unrelated commit. Variable-R jets were
+        threaded through that same path rather than built beside it.</p>
+        <p style="margin-top:10px">So the question for a reviewer is not whether old results moved.
+        It is whether the <b>new</b> capability — 12 analyses, VR jets, histogram signal regions —
+        is correct on its own terms, and slide 13 says plainly where that is not yet established.</p>
       </div>
     </div>
     <div class="rule"></div>
@@ -842,7 +1241,7 @@ svg{display:block;max-width:100%;height:auto}
       <div class="stat"><div class="n">10</div><div class="k">files · runner</div><div class="s">No upstream equivalent</div></div>
       <div class="stat"><div class="n">14</div><div class="k">files · jet pipeline</div><div class="s">No upstream equivalent</div></div>
       <div class="stat"><div class="n">226</div><div class="k">commits authored</div><div class="s">of 606 on the branch</div></div>
-      <div class="stat"><div class="n">2</div><div class="k">open caveats</div><div class="s">Stated on slide 10</div></div>
+      <div class="stat"><div class="n">2</div><div class="k">open caveats</div><div class="s">Stated on slide 13</div></div>
     </div>
   </div>
   <p class="foot">
@@ -857,7 +1256,7 @@ svg{display:block;max-width:100%;height:auto}
 <nav class="nav">
   <button id="prev" aria-label="Previous slide">←</button>
   <button id="next" aria-label="Next slide">→</button>
-  <span class="counter mono" id="counter">1 / 11</span>
+  <span class="counter mono" id="counter">1 / 16</span>
   <span class="mono" id="title">CBS change ledger</span>
   <span class="dots" id="dots"></span>
 </nav>

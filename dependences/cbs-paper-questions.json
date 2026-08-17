@@ -1,0 +1,472 @@
+{
+  "generated_by": "scripts/build-paper-questions-page.py",
+  "refs": {
+    "master": "gambit/master",
+    "base": "9c955e3a78",
+    "sr2": "5989e2d27a",
+    "head": "65aca0890d"
+  },
+  "pages_read": [
+    "hist",
+    "json",
+    "ledger",
+    "pkg",
+    "rename",
+    "vr",
+    "yaml"
+  ],
+  "analyses": [
+    {
+      "name": "ATLAS_EXOT_2016_013",
+      "file": "Analysis_ATLAS_EXOT_2016_013.cpp",
+      "lines": 375,
+      "cutflow": 0,
+      "markers": [],
+      "missing": false
+    },
+    {
+      "name": "ATLAS_EXOT_2016_017",
+      "file": "Analysis_ATLAS_EXOT_2016_017.cpp",
+      "lines": 189,
+      "cutflow": 1,
+      "markers": [],
+      "missing": false
+    },
+    {
+      "name": "ATLAS_EXOT_2018_60",
+      "file": "Analysis_ATLAS_EXOT_2018_60.cpp",
+      "lines": 38,
+      "cutflow": 0,
+      "markers": [
+        {
+          "line": 23,
+          "text": "TODO: Implement the published selection and signal-region yields.",
+          "strong": true
+        }
+      ],
+      "missing": false
+    },
+    {
+      "name": "ATLAS_EXOT_2019_04",
+      "file": "Analysis_ATLAS_EXOT_2019_04.cpp",
+      "lines": 353,
+      "cutflow": 0,
+      "markers": [],
+      "missing": false
+    },
+    {
+      "name": "ATLAS_EXOT_2019_07",
+      "file": "Analysis_ATLAS_EXOT_2019_07.cpp",
+      "lines": 364,
+      "cutflow": 18,
+      "markers": [],
+      "missing": false
+    },
+    {
+      "name": "ATLAS_EXOT_2021_35",
+      "file": "Analysis_ATLAS_EXOT_2021_35.cpp",
+      "lines": 337,
+      "cutflow": 0,
+      "markers": [],
+      "missing": false
+    },
+    {
+      "name": "ATLAS_SUSY_2018_07",
+      "file": "Analysis_ATLAS_SUSY_2018_07.cpp",
+      "lines": 620,
+      "cutflow": 1,
+      "markers": [
+        {
+          "line": 41,
+          "text": "Not validated, still in progress",
+          "strong": true
+        },
+        {
+          "line": 7,
+          "text": "#include \"gambit/ColliderBit/warppertopness.h\" // TODO: Chris Chang: turning this off temporarily to compile test the rest of gambit",
+          "strong": false
+        },
+        {
+          "line": 510,
+          "text": "TODO: Chris Chang: turning this off while I compile test the rest of gambit",
+          "strong": false
+        },
+        {
+          "line": 531,
+          "text": "TODO: Chris Chang: turning this off while I compile test the rest of gambit",
+          "strong": false
+        }
+      ],
+      "missing": false
+    },
+    {
+      "name": "ATLAS_SUSY_2018_12",
+      "file": "Analysis_ATLAS_SUSY_2018_12.cpp",
+      "lines": 925,
+      "cutflow": 7,
+      "markers": [],
+      "missing": false
+    },
+    {
+      "name": "ATLAS_SUSY_2018_41",
+      "file": "Analysis_ATLAS_SUSY_2018_41.cpp",
+      "lines": 478,
+      "cutflow": 4,
+      "markers": [
+        {
+          "line": 188,
+          "text": "Higgs tag prob TODO: Update with correct numbers",
+          "strong": false
+        }
+      ],
+      "missing": false
+    },
+    {
+      "name": "ATLAS_SUSY_2019_09",
+      "file": "Analysis_ATLAS_SUSY_2019_09.cpp",
+      "lines": 994,
+      "cutflow": 4,
+      "markers": [
+        {
+          "line": 20,
+          "text": "TODO: WZ off-shell SRs",
+          "strong": false
+        },
+        {
+          "line": 568,
+          "text": "TODO: Needs E_T^miss significance reconstruction",
+          "strong": false
+        },
+        {
+          "line": 653,
+          "text": "TODO: Same caveat as legacy comment",
+          "strong": false
+        },
+        {
+          "line": 728,
+          "text": "TODO: Same caveat as legacy comment",
+          "strong": false
+        }
+      ],
+      "missing": false
+    },
+    {
+      "name": "CMS_B2G_18_003",
+      "file": "Analysis_CMS_B2G_18_003.cpp",
+      "lines": 729,
+      "cutflow": 3,
+      "markers": [
+        {
+          "line": 20,
+          "text": "vectors are still TODO (their histograms commit no SRs until the data are supplied, but",
+          "strong": true
+        },
+        {
+          "line": 24,
+          "text": "AK4-associated subjet b-tag proxies. This is a public-recast approximation, not a faithful",
+          "strong": true
+        },
+        {
+          "line": 376,
+          "text": "This is a public recast approximation, not a faithful soft-drop-subjet",
+          "strong": true
+        }
+      ],
+      "missing": false
+    },
+    {
+      "name": "CMS_SUS_16_039",
+      "file": "Analysis_CMS_SUS_16_039.cpp",
+      "lines": 488,
+      "cutflow": 0,
+      "markers": [],
+      "missing": false
+    }
+  ],
+  "features": [
+    {
+      "term": "ONNX",
+      "master": 0,
+      "base": 5,
+      "sr2": 5,
+      "head": 5,
+      "where": "predates the branch point; absent from master"
+    },
+    {
+      "term": "BDT",
+      "master": 3,
+      "base": 15,
+      "sr2": 15,
+      "head": 17,
+      "where": "grew on this branch"
+    },
+    {
+      "term": "METSignificance",
+      "master": 0,
+      "base": 5,
+      "sr2": 5,
+      "head": 7,
+      "where": "predates the branch point; absent from master"
+    },
+    {
+      "term": "FullLikes",
+      "master": 10,
+      "base": 12,
+      "sr2": 12,
+      "head": 15,
+      "where": "grew on this branch"
+    }
+  ],
+  "distribution": {
+    "backends": 69,
+    "urls": 71,
+    "hepforge": 29,
+    "cbs_line": 36,
+    "cbs_modules": "ColliderBit",
+    "cbs_deps": [
+      "hepmc",
+      "pybind11"
+    ],
+    "scripts": {
+      "safe_dl.sh": true,
+      "copy_tarballs.sh": true,
+      "restore_tarballs.sh": true
+    },
+    "script_from_master": {
+      "safe_dl.sh": true,
+      "copy_tarballs.sh": true,
+      "restore_tarballs.sh": true
+    },
+    "lld_line": 38
+  },
+  "gitignore_cbs_yaml": 50,
+  "caveat": "Static read of the worktree and of the other pages' JSON. Nothing was built or run.",
+  "questions": [
+    {
+      "group": "results",
+      "severity": "numbers",
+      "title": "Which check_histogram setting produced the published numbers?",
+      "evidence": [
+        {
+          "fact": "read with getValueOrDef, default false",
+          "source": "solo.cpp:179"
+        },
+        {
+          "fact": "2 of 3 histogram analyses run in signal-region mode, contributing 23 extra signal regions when the flag is on",
+          "source": "cbs-histograms.json \u00b7 consumers"
+        },
+        {
+          "fact": "only 2 of 9 histogram macros guard themselves (FILL_HISTOGRAM_1D, FILL_HISTOGRAM_2D); the rest rely on the caller checking",
+          "source": "AnalysisMacros.hpp"
+        }
+      ]
+    },
+    {
+      "group": "results",
+      "severity": "numbers",
+      "title": "Are variable-R jets smeared, and is that the intended physics?",
+      "evidence": [
+        {
+          "fact": "jetcollections_no_smear declared on the smearing object",
+          "source": "BuckFast.hpp:49"
+        },
+        {
+          "fact": "2 continue sites drop those collections out of the smearing loop",
+          "source": "BuckFast.cpp:48, BuckFast.cpp:56"
+        },
+        {
+          "fact": "the list is filled from the VR settings at 3 wiring sites, so membership is automatic \u2014 a collection is excluded by being variable-R, not by anyone choosing to exclude it",
+          "source": "getBuckFast.cpp:85, getBuckFast.cpp:101, getBuckFast.cpp:113"
+        },
+        {
+          "fact": "2 analyses consume VR jets and inherit the choice: ATLAS_EXOT_2019_04, ATLAS_EXOT_2019_07",
+          "source": "ColliderBit/src/analyses/"
+        }
+      ]
+    },
+    {
+      "group": "results",
+      "severity": "numbers",
+      "title": "Which of the twelve new analyses are validated, and against what?",
+      "evidence": [
+        {
+          "fact": "no cutflow instrumentation: ATLAS_EXOT_2016_013, ATLAS_EXOT_2018_60, ATLAS_EXOT_2019_04, ATLAS_EXOT_2021_35, CMS_SUS_16_039",
+          "source": "ColliderBit/src/analyses/"
+        },
+        {
+          "fact": "ATLAS_EXOT_2018_60 \u2014 \u201cTODO: Implement the published selection and signal-region yields.\u201d",
+          "source": "Analysis_ATLAS_EXOT_2018_60.cpp:23"
+        },
+        {
+          "fact": "ATLAS_SUSY_2018_07 \u2014 \u201cNot validated, still in progress\u201d",
+          "source": "Analysis_ATLAS_SUSY_2018_07.cpp:41"
+        },
+        {
+          "fact": "CMS_B2G_18_003 \u2014 \u201cvectors are still TODO (their histograms commit no SRs until the data are supplied, but\u201d",
+          "source": "Analysis_CMS_B2G_18_003.cpp:20"
+        },
+        {
+          "fact": "ATLAS_EXOT_2018_60 is tracked as skeleton \u2014 run() carries a TODO; collect_results() is empty. Registered only.",
+          "source": "change ledger"
+        },
+        {
+          "fact": "CMS_B2G_18_003 is tracked as partial \u2014 3M histogram SRs digitised; 3T/2M1L obs/bkg pending; high-mass is a cut-and-count approximation, not the CMS shape fit.",
+          "source": "change ledger"
+        }
+      ]
+    },
+    {
+      "group": "reproducibility",
+      "severity": "rerun",
+      "title": "Where does a reader get the default settings?",
+      "evidence": [
+        {
+          "fact": "CBS_yaml/CBS_defaults.yaml exists in the worktree, 22 lines of settings, tracked: False",
+          "source": "cbs-yaml-config.json \u00b7 defaults"
+        },
+        {
+          "fact": "CBS_yaml/* ignored",
+          "source": ".gitignore:50"
+        },
+        {
+          "fact": "absent defaults return silently rather than failing, so the run proceeds on whatever the compiled-in values happen to be",
+          "source": "solo_input.cpp"
+        }
+      ]
+    },
+    {
+      "group": "reproducibility",
+      "severity": "text",
+      "title": "Which settings does CBS overrule, and which do nothing at all?",
+      "evidence": [
+        {
+          "fact": "min_nEvents forced to (long long)(1000)",
+          "source": "solo.cpp:383"
+        },
+        {
+          "fact": "max_nEvents forced to (long long)(std::numeric_limits<int>::max())",
+          "source": "solo.cpp:384"
+        },
+        {
+          "fact": "run_convergence_checks forced to false \u2014 CBS policy: always process all events provided by the user (no convergence-based early stop).",
+          "source": "solo.cpp:386"
+        },
+        {
+          "fact": "of the 14 keys in the original example file, only 3 are still genuinely the user\u2019s to set \u2014 7 are defaulted by the program, 1 is conditional, and 3 are read by nothing",
+          "source": "cbs-yaml-config.json \u00b7 counts"
+        }
+      ]
+    },
+    {
+      "group": "reproducibility",
+      "severity": "decision",
+      "title": "Which backend versions is the paper claiming?",
+      "evidence": [
+        {
+          "fact": "master: cmake says 2.1.1; patch patch_contur_2.1.1.dif present; self-consistent: yes",
+          "source": "cmake/backends.cmake:2236"
+        },
+        {
+          "fact": "base: cmake says 3.0.0; no patch line (deliberately absent); self-consistent: yes",
+          "source": "cmake/backends.cmake:2244"
+        },
+        {
+          "fact": "sr2: cmake says 3.0.0; no patch line (deliberately absent); self-consistent: yes",
+          "source": "cmake/backends.cmake:2244"
+        },
+        {
+          "fact": "head: cmake says 2.1.1; patch patch_contur_2.1.1.dif missing; self-consistent: no",
+          "source": "cmake/backends.cmake:2185"
+        }
+      ]
+    },
+    {
+      "group": "compatibility",
+      "severity": "decision",
+      "title": "What happens to an existing user\u2019s YAML?",
+      "evidence": [
+        {
+          "fact": "123 names retired, 132 introduced, 128 \u2192 137 registered overall",
+          "source": "cbs-rename-migration.json"
+        },
+        {
+          "fact": "80 renames documented across 75 git-detected file moves, including 18 consolidations absorbing 56 files",
+          "source": "per-file provenance comments"
+        },
+        {
+          "fact": "PX_SUSYRun2_stop.yaml in this tree still names 48 retired analyses",
+          "source": "yaml debt"
+        }
+      ]
+    },
+    {
+      "group": "interface",
+      "severity": "decision",
+      "title": "Is the output JSON a specified interface, or an implementation detail?",
+      "evidence": [
+        {
+          "fact": "8 top-level keys, 16 nested object types",
+          "source": "cbs-json-output.json"
+        },
+        {
+          "fact": "<analysis>::<sr|combined>::<variant>, e.g. ATLAS_EXOT_2019_04::combined::nominal",
+          "source": "term_id grammar"
+        },
+        {
+          "fact": "7 in-tree consumers already parse it, with their own guards for fields they expect",
+          "source": "reader-side guards"
+        }
+      ]
+    },
+    {
+      "group": "distribution",
+      "severity": "decision",
+      "title": "What installation route does the paper tell a reader to take?",
+      "evidence": [
+        {
+          "fact": "add_standalone(CBS \u2026 MODULES ColliderBit DEPENDENCIES hepmc pybind11)",
+          "source": "cmake/standalones.cmake:36"
+        },
+        {
+          "fact": "69 backends declared; 29/71 downloads on hepforge.org",
+          "source": "cmake/backends.cmake"
+        },
+        {
+          "fact": "mitigation already exists and is undocumented: safe_dl.sh, copy_tarballs.sh, restore_tarballs.sh",
+          "source": "cmake/scripts/"
+        },
+        {
+          "fact": "GAMBIT_USE_LLD_FOR_CBS exists because linking CBS was worth an option",
+          "source": "cmake/standalones.cmake:38"
+        }
+      ]
+    },
+    {
+      "group": "scope",
+      "severity": "decision",
+      "title": "What does \u201cCBS\u201d name, and against which baseline?",
+      "evidence": [
+        {
+          "fact": "ONNX \u2014 master 0 files, merge-base 5, HEAD 5 \u2014 predates the branch point; absent from master",
+          "source": "ColliderBit tree"
+        },
+        {
+          "fact": "BDT \u2014 master 3 files, merge-base 15, HEAD 17 \u2014 grew on this branch",
+          "source": "ColliderBit tree"
+        },
+        {
+          "fact": "METSignificance \u2014 master 0 files, merge-base 5, HEAD 7 \u2014 predates the branch point; absent from master",
+          "source": "ColliderBit tree"
+        },
+        {
+          "fact": "FullLikes \u2014 master 10 files, merge-base 12, HEAD 15 \u2014 grew on this branch",
+          "source": "ColliderBit tree"
+        },
+        {
+          "fact": "2 of 4 probed capabilities are absent from master entirely, and this deck mentions none of them",
+          "source": "scope gap"
+        }
+      ]
+    }
+  ]
+}

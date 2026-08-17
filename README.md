@@ -196,7 +196,7 @@ python3 scripts/build-change-ledger.py \
 生成：
 
 - `dependences/cbs-change-ledger.json`：逐文件的改动量、提交数、作者列表和归属分类（`own` / `mixed` / `upstream`）；
-- `dependences/cbs-change-ledger.html`：15 页自包含 slide，内联 SVG 流程图，不依赖任何 CDN；按 `P` 展开全部页面以便打印成 PDF。
+- `dependences/cbs-change-ledger.html`：16 页自包含 slide，内联 SVG 流程图，不依赖任何 CDN；按 `P` 展开全部页面以便打印成 PDF。
 
 基线是 `private-SUSYRun2` 与开发分支的共同祖先，而不是 `gambit/master`——因为要回答的问题是"相对合作者手上的源分支我改了什么"。`gambit/master` 已完全合入，分支落后 0 个提交。
 
@@ -325,6 +325,40 @@ python3 scripts/build-package-matrix.py \
 - **Contur 在 HEAD 是坏的**：`backends.cmake:2185` 写 `2.1.1` 并指向一个**树里不存在**的补丁文件，而 frontend 是 `Contur_3_0_0.hpp`、patch 目录只有 `3.0.0/`。`git log -L` 定位到 `3d9ebcb490 "Fixing very minor merge conflicts"`——合并时这一块取了 master 的一侧，frontend 和 patch 树留在 SUSYRun2 一侧。master、merge-base、SUSYRun2 tip 三边各自都自洽，只有 HEAD 是劈开的。
 
 台账只反映**代码变化**，不反映**物理结果变化**：过程中没有重新编译或运行 CBS。
+
+### 论文待答问题（slide 15 + 专页）
+
+其他每一页都在记录 CBS **做了什么**。这一页是残渣：写那些页的过程中冒出来、而源码本身无法定论的问题。
+
+```bash
+python3 scripts/build-paper-questions-page.py \
+  --gambit-root ~/Gambit-Workshop/gambit
+```
+
+生成 `dependences/cbs-paper-questions.{html,json}`、`CBS_PAPER_QUESTIONS.md` 和 `site/cbs-paper-questions.html`。
+
+**这个脚本要在其他脚本之后跑**：它读 `dependences/` 下已经生成的七个 JSON（histogram、yaml、rename、vr、package matrix、json output、change ledger），再补几项现读的 worktree 事实。这样保证一个数字只有一处定义——如果这一页和 histogram 页对不上，那是某个脚本有 bug，不是两种说法。
+
+分界写在页面上：**问题是我们的**（关于一篇论文欠读者什么的编辑判断）；**问题旁边的每个数字都是构建时从树里或从别的页的 JSON 里读出来的**。所以一个数字过时了是重跑一遍的事，不是重写的事。
+
+十条，按"不回答的代价"排序：
+
+| 组 | # | 代价 |
+|---|---|---|
+| 数字取决于什么 | 3 | 改变发表的数字 |
+| 读者重跑需要什么 | 2 | 挡住独立重跑 / 需要一段文字 |
+| 老用户会撞上什么 | 1 | 需要决策 |
+| 下游能依赖什么 | 1 | 需要决策 |
+| 别人怎么装得上 | 1 | 需要决策 |
+| 这篇论文到底在讲什么 | 1 | 需要决策 |
+
+最要紧的三条：
+
+- **`check_histogram` 默认 `false`**（`solo.cpp:179`）。打开之后两个 SR histogram 分析多提交 **23 个 signal region**。这不是 verbosity flag，它改变 likelihood 项的数量——论文必须说清楚结果是在哪个设置下跑出来的。
+- **VR jet 从不做 smearing**。它们因为"是 variable-R"而被自动排除在 JER 之外（`BuckFast.cpp:48,56`，名单在 `getBuckFast.cpp` 三处填）。要么是有意的（实验端已做标定，再抹一次是错的）——那一句话就能了结；要么是个缺口——那就是两个 VR 分析上一项没量化的系统误差。现在审稿人分不出是哪种。
+- **十二个新分析里哪些验证过？** 5 个完全没有 `Cutflow` 仪表，3 个在自己的注释里写着没做完（`ATLAS_EXOT_2018_60` 的 `run()` 只有一句 TODO；`ATLAS_SUSY_2018_07:41` 写着 *"Not validated, still in progress"*；`CMS_B2G_18_003` 的 obs/bkg 向量还空着）。
+
+**先回答基线那一条。** 本项目整体基线在 merge-base，因为它回答"我改了什么"；论文的基线是发布版 GAMBIT，因为它回答"CBS 是什么"。两者不是同一个集合，而且差得不小：**ONNX**（5 个文件）和 **METSignificance**（7 个）在 `master` 里完全不存在，却早于分支点，因此按本项目的规则**正确地**没有出现在 slide 里，按论文的规则则是**错的**。基线一定，好几条的答案跟着定。
 
 ## 生成 GitHub Pages 页面
 
