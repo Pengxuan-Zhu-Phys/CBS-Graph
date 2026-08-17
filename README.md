@@ -256,7 +256,9 @@ python3 scripts/build-yaml-config-page.py \
 
 生成 `dependences/cbs-yaml-config.{html,json}`、`CBS_YAML_CONFIG.md` 和 `site/cbs-yaml-config.html`。
 
-**原始文件**是 `ColliderBit/examples/solo_example.yaml`（baseline 版，33 行、14 个设置全部内联），**里面根本没有 jet 配置**——jet 定义那时不是用户能描述的东西。
+**原始文件**是 `ColliderBit/examples/solo_example.yaml`（baseline 版，14 个设置全部内联），**里面根本没有 jet 配置**——jet 定义那时不是用户能描述的东西。
+
+行数按**去掉空行和注释**来数：**29 → 17**。用原始行数会得出 33 → 37，方向正好反了——现在这份用户文件带了 20 行注释和空行（文件头注释块 + 几行注释掉的备选 `event_file`），而原始文件只有 4 行，全算进去会让更短的文件看起来更长。
 
 所以这次改动的形状不是"变短了"。本分支**新增了一个必填项** `jet_collections`（`getValue`，缺了就抛异常），而 jet 配置很啰嗦（三个 collection 就 22 行）。如果什么都不做，每个用户文件都会变长。**默认卡片是用来吸收本分支自己制造的这个要求的。**
 

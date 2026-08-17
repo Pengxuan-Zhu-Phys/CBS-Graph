@@ -104,6 +104,8 @@ tr:last-child td{border-bottom:0}
   text-transform:uppercase;color:var(--soft);margin:2px 0 0}
 .kv dd{margin:0;color:var(--muted)}
 dl{margin:0}
+.presenter-line{margin:12px 0 0;color:var(--muted);font-family:var(--font-mono);font-size:11px;line-height:1.5}
+.presenter-line b{color:var(--ink);font-weight:500}
 
 .renames{font-family:var(--font-mono);font-size:11px;line-height:1.85;columns:2;column-gap:30px}
 .renames div{break-inside:avoid;color:var(--soft)}
@@ -180,6 +182,7 @@ svg{display:block;max-width:100%;height:auto}
       <div class="kv"><dt>Upstream master</dt><dd><code>gambit/master</code> @ <code>b4c3e6d027</code> — fully merged in; the branch is 0 commits behind</dd></div>
       <div class="kv"><dt>Common ancestor</dt><dd><code>9c955e3a7</code></dd></div>
     </dl>
+    <p class="presenter-line" aria-label="Presentation details"><b>Speaker:</b> Pengxuan Zhu&nbsp;&nbsp;·&nbsp;&nbsp;<b>Date:</b> 17 August 2026&nbsp;&nbsp;·&nbsp;&nbsp;<b>Meeting:</b> ColliderBit-Solo Meeting</p>
   </div>
   <p class="foot">Use ← → or space to move. Press <b>P</b> for a printable all-slides view (⌘P → Save as PDF).</p>
 </section>
@@ -498,14 +501,14 @@ svg{display:block;max-width:100%;height:auto}
   them. Meanwhile another set of settings quietly stopped being the user’s to decide.</p>
   <div class="body">
     <div class="grid g4">
-      <div class="stat"><div class="n">3</div><div class="k">still yours</div>
-        <div class="s">event source and cross-section</div></div>
+      <div class="stat"><div class="n">29 → 17</div><div class="k">lines of settings</div>
+        <div class="s">blank and comment lines excluded</div></div>
       <div class="stat"><div class="n">7</div><div class="k">now program defaults</div>
         <div class="s"><code>getValueOrDef</code> — omit them freely</div></div>
-      <div class="stat"><div class="n">3</div><div class="k">decided by CBS</div>
-        <div class="s">overwritten whatever the YAML says</div></div>
-      <div class="stat"><div class="n">3</div><div class="k">read by nothing</div>
-        <div class="s">dead in the original too</div></div>
+      <div class="stat"><div class="n">3</div><div class="k">still yours</div>
+        <div class="s">event source and cross-section</div></div>
+      <div class="stat"><div class="n">3 / 3</div><div class="k">CBS policy / dead</div>
+        <div class="s">forced in solo.cpp · never read at all</div></div>
     </div>
 
     <div class="grid g2" style="align-items:start;margin-top:16px">

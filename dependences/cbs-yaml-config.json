@@ -79,7 +79,11 @@
         "line": 33
       }
     ],
-    "lines": 33
+    "lines": {
+      "total": 33,
+      "code": 29,
+      "comment": 4
+    }
   },
   "current_example": {
     "path": "ColliderBit/examples/solo_example.yaml",
@@ -221,7 +225,11 @@
         }
       }
     ],
-    "lines": 43
+    "lines": {
+      "total": 43,
+      "code": 39,
+      "comment": 4
+    }
   },
   "new_style": {
     "path": "CBS_yaml/ATLAS_EXOT_2019_04.yaml",
@@ -263,7 +271,11 @@
         "line": 37
       }
     ],
-    "lines": 37,
+    "lines": {
+      "total": 37,
+      "code": 17,
+      "comment": 20
+    },
     "exists": true
   },
   "defaults": {
@@ -271,7 +283,11 @@
     "text": "# CBS default settings.\n#\n# Merge order:\n#   1. top-level settings below\n#   2. settings for each requested analysis, in YAML analysis order\n#   3. user input YAML settings\n#\n# User settings always override these defaults.\n\nsettings:\n  jet_collection_taus: antikt_R04\n\nanalysis_defaults:\n  ATLAS_EXOT_2019_04:\n    settings:\n      jet_collections:\n        antikt_R04:\n          algorithm: \"antikt\"\n          R: 0.4\n          recombination_scheme: \"E_scheme\"\n          strategy: \"Best\"\n        antikt_R10:\n          algorithm: \"antikt\"\n          R: 1.0\n          recombination_scheme: \"E_scheme\"\n          strategy: \"Best\"\n        VRTrackJets:\n          algorithm: \"VariableR\"\n          rho: 30.0\n          Rmin: 0.02\n          Rmax: 0.40\n          pt_min: 5.0\n",
     "exists": true,
     "tracked": false,
-    "lines": 32
+    "lines": {
+      "total": 32,
+      "code": 22,
+      "comment": 10
+    }
   },
   "rows": [
     {

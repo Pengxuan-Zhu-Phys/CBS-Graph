@@ -120,8 +120,8 @@
   <p class="backlink"><span class="lbl">context</span><span>This page expands <a href="cbs-change-ledger.html#6">slide 6 of the CBS change-ledger deck &#8599;</a>.</span></p>
 
   <div class="summary-grid" aria-label="Summary">
-    <div class="card"><span class="n">14</span><span class="label">settings in the original</span></div>
-    <div class="card accent"><span class="n">7</span><span class="label">settings now written</span></div>
+    <div class="card"><span class="n">29 &rarr; 17</span><span class="label">lines of settings</span></div>
+    <div class="card accent"><span class="n">14 &rarr; 7</span><span class="label">top-level keys</span></div>
     <div class="card"><span class="n">3</span><span class="label">still yours</span></div>
     <div class="card accent"><span class="n">7</span><span class="label">program defaults</span></div>
     <div class="card accent"><span class="n">3</span><span class="label">CBS policy</span></div>
@@ -131,10 +131,10 @@
   <section id="files">
     <p class="kicker">01 &#183; the two files</p>
     <h2>What a user actually writes</h2>
-    <p class="source">Left: <code>ColliderBit/examples/solo_example.yaml</code> at the baseline. Right: <code>CBS_yaml/ATLAS_EXOT_2019_04.yaml</code> today.</p>
+    <p class="source">Left: <code>ColliderBit/examples/solo_example.yaml</code> at the baseline. Right: <code>CBS_yaml/ATLAS_EXOT_2019_04.yaml</code> today. Counts exclude blank and comment lines &mdash; 33 and 37 lines raw, which points the wrong way: the current file carries 20 comment and blank lines against the original’s 4, so counting everything makes the shorter file look longer.</p>
     <div class="example-grid">
       <div class="example-col">
-        <p class="example-h"><span class="tag-plain">before</span> 33 lines</p>
+        <p class="example-h"><span class="tag-plain">before</span> 29 lines of settings</p>
         <p class="example-note">Every setting inline. <strong>No jet configuration at all</strong> &mdash; jets were not something a user could describe.</p>
         <pre class="unit-hunks json-block"># Simple example input file for running CBS
 # Pat Scott May 2019
@@ -172,7 +172,7 @@ settings:
 </pre>
       </div>
       <div class="example-col">
-        <p class="example-h"><span class="tag-sr">after</span> 37 lines</p>
+        <p class="example-h"><span class="tag-sr">after</span> 17 lines of settings</p>
         <p class="example-note">The analysis, the cross-section and its files, four switches. The convergence block is gone and the jet collections are never named.</p>
         <pre class="unit-hunks json-block"># Simple example input file for running CBS
 # Pat Scott May 2019
@@ -273,7 +273,7 @@ settings:
   <section id="defaults">
     <p class="kicker">05 &#183; the default card</p>
     <h2>Three layers, user wins</h2>
-    <p class="source"><code>CBS_yaml/CBS_defaults.yaml</code>, 32 lines in the working tree.</p>
+    <p class="source"><code>CBS_yaml/CBS_defaults.yaml</code>, 22 lines of settings in the working tree.</p>
     <div class="grid-2">
       <div>
         <div class="mapping-table"><table>

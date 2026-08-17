@@ -2,6 +2,8 @@
 
 Baseline `9c955e3a78` &rarr; head `65aca0890d`.
 
+Input file: 29 lines of settings then, 17 now (blank and comment lines excluded).
+
 ## Where the original settings went
 
 | Setting | Original value | Who decides now |

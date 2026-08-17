@@ -56,6 +56,20 @@ def show(root: Path, ref: str, path: str) -> str:
     return git(root, "show", f"{ref}:{path}")
 
 
+def line_counts(text: str) -> dict:
+    """Total lines, and lines that are neither blank nor a comment.
+
+    Raw line counts mislead here: the current user file carries a long comment
+    header and several commented-out alternatives, so counting every line makes
+    it look longer than the original when its actual content is half the size.
+    """
+    total = text.splitlines()
+    code = [line for line in total
+            if line.strip() and not line.strip().startswith("#")]
+    return {"total": len(total), "code": len(code),
+            "comment": len(total) - len(code)}
+
+
 def yaml_settings(text: str) -> list[dict]:
     """Top-level keys under `settings:`, in file order, with their values."""
     lines, out, inside = text.splitlines(), [], False
@@ -200,14 +214,14 @@ def collect(root: Path) -> dict:
         "generated_by": "scripts/build-yaml-config-page.py",
         "refs": {"baseline": BASE, "head": git(root, "rev-parse", "--short", "HEAD").strip()},
         "original": {"path": EXAMPLE, "text": original, "keys": orig_keys,
-                     "lines": len(original.splitlines())},
+                     "lines": line_counts(original)},
         "current_example": {"path": EXAMPLE, "keys": example_keys,
-                            "lines": len(current_example.splitlines())},
+                            "lines": line_counts(current_example)},
         "new_style": {"path": NEW_STYLE, "text": new_style, "keys": new_keys,
-                      "lines": len(new_style.splitlines()), "exists": bool(new_style)},
+                      "lines": line_counts(new_style), "exists": bool(new_style)},
         "defaults": {"path": DEFAULTS, "text": defaults, "exists": bool(defaults),
                      "tracked": defaults_tracked,
-                     "lines": len(defaults.splitlines())},
+                     "lines": line_counts(defaults)},
         "rows": rows,
         "added": added,
         "policy": policy,
@@ -296,6 +310,9 @@ def render_markdown(data: dict) -> str:
         "",
         f'Baseline `{data["refs"]["baseline"]}` &rarr; head `{data["refs"]["head"]}`.',
         "",
+        f'Input file: {data["original"]["lines"]["code"]} lines of settings then, '
+        f'{data["new_style"]["lines"]["code"]} now (blank and comment lines excluded).',
+        "",
         "## Where the original settings went",
         "",
         "| Setting | Original value | Who decides now |",
@@ -341,8 +358,8 @@ __CSS__
   <p class="backlink"><span class="lbl">context</span><span>This page expands <a href="cbs-change-ledger.html#6">slide 6 of the CBS change-ledger deck &#8599;</a>.</span></p>
 
   <div class="summary-grid" aria-label="Summary">
-    <div class="card"><span class="n">__ORIG_KEYS__</span><span class="label">settings in the original</span></div>
-    <div class="card accent"><span class="n">__NEW_KEYS__</span><span class="label">settings now written</span></div>
+    <div class="card"><span class="n">__ORIG_CODE__ &rarr; __NEW_CODE__</span><span class="label">lines of settings</span></div>
+    <div class="card accent"><span class="n">__ORIG_KEYS__ &rarr; __NEW_KEYS__</span><span class="label">top-level keys</span></div>
     <div class="card"><span class="n">__C_USER__</span><span class="label">still yours</span></div>
     <div class="card accent"><span class="n">__C_PROGRAM__</span><span class="label">program defaults</span></div>
     <div class="card accent"><span class="n">__C_POLICY__</span><span class="label">CBS policy</span></div>
@@ -352,15 +369,15 @@ __CSS__
   <section id="files">
     <p class="kicker">01 &#183; the two files</p>
     <h2>What a user actually writes</h2>
-    <p class="source">Left: <code>__ORIG_PATH__</code> at the baseline. Right: <code>__NEW_PATH__</code> today.</p>
+    <p class="source">Left: <code>__ORIG_PATH__</code> at the baseline. Right: <code>__NEW_PATH__</code> today. Counts exclude blank and comment lines &mdash; __COUNT_NOTE__</p>
     <div class="example-grid">
       <div class="example-col">
-        <p class="example-h"><span class="tag-plain">before</span> __ORIG_LINES__ lines</p>
+        <p class="example-h"><span class="tag-plain">before</span> __ORIG_CODE__ lines of settings</p>
         <p class="example-note">Every setting inline. <strong>No jet configuration at all</strong> &mdash; jets were not something a user could describe.</p>
         <pre class="unit-hunks json-block">__ORIG_TEXT__</pre>
       </div>
       <div class="example-col">
-        <p class="example-h"><span class="tag-sr">after</span> __NEW_LINES__ lines</p>
+        <p class="example-h"><span class="tag-sr">after</span> __NEW_CODE__ lines of settings</p>
         <p class="example-note">The analysis, the cross-section and its files, four switches. The convergence block is gone and the jet collections are never named.</p>
         <pre class="unit-hunks json-block">__NEW_TEXT__</pre>
       </div>
@@ -459,7 +476,8 @@ def render_html(data: dict) -> str:
 
     if data["defaults"]["exists"]:
         defaults_source = (f'<code>{esc(data["defaults"]["path"])}</code>, '
-                           f'{data["defaults"]["lines"]} lines in the working tree.')
+                           f'{data["defaults"]["lines"]["code"]} lines of settings '
+                           f'in the working tree.')
         defaults_caption = "The card for one analysis, verbatim."
         defaults_text = esc(data["defaults"]["text"])
     else:
@@ -483,6 +501,14 @@ def render_html(data: dict) -> str:
     else:
         defaults_warning = "The defaults file is tracked in the repository."
 
+    orig_lines, new_lines = data["original"]["lines"], data["new_style"]["lines"]
+    count_note = (
+        f'{orig_lines["total"]} and {new_lines["total"]} lines raw, which points the wrong way: '
+        f'the current file carries {new_lines["comment"]} comment and blank lines against the '
+        f'original\u2019s {orig_lines["comment"]}, so counting everything makes the shorter file '
+        'look longer.'
+    )
+
     css = CSS.read_text() if CSS.exists() else "<style></style>"
     expected = set(re.findall(r"__[A-Z_]+__", TEMPLATE))
     page = TEMPLATE.replace("__CSS__", css)
@@ -497,8 +523,9 @@ def render_html(data: dict) -> str:
         "__C_DEAD__": str(counts["dead"]),
         "__ORIG_PATH__": esc(data["original"]["path"]),
         "__NEW_PATH__": esc(data["new_style"]["path"]),
-        "__ORIG_LINES__": str(data["original"]["lines"]),
-        "__NEW_LINES__": str(data["new_style"]["lines"]),
+        "__ORIG_CODE__": str(data["original"]["lines"]["code"]),
+        "__NEW_CODE__": str(data["new_style"]["lines"]["code"]),
+        "__COUNT_NOTE__": count_note,
         "__ORIG_TEXT__": esc(data["original"]["text"]),
         "__NEW_TEXT__": esc(data["new_style"]["text"]),
         "__KEY_ROWS__": key_rows(data),
